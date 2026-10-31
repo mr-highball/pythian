@@ -12,6 +12,9 @@ instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
 **Current snapshot: 47 / 108 effort units accepted (43.52%); nine open, eleven current-goal DONE.**
+The current Generate progress repair closes the observed simple-consumer defect:
+stable workflow stages and cumulative selected-audio/render counters survive
+reconnect. It adds no task effort or musical acceptance; long output remains open.
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 

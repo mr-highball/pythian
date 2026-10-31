@@ -24,24 +24,42 @@ SOFTWARE.
 program StudioPlaylistConformance;
 {$mode delphi}
 {$H+}
-uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave,
+uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progress,
   pythian.tools.studio.projects, pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs, pythian.tools.studio.playlist.learning,
   pythian.tools.studio.worker, pythian.tools.listen.catalog,
   pythian.wfc.musical.corpus, pythian.wfc.layers;
 var GChecks: Integer;
+type
+  TSelectionProgress = class
+    Done: Int64;
+    Total: Int64;
+    Updates: Integer;
+    procedure Observe(const AProgress: TWorkProgress);
+  end;
 procedure Check(const AValue: Boolean; const AMessage: String);
 begin
   Inc(GChecks);
   if not AValue then raise Exception.Create(AMessage);
 end;
-procedure Audio(const APath: String; const AFrequency: Integer);
+procedure TSelectionProgress.Observe(const AProgress: TWorkProgress);
+begin
+  if AProgress.Stage <> 'playlist_selection_progress' then Exit;
+  Check((AProgress.Units = wuMilliseconds) and (AProgress.Total > 0),
+    'Whole selection progress uses actual audio time');
+  Check((Updates = 0) or ((AProgress.Total = Total) and (AProgress.Done >= Done)),
+    'Whole selection counters stay monotonic across windows and mixed-rate tracks');
+  Total := AProgress.Total;
+  Done := AProgress.Done;
+  Inc(Updates);
+end;
+procedure Audio(const APath: String; const AFrequency, ARate, ASeconds: Integer);
 var LSamples: TAudioSamples; LClip: TAudioClip; I: Integer;
 begin
   Check(ForceDirectories(ExtractFileDir(APath)), 'Create private fixture collection');
-  SetLength(LSamples, 8000 * 75);
-  for I := 0 to High(LSamples) do LSamples[I] := 0.03 * Sin(I * 2 * Pi * AFrequency / 8000);
-  LClip := TAudioClip.Create(8000, 1, LSamples);
+  SetLength(LSamples, ARate * ASeconds);
+  for I := 0 to High(LSamples) do LSamples[I] := 0.03 * Sin(I * 2 * Pi * AFrequency / ARate);
+  LClip := TAudioClip.Create(ARate, 1, LSamples);
   try SaveWavePcm16(APath, LClip) finally LClip.Free end;
 end;
 procedure CheckLearning(const ARoot, ACatalog, ALibrary: String; const APlaylist: TJSONObject);
@@ -57,37 +75,47 @@ var
   LDirectory: String;
   I: Integer;
   LDifferent: Boolean;
+  LProgress: TSelectionProgress;
+  LRate: Integer;
 begin
   LCold := nil;
   LWarm := nil;
   LReceipt := nil;
+  LProgress := TSelectionProgress.Create;
   LDirectory := GetCurrentDir;
   try
     { Existing native importer staging is relative to runtime cwd. Keep it in
       this isolated E-drive fixture, as the deployed service does. }
     SetCurrentDir(ARoot);
     LCold := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
-      'playlist-learning', APlaylist, LReceipt);
+      'playlist-learning', APlaylist, LReceipt, LProgress.Observe);
+    Check((LProgress.Done = 135000) and (LProgress.Total = 135000),
+      'Unequal75s/60s mixed-rate recordings aggregate to135s');
     try
       for I := 0 to 1 do
       begin
-        Check(LReceipt.Arrays['sources'].Objects[I].Int64s['analyzed_frames'] = 600000,
+        Check(LReceipt.Arrays['sources'].Objects[I].Int64s['analyzed_frames'] =
+          APlaylist.Arrays['items'].Objects[I].Int64s['frame_count'],
           'Whole75-second recording is analyzed beyond a first-eight-second proposal');
-        Check((LReceipt.Arrays['sources'].Objects[I].Integers['measured_windows'] = 3) and
+        Check((LReceipt.Arrays['sources'].Objects[I].Integers['measured_windows'] = 3 - I) and
           (LReceipt.Arrays['sources'].Objects[I].Integers['cache_hits'] = 0),
           'Cold learning uses bounded30/30/15-second windows');
         Check((LReceipt.Arrays['sources'].Objects[I].Int64s['model_used_frames'] > 0) and
-          (LReceipt.Arrays['sources'].Objects[I].Int64s['model_used_frames'] <= 600000),
+          (LReceipt.Arrays['sources'].Objects[I].Int64s['model_used_frames'] <=
+            APlaylist.Arrays['items'].Objects[I].Int64s['frame_count']),
           'Model-used coverage is separate from analyzed duration');
       end;
       LBefore := LCold.CopyModelTexts;
     finally FreeAndNil(LReceipt) end;
+    LProgress.Updates := 0;
     LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
-      'playlist-learning-warm', APlaylist, LReceipt);
+      'playlist-learning-warm', APlaylist, LReceipt, LProgress.Observe);
+    Check((LProgress.Done = 135000) and (LProgress.Total = 135000),
+      'Warm analysis reuse preserves the full selection denominator');
     try
       for I := 0 to 1 do
         Check((LReceipt.Arrays['sources'].Objects[I].Integers['measured_windows'] = 0) and
-          (LReceipt.Arrays['sources'].Objects[I].Integers['cache_hits'] = 3),
+          (LReceipt.Arrays['sources'].Objects[I].Integers['cache_hits'] = 3 - I),
           'Unchanged source-bound measurements reuse all cached windows');
       LAfter := LWarm.CopyModelTexts;
       for I := 0 to High(LBefore) do
@@ -108,21 +136,25 @@ begin
     finally FreeAndNil(LReceipt) end;
     FreeAndNil(LWarm);
     LItem := APlaylist.Arrays['items'].Objects[1];
+    LRate := LItem.Integers['sample_rate'];
     LItem.Strings['extent'] := 'clips';
     LClips := LItem.Arrays['clips'];
-    LClip := TJSONObject.Create(['start_frame', 8000, 'end_frame', 16000, 'included', True]);
+    LClip := TJSONObject.Create(['start_frame', LRate, 'end_frame', 2 * LRate, 'included', True]);
     LClip.Add('classifications', TJSONArray.Create(['intro']));
     LClips.Add(LClip);
-    LClip := TJSONObject.Create(['start_frame', 400000, 'end_frame', 440000, 'included', True]);
+    LClip := TJSONObject.Create(['start_frame', 50 * LRate, 'end_frame', 55 * LRate, 'included', True]);
     LClip.Add('classifications', TJSONArray.Create(['warm']));
     LClips.Add(LClip);
+    LProgress.Updates := 0;
     LWarm := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
-      'playlist-learning-clips', APlaylist, LReceipt);
+      'playlist-learning-clips', APlaylist, LReceipt, LProgress.Observe);
+    Check((LProgress.Total = 81000) and (LProgress.Done = 81000),
+      'Whole75s plus disjoint1s/5s clips count only81s of selected audio');
     try
-      Check((LReceipt.Arrays['sources'].Objects[1].Int64s['included_frames'] = 48000) and
-        (LReceipt.Arrays['sources'].Objects[1].Int64s['analyzed_frames'] = 48000),
+      Check((LReceipt.Arrays['sources'].Objects[1].Int64s['included_frames'] = 6 * LRate) and
+        (LReceipt.Arrays['sources'].Objects[1].Int64s['analyzed_frames'] = 6 * LRate),
         'Disjoint selected clips analyze only their actual original time');
-      Check(LWarm.CopyCoverage[1].IncludedFrames = 48000,
+      Check(LWarm.CopyCoverage[1].IncludedFrames = 6 * LRate,
         'Actual musical corpus receives exact selected ranges');
     finally FreeAndNil(LReceipt) end;
     FreeAndNil(LWarm);
@@ -140,6 +172,7 @@ begin
         'Learning never removes saved excluded choices from the caller playlist');
     finally FreeAndNil(LReceipt) end;
   finally
+    LProgress.Free;
     LReceipt.Free;
     LWarm.Free;
     LCold.Free;
@@ -162,8 +195,8 @@ begin
   LLibrary := IncludeTrailingPathDelimiter(ARoot) + 'library';
   Check(ForceDirectories(LCatalog), 'Create isolated catalog');
   Check(ForceDirectories(IncludeTrailingPathDelimiter(ARoot) + 'inbox'), 'Create QA inbox');
-  Audio(LLibrary + '/collections/Chillsynth/Evening.wav', 220);
-  Audio(LLibrary + '/collections/lofi/Soft steps.wav', 330);
+  Audio(LLibrary + '/collections/Chillsynth/Evening.wav', 220, 8000, 75);
+  Audio(LLibrary + '/collections/lofi/Soft steps.wav', 330, 16000, 60);
   LDiscovery := DiscoverStudioLibrary(LCatalog, LLibrary);
   LWrite := TJSONObject.Create;
   try
@@ -262,6 +295,9 @@ begin
         LResult := ReadStudioJob(LCatalog, LJob.Strings['job_id']);
         try
           Check(LResult.Strings['status'] = 'completed', 'Queued playlist generation completes');
+          Check((LResult.Objects['workflow'].Integers['phase'] = 4) and
+            (LResult.Objects['workflow'].Integers['phases'] = 4),
+            'Durable completed job retains its native workflow for reconnect');
           Check((LResult.Objects['results'].Objects['playlist_learning'].Arrays['sources'].Count = 2) and
             (LResult.Objects['results'].Arrays['parts'].Count = 6),
             'Actual worker result retains source contributions and all six synthesized parts');

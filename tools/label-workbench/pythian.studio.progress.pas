@@ -196,6 +196,58 @@ begin
   AParent.appendChild(Result);
 end;
 
+procedure DrawGenerationWorkflow(const AParent: TJSElement; const AJob: TJSObject);
+const
+  CNames: array[1..4] of String =
+    ('Learn your music', 'Plan the track', 'Synthesize audio', 'Save the result');
+var
+  LWorkflow: TJSObject;
+  LRoot, LBar, LSteps, LItem: TJSElement;
+  LPhase, I: Integer;
+  LDone, LTotal, LValue: Double;
+  LDetail, LOperation: String;
+begin
+  LRoot := Add(AParent, 'div', '');
+  LRoot.className := 'learning-progress';
+  LWorkflow := TJSObject(AJob['workflow']);
+  if (LWorkflow = nil) or not isObject(LWorkflow) then
+  begin
+    Add(LRoot, 'p', 'Waiting for generation progress…');
+    Add(LRoot, 'progress', '').setAttribute('aria-label', 'Waiting for generation progress');
+    Exit;
+  end;
+  LPhase := Max(1, Min(4, Trunc(StudioNumber(LWorkflow, 'phase'))));
+  LDone := StudioNumber(LWorkflow, 'done');
+  LTotal := StudioNumber(LWorkflow, 'total');
+  LValue := LPhase - 1;
+  if LTotal > 0 then LValue := LValue + Min(1, Max(0, LDone / LTotal));
+  LDetail := 'Step ' + IntToStr(LPhase) + ' of 4 · ' + CNames[LPhase];
+  Add(LRoot, 'p', LDetail).className := 'progress-heading';
+  LBar := Add(LRoot, 'progress', '');
+  LBar.setAttribute('max', '4');
+  LBar.setAttribute('value', FloatToStr(LValue));
+  LBar.setAttribute('aria-label', 'Generate workflow');
+  LBar.setAttribute('aria-valuetext', LDetail);
+  LSteps := Add(LRoot, 'ol', '');
+  LSteps.className := 'generation-phases';
+  for I := 1 to 4 do
+  begin
+    LItem := Add(LSteps, 'li', CNames[I]);
+    if I < LPhase then LItem.className := 'phase-complete'
+    else if I = LPhase then LItem.setAttribute('aria-current', 'step');
+  end;
+  if (LTotal > 0) and (StudioText(LWorkflow, 'unit') = 'milliseconds') then
+    Add(LRoot, 'p', StudioTime(LDone / 1000) + ' / ' + StudioTime(LTotal / 1000) +
+      ' of selected music checked')
+  else if (LTotal > 0) and (LPhase = 3) then
+    Add(LRoot, 'p', IntToStr(Trunc(100 * LDone / LTotal)) +
+      '% of mix and instrument audio synthesized');
+  LOperation := StudioStageText(StudioText(AJob, 'stage'));
+  if Pos(' · ', LOperation) = 2 then Delete(LOperation, 1, 4);
+  Add(LRoot, 'small', LOperation + '…');
+  Add(LRoot, 'small', 'Workflow progress, not a time estimate.').className := 'muted';
+end;
+
 procedure DrawStudioProgress(const AParent: TJSElement; const AJob: TJSObject;
   const ACompact: Boolean);
 var
@@ -209,6 +261,11 @@ begin
   if LStatus = '' then LStatus := StudioText(AJob, 'job_status');
   if ACompact and ((LStatus = 'completed') or (LStatus = 'cancelled') or
     (LStatus = 'failed')) then Exit;
+  if ACompact and (StudioText(AJob, 'kind') = 'instrumental_generate') then
+  begin
+    DrawGenerationWorkflow(AParent, AJob);
+    Exit;
+  end;
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
   LStep := StepNumber(LStage);

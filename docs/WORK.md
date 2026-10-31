@@ -2,7 +2,60 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: simple playlist → learned instrumental preview — 2026-10-31
+## Current handoff: one continuous Generate progress view — 2026-10-31
+
+Big Boss SOLO follows the operator's progress-bar defect under simple Studio
+AC4 and instrumental streams AC3. Criterion: a Generate request shows stable
+workflow phases and cumulative selection/render work, surviving reload without
+restarting its bar for nested analyses. Deliver native durable workflow counters
+and the actual browser view. Check mixed-rate whole/range aggregation, cache
+reuse, nested callbacks, cancellation and reload; stop at this consumer repair.
+No elapsed-time estimate or arbitrary total-job percentage is promised.
+The operator explicitly permits interrupting the active job for this repair.
+The unfinished streams batch is preserved in stash f57503d5bdd66b3edaa0871d74fcb7aa6df54dc6
+and an external patch/new-unit copy under generate-progress-20261031-boss on E.
+That parked batch closed no criterion and raised consecutive nonclosing count to
+one. This repair now closes the observed simple Studio AC4 progress defect, so
+the count returns to zero. No whole task moves or effort change:
+**47/108 (43.52%), nine open, eleven current DONE, 61 open effort units**.
+CI515 for a711f46 is terminal SUCCESS.
+
+The native job persists a four-phase workflow independently of nested algorithm
+callbacks. It counts checked selected time across mixed-rate whole tracks/clips
+and cache hits, then renders all seven outputs against one frame denominator.
+Intermediate stem publication cannot reset that counter. Planning and final
+publication have real phases without fabricated work/time percentages. Final
+completion remains the durable job transition, after saving the result.
+
+Native progress31 and playlist97 checks pass with clean heaps, including the
+actual worker, unequal75/60-second8/16kHz inputs, disjoint clips and cold/warm
+reuse. The new milliseconds callback unit passes native and actual pas2js checks.
+Actual in-app browser checks cover phase1, new/cached native completion, 390px
+layout, reload reconnect during synthesis and live Stop. A native cold job's
+retained events show analyze_audio with cumulative60000/150000ms, followed by
+planning, aggregate rendering and saving. A browser wait missed the brief
+learning-counter text before this small fixture finished; do not call that a
+physical-phone or long-recording browser test. The real stable library also
+loads after replacement. Screenshots, logs, rollback and the hidden launcher
+live under generate-progress-20261031-boss in the E-drive roots.
+
+The operator explicitly allowed interruption. Its active old-worker job was
+cancelled through the existing token-authorized API, reached terminal cancelled
+and remains in the private catalog. Choices, responses, completed analysis caches
+and a pre-interruption snapshot are preserved. A tokenless API attempt was
+rejected; no authentication was weakened. Automatic approval review rejected
+the combined isolated-QA restart command without a reason; separate verified
+shutdown/start succeeded. QA tabs9/10 are closed, viewport reset, all observed
+audio paused/non-looping; QA listener/worker counts are zero. User tabs stay open.
+
+Stable PID13068 uses the same fixed service/worker slots, catalog, LAN address,
+port, TLS and firewall configuration. Service SHA256 starts48c7c9d1; worker starts
+e0b3056f. HTTP and LAN HTTPS return200 at the existing Studio link. Refresh and
+Generate again to retry the interrupted selection using completed analysis.
+Next implementation remains the parked primary instrumental stream and its
+bounded WFC consumer; do not replace that with a broader progress audit.
+
+## Previous handoff: simple playlist → learned instrumental preview — 2026-10-31
 
 Big Boss SOLO has deployed the operator's **Library → Selection → Generate**
 consumer. The default Library now lists music-folder collections, including the

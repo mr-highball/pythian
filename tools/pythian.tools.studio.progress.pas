@@ -33,6 +33,17 @@ const
   StudioSlowStatusIntervalMilliseconds = 30000;
 
 type
+  { Big Boss: workflow steps are not an elapsed-time estimate. Only explicit
+    orchestration boundaries advance them; nested algorithms cannot reset them.
+    Selection time is cumulative across recordings, including cached windows. }
+  TStudioGenerationProgress = record
+    Phase: Integer;
+    Done: Int64;
+    Total: Int64;
+    Units: String;
+    procedure Observe(const AStage: String; const ADone, ATotal: Int64);
+  end;
+
   { One rendering publication clock for coarse output frames and nested WFC
     phases. The host supplies monotonic milliseconds and still checks control
     on every callback. Start, first detailed work and final output survive;
@@ -50,7 +61,8 @@ type
     FLastTotal: Int64;
   public
     function Accept(const AStage: String; const ADone, ATotal: Int64;
-      const AAt: QWord; const AAudioWork: Boolean): Boolean;
+      const AAt: QWord; const AAudioWork: Boolean;
+      const AForce: Boolean = False): Boolean;
     { The host reports completion of its durable publication. Publication time
       is not useful processing time and must not satisfy the next interval. }
     procedure PublishedAt(const AAt: QWord);
@@ -59,6 +71,45 @@ type
 implementation
 
 uses pythian.audio;
+
+procedure TStudioGenerationProgress.Observe(const AStage: String;
+  const ADone, ATotal: Int64);
+var
+  LPhase: Integer;
+  LUnits: String;
+begin
+  LPhase := 0;
+  LUnits := '';
+  if AStage = 'instrumental_prepare' then LPhase := 1
+  else if AStage = 'playlist_selection_progress' then
+  begin
+    LPhase := 1;
+    LUnits := 'milliseconds';
+  end
+  else if (AStage = 'playlist_learn_music') or
+    (AStage = 'instrumental_plan_begin') then LPhase := 2
+  else if AStage = 'instrumental_render' then
+  begin
+    LPhase := 3;
+    LUnits := 'frames';
+  end
+  else if AStage = 'instrumental_save' then LPhase := 4;
+  if (LPhase = 0) or (LPhase < Phase) then Exit;
+  if LPhase > Phase then
+  begin
+    Phase := LPhase;
+    Done := 0;
+    Total := 0;
+    Units := '';
+  end;
+  if LUnits = '' then Exit;
+  if (ADone < 0) or (ATotal <= 0) or (ADone > ATotal) or
+    ((Total > 0) and ((ATotal <> Total) or (ADone < Done))) then
+    raise EAudio.Create('Invalid cumulative Generate progress');
+  Done := ADone;
+  Total := ATotal;
+  Units := LUnits;
+end;
 
 procedure TStudioRenderProgressGate.PublishedAt(const AAt: QWord);
 var LCost: QWord;
@@ -81,7 +132,7 @@ end;
 
 function TStudioRenderProgressGate.Accept(const AStage: String;
   const ADone, ATotal: Int64; const AAt: QWord;
-  const AAudioWork: Boolean): Boolean;
+  const AAudioWork: Boolean; const AForce: Boolean): Boolean;
 var
   LFinalOutput: Boolean;
 begin
@@ -97,7 +148,7 @@ begin
   end
   else
   begin
-    Result := not FPublished or (AAudioWork and not FObservedAudio) or
+    Result := AForce or not FPublished or (AAudioWork and not FObservedAudio) or
       ((AAt - FLastAt >= StudioRenderStatusIntervalMilliseconds) and
        (AAt - FLastAt >= FInterval));
   end;

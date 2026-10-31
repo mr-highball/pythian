@@ -664,3 +664,8 @@ code {
 /* Big Boss: the result stays in the Generate step, with quiet optional detail. */
 .generation-result { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border, #38515a); }
 .generation-result audio { display: block; width: 100%; max-width: 100%; margin: .75rem 0; }
+.generation-phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; padding: 0; list-style: none; font-size: .8rem; color: var(--muted); }
+.generation-phases li { border-top: 3px solid #38515a; padding-top: .45rem; }
+.generation-phases .phase-complete { border-color: #b5f0cc; }
+.generation-phases [aria-current] { color: #b5f0cc; font-weight: 700; border-color: #b5f0cc; }
+.learning-progress small { display: block; margin: .5rem 0; }

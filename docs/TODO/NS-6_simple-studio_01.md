@@ -48,6 +48,19 @@ This is a new operator outcome, not retroactive credit for the earlier Studio.
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: operator rejected a bar that repeatedly reported a nested
+  operation percentage. Generate now persists a separate four-phase workflow.
+  Mixed-rate whole/range selections accumulate checked audio time; warm cache
+  hits count the same selected duration. Render counters span all seven outputs;
+  saving an intermediate stem cannot reset them. Unknown-duration planning/save
+  stages show their step without an invented percentage. Native progress31 and
+  playlist97 checks pass with clean heaps, including actual worker publication.
+  Native/actual pas2js share the milliseconds callback unit. Browser checks cover
+  native completion, 390px layout, reload during synthesis and Stop; evidence lives
+  in generate-progress-20261031-boss under the dedicated E-drive roots. This repairs
+  AC4's observed progress defect; the long-output prerequisite still keeps the
+  complete task open with no partial effort.
+
 - 2026-10-30, Big Boss, actual Generate integration: the simple action saves its
   pending selection and starts the existing durable instrumental worker using
   the immutable playlist revision. Included whole/clip audio is measured through

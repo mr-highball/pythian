@@ -73,7 +73,8 @@ function ClaimStudioJob(const ACatalogRoot, AJobId: String): TJSONObject;
 procedure AdvanceStudioJob(const ACatalogRoot, AJobId, AStatus, AStage: String;
   const ADone, ATotal: Int64; const AResults: TJSONObject = nil;
   const AErrorCode: String = ''; const AErrorMessage: String = '';
-  const AProgressUnit: String = ''; const AProgressPass: Integer = 0);
+  const AProgressUnit: String = ''; const AProgressPass: Integer = 0;
+  const AWorkflow: TJSONObject = nil);
 function StudioJobCancelled(const ACatalogRoot, AJobId: String): Boolean;
 procedure ReleaseStudioWorker(const ACatalogRoot: String; const AStream: Boolean = False);
 function StudioWorkerLockDirectory(const ACatalogRoot: String;
@@ -1372,7 +1373,8 @@ end;
 procedure AdvanceStudioJob(const ACatalogRoot, AJobId, AStatus, AStage: String;
   const ADone, ATotal: Int64; const AResults: TJSONObject;
   const AErrorCode: String; const AErrorMessage: String;
-  const AProgressUnit: String; const AProgressPass: Integer);
+  const AProgressUnit: String; const AProgressPass: Integer;
+  const AWorkflow: TJSONObject);
 var
   LJob: TJSONObject;
 begin
@@ -1385,7 +1387,8 @@ begin
   Need((AProgressPass >= 0) and
     ((AProgressUnit = '') or (AProgressUnit = 'bytes') or
      (AProgressUnit = 'observations') or (AProgressUnit = 'frames') or
-     (AProgressUnit = 'items')), 'Invalid job progress units');
+     (AProgressUnit = 'items') or (AProgressUnit = 'milliseconds')),
+    'Invalid job progress units');
   LockJobs(ACatalogRoot);
   try
     LJob := ReadStudioJob(ACatalogRoot, AJobId);
@@ -1401,6 +1404,11 @@ begin
       LJob.Int64s['total'] := ATotal;
       LJob.Strings['progress_unit'] := AProgressUnit;
       LJob.Integers['progress_pass'] := AProgressPass;
+      if AWorkflow <> nil then
+      begin
+        LJob.Delete('workflow');
+        LJob.Add('workflow', AWorkflow.Clone);
+      end;
       LJob.Strings['error_code'] := AErrorCode;
       LJob.Strings['error_message'] := Copy(AErrorMessage, 1, 256);
       if AResults <> nil then

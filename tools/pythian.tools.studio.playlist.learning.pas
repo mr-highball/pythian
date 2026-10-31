@@ -220,6 +220,8 @@ var
   LHash: String;
   LSourceCache: String;
   LSelectedFrames: Int64;
+  LSelectionTotal: Int64;
+  LSelectionBefore: Int64;
   LBefore: Int64;
   LPosition: Int64;
   LRemaining: Int64;
@@ -242,6 +244,24 @@ var
   LAdmitted: Integer;
   LExcludedItems: Integer;
   LHasSelection: Boolean;
+  function ItemFrames(const AItem: TJSONObject): Int64;
+  var
+    LIndex: Integer;
+    LClip: TJSONObject;
+  begin
+    Result := 0;
+    if AItem.Strings['extent'] = 'whole' then Exit(AItem.Int64s['frame_count']);
+    for LIndex := 0 to AItem.Arrays['clips'].Count - 1 do
+    begin
+      LClip := AItem.Arrays['clips'].Objects[LIndex];
+      if LClip.Booleans['included'] then
+        Inc(Result, LClip.Int64s['end_frame'] - LClip.Int64s['start_frame']);
+    end;
+  end;
+  function Milliseconds(const AFrames: Int64; const ARate: Integer): Int64;
+  begin
+    Result := (AFrames div ARate) * 1000 + (AFrames mod ARate) * 1000 div ARate;
+  end;
   procedure AddSelection(const ASource: Integer; const AStart, AEnd: Int64);
   var LAt: Integer;
   begin
@@ -279,6 +299,13 @@ begin
       end;
     end;
     Need(LItems.Count > 0, 'Select a whole track or clip before generating');
+    LSelectionTotal := 0;
+    LSelectionBefore := 0;
+    for I := 0 to LItems.Count - 1 do
+      Inc(LSelectionTotal, Milliseconds(ItemFrames(LItems.Objects[I]),
+        LItems.Objects[I].Integers['sample_rate']));
+    Need(LSelectionTotal > 0, 'Select at least one millisecond of music');
+    ReportWork(AProgress, 'playlist_selection_progress', wuMilliseconds, 0, LSelectionTotal);
     Need(ACacheRoot <> '', 'The host musical cache directory is missing');
     LCacheBase := IncludeTrailingPathDelimiter(ExpandFileName(ACacheRoot)) +
       Copy(StudioTextHash(IncludeTrailingPathDelimiter(ExpandFileName(ACatalogRoot))), 1, 16);
@@ -330,9 +357,7 @@ begin
             AddSelection(I, LClipRow.Int64s['start_frame'], LClipRow.Int64s['end_frame']);
         end;
       end;
-      LSelectedFrames := 0;
-      for J := LStartSelection to High(LSelections) do
-        Inc(LSelectedFrames, LSelections[J].EndFrame - LSelections[J].StartFrame);
+      LSelectedFrames := ItemFrames(LItem);
       LRow := TJSONObject.Create;
       LRow.Add('playlist_item', LItem.Clone);
       LRow.Add('source_sha256', LHash);
@@ -386,6 +411,9 @@ begin
                 LStats[I], AProgress);
               Inc(LStats[I].Windows);
               Inc(LStats[I].AnalyzedFrames, LFrames);
+              ReportWork(AProgress, 'playlist_selection_progress', wuMilliseconds,
+                LSelectionBefore + Milliseconds(LStats[I].AnalyzedFrames,
+                  LSources[I].SampleRate), LSelectionTotal, I + 1);
               LClock := TTempoMap.Create(PitchPatternPpq,
                 Length(LBound.Grid.Frames) * PitchPatternStepTicks,
                 [MakeTempoChange(0, LBound.Grid.TempoMicroseconds)]);
@@ -458,6 +486,11 @@ begin
           end;
         finally FreeAndNil(LReader) end;
       finally FreeAndNil(LInput) end;
+      { Completed selection traversal includes cache hits and sub-window tails.
+        The receipt separately records measured, reused and unanalysable time. }
+      Inc(LSelectionBefore, Milliseconds(LSelectedFrames, LSources[I].SampleRate));
+      ReportWork(AProgress, 'playlist_selection_progress', wuMilliseconds,
+        LSelectionBefore, LSelectionTotal, I + 1);
     end;
     Need(Length(LRuns) > 0,
       'No usable musical notes were found. Try tonal music or a longer selection.');

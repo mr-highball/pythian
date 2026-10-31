@@ -47,6 +47,10 @@ begin
     ReportWork(P.Receive, 'discover', wuItems, 123, 0);
     if (P.Last.Done <> 123) or (P.Last.Total <> 0) then
       raise Exception.Create('Unknown total changed');
+    ReportWork(P.Receive, 'selection', wuMilliseconds, 30000, 135000);
+    if (P.Last.Done <> 30000) or (P.Last.Total <> 135000) or
+      (WorkUnitName(P.Last.Units) <> 'milliseconds') then
+      raise Exception.Create('Selected audio time changed across consumers');
     P.Abort := True; Rejected := False;
     try ReportWork(P.Receive, 'stop', wuFrames, 1, 2)
     except on EAudio do Rejected := True end;

@@ -29,7 +29,7 @@ unit pythian.progress;
 interface
 
 type
-  TWorkUnit = (wuItems, wuBytes, wuFrames, wuObservations);
+  TWorkUnit = (wuItems, wuBytes, wuFrames, wuObservations, wuMilliseconds);
   TWorkProgress = record
     Stage: String;
     Done, Total: Int64;
@@ -71,6 +71,7 @@ begin
     wuBytes: Result := 'bytes';
     wuFrames: Result := 'frames';
     wuObservations: Result := 'observations';
+    wuMilliseconds: Result := 'milliseconds';
   else Result := 'items';
   end;
 end;

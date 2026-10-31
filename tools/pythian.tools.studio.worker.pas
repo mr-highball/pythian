@@ -165,6 +165,7 @@ type
     FLearningStage: String;
     FFirstLearningPass: Integer;
     FRenderProgressGate: TStudioRenderProgressGate;
+    FGenerationProgress: TStudioGenerationProgress;
     FJournalProgressGate: TStudioRenderProgressGate;
     procedure Progress(const AStage: String; const ADone, ATotal: Int64;
       const AUnit: String = ''; const APass: Integer = 0;
@@ -409,9 +410,13 @@ procedure TStudioWork.Progress(const AStage: String; const ADone, ATotal: Int64;
   const AUnit: String; const APass: Integer; const AAudioWork: Boolean);
 var
   LInstrumental: Boolean;
+  LPreviousPhase: Integer;
+  LWorkflow: TJSONObject;
 begin
   Check;
   LInstrumental := FRequest.Strings['kind'] = 'instrumental_generate';
+  LPreviousPhase := FGenerationProgress.Phase;
+  if LInstrumental then FGenerationProgress.Observe(AStage, ADone, ATotal);
   { Big Boss: callbacks share bounded control checks; immutable status writes
     at most twice a second within a normal pass. Rendering shares a separate
     two-second clock across coarse frames and nested phases; fine boundaries
@@ -425,15 +430,30 @@ begin
   begin
     { Big Boss: all fine instrumental preparation/render endpoints share the
       existing work gate. Terminal job transitions are published separately. }
-    if not FRenderProgressGate.Accept(AStage, ADone, ATotal, GetTickCount64, True) then Exit;
+    if not FRenderProgressGate.Accept(AStage, ADone, ATotal, GetTickCount64, True,
+      FGenerationProgress.Phase <> LPreviousPhase) then Exit;
   end
   else if AAudioWork or (AStage = 'generate_auditions') or (AStage = 'streaming') then
   begin
     if not FRenderProgressGate.Accept(AStage, ADone, ATotal,
       GetTickCount64, AAudioWork) then Exit;
   end;
-  AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal,
-    nil, '', '', AUnit, APass);
+  LWorkflow := nil;
+  try
+    if LInstrumental then
+    begin
+      LWorkflow := TJSONObject.Create;
+      LWorkflow.Add('phase', FGenerationProgress.Phase);
+      LWorkflow.Add('phases', 4);
+      LWorkflow.Add('done', FGenerationProgress.Done);
+      LWorkflow.Add('total', FGenerationProgress.Total);
+      LWorkflow.Add('unit', FGenerationProgress.Units);
+    end;
+    AdvanceStudioJob(FCatalogRoot, FJobId, 'running', AStage, ADone, ATotal,
+      nil, '', '', AUnit, APass, LWorkflow);
+  finally
+    LWorkflow.Free;
+  end;
   if LInstrumental then FRenderProgressGate.PublishedAt(GetTickCount64);
   FLastProgressAt := GetTickCount64;
   FLastProgressStage := AStage;
@@ -474,6 +494,11 @@ end;
 
 procedure TStudioWork.AudioProgress(const AProgress: TWorkProgress);
 begin
+  if FRequest.Strings['kind'] = 'instrumental_generate' then
+  begin
+    WorkProgress(AProgress);
+    Exit;
+  end;
   { Pull boundary callbacks still check cancellation, but ordinary output-frame
     progress already reports them. Only real interior WFC work needs a second
     presentation phase, sharing the same bounded publication clock. }

@@ -139,9 +139,52 @@ begin
     'Fast publication restores the ordinary two-second interval');
 end;
 
+procedure GenerateWorkflow;
+var
+  LView: TStudioGenerationProgress;
+  LGate: TStudioRenderProgressGate;
+  LRejected: Boolean;
+begin
+  LView := Default(TStudioGenerationProgress);
+  LView.Observe('instrumental_prepare', 0, 1);
+  LView.Observe('playlist_selection_progress', 30000, 135000);
+  LView.Observe('estimate_pitch', 0, 100);
+  LView.Observe('analyze_audio', 100, 100);
+  LView.Observe('playlist_prepare_music', 1, 2);
+  Check((LView.Phase = 1) and (LView.Done = 30000) and
+    (LView.Total = 135000), 'Nested analyses and next recording preserve cumulative selection');
+  LRejected := False;
+  try LView.Observe('playlist_selection_progress', 0, 135000);
+  except on EAudio do LRejected := True end;
+  Check(LRejected and (LView.Done = 30000), 'Cumulative selection cannot reset');
+  LRejected := False;
+  try LView.Observe('playlist_selection_progress', 30001, 200000);
+  except on EAudio do LRejected := True end;
+  Check(LRejected and (LView.Total = 135000), 'Selection denominator stays fixed');
+  LView.Observe('playlist_selection_progress', 135000, 135000);
+  LView.Observe('playlist_learn_music', 0, 1);
+  Check((LView.Phase = 2) and (LView.Total = 0), 'Planning has no invented work percentage');
+  LView.Observe('playlist_selection_progress', 0, 135000);
+  Check(LView.Phase = 2, 'Earlier nested stage cannot move workflow backwards');
+  LView.Observe('instrumental_render', 100, 700);
+  LView.Observe('instrumental_publish', 0, 7);
+  Check((LView.Phase = 3) and (LView.Done = 100) and (LView.Total = 700),
+    'Saving an intermediate stem does not reset render progress');
+  LView.Observe('instrumental_render', 700, 700);
+  Check(LView.Phase = 3, 'Finished PCM is not a saved job');
+  LView.Observe('instrumental_save', 0, 1);
+  Check((LView.Phase = 4) and (LView.Total = 0), 'Final save remains a real separate phase');
+  LGate := Default(TStudioRenderProgressGate);
+  Check(LGate.Accept('start', 0, 1, 0, True), 'Workflow publication initialized');
+  LGate.PublishedAt(10000);
+  Check(LGate.Accept('instrumental_save', 0, 1, 10000, True, True),
+    'A workflow boundary is published even on slow storage');
+end;
+
 begin
   Boundaries;
   WholeDay;
   SlowPublication;
+  GenerateWorkflow;
   WriteLn('PASS ', GChecks, ' Studio rendering publication checks');
 end.

@@ -40,7 +40,12 @@ learns musical providers, solves the WFC musical graph and performs Pythian
 instruments. No manual labeling, proposal approval or authored starter is required.
 
 The host computer keeps working if the phone sleeps or the page closes. Reopen
-the same playlist to reconnect. Progress shows the current operation;
+the same playlist to reconnect. One continuous workflow shows **Learn your music →
+Plan the track → Synthesize audio → Save the result**. During learning, the counter
+adds selected audio time across every recording or clip, including reused analysis.
+During synthesis, it counts the mix and all instrument parts together. File reads,
+pitch/beat detection and intermediate saves update the activity without resetting
+that progress. These are workflow steps, not an elapsed-time estimate;
 **Stop generation** cancels at a native checkpoint. A reconnect retries the saved
 request rather than starting a duplicate job.
 

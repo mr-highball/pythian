@@ -296,6 +296,7 @@ begin
           LOptions.Expression[LRole] := LMusicalControls[LRole].Expression;
       end;
     end;
+    ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
     if not TryCreateInstrumentalPlan(LGraphConfig, LRoles, LOptions,
       LCompiled.Masks, LCompiled.Preferences, LPlan, LReport,
       AProgress, LDrums, LContextModel) then
@@ -562,6 +563,7 @@ begin
     LSpec.Add('scores', TJSONArray.Create);
     LChoice.Add('id', 'instrumental_fit');
     LChoice.Add('values', TJSONArray.Create(['yes', 'no', 'unknown']));
+    ReportWork(AProgress, 'instrumental_save', wuItems, 0, 1);
     WriteStudioJSONNew(LDirectory + PathDelim + 'listening-publication.json', LQueue);
     if Assigned(ACheck) then ACheck;
     LPublished := AppendListeningQueue(ACatalogRoot, LDirectory + PathDelim + 'listening-publication.json');

@@ -18,6 +18,10 @@ caches and generates actual instruments from per-track weighted providers.
 Its finite UI exposes 2–30 second previews; long instrumental output and growing
 vocabulary/style ancestry remain open. No partial task effort is accepted, and
 this delivery is not a request for more labeling.
+Generate now separates durable overall workflow/selection counters from nested
+analysis operations, so file/pitch/beat callbacks cannot restart its bar. This
+repairs the simple consumer's progress criterion without accepting a whole task
+or changing the effort denominator.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.
