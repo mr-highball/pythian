@@ -59,6 +59,9 @@ type
     FGenerateAfterSave: Boolean;
     FGenerationMessage: String;
     FSoundParent: TJSObject;
+    FClipState: TJSObject;
+    FClipTimer, FClipEpoch: NativeInt;
+    FClipPolling: Boolean;
     FResumeOnConnect: Boolean;
     FIncludedSeconds: Double;
     FLearningLabel: String;
@@ -66,6 +69,12 @@ type
     procedure OpenLearningLabel;
     procedure PreviewLearningLabel;
     procedure ApplyLearningLabel;
+    procedure ClearClips;
+    procedure DrawClips;
+    procedure ApplyClipState(const AState: TJSObject);
+    procedure RefreshClips; async;
+    procedure SaveClips; async;
+    procedure CancelClips; async;
     function OutputSeconds(out ASeconds: Double): Boolean;
     procedure Generate; async;
     procedure SubmitGeneration; async;
@@ -211,9 +220,11 @@ begin
       El('tab-' + LName).setAttribute('tabindex', '-1');
     end;
   end;
+  if (AStep = 'selection') or (AStep = 'generate') then RefreshClips;
 end;
 procedure TStudio.NewPlaylist;
 begin
+  ClearClips;
   FLearningLabel := '';
   FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
   FRevision := 0;
@@ -380,12 +391,176 @@ begin
   TJSHTMLButtonElement(El('new-playlist')).disabled := FDirty or (FPendingWrite <> nil);
   if (FPendingWrite = nil) and FDirty then Save;
   if FGenerateAfterSave and not FDirty and (FPendingWrite = nil) then Generate;
+  if not FDirty and (FPendingWrite = nil) then
+  begin
+    RefreshClips;
+  end;
 end;
 procedure TStudio.PauseResult;
 begin
   TJSHTMLAudioElement(El('generated-audio')).pause;
   TJSHTMLAudioElement(El('generated-before-audio')).pause;
   TJSHTMLAudioElement(El('generated-original-audio')).pause;
+end;
+
+procedure TStudio.ClearClips;
+begin
+  Inc(FClipEpoch);
+  window.clearTimeout(FClipTimer);
+  FClipPolling := False;
+  FClipState := nil;
+  DrawClips;
+end;
+
+procedure TStudio.DrawClips;
+var LJob: TJSObject; LActive: Boolean; LTotal, LReady: Integer;
+begin
+  El('clip-storage').setAttribute('hidden', '');
+  El('save-clips').setAttribute('hidden', '');
+  El('cancel-clips').setAttribute('hidden', '');
+  El('clip-storage-progress').textContent := '';
+  LTotal := Trunc(Num(FClipState, 'total'));
+  LReady := Trunc(Num(FClipState, 'ready'));
+  if LTotal = 0 then Exit;
+  El('clip-storage').removeAttribute('hidden');
+  if FDirty or FSaving or (Str(FClipState, 'project_snapshot_sha256') <> FSnapshotHash) then
+  begin
+    El('clip-storage-status').textContent := 'Saving your selection. Clip files follow automatically.';
+    Exit;
+  end;
+  LJob := Obj(FClipState['job']);
+  LActive := (Str(LJob, 'status') = 'queued') or (Str(LJob, 'status') = 'running');
+  if LReady = LTotal then
+    El('clip-storage-status').textContent := 'Clip files saved. Learning uses these files.'
+  else
+  begin
+    El('clip-storage-status').textContent := IntToStr(LReady) + ' of ' + IntToStr(LTotal) + ' clip files saved.';
+    if LActive then
+    begin
+      DrawStudioProgress(El('clip-storage-progress'), LJob);
+      El('cancel-clips').removeAttribute('hidden');
+    end
+    else
+    begin
+      El('save-clips').removeAttribute('hidden');
+      El('save-clips').textContent := 'Save clip files';
+      if (Str(LJob, 'status') = 'failed') or (Str(LJob, 'status') = 'cancelled') then
+      begin
+        El('save-clips').textContent := 'Retry saving clips';
+        Add(El('clip-storage-progress'), 'p', Str(LJob, 'error_message'));
+      end;
+      if Num(FClipState, 'errors') > 0 then
+        Add(El('clip-storage-progress'), 'p', 'A saved clip is missing or changed. Its original will not be substituted.');
+    end;
+  end;
+  TJSHTMLButtonElement(El('save-clips')).disabled :=
+    FClipPolling or not FConnected or FLoading or FDirty or FSaving;
+  TJSHTMLButtonElement(El('cancel-clips')).disabled := FClipPolling or not FConnected;
+end;
+
+procedure TStudio.ApplyClipState(const AState: TJSObject);
+var LRows: TJSArray; LRow, LSelection: TJSObject; I, J: Integer; LKey: String;
+begin
+  if (AState = nil) or (Str(AState, 'project_id') <> FProjectId) or
+    (Str(AState, 'project_snapshot_sha256') <> FSnapshotHash) or FDirty then Exit;
+  FClipState := AState;
+  LRows := Arr(AState, 'clips');
+  if LRows <> nil then
+    for I := 0 to LRows.length - 1 do
+    begin
+      LRow := Obj(LRows[I]);
+      for J := 0 to FSelections.length - 1 do
+      begin
+        LSelection := Obj(FSelections[J]);
+        if Str(LSelection, 'selection') <> 'range' then Continue;
+        LKey := Str(LSelection, 'source_sha256');
+        if Str(LRow, 'parent_kind') = 'library' then LKey := Str(LSelection, 'entry_id');
+        if (LKey <> Str(LRow, 'parent_id')) or
+          (Num(LSelection, 'start_frame') <> Num(LRow, 'start_frame')) or
+          (Num(LSelection, 'end_frame') <> Num(LRow, 'end_frame')) then Continue;
+        LSelection['clip_status'] := Str(LRow, 'status');
+        LSelection['clip_id'] := '';
+        if Str(LRow, 'status') = 'ready' then LSelection['clip_id'] := Str(LRow, 'clip_id');
+      end;
+    end;
+  FSourceEditor.Bind(FTracks, FSelections, not FConnected or FLoading);
+  DrawClips;
+end;
+
+procedure TStudio.RefreshClips; async;
+var LEpoch, LRevision: NativeInt; LState, LJob: TJSObject; LId: String;
+begin
+  if FClipPolling or not FConnected or FLoading or FDirty or FSaving or (FRevision = 0) then Exit;
+  window.clearTimeout(FClipTimer);
+  FClipPolling := True;
+  LEpoch := FClipEpoch;
+  LRevision := FRevision;
+  LId := FProjectId;
+  try
+    LState := await(TJSObject, Json('/api/studio/clips?project=' + encodeURIComponent(LId) +
+      '&revision=' + IntToStr(LRevision), 'GET', ''));
+    if (LEpoch = FClipEpoch) and (LRevision = FRevision) and not FDirty then ApplyClipState(LState);
+  except
+    on E: Exception do
+      if LEpoch = FClipEpoch then
+        El('clip-storage-status').textContent := 'Clip status is unavailable. Your playlist is saved.';
+  end;
+  if LEpoch <> FClipEpoch then Exit;
+  FClipPolling := False;
+  DrawClips;
+  LJob := nil;
+  if FClipState <> nil then LJob := Obj(FClipState['job']);
+  if (LRevision <> FRevision) or (Str(LJob, 'status') = 'queued') or
+    (Str(LJob, 'status') = 'running') then
+    FClipTimer := window.setTimeout(procedure begin RefreshClips end, 2000);
+end;
+
+procedure TStudio.SaveClips; async;
+var LWrite, LJob, LState: TJSObject; LEpoch: NativeInt;
+begin
+  if FClipPolling or not FConnected or FDirty or FLoading or FSaving or (FRevision = 0) then Exit;
+  LEpoch := FClipEpoch;
+  LWrite := TJSObject.new;
+  LWrite['project_id'] := FProjectId;
+  LWrite['project_revision'] := FRevision;
+  LWrite['project_snapshot_sha256'] := FSnapshotHash;
+  LJob := nil;
+  if FClipState <> nil then LJob := Obj(FClipState['job']);
+  if (Str(LJob, 'status') = 'failed') or (Str(LJob, 'status') = 'cancelled') then
+    LWrite['retry_of'] := Str(LJob, 'job_id');
+  FClipPolling := True;
+  DrawClips;
+  try
+    LState := await(TJSObject, Json('/api/studio/clips', 'POST', TJSJSON.stringify(LWrite)));
+    if LEpoch = FClipEpoch then ApplyClipState(LState);
+  except
+    on E: Exception do if LEpoch = FClipEpoch then Notice('Could not start clip saving. Your playlist is kept.', True);
+  end;
+  if LEpoch = FClipEpoch then
+  begin
+    FClipPolling := False;
+    RefreshClips;
+  end;
+end;
+
+procedure TStudio.CancelClips; async;
+var LWrite, LJob: TJSObject; LEpoch: NativeInt;
+begin
+  if FClipPolling or (FClipState = nil) then Exit;
+  LJob := Obj(FClipState['job']);
+  if Str(LJob, 'job_id') = '' then Exit;
+  LEpoch := FClipEpoch;
+  LWrite := TJSObject.new;
+  LWrite['job_id'] := Str(LJob, 'job_id');
+  FClipPolling := True;
+  DrawClips;
+  try
+    LJob := await(TJSObject, Json('/api/studio/cancel', 'POST', TJSJSON.stringify(LWrite)));
+  except
+    on E: Exception do if LEpoch = FClipEpoch then Notice('Could not stop clip saving. Reconnecting…', True);
+  end;
+  if LEpoch = FClipEpoch then
+  begin FClipPolling := False; RefreshClips end;
 end;
 
 procedure TStudio.ClearGeneration;
@@ -445,7 +620,7 @@ procedure TStudio.DrawGeneration;
 var
   LState: String;
   LActive: Boolean;
-  LResult, LReference, LLearning, LRow, LClassChoice, LBefore: TJSObject;
+  LResult, LReference, LLearning, LRow, LClassChoice, LBefore, LClipJob: TJSObject;
   LRows: TJSArray;
   LUrl: String;
   LSeconds: Double;
@@ -484,6 +659,11 @@ begin
   else if LState = 'cancelled' then El('generation-status').textContent := 'Stopped. Your music choices are kept.'
   else if LState = 'failed' then El('generation-status').textContent := Str(FJob, 'error_message')
   else El('generation-status').textContent := 'Your selections save automatically. Generate learns from the selected music.';
+  LClipJob := nil;
+  if FClipState <> nil then LClipJob := Obj(FClipState['job']);
+  if (LState = 'queued') and ((Str(LClipJob, 'status') = 'queued') or
+    (Str(LClipJob, 'status') = 'running')) then
+    El('generation-status').textContent := 'Saving your clip files. Generation will start next.';
   if not FSubmitting and not FCancelling and (FJobId <> '') and
     (FGenerationMessage <> '') and ((FJobWrite <> nil) or not LActive) then
     El('reconnect-generation').removeAttribute('hidden');
@@ -537,6 +717,10 @@ begin
     begin
       El('generation-original').removeAttribute('hidden');
       El('generation-original-title').textContent := Str(LReference, 'title');
+      if (Str(LReference, 'kind') = 'saved_clip') and (Num(LReference, 'sample_rate') > 0) then
+        El('generation-original-title').textContent := Str(LReference, 'title') + ' · ' +
+          StudioTime(Num(LReference, 'original_start_frame') / Num(LReference, 'sample_rate')) + '–' +
+          StudioTime(Num(LReference, 'original_end_frame') / Num(LReference, 'sample_rate')) + ' in the original';
       TJSHTMLAudioElement(El('generated-original-audio')).src :=
         '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=7';
     end;
@@ -1151,6 +1335,8 @@ begin
   TJSHTMLButtonElement(El('new-playlist')).disabled := FLoading or FSaving or FDirty or (FPendingWrite <> nil);
   TJSHTMLInputElement(El('playlist-name')).disabled := FLoading;
   DrawGeneration;
+  DrawClips;
+  if FClipState = nil then RefreshClips;
 end;
 procedure TStudio.AddSelection(ASelection: TJSObject);
 var LTrack, LRow: TJSObject; I: Integer;
@@ -1230,6 +1416,7 @@ var LRows: TJSArray; LRow, LWhole: TJSObject; I, J: Integer; LName: String;
   LNames: array of String;
 begin
   FLearningLabel := '';
+  ClearClips;
   ClearGeneration;
   FSnapshotHash := Str(AProject, 'snapshot_sha256');
   FSelections := TJSArray.new;
@@ -1402,6 +1589,8 @@ begin
   if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
   case LButton.id of
     'generate-music': Generate;
+    'save-clips': SaveClips;
+    'cancel-clips': CancelClips;
     'change-sounds': OpenSoundChoices;
     'apply-sounds': ApplySoundChoices;
     'previous-version': OpenPreviousVersion;

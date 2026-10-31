@@ -32,7 +32,8 @@ interface
 uses
   Classes,
   pythian.audio,
-  pythian.progress;
+  pythian.progress,
+  pythian.wave.stream;
 
 const
   WaveReadVersion = 1;
@@ -115,6 +116,17 @@ type
     function ReadWaveform(const AStartFrame, AEndFrame: Int64;
       const ABins: Integer; const ASampled: Boolean): TWaveformOverview;
     procedure SeekFrame(const AFrame: Int64);
+    function SampleFormat: TWaveSampleFormat;
+    { Big Boss: lossless half-open range export through the same parsed reader.
+      Copies only selected raw sample bytes in bounded blocks; no decode,
+      conversion or full-source hash. The sink must not wrap the input stream.
+      Borrows a synchronous sink/callback; neither may reenter this reader.
+      Input/output/callback failure is terminal and can leave a partial output;
+      publish only after the final readiness callback. Argument errors preserve
+      the cursor and emit no bytes. Container/private metadata is not copied. }
+    procedure CopyRangeToWave(const ASink: TAudioByteSink;
+      const AStartFrame, AEndFrame: Int64;
+      const AProgress: TWorkProgressCallback = nil);
     property SampleRate: Integer read FSampleRate;
     property Channels: Integer read FChannels;
     property BitsPerSample: Integer read FBits;
@@ -132,7 +144,6 @@ implementation
 
 uses
   Math,
-  pythian.wave.stream,
   pythian.stream.bytes,
   pythian.ieee754,
   pythian.binary;
@@ -495,6 +506,66 @@ begin
     try
       SeekRelative(FDataOffset + AFrame * FAlign);
       FPosition := AFrame;
+    except
+      FFailed := True;
+      raise;
+    end;
+  finally
+    FBusy := False;
+  end;
+end;
+
+function TWaveFrameReader.SampleFormat: TWaveSampleFormat;
+begin
+  Result := Default(TWaveSampleFormat);
+  Result.SampleRate := FSampleRate;
+  Result.Channels := FChannels;
+  Result.FormatTag := FTag;
+  Result.EncodingTag := FEncodingTag;
+  Result.BitsPerSample := FBits;
+  Result.ValidBitsPerSample := FValidBits;
+  Result.ChannelMask := FChannelMask;
+end;
+
+procedure TWaveFrameReader.CopyRangeToWave(const ASink: TAudioByteSink;
+  const AStartFrame, AEndFrame: Int64; const AProgress: TWorkProgressCallback);
+var
+  LHeader, LPad: TAudioBytes;
+  LFrames, LDone, LDataBytes: Int64;
+  LBlock: Integer;
+begin
+  CheckReady;
+  if (ASink = nil) or (AStartFrame < 0) or (AEndFrame < AStartFrame) or
+    (AEndFrame > FFrameCount) or (AStartFrame <> Trunc(AStartFrame)) or
+    (AEndFrame <> Trunc(AEndFrame)) then
+    raise EAudio.Create('WAVE copy needs a sink and an exact source range');
+  LFrames := AEndFrame - AStartFrame;
+  LHeader := WaveSampleHeader(SampleFormat, LFrames);
+  LDataBytes := LFrames * FAlign;
+  FBusy := True;
+  try
+    try
+      ReportWork(AProgress, 'wave_copy_range', wuBytes, 0, LDataBytes);
+      ASink.WriteBytes(LHeader);
+      SeekRelative(FDataOffset + AStartFrame * FAlign);
+      FPosition := AStartFrame;
+      LDone := 0;
+      while LDone < LFrames do
+      begin
+        LBlock := Min(LFrames - LDone, WaveStreamBlockBytes div FAlign);
+        ReadBytes(LBlock * FAlign);
+        ASink.WriteBytes(Copy(FBuffer, 0, LBlock * FAlign));
+        Inc(LDone, LBlock);
+        FPosition := AStartFrame + LDone;
+        ReportWork(AProgress, 'wave_copy_range', wuBytes, LDone * FAlign, LDataBytes);
+      end;
+      if LDataBytes mod 2 <> 0 then
+      begin
+        SetLength(LPad, 1);
+        LPad[0] := 0;
+        ASink.WriteBytes(LPad);
+      end;
+      ReportWork(AProgress, 'wave_copy_range_ready', wuBytes, LDataBytes, LDataBytes);
     except
       FFailed := True;
       raise;

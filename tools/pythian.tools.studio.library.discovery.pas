@@ -71,6 +71,12 @@ function ReadStudioLibraryWaveform(const ACatalogRoot, ALibraryRoot: String;
 function OpenStudioLibraryEntryAudio(const ACatalogRoot, ALibraryRoot: String;
   const ARevision: Integer; const AEntryId, ASnapshotSha256: String;
   const AStartFrame, AEndFrame: Int64; out AMetadata: TJSONObject): TStream;
+{ Worker-owned original handle under the same metadata/stat/header admission as
+  audition. Does not hash or read the full payload. Metadata identity must never
+  be relabeled as a measured full-file content hash. Caller owns both results. }
+function OpenStudioLibraryEntrySource(const ACatalogRoot, ALibraryRoot: String;
+  const ARevision: Integer; const AEntryId, ASnapshotSha256: String;
+  out AMetadata: TJSONObject): TFileStream;
 
 implementation
 
@@ -1046,6 +1052,26 @@ begin
   Result.Add('source_channels', ARow.Integers['channels']);
   Result.Add('source_bits_per_sample', ARow.Integers['bits_per_sample']);
   Result.Add('content_validation', 'metadata_only_unverified');
+end;
+
+function OpenStudioLibraryEntrySource(const ACatalogRoot, ALibraryRoot: String;
+  const ARevision: Integer; const AEntryId, ASnapshotSha256: String;
+  out AMetadata: TJSONObject): TFileStream;
+var LIndex, LRow: TJSONObject;
+begin
+  AMetadata := nil;
+  Result := OpenEntry(ACatalogRoot, ALibraryRoot, ARevision, AEntryId,
+    ASnapshotSha256, LIndex, LRow);
+  try
+    try
+      AMetadata := TJSONObject(LRow.Clone);
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    LIndex.Free;
+  end;
 end;
 
 function ReadStudioLibraryWaveform(const ACatalogRoot, ALibraryRoot: String;

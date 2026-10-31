@@ -151,7 +151,7 @@ begin
       LCorpus := LearnStudioPlaylist(ACatalogRoot, ALibraryRoot, LCache, AJobId,
         ARequest.Objects['project_snapshot'].Objects['playlist'], LLearning, AProgress,
         ALibraryProgress);
-      LModelArtifact := StudioMusicalVocabulary(LCorpus, True, AProgress);
+      LModelArtifact := StudioMusicalVocabulary(LCorpus, True, AProgress, LLearning.Arrays['audio_sources']);
       try
         WriteStudioJSONNew(LDirectory + PathDelim + 'musical-vocabulary.json', LModelArtifact);
       finally

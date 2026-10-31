@@ -638,6 +638,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.playlist$executableSuffix") (Join-Path $buildRoot ('studio-playlist-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.clips.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio saved clips compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.clips$executableSuffix") (Join-Path $buildRoot ('studio-clips-' + [Guid]::NewGuid().ToString('N')))
+    if ($LASTEXITCODE -ne 0) { throw 'Studio saved clips checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))

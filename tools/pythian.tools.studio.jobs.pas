@@ -134,7 +134,7 @@ function StudioJobRuntimeSeconds(const AKind: String): Integer;
 begin
   if (AKind = 'stream_generate') or (AKind = 'instrumental_reperform') then
     Result := MaximumStudioSessionSeconds
-  else if (AKind = 'library_refresh') or (AKind = 'library_prepare') then
+  else if (AKind = 'library_refresh') or (AKind = 'library_prepare') or (AKind = 'clip_save') then
     Result := MaximumStudioLibrarySeconds
   else if AKind = 'train_generate' then
     Result := MaximumStudioTrainingSeconds
@@ -683,6 +683,7 @@ var
   LName: String;
   LQueued: Integer;
   LIndex: Integer;
+  LClipIndex: Integer;
   LSeeds: TJSONArray;
   LPreparation: TJSONObject;
   LParentRequest: TJSONObject;
@@ -704,10 +705,26 @@ begin
     (LKind = 'inspect_source') or (LKind = 'effect_preview') or
     (LKind = 'effect_save') or (LKind = 'capture_inspect') or
     (LKind = 'capture_save') or (LKind = 'capture_pitch') or
+    (LKind = 'clip_save') or
     IsStudioInstrumentalJob(LKind), 'Unsupported Studio job kind');
   LRequest := TJSONObject(AWrite.Clone);
   try
-    if LKind = 'instrumental_generate' then
+    if LKind = 'clip_save' then
+    begin
+      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|retry_of|');
+      LProject := ReadStudioProjectRevision(ACatalogRoot, Text(AWrite, 'project_id'),
+        Number(AWrite, 'project_revision'));
+      try
+        Need((LProject.Strings['snapshot_sha256'] = Text(AWrite, 'project_snapshot_sha256')) and
+          (LProject.Find('playlist') <> nil), 'Saved clip project differs; reopen the playlist');
+        LIndex := 0;
+        for LClipIndex := 0 to LProject.Objects['playlist'].Arrays['items'].Count - 1 do
+          Inc(LIndex, LProject.Objects['playlist'].Arrays['items'].Objects[LClipIndex].Arrays['clips'].Count);
+        Need(LIndex > 0, 'Save a clip before requesting clip files');
+        LRequest.Add('project_snapshot', LProject.Clone);
+      finally LProject.Free end;
+    end
+    else if LKind = 'instrumental_generate' then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
         'seeds|instrumental|duration_ms|parent_job_id|retry_of|');
@@ -971,6 +988,7 @@ var
   LRow: TJSONObject;
   LTrack: TJSONObject;
   LIndex: Integer;
+  LClipIndex: Integer;
   LSelectedFrames: Int64;
   LEstimatedFeatures: Int64;
   LRate: Integer;
@@ -1012,7 +1030,19 @@ begin
       LLimits.Add('sources', 32);
       LLimits.Add('ranges', 64);
       LLimits.Add('output_count', 3);
-      if LRequest.Strings['kind'] = 'instrumental_reperform' then
+      if LRequest.Strings['kind'] = 'clip_save' then
+      begin
+        Result.Strings['source_validation'] := 'selected_ranges_pending_lossless_capture';
+        Result.Add('learning_mode', 'clip_storage');
+        Result.Add('unique_source_bytes_to_verify', 0);
+        Result.Add('parent_content_validation', 'metadata_snapshot; no full_parent_payload_scan');
+        Result.Add('source_count', LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count);
+        LIndex := 0;
+        for LClipIndex := 0 to LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count - 1 do
+          Inc(LIndex, LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Objects[LClipIndex].Arrays['clips'].Count);
+        Result.Add('output_count', LIndex);
+      end
+      else if LRequest.Strings['kind'] = 'instrumental_reperform' then
       begin
         Result.Strings['source_validation'] := 'saved_decisions_pending_integrity_check';
         Result.Add('learning_mode', 'instrumental');

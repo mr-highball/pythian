@@ -52,7 +52,8 @@ function LearnStudioPlaylist(const ACatalogRoot, ALibraryRoot, ACacheRoot,
   the native worker saves the full ordered bindings beside its provider models. }
 function StudioMusicalVocabulary(const ACorpus: TMusicalCorpus;
   const AIncludeTokens: Boolean = True;
-  const AProgress: TWorkProgressCallback = nil): TJSONObject;
+  const AProgress: TWorkProgressCallback = nil;
+  const AAudioSources: TJSONArray = nil): TJSONObject;
 
 implementation
 
@@ -60,6 +61,7 @@ uses Classes, SysUtils, Math, pythian.audio, pythian.time, pythian.wave.read,
   pythian.hash, pythian.stream.bytes, pythian.music.observations, pythian.music.selection,
   pythian.music.proposal, pythian.music.proposal.codec, pythian.music.pattern, pythian.wfc.layers,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
+  pythian.tools.studio.clips,
   pythian.tools.studio.&library.discovery;
 
 type
@@ -74,7 +76,8 @@ type
   end;
 
 function StudioMusicalVocabulary(const ACorpus: TMusicalCorpus;
-  const AIncludeTokens: Boolean; const AProgress: TWorkProgressCallback): TJSONObject;
+  const AIncludeTokens: Boolean; const AProgress: TWorkProgressCallback;
+  const AAudioSources: TJSONArray): TJSONObject;
 var
   LVocabularies: TMusicalProviderVocabularies;
   LContributions: TMusicalCorpusContributions;
@@ -122,7 +125,7 @@ begin
     LValue.Add('contributions', LLeaves);
     for I := 0 to High(LContributions) do
     begin
-      LLeaves.Add(TJSONObject.Create(['identity', LContributions[I].Identity,
+      LRow := TJSONObject.Create(['identity', LContributions[I].Identity,
         'source_index', LContributions[I].SourceIndex,
         'source_sha256', LSources[LContributions[I].SourceIndex].Sha256,
         'sample_rate', LSources[LContributions[I].SourceIndex].SampleRate,
@@ -131,7 +134,19 @@ begin
         'cell_count', LContributions[I].CellCount,
         'start_frame', LContributions[I].StartFrame,
         'end_frame', LContributions[I].EndFrame,
-        'training_weight', LContributions[I].TrainingWeight]));
+        'training_weight', LContributions[I].TrainingWeight]);
+      LLeaves.Add(LRow);
+      if AAudioSources <> nil then
+      begin
+        J := LContributions[I].SourceIndex;
+        LRow.Add('parent_index', AAudioSources.Objects[J].Integers['parent_index']);
+        LRow.Add('original_start_frame', AAudioSources.Objects[J].Int64s['original_start_frame'] +
+          LContributions[I].StartFrame);
+        LRow.Add('original_end_frame', AAudioSources.Objects[J].Int64s['original_start_frame'] +
+          LContributions[I].EndFrame);
+        if AAudioSources.Objects[J].Find('clip_receipt') <> nil then
+          LRow.Add('clip_id', AAudioSources.Objects[J].Objects['clip_receipt'].Strings['clip_id']);
+      end;
     end;
     ReportWork(AProgress, 'musical_vocabulary_publication', wuItems,
       Length(LVocabularies), Length(LVocabularies));
@@ -267,6 +282,10 @@ function LearnStudioPlaylist(const ACatalogRoot, ALibraryRoot, ACacheRoot,
 var
   LPlaylist: TJSONObject;
   LItems: TJSONArray;
+  LParents, LGrouped: TJSONArray;
+  LParent, LSavedClip, LPhysical: TJSONObject;
+  LParentFrames, LParentOffset, LTargetFrame: Int64;
+  LParentIndex, LTargetCount: Integer;
   LItem: TJSONObject;
   LSourceMetadata: TJSONObject;
   LClipRow: TJSONObject;
@@ -321,6 +340,49 @@ var
   LExcludedRows: TJSONArray;
   LTaught: TJSONArray;
   LProviderNames: TLayerModelTexts;
+  procedure ResolveItems;
+  var P, C: Integer; LOriginal, LRange, LNew: TJSONObject; LOffset: Int64;
+  begin
+    for P := 0 to LParents.Count - 1 do
+    begin
+      LOriginal := LParents.Objects[P];
+      LOffset := 0;
+      if LOriginal.Strings['extent'] = 'whole' then
+      begin
+        LNew := TJSONObject(LOriginal.Clone);
+        LItems.Add(LNew);
+        LNew.Add('parent_index', P);
+        LNew.Add('original_start_frame', Int64(0));
+        LNew.Add('selection_offset', Int64(0));
+      end
+      else for C := 0 to LOriginal.Arrays['clips'].Count - 1 do
+      begin
+        LRange := LOriginal.Arrays['clips'].Objects[C];
+        if not LRange.Booleans['included'] then Continue;
+        LSavedClip := ReadStudioClip(ACatalogRoot, StudioClipIdentity(LOriginal, LRange));
+        if LSavedClip = nil then
+          LSavedClip := PrepareStudioClip(ACatalogRoot, ALibraryRoot,
+            AJobId + '-clip-' + IntToStr(P) + '-' + IntToStr(C), LOriginal, LRange, AProgress);
+        LNew := TJSONObject.Create;
+        LItems.Add(LNew);
+        LNew.Add('clip_receipt', LSavedClip);
+        LSavedClip := nil;
+        LNew.Add('kind', 'saved_clip');
+        LNew.Add('extent', 'whole');
+        LNew.Add('title', LOriginal.Strings['title']);
+        LNew.Add('sample_rate', LOriginal.Integers['sample_rate']);
+        LNew.Add('frame_count', LRange.Int64s['end_frame'] - LRange.Int64s['start_frame']);
+        LNew.Add('influence', LOriginal.Integers['influence']);
+        if LRange.Find('classifications') <> nil then
+          LNew.Add('classifications', LRange.Find('classifications').Clone);
+        LNew.Add('parent_index', P);
+        LNew.Add('original_start_frame', LRange.Int64s['start_frame']);
+        LNew.Add('selection_offset', LOffset);
+        Inc(LOffset, LNew.Int64s['frame_count']);
+      end;
+    end;
+    Need(LItems.Count <= MaximumMusicalCorpusSources, 'Use at most64 included tracks/clips');
+  end;
   function ItemFrames(const AItem: TJSONObject): Int64;
   var
     LIndex: Integer;
@@ -353,6 +415,8 @@ var
   end;
 begin
   LPlaylist := CanonicalStudioPlaylist(APlaylist);
+  LItems := TJSONArray.Create;
+  LSavedClip := nil;
   LReceipt := nil;
   LCandidate := nil;
   LInput := nil;
@@ -362,25 +426,26 @@ begin
   LRuns := nil;
   LExcludedRows := nil;
   try
-    LItems := LPlaylist.Arrays['items'];
+    LParents := LPlaylist.Arrays['items'];
     LExcludedItems := 0;
     LExcludedRows := TJSONArray.Create;
     { Big Boss: keep excluded choices in the immutable playlist, but do not
       prepare/hash a recording with no included whole track or clip. }
-    for I := LItems.Count - 1 downto 0 do
+    for I := LParents.Count - 1 downto 0 do
     begin
-      LHasSelection := StudioPlaylistItemIncluded(LItems.Objects[I]);
+      LHasSelection := StudioPlaylistItemIncluded(LParents.Objects[I]);
       if not LHasSelection then
       begin
-        LExcludedRows.Add(TJSONObject.Create(['title', LItems.Objects[I].Strings['title'],
-          'frame_count', LItems.Objects[I].Int64s['frame_count'],
-          'sample_rate', LItems.Objects[I].Integers['sample_rate'],
+        LExcludedRows.Add(TJSONObject.Create(['title', LParents.Objects[I].Strings['title'],
+          'frame_count', LParents.Objects[I].Int64s['frame_count'],
+          'sample_rate', LParents.Objects[I].Integers['sample_rate'],
           'reason', 'not_in_teaching_selection']));
-        LItems.Delete(I);
+        LParents.Delete(I);
         Inc(LExcludedItems);
       end;
     end;
-    Need(LItems.Count > 0, 'Select a whole track or clip before generating');
+    Need(LParents.Count > 0, 'Select a whole track or clip before generating');
+    ResolveItems;
     LSelectionTotal := 0;
     LSelectionBefore := 0;
     for I := 0 to LItems.Count - 1 do
@@ -410,24 +475,38 @@ begin
     LReceipt.Add('musical_block_cells', StudioPlaylistBlockCells);
     LReceipt.Add('tempo_policy', 'First-eight-second per-window pulse proposal; explicit120BPM when unavailable. Not whole-track tempo/downbeat truth.');
     LRows := TJSONArray.Create;
-    LReceipt.Add('sources', LRows);
+    LReceipt.Add('audio_sources', LRows);
+    LReceipt.Add('source_clock_policy', 'Actual independent audio hashes and local clocks; parent ranges retained separately');
     LProviderWindows := TJSONArray.Create;
     LReceipt.Add('provider_windows', LProviderWindows);
-    LSlots := Max(1, StudioPlaylistModelCells div StudioPlaylistBlockCells div LItems.Count);
+    LSlots := Max(1, StudioPlaylistModelCells div StudioPlaylistBlockCells div LParents.Count);
     LTotalSourceBytes := 0;
     for I := 0 to LItems.Count - 1 do
     begin
       ReportWork(AProgress, 'playlist_prepare_music', wuItems, I, LItems.Count);
       LItem := LItems.Objects[I];
-      LHash := SourceHash(ACatalogRoot, ALibraryRoot, AJobId, LItem, I, ALibraryProgress);
+      LParentIndex := LItem.Integers['parent_index'];
+      LParent := LParents.Objects[LParentIndex];
+      LParentFrames := ItemFrames(LParent);
+      LParentOffset := LItem.Int64s['selection_offset'];
+      if LItem.Strings['kind'] = 'saved_clip' then
+      begin
+        LHash := LItem.Objects['clip_receipt'].Objects['audio'].Strings['sha256'];
+        LSources[I].OriginIdentity := LItem.Objects['clip_receipt'].Strings['clip_id'];
+      end
+      else LHash := SourceHash(ACatalogRoot, ALibraryRoot, AJobId, LItem, I, ALibraryProgress);
       for J := 0 to I - 1 do
       begin
-        Need(LHash <> LSources[J].Sha256,
-          'Two playlist entries contain the same recording. Remove the duplicate and generate again.');
+        Need((LHash <> LSources[J].Sha256) or
+          ((LSources[I].OriginIdentity <> '') and (LSources[J].OriginIdentity <> '') and
+          (LSources[I].OriginIdentity <> LSources[J].OriginIdentity)),
+          'Two included tracks/clips contain identical audio. Remove one duplicate and generate again.');
       end;
       LSources[I].Sha256 := LHash;
       FreeAndNil(LSourceMetadata);
-      LSourceMetadata := ReadStudioSourceMetadata(ACatalogRoot, LHash);
+      if LItem.Strings['kind'] = 'saved_clip' then
+        LSourceMetadata := TJSONObject(LItem.Objects['clip_receipt'].Objects['parent_metadata'].Clone)
+      else LSourceMetadata := ReadStudioSourceMetadata(ACatalogRoot, LHash);
       LSources[I].GroupId := LSourceMetadata.Strings['source_group'];
       LSources[I].SampleRate := LItem.Integers['sample_rate'];
       LSources[I].FrameCount := LItem.Int64s['frame_count'];
@@ -448,33 +527,58 @@ begin
       end;
       LSelectedFrames := ItemFrames(LItem);
       LRow := TJSONObject.Create;
-      LRow.Add('playlist_item', LItem.Clone);
+      LRow.Add('playlist_item', LParent.Clone);
+      LRow.Add('parent_index', LParentIndex);
+      LRow.Add('original_start_frame', LItem.Int64s['original_start_frame']);
+      if LItem.Find('clip_receipt') <> nil then
+        LRow.Add('clip_receipt', LItem.Find('clip_receipt').Clone);
       LRow.Add('source_sha256', LHash);
+      LRow.Add('source_origin', LSources[I].OriginIdentity);
       LRow.Add('influence', LSources[I].TrainingWeight);
       LRow.Add('sample_rate', LSources[I].SampleRate);
       LRow.Add('included_frames', LSelectedFrames);
       LRow.Add('excluded_frames', LSources[I].FrameCount - LSelectedFrames);
       LRows.Add(LRow);
       if LSelectedFrames = 0 then Continue;
-      LInput := OpenStudioSourceAudio(ACatalogRoot, LHash);
+      if LItem.Strings['kind'] = 'saved_clip' then
+      begin
+        LInput := OpenStudioClip(ACatalogRoot, LItem.Objects['clip_receipt'].Strings['clip_id'],
+          LHash, LSavedClip, AProgress);
+        FreeAndNil(LSavedClip);
+      end
+      else LInput := OpenStudioSourceAudio(ACatalogRoot, LHash);
       try
-        ReportWork(AProgress, 'playlist_verify_recording', wuBytes, 0, LInput.Size, I);
+        if LItem.Strings['kind'] <> 'saved_clip' then
+          ReportWork(AProgress, 'playlist_verify_recording', wuBytes, 0, LInput.Size, I);
         Need(LInput.Size <= MaximumLibrarySourceBytes, 'Recording exceeds the source byte limit');
         Need(LTotalSourceBytes <= MaximumStudioJobSourceBytes - LInput.Size,
           'Selected recordings exceed the total original byte limit');
         Inc(LTotalSourceBytes, LInput.Size);
         LInput.Position := 0;
-        Need(Sha256Stream(LInput, LInput.Size, AProgress) = LHash,
-          'Saved recording bytes differ; refresh the library before generating');
-        LRow.Add('original_bytes_verified', LInput.Size);
+        if LItem.Strings['kind'] <> 'saved_clip' then
+          Need(Sha256Stream(LInput, LInput.Size, AProgress) = LHash,
+            'Saved recording bytes differ; refresh the library before generating');
+        LRow.Add('audio_bytes_verified', LInput.Size);
+        if LItem.Strings['kind'] <> 'saved_clip' then
+          LRow.Add('original_bytes_verified', LInput.Size);
         LInput.Position := 0;
         LReader := TWaveFrameReader.Create(LInput);
         try
           Need((LReader.SampleRate = LSources[I].SampleRate) and
             (LReader.FrameCount = LSources[I].FrameCount), 'Recording differs from its playlist clock');
           SetLength(LTargets, LSlots);
+          LTargetCount := 0;
           for J := 0 to LSlots - 1 do
-            LTargets[J] := (LSelectedFrames * (2 * J + 1)) div (2 * LSlots);
+          begin
+            LTargetFrame := (LParentFrames * (2 * J + 1)) div (2 * LSlots);
+            if (LTargetFrame >= LParentOffset) and
+              (LTargetFrame < LParentOffset + LSelectedFrames) then
+            begin
+              LTargets[LTargetCount] := LTargetFrame - LParentOffset;
+              Inc(LTargetCount);
+            end;
+          end;
+          SetLength(LTargets, LTargetCount);
           LBefore := 0;
           LTarget := 0;
           LWindowLimit := Min(MaximumMusicalObservationFrames,
@@ -542,6 +646,9 @@ begin
                   LRuns[R].AdmittedCells := LMask;
                   LProviderWindow := TJSONObject.Create;
                   LProviderWindow.Add('source_index', I);
+                  LProviderWindow.Add('parent_index', LParentIndex);
+                  LProviderWindow.Add('original_start_frame', LItem.Int64s['original_start_frame'] + LPosition);
+                  LProviderWindow.Add('original_end_frame', LItem.Int64s['original_start_frame'] + LWindowEnd);
                   LProviderWindow.Add('start_frame', LPosition);
                   LProviderWindow.Add('end_frame', LWindowEnd);
                   LProviderWindow.Add('proposal_sha256', Sha256Bytes(EncodeMusicalProposal(LBound)));
@@ -553,7 +660,15 @@ begin
                   if LReceipt.Find('reference_source') = nil then
                   begin
                     LReference := TJSONObject.Create;
-                    LReference.Add('kind', 'catalog');
+                    if LItem.Strings['kind'] = 'saved_clip' then
+                    begin
+                      LReference.Add('kind', 'saved_clip');
+                      LReference.Add('clip_id', LItem.Objects['clip_receipt'].Strings['clip_id']);
+                      LReference.Add('parent', LItem.Objects['clip_receipt'].Objects['recipe'].Clone);
+                      LReference.Add('original_start_frame', LItem.Int64s['original_start_frame'] + LPosition);
+                      LReference.Add('original_end_frame', LItem.Int64s['original_start_frame'] + LWindowEnd);
+                    end
+                    else LReference.Add('kind', 'catalog');
                     LReference.Add('source_sha256', LHash);
                     LReference.Add('id', LHash);
                     LReference.Add('title', LItem.Strings['title']);
@@ -585,7 +700,7 @@ begin
       'No usable musical notes were found. Try tonal music or a longer selection.');
     ReportWork(AProgress, 'playlist_learn_music', wuItems, 0, 1);
     LCandidate := TMusicalCorpus.Create(LSources, LSelections, LRuns, 2, 2, 65536, AProgress);
-    LReceipt.Add('vocabulary', StudioMusicalVocabulary(LCandidate, False, AProgress));
+    LReceipt.Add('vocabulary', StudioMusicalVocabulary(LCandidate, False, AProgress, LRows));
     LCoverage := LCandidate.CopyCoverage;
     LProviderNames := LCandidate.CopyProviderNames;
     LTempoTotal := 0;
@@ -623,6 +738,33 @@ begin
         for J := 0 to High(LProviderNames) do LTaught.Add(LProviderNames[J]);
       end;
     end;
+    { Big Boss: coverage stays grouped by the operator's original track, while
+      audio_sources records each real clip hash/local clock and its ancestry. }
+    LGrouped := TJSONArray.Create;
+    LReceipt.Add('sources', LGrouped);
+    for I := 0 to LParents.Count - 1 do
+    begin
+      LParent := LParents.Objects[I];
+      LRow := TJSONObject.Create(['playlist_item', LParent.Clone,
+        'influence', LParent.Integers['influence'], 'sample_rate', LParent.Integers['sample_rate'],
+        'included_frames', ItemFrames(LParent),
+        'excluded_frames', LParent.Int64s['frame_count'] - ItemFrames(LParent)]);
+      LGrouped.Add(LRow);
+      for J := 0 to LRows.Count - 1 do
+      begin
+        LPhysical := LRows.Objects[J];
+        if LPhysical.Integers['parent_index'] <> I then Continue;
+        for K := 0 to LPhysical.Count - 1 do
+          if Pos('|' + LPhysical.Names[K] + '|',
+            '|audio_bytes_verified|original_bytes_verified|analyzed_frames|unanalyzed_frames|proposed_frames|unknown_or_partial_frames|provider_window_frames|model_used_frames|budget_omitted_frames|model_cells|weighted_cells|windows|measured_windows|cache_hits|rejected_caches|') > 0 then
+            LRow.Int64s[LPhysical.Names[K]] := LRow.Get(LPhysical.Names[K], Int64(0)) + LPhysical.Items[K].AsInt64;
+        if LParent.Strings['extent'] = 'whole' then LRow.Strings['source_sha256'] := LPhysical.Strings['source_sha256'];
+      end;
+      LTaught := TJSONArray.Create;
+      LRow.Add('providers_taught', LTaught);
+      if LRow.Get('model_cells', 0) > 0 then
+        for J := 0 to High(LProviderNames) do LTaught.Add(LProviderNames[J]);
+    end;
     ReportWork(AProgress, 'playlist_learn_music', wuItems, 1, 1);
     AReceipt := LReceipt;
     LReceipt := nil;
@@ -632,6 +774,8 @@ begin
     LCandidate.Free;
     LReceipt.Free;
     LPlaylist.Free;
+    LItems.Free;
+    LSavedClip.Free;
     LSourceMetadata.Free;
     LExcludedRows.Free;
   end;

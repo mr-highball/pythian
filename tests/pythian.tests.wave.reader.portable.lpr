@@ -39,6 +39,7 @@ type
   TShortStream = class(TMemoryStream)
   public
     Fail: Boolean;
+    ReadBytes: Int64;
     {$ifdef pas2js}
     function Read(ABuffer: TBytes; AOffset, ACount: LongInt): LongInt; override;
     {$else}
@@ -70,6 +71,7 @@ begin
   {$else}
   Result := inherited Read(ABuffer, ACount);
   {$endif}
+  Inc(ReadBytes, Result);
 end;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
@@ -272,6 +274,81 @@ begin
   end;
 end;
 
+procedure CheckLosslessRange(const ABits, ATag: Integer; const AExtensible: Boolean);
+var
+  LWords: array of Int64;
+  LBytes, LCopied: TAudioBytes;
+  LSource: TShortStream;
+  LOutput: TMemoryStream;
+  LReader, LCheck: TWaveFrameReader;
+  LSink: TStreamAudioSink;
+  LProbe: TClipProbe;
+  LFormat: TWaveSampleFormat;
+  LWidth, LSourceData, LTargetData, I: Integer;
+  LSize, LCursor: Int64;
+  LRejected: Boolean;
+begin
+  SetLength(LWords, 5000);
+  for I := 0 to High(LWords) do LWords[I] := (I mod 17) * 16;
+  LBytes := MakeWave(ABits, ATag, AExtensible, LWords);
+  LSource := TShortStream.Create;
+  LOutput := TMemoryStream.Create;
+  LReader := nil;
+  LCheck := nil;
+  LSink := TStreamAudioSink.Create(LOutput);
+  LProbe := TClipProbe.Create;
+  try
+    WriteStreamBytesExact(LSource, LBytes, 0, Length(LBytes));
+    LSource.Position := 0;
+    LReader := TWaveFrameReader.Create(LSource);
+    LFormat := LReader.SampleFormat;
+    LSource.ReadBytes := 0;
+    LReader.CopyRangeToWave(LSink, 5, 4092);
+    LWidth := ABits div 8;
+    Check(LSource.ReadBytes = 4087 * LWidth, 'Range export reads only selected payload bytes');
+    Check(LReader.FramePosition = 4092, 'Lossless export retains the exact source cursor');
+    LSourceData := 44;
+    if AExtensible then LSourceData := 68;
+    LTargetData := Length(WaveSampleHeader(LFormat, 4087));
+    Check(LOutput.Size = LTargetData + 4087 * LWidth + (4087 * LWidth) mod 2,
+      'Independent WAVE has exact payload and odd-byte padding');
+    SetLength(LCopied, LOutput.Size);
+    LOutput.Position := 0;
+    ReadStreamBytesExact(LOutput, LCopied, 0, Length(LCopied));
+    for I := 0 to 4087 * LWidth - 1 do
+      Check(LCopied[LTargetData + I] = LBytes[LSourceData + 5 * LWidth + I],
+        'Export preserves raw sample bits across bounded blocks');
+    LOutput.Position := 0;
+    LCheck := TWaveFrameReader.Create(LOutput);
+    Check((LCheck.FrameCount = 4087) and (LCheck.BitsPerSample = ABits) and
+      (LCheck.EncodingTag = ATag) and (LCheck.FormatTag = LFormat.FormatTag) and
+      (LCheck.ValidBitsPerSample = LFormat.ValidBitsPerSample) and
+      (LCheck.ChannelMask = LFormat.ChannelMask), 'Independent clip retains sample format and clock');
+    LCursor := LReader.FramePosition;
+    LSize := LOutput.Size;
+    LRejected := False;
+    try LReader.CopyRangeToWave(LSink, 5, 5001);
+    except on E: EAudio do LRejected := True end;
+    Check(LRejected and not LReader.Failed and (LReader.FramePosition = LCursor) and
+      (LOutput.Size = LSize), 'Invalid lossless extent emits nothing and preserves the reader');
+    FreeAndNil(LCheck);
+    LOutput.Size := 0;
+    LProbe.Reader := LReader;
+    LRejected := False;
+    try LReader.CopyRangeToWave(LSink, 0, 4087, LProbe.Observe);
+    except on E: EAbort do LRejected := True end;
+    Check(LRejected and LReader.Failed and LProbe.ReentryRejected,
+      'Partial-output cancellation is terminal and callbacks cannot reenter');
+  finally
+    LCheck.Free;
+    LProbe.Free;
+    LSink.Free;
+    LReader.Free;
+    LSource.Free;
+    LOutput.Free;
+  end;
+end;
+
 var
   LStream: TMemoryStream;
   LSink: TStreamAudioSink;
@@ -282,6 +359,13 @@ var
   LRejected: Boolean;
   LShort: TShortStream;
 begin
+  CheckLosslessRange(8, 1, False);
+  CheckLosslessRange(16, 1, False);
+  CheckLosslessRange(24, 1, False);
+  CheckLosslessRange(32, 1, False);
+  CheckLosslessRange(24, 1, True);
+  CheckLosslessRange(32, 3, False);
+  CheckLosslessRange(32, 3, True);
   CheckClipRanges;
   CheckFormat(16, 1, False, [32768, 0, 16384], [-1, 0, 0.5]);
   CheckFormat(24, 1, False, [8388608, 0, 4194304], [-1, 0, 0.5]);

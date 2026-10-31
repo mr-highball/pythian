@@ -2,12 +2,86 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: independent clips accepted and deployed — 2026-10-31
+
+Big Boss SOLO accepts [saved clips](TODO/DONE/NS-6_saved-clips_01.md) AC1–AC5.
+**91/131 effort accepted (69.47%), six open and nineteen current DONE.**
+Five clip units close on actual save/learn/reference, failure and UI evidence;
+no musical-quality or partial graph credit. Consecutive nonclosing count is zero.
+The goal remains active. Return to [graph controls](TODO/NS-4_graph-controls_01.md),
+then the dependent NS-5 form/style work; no operator answer blocks implementation.
+
+Saving a new clip queues a durable native job after the immutable draft save.
+It copies only selected sample bytes using the primary portable WAV reader and
+format-preserving RIFF/RF64 header, then publishes through the existing canonical
+audio store. Origin sidecars retain parent metadata identity, exact original
+range, clock and known license/provenance. Library metadata admission does not
+pretend to measure the full parent payload. Labels/influence do not duplicate
+audio. Earlier saved ranges materialize when used. Clip learning verifies only
+its actual independent WAV; a missing/corrupt accepted clip fails without fallback.
+
+Actual source hashes/local clip clocks remain separate from parent coordinates.
+Per-track representative budgets/influence and grouped selected/analyzed/model
+coverage survive multiple clips. Optional immutable excerpt origin allows equal
+sample bytes at distinct original ranges without duplicate ancestry. The adapter
+admits up to 64 physical sources within its existing 64-selection bound. Shared
+musical contributions and full vocabulary artifacts retain original-time links.
+Original comparison stages the selected saved audio, so it works without the
+parent and displays the actual original range. No dependency source changed.
+
+Evidence packet: `saved-clips-20261031-boss` under dedicated E-drive roots.
+Portable WAV reader 155,930 checks pass native Win64/Win32 and actual pas2js; native
+reader/stream boundaries pass. Musical corpus 379 checks pass native/pas2js;
+playlist 257 and clip 32 checks pass with clean heaps. Native job tests cover
+idempotent queue/retry, cancellation, original-offline synthesis/reference, no
+full-parent catalog copy and a retained missing-clip failure. `playlist01.log`
+and `clips-c2.log` retain the repaired ancestry/test-integrity failures.
+Native HTTP save/reload and automatic clip queue pass with a clean heap; transient
+clip state remains outside the signed snapshot. A test-only Halt retained one
+argument string; normal finalization repaired it and the failure log is kept.
+Full web/codec/progress checks pass. Actual IAB desktop/390px flow defines clips,
+shows native save progress, reopens saved files and generates/reconnects with the
+original held offline. Clip preview plays all four seconds; raw WAV download and
+HTTP 206 range match its independent file. A Stop racing with final completion
+leaves the completed clip intact. Final responsive geometry has no overflow.
+Screenshots: `clips-phone-final.png` and `clips-desktop-final.png`. These are solo
+verification, not an independent QA review or a musical preference verdict.
+
+Matching native service/worker plus twelve final browser assets are deployed to
+the fixed stable slot, retaining LAN/TLS/storage/firewall. Stable PID 52324 serves
+the app and clip routes; all 17 previous job states/revisions are unchanged.
+Service hash `fe77ecb16c91266d3085187fce326e0102f6ae2c370da1052bd0160d26ed6532`;
+worker `211c0442435dadee043112a54072df2013caa2e66331bdc5961dbaed5cf6cca6`.
+Previous release files/hashes are backed up in the packet. CI for preceding
+progress commit ed3bc4a and sound commit f5f663e both finished SUCCESS.
+Final QA cleanup closes the managed tab and exact native listener, resets the
+viewport and confirms all seven audio elements paused/nonlooping with no QA
+worker remaining. Stable remains running for operator review.
+
+## Closed batch: independent saved clips — 2026-10-31
+
+Big Boss SOLO follows the operator's explicit saved-clip priority after accepting
+generation activity (ed3bc4a). Previous deliverable is progress and closes its
+criteria; consecutive nonclosing count starts at zero. Selected
+[saved clips](TODO/DONE/NS-6_saved-clips_01.md) AC1–AC5 deliver independent lossless
+WAVs, parent/range/license lineage, durable automatic clip creation and learning
+that verifies only selected clip files. Reuse the primary WAV reader/container
+writer and existing jobs/store; no forced PCM16 or second codec. Keep old
+snapshots/answers and use original-time coverage in learning receipts.
+
+Closing evidence: exact raw sample/format and boundary checks on native/pas2js,
+actual save/learn/reuse with the parent unavailable, corrupt/partial/cancel
+rejection, and desktop/phone Define clip→Generate/reconnect. Stop at this usable
+flow, then resume graph controls. At selection,86/131 stayed accepted until every
+clip criterion passed. The progress predecessor subsequently passed CI and was pushed.
+New packet: saved-clips-20261031-boss under dedicated E-drive roots.
+
 ## Current handoff: Generate activity visible; independent clips next — 2026-10-31
 
 Big Boss SOLO accepts [generation activity](TODO/DONE/NS-6_generation-activity_01.md).
 **86/131 effort accepted (65.65%), seven open and eighteen current DONE.**
 The two new operator tasks added seven units; only the two-unit visible-progress
-repair is accepted. The separate five-unit [saved clip task](TODO/NS-6_saved-clips_01.md)
+repair is accepted. The separate five-unit [saved clip task](TODO/DONE/NS-6_saved-clips_01.md)
 remains open. This actual consumer closure resets consecutive nonclosing count
 from one to zero. The goal remains active; clip-only learning takes operator
 priority, then return to retained role/passage graph regeneration.
@@ -54,7 +128,7 @@ deployment of this concrete repair, then return to role/passage graph editing.
 Packet: generation-activity-20261031-boss under dedicated E-drive roots.
 
 The operator then explicitly requires independent saved clip audio: follow
-[saved clips](TODO/NS-6_saved-clips_01.md) after exposing the immediate native
+[saved clips](TODO/DONE/NS-6_saved-clips_01.md) after exposing the immediate native
 activity. Add five units before implementation:84/131 accepted (64.12%), eight
 open and seventeen current DONE. Draft saving remains metadata-only and must
 not block on a full track; durable clip preparation must publish source-linked

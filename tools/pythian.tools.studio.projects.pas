@@ -57,7 +57,8 @@ function ListStudioSources(const ACatalogRoot: String): TJSONObject;
 { Same primary metadata admission used by listing/opening originals. Retains
   actual source group, clock, partition, license and provenance for consumers. }
 function ReadStudioSourceMetadata(const ACatalogRoot, AHash: String;
-  const ACollectionIndex: TJSONObject = nil): TJSONObject;
+  const ACollectionIndex: TJSONObject = nil;
+  const ARequireAudio: Boolean = True): TJSONObject;
 function ListStudioProjects(const ACatalogRoot: String): TJSONObject;
 function ReadStudioProject(const ACatalogRoot, AProjectId: String): TJSONObject;
 function ReadStudioProjectRevision(const ACatalogRoot, AProjectId: String;
@@ -97,7 +98,8 @@ uses
   pythian.tools.annotations.catalog,
   pythian.tools.studio.material,
   pythian.tools.studio.&library.discovery,
-  pythian.tools.studio.&library
+  pythian.tools.studio.&library,
+  pythian.tools.studio.clips
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 const
@@ -452,7 +454,7 @@ begin
 end;
 
 function ReadStudioSourceMetadata(const ACatalogRoot, AHash: String;
-  const ACollectionIndex: TJSONObject): TJSONObject;
+  const ACollectionIndex: TJSONObject; const ARequireAudio: Boolean): TJSONObject;
 var
   LRoot: String;
   LTrack: TJSONObject;
@@ -486,6 +488,8 @@ begin
       'Studio source partition is invalid');
     Need(TextField(LTrack, 'source_group', 1, 128) <> '', 'Studio source group is missing');
     CheckPath(LRoot + 'sources' + PathDelim + AHash + '.wav');
+    if ARequireAudio then
+    begin
     try
       LStream := TFileStream.Create(LRoot + 'sources' + PathDelim + AHash + '.wav',
         fmOpenRead or fmShareDenyWrite);
@@ -508,6 +512,7 @@ begin
     finally
       LStream.Free;
     end;
+    end;
     Result := TJSONObject.Create;
     try
       Result.Add('source_sha256', AHash);
@@ -523,6 +528,8 @@ begin
       Result.Add('frame_count', IntField(LTrack, 'frame_count'));
       Result.Add('source_bytes', IntField(LTrack, 'source_bytes'));
       Result.Add('metadata_sha256', JsonHash(LTrack));
+      if not ARequireAudio then
+        Result.Add('original_available', FileExists(LRoot + 'sources' + PathDelim + AHash + '.wav'));
       if ACollectionIndex = nil then
       begin
         Result.Add('collections', StudioCollectionsForSource(ACatalogRoot, AHash));
@@ -610,7 +617,7 @@ begin
       Result.Add('sources', LRows);
       for LIndex := 0 to LNames.Count - 1 do
       begin
-        LRows.Add(ReadStudioSourceMetadata(ACatalogRoot, LNames[LIndex], LCollectionIndex));
+        LRows.Add(ReadStudioSourceMetadata(ACatalogRoot, LNames[LIndex], LCollectionIndex, False));
       end;
       Result.Add('count', LRows.Count);
       Result.Add('maximum_sources', 4096);
@@ -961,14 +968,32 @@ end;
 
 procedure BindPlaylistSources(const ACatalogRoot: String; const APlaylist: TJSONObject);
 var
-  LItem, LSource, LIndex: TJSONObject;
+  LItem, LSource, LIndex, LSavedClip: TJSONObject;
   LItems, LEntries: TJSONArray;
-  LOrdinal, LRow: Integer;
+  LOrdinal, LRow, LClip: Integer;
+  LAllClipsSaved, LIncludedClip: Boolean;
 begin
   LItems := APlaylist.Arrays['items'];
   for LOrdinal := 0 to LItems.Count - 1 do
   begin
     LItem := LItems.Objects[LOrdinal];
+    if LItem.Strings['extent'] = 'clips' then
+    begin
+      LAllClipsSaved := True;
+      LIncludedClip := False;
+      for LClip := 0 to LItem.Arrays['clips'].Count - 1 do
+        if LItem.Arrays['clips'].Objects[LClip].Booleans['included'] then
+        begin
+          LIncludedClip := True;
+          LSavedClip := ReadStudioClip(ACatalogRoot,
+            StudioClipIdentity(LItem, LItem.Arrays['clips'].Objects[LClip]));
+          try LAllClipsSaved := LAllClipsSaved and (LSavedClip <> nil)
+          finally LSavedClip.Free end;
+        end;
+      { Big Boss: immutable saved clips bind their recorded parent snapshot.
+        Saving metadata must not require that original payload to remain online. }
+      if LIncludedClip and LAllClipsSaved then Continue;
+    end;
     if LItem.Strings['kind'] = 'catalog' then
       LSource := ReadStudioSourceMetadata(ACatalogRoot, LItem.Strings['id'])
     else

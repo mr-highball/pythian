@@ -3,13 +3,14 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 131 total effort units · 18 current-goal DONE · 86 / 131 accepted (65.65%).**
-The operator additionally requires [independent saved clip files](NS-6_saved-clips_01.md)
-so short selections no longer trigger full-parent preparation on every Generate.
-Its five implementation units are added to scope before work expands.
+**6 open tasks · 131 total effort units · 19 current-goal DONE · 91 / 131 accepted (69.47%).**
+[Independent saved clip files — DONE](DONE/NS-6_saved-clips_01.md) close five units:
+automatic durable lossless capture, metadata/original-time lineage and learning
+from saved files without full-parent preparation. Actual unavailable-parent,
+failure/reuse and desktop/phone consumers pass; originals and answers remain.
 The operator's [Generate activity repair — DONE](DONE/NS-6_generation-activity_01.md)
 now exposes byte/frame/unknown-total work beneath the continuous workflow.
-The independent clip files remain the next operator priority and are not accepted.
+Graph controls return as the next implementation priority.
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator's [Library → Selection → Generate](DONE/NS-6_simple-studio_01.md)
 flow and [coarse corpus learning](DONE/NS-3_style-vocabulary_01.md) are accepted.
@@ -69,7 +70,7 @@ open without partial credit.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Six later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -78,7 +79,7 @@ continuity experiments are selected.
 | --- | ---: | --- |
 | [NS-6_simple-studio_01 — DONE](DONE/NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Accepted; actual playlist learning, optional label selection, durable native output and browser playback |
 | [NS-6_generation-activity_01 — DONE](DONE/NS-6_generation-activity_01.md) — visible activity within Generate | 2 | Accepted; native callback details, actual desktop/phone progress, reconnect and checked stable assets |
-| [NS-6_saved-clips_01](NS-6_saved-clips_01.md) — independent clip files and source lineage | 5 | Shared WAV range I/O, durable native save and clip-only learning |
+| [NS-6_saved-clips_01 — DONE](DONE/NS-6_saved-clips_01.md) — independent clip files and source lineage | 5 | Accepted; shared lossless range I/O, durable native save, clip-only learning/reference and actual desktop/phone consumers |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration |
@@ -98,8 +99,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 25 current-goal tasks (7 open, eighteen DONE),
-totaling 131 units: 45 open and 86 accepted. Subtotals:
+The two tables together are all 25 current-goal tasks (6 open, nineteen DONE),
+totaling 131 units: 40 open and 91 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 44, NS-5 15, NS-6 45. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

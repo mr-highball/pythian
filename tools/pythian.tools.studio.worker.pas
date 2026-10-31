@@ -77,6 +77,7 @@ uses
   pythian.tools.studio.jobs,
   pythian.tools.studio.instrumental,
   pythian.tools.studio.reperform,
+  pythian.tools.studio.clips,
   pythian.tools.studio.progress,
   pythian.tools.studio.live,
   pythian.tools.studio.preparation,
@@ -496,7 +497,8 @@ end;
 
 procedure TStudioWork.AudioProgress(const AProgress: TWorkProgress);
 begin
-  if IsStudioInstrumentalJob(FRequest.Strings['kind']) then
+  if IsStudioInstrumentalJob(FRequest.Strings['kind']) or
+    (FRequest.Strings['kind'] = 'clip_save') then
   begin
     WorkProgress(AProgress);
     Exit;
@@ -1802,6 +1804,9 @@ var
 begin
   if FRequest.Strings['kind'] = 'instrumental_reperform' then
     Exit(RunStudioReperformance(FCatalogRoot, FJobId, FRequest, Check, AudioProgress));
+  if FRequest.Strings['kind'] = 'clip_save' then
+    Exit(PrepareStudioPlaylistClips(FCatalogRoot, ALibraryRoot, FJobId,
+      FRequest.Objects['project_snapshot'].Objects['playlist'], AudioProgress));
   if FRequest.Strings['kind'] = 'instrumental_generate' then
   begin
     Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress,

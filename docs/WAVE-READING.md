@@ -31,6 +31,17 @@ extent is a truncation error.
 
 ## Shared waveform measurement
 
+`SampleFormat` exposes the original PCM/float encoding, container/valid precision
+and channel layout. `CopyRangeToWave(Sink, StartFrame, EndFrame, Progress)` writes
+an independent WAV from the exact half-open range without decoding or changing
+sample bytes. It uses bounded shared I/O, reads only selected payload bytes and
+publishes real byte progress. `WaveSampleHeader` in `pythian.wave.stream` emits
+the matching RIFF/RF64 header; odd payload padding is outside the data extent.
+Container metadata chunks are not copied. Callers retain source/range/license
+metadata separately. An I/O, sink or callback failure poisons the reader and may
+leave partial output; publish a file only after the copy and store both finish.
+
+
 `ReadWaveform(StartFrame, EndFrame, Bins, Sampled)` is the shared measurement
 path for catalog pages and collection overviews. It returns owned bin records
 with original and sampled frame extents, min/max, peak and RMS across channels,
@@ -97,7 +108,8 @@ This is new native code following Microsoft's
 [extensible format definition](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ksmedia/ns-ksmedia-waveformatextensible)
 and [subtype GUID mapping](https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/converting-between-format-tags-and-subformat-guids),
 checked 2026-09-15. No Windows units or external decoder are required. The output
-writer continues producing the existing canonical PCM16 format.
+PCM16 synthesis writer continues producing its existing canonical format.
+Lossless range copying uses the admitted source encoding instead.
 
 ## Extensible input evidence
 

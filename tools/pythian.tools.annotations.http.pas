@@ -45,6 +45,7 @@ uses
   fpjson, pythian.tools.json,
   jsonparser,
   pythian.audio,
+  pythian.wave, pythian.wave.read,
   pythian.hash,
   pythian.tools.net.transport,
   pythian.tools.annotations.catalog,
@@ -58,6 +59,7 @@ uses
   pythian.tools.listen.catalog,
   pythian.tools.listen.stream,
   pythian.tools.studio.projects,
+  pythian.tools.studio.clips,
   pythian.tools.studio.material,
   pythian.tools.studio.effects,
   pythian.tools.studio.capture,
@@ -1072,6 +1074,11 @@ var
   LRows: TJSONArray;
   LIndex: Integer;
   LRowName: String;
+  LClipReceipt: TJSONObject;
+  LClipReader: TWaveFrameReader;
+  LClip: TAudioClip;
+  LClipBytes: TAudioBytes;
+  LClipStart, LClipEnd: Int64;
 begin
   AHandedOff := False;
   LExtraHeaders := '';
@@ -1095,6 +1102,7 @@ begin
   if (ARequest.Path = '/api/listen-audio') or
     (ARequest.Path = '/api/audio') or
     (ARequest.Path = '/api/studio/library-audio') or
+    (ARequest.Path = '/api/studio/clip-audio') or
     (ARequest.Path = '/api/studio/source-audio') or
     (ARequest.Path = '/api/studio/effect-audio') or
     (ARequest.Path = '/api/studio/instrumental-audio') or
@@ -1194,6 +1202,51 @@ begin
       finally
         LLibraryAudio.Free;
         LLibraryPreview.Free;
+      end;
+      Exit;
+    end
+    else if ((ARequest.Method = 'GET') or (ARequest.Method = 'HEAD')) and
+      (ARequest.Path = '/api/studio/clip-audio') then
+    begin
+      LClipReceipt := nil;
+      LMediaStream := OpenStudioClip(ACatalogRoot, QueryValue(ARequest.Query, 'id'),
+        '', LClipReceipt, nil, False);
+      try
+        if QueryValue(ARequest.Query, 'start') = '' then
+        begin
+          AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
+            ARequest.Method, ARequest.Range, ARequest.IfRange,
+            LClipReceipt.Objects['audio'].Strings['sha256'],
+            LMediaStream.FileName, LMediaStream.Size);
+          if AHandedOff then LMediaStream := nil;
+        end
+        else
+        begin
+          LClipStart := QueryInt64(ARequest.Query, 'start');
+          LClipEnd := QueryInt64(ARequest.Query, 'end');
+          Need((LClipStart >= 0) and (LClipEnd > LClipStart) and
+            (LClipEnd <= LClipReceipt.Objects['audio'].Int64s['frames']) and
+            (LClipEnd - LClipStart <= MaximumLibraryPreviewFrames) and
+            (LClipEnd - LClipStart <= Int64(LClipReceipt.Objects['audio'].Integers['sample_rate']) * 30),
+            'Clip preview must fit within thirty seconds of the saved clip');
+          LClipReader := TWaveFrameReader.Create(LMediaStream);
+          try
+            LClip := LClipReader.ReadClip(LClipStart, LClipEnd - LClipStart);
+            try LClipBytes := EncodeWavePcm16(LClip) finally LClip.Free end;
+          finally LClipReader.Free end;
+          LAudio := TMemoryStream.Create;
+          try
+            LAudio.WriteBuffer(LClipBytes[0], Length(LClipBytes));
+            LAudio.Position := 0;
+            LHash := Sha256Bytes(LClipBytes);
+            AHandedOff := DispatchListeningMedia(ASocket, LAudio,
+              ARequest.Method, ARequest.Range, ARequest.IfRange, LHash);
+            if AHandedOff then LAudio := nil;
+          finally LAudio.Free end;
+        end;
+      finally
+        LMediaStream.Free;
+        LClipReceipt.Free;
       end;
       Exit;
     end
@@ -1395,6 +1448,18 @@ begin
       LReport := ReadStudioProjectRevision(ACatalogRoot,
         QueryValue(ARequest.Query, 'id'), QueryInteger(ARequest.Query, 'revision'));
     end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/clips') then
+    begin
+      LClipReceipt := ReadStudioProjectRevision(ACatalogRoot,
+        QueryValue(ARequest.Query, 'project'), QueryInteger(ARequest.Query, 'revision'));
+      try LReport := StudioProjectClipState(ACatalogRoot, LClipReceipt)
+      finally LClipReceipt.Free end;
+    end
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/clips') then
+    begin
+      LBody := ParseStudioJobWrite(ARequest.Body);
+      LReport := RequestStudioProjectClips(ACatalogRoot, LBody);
+    end
     else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/studio/musical-material') then
     begin
@@ -1415,6 +1480,16 @@ begin
     begin
       LBody := ParseStudioProjectWrite(ARequest.Body);
       LReport := SaveStudioProject(ACatalogRoot, LBody);
+      { Big Boss: the immutable draft is already saved. Queue failure must not
+        disguise that successful write; the operator can retry clip saving.
+        Keep transient job state outside the signed project response. }
+      try
+        LClipReceipt := QueueStudioProjectClips(ACatalogRoot, LReport);
+        LClipReceipt.Free;
+      except
+        on E: EOutOfMemory do raise;
+        on E: Exception do WriteLn(StdErr, 'Clip save queue: ', E.Message);
+      end;
     end
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/live') then
     begin

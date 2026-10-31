@@ -534,6 +534,20 @@ begin
     try LCandidate := Build(LSourceCopy, LSelections, LRuns);
     except on E: EAudio do LFailed := True end;
     Check(LFailed and (LCandidate = nil), 'Duplicate source cannot silently double evidence');
+    LSourceCopy := Copy(LSources);
+    LSourceCopy[0].OriginIdentity := StringOfChar('a', 64);
+    LSourceCopy[1].OriginIdentity := StringOfChar('b', 64);
+    LCandidate := Build(LSourceCopy, LSelections, LRuns);
+    Check((LCandidate.CopySources[0].Sha256 = LSources[0].Sha256) and
+      (LCandidate.CopySources[0].OriginIdentity = StringOfChar('a', 64)) and
+      (LCandidate.CopyContributions[0].Identity <> LCorpus.CopyContributions[0].Identity),
+      'Immutable excerpt ancestry is separate from real payload hash and binds contribution identity');
+    FreeAndNil(LCandidate);
+    LSourceCopy[1].OriginIdentity := LSourceCopy[0].OriginIdentity;
+    LFailed := False;
+    try LCandidate := Build(LSourceCopy, LSelections, LRuns);
+    except on E: EAudio do LFailed := True end;
+    Check(LFailed and (LCandidate = nil), 'One excerpt origin cannot name two different sources');
     LFailed := False;
     try LCandidate := Build(LSources, LSelections, LRuns, nil, 4);
     except on E: EAudio do LFailed := True end;

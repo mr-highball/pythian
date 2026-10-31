@@ -64,6 +64,6 @@ service/worker and operator data were preserved.
   viewport is reset; no playback was started. Fixed stable assets match the
   checked build without restarting its service. Original operator job completes
   unchanged. This is solo validation, not independent QA or musical acceptance.
-  Follow [saved clips](../NS-6_saved-clips_01.md) for the actual I/O repair;
+  Follow [saved clips — DONE](NS-6_saved-clips_01.md) for the actual I/O repair;
   better visibility does not accept that five-unit task. This real closure
   resets the consecutive nonclosing count to zero.

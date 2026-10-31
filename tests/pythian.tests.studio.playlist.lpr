@@ -171,8 +171,11 @@ begin
       Check((LReceipt.Arrays['sources'].Objects[1].Int64s['included_frames'] = 6 * LRate) and
         (LReceipt.Arrays['sources'].Objects[1].Int64s['analyzed_frames'] = 6 * LRate),
         'Disjoint selected clips analyze only their actual original time');
-      Check(LWarm.CopyCoverage[1].IncludedFrames = 6 * LRate,
-        'Actual musical corpus receives exact selected ranges');
+      Check((Length(LWarm.CopyCoverage) = 3) and
+        (LWarm.CopyCoverage[1].IncludedFrames + LWarm.CopyCoverage[2].IncludedFrames = 6 * LRate) and
+        (LReceipt.Arrays['audio_sources'].Objects[1].Int64s['original_start_frame'] = LRate) and
+        (LReceipt.Arrays['audio_sources'].Objects[2].Int64s['original_start_frame'] = 50 * LRate),
+        'Actual corpus reads independent clips with exact original-time lineage');
     finally FreeAndNil(LReceipt) end;
     FreeAndNil(LWarm);
     LItem := APlaylist.Arrays['items'].Objects[0];
@@ -397,7 +400,8 @@ begin
       'Shared corpus retains classifications on their actual selected source ranges');
     LLeaves := LCorpus.CopyContributions;
     for K := 0 to High(LLeaves) do
-      Check((LLeaves[K].EndFrame <= 4 * LRate) or (LLeaves[K].StartFrame >= 5 * LRate),
+      Check((LReceipt.Objects['vocabulary'].Arrays['contributions'].Objects[K].Int64s['original_end_frame'] <= 4 * LRate) or
+        (LReceipt.Objects['vocabulary'].Arrays['contributions'].Objects[K].Int64s['original_start_frame'] >= 5 * LRate),
         'Classification never teaches the original gap between selected clips');
     FreeAndNil(LCorpus);
     FreeAndNil(LReceipt);

@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Eighteen current-goal tasks are accepted: **86 / 131 effort units (65.65%)**. Their
+Nineteen current-goal tasks are accepted: **91 / 131 effort units (69.47%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or universal
@@ -11,10 +11,13 @@ playlist-to-Generate flow are accepted, with honest analyzed/model-used coverage
 Canonical generated audio/storage, supported context
 continuation and long Studio generation are also accepted. Actual bounded
 decision recording, exact saved-score replay and visible Generate operation
-counters are accepted. There are115 DONE files: eighteen current,97 historical.
+counters are accepted. Independent lossless clips now feed learning and Original
+comparison without full-parent reads. There are 116 DONE files: nineteen current,
+97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_saved-clips_01](NS-6_saved-clips_01.md) | 2026-10-31 | 5/10 | Automatic durable lossless clip files, real audio hashes, parent/range lineage, clip-only learning/reference, native failures and desktop/phone flow |
 | [NS-6_generation-activity_01](NS-6_generation-activity_01.md) | 2026-10-31 | 2/10 | Native byte/frame/unknown-total detail beneath one workflow; actual desktop/phone/reconnect/Stop and fixed stable deployment |
 | [NS-4_decision-replay_01](NS-4_decision-replay_01.md) | 2026-10-31 | 5/10 | Bounded actual provider/score journal, exact native/pas2js mix/stems, changed sound without learning and ordinary saved-worker replay |
 | [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md) | 2026-10-31 | 7/10 | Source-bound weighted musical providers, stable meanings, optional exact-label selection and actual instrumental synthesis |

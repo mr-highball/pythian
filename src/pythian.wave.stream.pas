@@ -43,6 +43,18 @@ const
   Rf64HeaderBytes = 80;
 
 type
+  { The sample layout retained by the primary reader. Container metadata and
+    source provenance belong to the caller; this describes audio bytes only. }
+  TWaveSampleFormat = record
+    SampleRate: Integer;
+    Channels: Integer;
+    FormatTag: Integer;
+    EncodingTag: Integer;
+    BitsPerSample: Integer;
+    ValidBitsPerSample: Integer;
+    ChannelMask: Cardinal;
+  end;
+
   { Borrowed blocks must be consumed synchronously in full or raise. A raising
     sink may have emitted a partial block; physical rollback is not promised. }
   TAudioByteSink = class
@@ -123,6 +135,12 @@ procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip;
 { Shared header for native streaming and bounded device captures whose final
   frame count becomes known only at stop. Owns validation and RIFF/RF64 choice. }
 function WavePcm16Header(const ASampleRate, AChannels: Integer;
+  const AFrames: Int64): TAudioBytes;
+{ Shared RIFF/RF64 container for unchanged integer PCM or IEEE32 sample bytes.
+  Extensible precision/speaker layout survives. Float audio includes fact.
+  Data length is frames*channels*container width; an odd data payload needs one
+  zero pad byte after it, included in the RIFF size but not the data chunk size. }
+function WaveSampleHeader(const AFormat: TWaveSampleFormat;
   const AFrames: Int64): TAudioBytes;
 { Exact complete RIFF/RF64 extent through the same header validation. }
 function WavePcm16ByteCount(const ASampleRate, AChannels: Integer;
@@ -291,52 +309,108 @@ end;
 
 function WavePcm16Header(const ASampleRate, AChannels: Integer;
   const AFrames: Int64): TAudioBytes;
+var LFormat: TWaveSampleFormat;
+begin
+  LFormat := Default(TWaveSampleFormat);
+  LFormat.SampleRate := ASampleRate;
+  LFormat.Channels := AChannels;
+  LFormat.FormatTag := 1;
+  LFormat.EncodingTag := 1;
+  LFormat.BitsPerSample := 16;
+  LFormat.ValidBitsPerSample := 16;
+  Result := WaveSampleHeader(LFormat, AFrames);
+end;
+
+function WaveSampleHeader(const AFormat: TWaveSampleFormat;
+  const AFrames: Int64): TAudioBytes;
 var
   LDataBytes: Int64;
   LFormatOffset: Integer;
   LDataOffset: Integer;
+  LFormatBytes, LHeaderBytes, LFactBytes, LAlign, LPad: Integer;
   LIsRF64: Boolean;
 begin
-  ValidateAudioFormat(ASampleRate, AChannels);
-  if (AFrames < 0) or
-    (AFrames > (MaximumWaveStreamBytes - Rf64HeaderBytes) div (AChannels * 2)) then
+  ValidateAudioFormat(AFormat.SampleRate, AFormat.Channels);
+  if not (AFormat.BitsPerSample in [8, 16, 24, 32]) or
+    ((AFormat.FormatTag <> 1) and (AFormat.FormatTag <> 3) and (AFormat.FormatTag <> $FFFE)) or
+    (AFormat.ValidBitsPerSample < 1) or
+    (AFormat.ValidBitsPerSample > AFormat.BitsPerSample) or
+    not ((AFormat.EncodingTag = 1) or ((AFormat.EncodingTag = 3) and
+      (AFormat.BitsPerSample = 32) and (AFormat.ValidBitsPerSample = 32))) then
+    raise EAudio.Create('Unsupported WAVE sample layout');
+  if AFormat.FormatTag <> $FFFE then
+  begin
+    if (AFormat.EncodingTag <> AFormat.FormatTag) or
+      (AFormat.ValidBitsPerSample <> AFormat.BitsPerSample) or (AFormat.ChannelMask <> 0) then
+      raise EAudio.Create('Ordinary WAVE format cannot carry extensible sample fields');
+  end
+  else if (AFormat.ChannelMask <> 0) and
+    not (((AFormat.Channels = 1) and (AFormat.ChannelMask = 4)) or
+      ((AFormat.Channels = 2) and (AFormat.ChannelMask = 3))) then
+    raise EAudio.Create('Unsupported extensible WAVE speaker layout');
+  LAlign := AFormat.Channels * (AFormat.BitsPerSample div 8);
+  LFormatBytes := 16;
+  if AFormat.FormatTag = $FFFE then LFormatBytes := 40;
+  LFactBytes := 0;
+  if AFormat.EncodingTag = 3 then LFactBytes := 12;
+  LHeaderBytes := 28 + LFormatBytes + LFactBytes;
+  if (AFrames < 0) or (AFrames >
+    (MaximumWaveStreamBytes - LHeaderBytes - 37) div LAlign) or
+    (AFrames <> Trunc(AFrames)) then
     raise EAudio.Create('WAVE expected length exceeds exact file-size envelope');
-  LIsRF64 := AFrames > (DWordMaximum - 36) div (AChannels * 2);
-  LDataBytes := AFrames * AChannels * 2;
+  LDataBytes := AFrames * LAlign;
+  LPad := LDataBytes mod 2;
+  LIsRF64 := LDataBytes + LPad > DWordMaximum - LHeaderBytes + 8;
   if LIsRF64 then
   begin
     { EBU Tech 3306 v1.1, section 3.4 and Annex A.2. This encodes the RF64
       size extension, not broadcast metadata or multichannel speaker layouts. }
-    SetLength(Result, Rf64HeaderBytes);
+    Inc(LHeaderBytes, 36);
+    SetLength(Result, LHeaderBytes);
     PutTag(Result, 0, 'RF64');
     WriteUnsignedLE(Result, 4, 4, DWordMaximum);
     PutTag(Result, 8, 'WAVE');
     PutTag(Result, 12, 'ds64');
     WriteUnsignedLE(Result, 16, 4, 28);
-    WriteUnsignedLE(Result, 20, 8, LDataBytes + Rf64HeaderBytes - 8);
+    WriteUnsignedLE(Result, 20, 8, LDataBytes + LPad + LHeaderBytes - 8);
     WriteUnsignedLE(Result, 28, 8, LDataBytes);
     WriteUnsignedLE(Result, 36, 8, AFrames);
     WriteUnsignedLE(Result, 44, 4, 0);
     LFormatOffset := 48;
-    LDataOffset := 72;
   end
   else
   begin
-    SetLength(Result, RiffHeaderBytes);
+    SetLength(Result, LHeaderBytes);
     PutTag(Result, 0, 'RIFF');
-    WriteUnsignedLE(Result, 4, 4, LDataBytes + RiffHeaderBytes - 8);
+    WriteUnsignedLE(Result, 4, 4, LDataBytes + LPad + LHeaderBytes - 8);
     PutTag(Result, 8, 'WAVE');
     LFormatOffset := 12;
-    LDataOffset := 36;
   end;
+  LDataOffset := LFormatOffset + 8 + LFormatBytes + LFactBytes;
   PutTag(Result, LFormatOffset, 'fmt ');
-  WriteUnsignedLE(Result, LFormatOffset + 4, 4, 16);
-  WriteUnsignedLE(Result, LFormatOffset + 8, 2, 1);
-  WriteUnsignedLE(Result, LFormatOffset + 10, 2, AChannels);
-  WriteUnsignedLE(Result, LFormatOffset + 12, 4, ASampleRate);
-  WriteUnsignedLE(Result, LFormatOffset + 16, 4, ASampleRate * AChannels * 2);
-  WriteUnsignedLE(Result, LFormatOffset + 20, 2, AChannels * 2);
-  WriteUnsignedLE(Result, LFormatOffset + 22, 2, 16);
+  WriteUnsignedLE(Result, LFormatOffset + 4, 4, LFormatBytes);
+  WriteUnsignedLE(Result, LFormatOffset + 8, 2, AFormat.FormatTag);
+  WriteUnsignedLE(Result, LFormatOffset + 10, 2, AFormat.Channels);
+  WriteUnsignedLE(Result, LFormatOffset + 12, 4, AFormat.SampleRate);
+  WriteUnsignedLE(Result, LFormatOffset + 16, 4, AFormat.SampleRate * LAlign);
+  WriteUnsignedLE(Result, LFormatOffset + 20, 2, LAlign);
+  WriteUnsignedLE(Result, LFormatOffset + 22, 2, AFormat.BitsPerSample);
+  if LFormatBytes = 40 then
+  begin
+    WriteUnsignedLE(Result, LFormatOffset + 24, 2, 22);
+    WriteUnsignedLE(Result, LFormatOffset + 26, 2, AFormat.ValidBitsPerSample);
+    WriteUnsignedLE(Result, LFormatOffset + 28, 4, AFormat.ChannelMask);
+    WriteUnsignedLE(Result, LFormatOffset + 32, 4, AFormat.EncodingTag);
+    WriteUnsignedLE(Result, LFormatOffset + 36, 4, $00100000);
+    WriteUnsignedLE(Result, LFormatOffset + 40, 4, $AA000080);
+    WriteUnsignedLE(Result, LFormatOffset + 44, 4, $719B3800);
+  end;
+  if LFactBytes <> 0 then
+  begin
+    PutTag(Result, LDataOffset - 12, 'fact');
+    WriteUnsignedLE(Result, LDataOffset - 8, 4, 4);
+    WriteUnsignedLE(Result, LDataOffset - 4, 4, Min(AFrames, DWordMaximum));
+  end;
   PutTag(Result, LDataOffset, 'data');
   if LIsRF64 then
   begin

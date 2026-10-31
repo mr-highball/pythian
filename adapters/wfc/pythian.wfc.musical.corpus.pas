@@ -35,13 +35,17 @@ uses pythian.music.proposal, pythian.music.sound, pythian.progress, pythian.musi
 
 const
   MusicalCorpusPolicy = 'weighted-source-musical-proposals-v1';
-  MaximumMusicalCorpusSources = 32;
+  MaximumMusicalCorpusSources = 64;
   MaximumMusicalCorpusSelections = 64;
   MaximumMusicalCorpusRuns = 1024;
 
 type
   TMusicalCorpusSource = record
     Sha256: String;
+    { Optional immutable origin binding for independently stored excerpts.
+      Equal audio bytes from different original ranges remain distinct evidence;
+      the payload hash never stands in for a fabricated parent digest. }
+    OriginIdentity: String;
     GroupId: String;
     SampleRate: Integer;
     FrameCount: Int64;
@@ -276,7 +280,7 @@ var
 begin
   inherited Create;
   Need((Length(ASources) >= 1) and (Length(ASources) <= MaximumMusicalCorpusSources),
-    'Musical learning requires 1..32 declared source recordings');
+    'Musical learning requires 1..64 declared audio sources');
   Need((Length(ASelections) >= 1) and (Length(ASelections) <= MaximumMusicalCorpusSelections),
     'Musical learning requires 1..64 included whole/range selections');
   Need((Length(ARuns) >= 1) and (Length(ARuns) <= MaximumMusicalCorpusRuns),
@@ -289,6 +293,7 @@ begin
     ReportWork(AProgress, 'musical_corpus_sources', wuItems, I, Length(ASources));
     LSource := ASources[I];
     WriteSha256Hex(LBytes, 0, LSource.Sha256);
+    if LSource.OriginIdentity <> '' then WriteSha256Hex(LBytes, 0, LSource.OriginIdentity);
     ValidateAudioFormat(LSource.SampleRate, 1);
     RequireExactTimingCounter(LSource.FrameCount, 'Corpus source extent');
     Need((LSource.FrameCount > 0) and (LSource.GroupId <> '') and
@@ -303,7 +308,14 @@ begin
     end;
     for J := 0 to I - 1 do
     begin
-      Need(LSource.Sha256 <> ASources[J].Sha256, 'A recording may occur only once; use multiple selections');
+      Need((LSource.Sha256 <> ASources[J].Sha256) or
+        ((LSource.OriginIdentity <> '') and (ASources[J].OriginIdentity <> '') and
+        (LSource.OriginIdentity <> ASources[J].OriginIdentity) and
+        (LSource.SampleRate = ASources[J].SampleRate) and
+        (LSource.FrameCount = ASources[J].FrameCount)),
+        'Repeated audio needs distinct immutable excerpt origins; otherwise use multiple selections');
+      Need((LSource.OriginIdentity = '') or
+        (LSource.OriginIdentity <> ASources[J].OriginIdentity), 'Repeated excerpt origin');
     end;
   end;
   for I := 0 to High(ASelections) do
@@ -540,6 +552,12 @@ begin
         SetLength(LFields, Length(LFields) + 1);
         LFields[High(LFields)] := LSamples[P][I].Tokens[J];
       end;
+    end;
+    if FSources[LContribution.SourceIndex].OriginIdentity <> '' then
+    begin
+      SetLength(LFields, Length(LFields) + 2);
+      LFields[High(LFields) - 1] := 'origin';
+      LFields[High(LFields)] := FSources[LContribution.SourceIndex].OriginIdentity;
     end;
     FContributions[I].Identity := HashFields('pythian.musical.contribution.v1', LFields);
     for J := 0 to I - 1 do

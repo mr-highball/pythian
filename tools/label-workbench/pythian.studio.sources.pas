@@ -527,7 +527,7 @@ var
   LNames, LCollections, LClasses: TJSArray;
   LKey, LTitle, LTags, LFilterValue, LQuery, LCaption: String;
   LIndex, LOther, LWhole, LCount, LPass, LShown: Integer;
-  LMatches, LMember, LWholeIncluded: Boolean;
+  LMatches, LMember, LWholeIncluded, LUnavailable: Boolean;
 begin
   LFilter := TJSHTMLSelectElement(El('collection-filter'));
   LFilterValue := LFilter.value;
@@ -601,14 +601,20 @@ begin
       if StudioNumber(LTrack, 'sample_rate') > 0 then
         Add(LText, 'p', StudioTime(StudioNumber(LTrack, 'frame_count') /
           StudioNumber(LTrack, 'sample_rate')) + ' · ' + LTags, 'track-meta');
-      if (StudioText(LTrack, 'status') = 'missing') or
-        (StudioText(LTrack, 'status') = 'unsupported') then
+      LUnavailable := (StudioText(LTrack, 'status') = 'missing') or
+        (StudioText(LTrack, 'status') = 'unsupported') or
+        (isBoolean(LTrack['original_available']) and not Boolean(LTrack['original_available']));
+      if LUnavailable then
       begin
-        Add(LCard, 'p', 'File unavailable. Restore it in your music folder, then refresh.', 'field-error');
-        if LMember then Button(LCard, 'Remove', 'drop', LKey);
-        Continue;
+        Add(LCard, 'p', 'Original unavailable. Saved clip files can still play and teach.', 'hint');
+        if LPass = 0 then
+        begin
+          if LMember then Button(LCard, 'Remove', 'drop', LKey);
+          Continue;
+        end;
       end;
-      LBar := QuickControls(LCard, LKey, -1);
+      if LUnavailable then LBar := Add(LCard, 'div', '', 'row-actions')
+      else LBar := QuickControls(LCard, LKey, -1);
       if LPass = 0 then
       begin
         if LMember then Button(LBar, '− Remove', 'drop', LKey)
@@ -618,7 +624,8 @@ begin
       Button(LBar, 'Remove', 'drop', LKey);
       LRow := Add(LCard, 'div', '', 'extent-choice');
       IncludeControl(LRow, 'Whole track', 'whole', LKey, LWholeIncluded);
-      Button(LRow, '+ Choose clip', 'open', LKey);
+      if LUnavailable then TJSHTMLInputElement(LRow.querySelector('input')).disabled := True;
+      TJSHTMLButtonElement(Button(LRow, '+ Choose clip', 'open', LKey)).disabled := LUnavailable;
       if LWholeIncluded then LCaption := 'Selected: whole track'
       else LCaption := 'Selected: ' + IntToStr(LCount) + ' clip(s)';
       if not LWholeIncluded and (LCount = 0) then LCaption := 'Not selected for learning';
@@ -638,7 +645,14 @@ begin
         if isArray(LClasses) and (LClasses.length > 0) then
           Add(LRow, 'p', LClasses.join(', '), 'track-meta');
         LBar := QuickControls(LRow, LKey, LOther);
-        Button(LBar, 'Edit', 'edit', IntToStr(LOther));
+        if StudioText(LSelection, 'clip_id') <> '' then
+        begin
+          Add(LRow, 'span', 'Clip file saved', 'track-meta');
+          LText := Add(LBar, 'a', 'Save WAV', 'quiet');
+          LText.setAttribute('href', '/api/studio/clip-audio?id=' + StudioText(LSelection, 'clip_id'));
+          LText.setAttribute('download', 'pythian-clip.wav');
+        end;
+        TJSHTMLButtonElement(Button(LBar, 'Edit', 'edit', IntToStr(LOther))).disabled := LUnavailable;
         Button(LBar, 'Delete', 'remove', IntToStr(LOther));
       end;
     end;
@@ -736,7 +750,7 @@ begin
   begin
     El('source-use-range').textContent := 'Save clip';
   end;
-  WindowAt(FPosition);
+  if AReveal then WindowAt(FPosition);
   if AReveal then TJSHTMLElement(El('source-title')).focus;
   Notice('');
   PreparationState;
@@ -1705,6 +1719,8 @@ var
   LEnd: Double;
   LEntry: String;
   LPath: String;
+  LClip: TJSObject;
+  LOffset: Double;
   LEpoch: Integer;
 begin
   if (FTrack = nil) or not FPlaying then Exit;
@@ -1721,6 +1737,7 @@ begin
     Exit;
   end;
   LPath := '/api/audio?hash=' + StudioText(FTrack, 'source_sha256');
+  LOffset := 0;
   LEntry := StudioText(FTrack, 'entry_id');
   if (LEntry <> '') and (StudioText(FTrack, 'status') = 'available') then
   begin
@@ -1728,11 +1745,22 @@ begin
       '&revision=' + FloatToStr(StudioNumber(FTrack, 'discovery_revision')) +
       '&snapshot=' + StudioText(FTrack, 'entry_snapshot_sha256');
   end;
+  if (FEditing >= 0) and (FEditing < FSelections.length) then
+  begin
+    LClip := TJSObject(FSelections[FEditing]);
+    if (StudioText(LClip, 'clip_id') <> '') and
+      (LStart >= StudioNumber(LClip, 'start_frame')) and
+      (LEnd <= StudioNumber(LClip, 'end_frame')) then
+    begin
+      LPath := '/api/studio/clip-audio?id=' + StudioText(LClip, 'clip_id');
+      LOffset := StudioNumber(LClip, 'start_frame');
+    end;
+  end;
   ReplacePlayer;
   FPreviewStart := LStart / LRate;
   FPosition := FPreviewStart;
   FChunkEnd := LEnd / LRate;
-  FPlayer.src := LPath + '&start=' + FloatToStr(LStart) + '&end=' + FloatToStr(LEnd);
+  FPlayer.src := LPath + '&start=' + FloatToStr(LStart - LOffset) + '&end=' + FloatToStr(LEnd - LOffset);
   FPlayer.load;
   El('source-playback-status').textContent := 'Loading audio at ' + StudioTime(FPosition) + '…';
   UpdateTransport;

@@ -39,6 +39,7 @@ implementation
 
 uses Classes, SysUtils, Math, pythian.audio, pythian.wave.read,
   pythian.wave.stream, pythian.tools.studio.projects,
+  pythian.tools.studio.clips,
   pythian.tools.studio.capture, pythian.tools.listen.assets;
 
 function StageStudioMaterialReference(const ACatalogRoot, AJobId: String;
@@ -50,6 +51,7 @@ var
   LReader: TWaveFrameReader;
   LWriter: TWavePcm16Writer;
   LStaged: TJSONObject;
+  LClipReceipt: TJSONObject;
   LPath: String;
   LHash: String;
   LFrames: Int64;
@@ -66,8 +68,12 @@ begin
   LOutput := nil;
   LWriter := nil;
   LStaged := nil;
+  LClipReceipt := nil;
   try
-    if LSource.Strings['kind'] = 'catalog' then
+    if LSource.Strings['kind'] = 'saved_clip' then
+      LInput := OpenStudioClip(ACatalogRoot, LSource.Strings['clip_id'],
+        LSource.Strings['source_sha256'], LClipReceipt, AProgress)
+    else if LSource.Strings['kind'] = 'catalog' then
       LInput := OpenStudioSourceAudio(ACatalogRoot, LSource.Strings['source_sha256'])
     else
     begin
@@ -108,7 +114,7 @@ begin
       Result.Add('channels', LStaged.Integers['channels']);
       Result.Add('frame_count', LStaged.Int64s['frames']);
       Result.Add('encoding', 'decoded PCM16 reference excerpt');
-      Result.Add('source_binding', 'Immutable catalog/capture reference; original analysis digest is retained separately');
+      Result.Add('source_binding', 'Immutable selected audio reference; parent identity and original range are retained separately');
       ReportWork(AProgress, 'instrumental_reference', wuFrames, LFrames, LFrames);
     except
       FreeAndNil(Result);
@@ -120,6 +126,7 @@ begin
     LOutput.Free;
     LReader.Free;
     LInput.Free;
+    LClipReceipt.Free;
   end;
 end;
 

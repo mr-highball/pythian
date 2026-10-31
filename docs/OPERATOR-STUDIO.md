@@ -39,6 +39,21 @@ Changes save automatically. **Playlists** reopens saved choices or starts a new
 playlist. Earlier projects open as separate playlists; original snapshots and
 review answers stay preserved. Saving choices never starts learning.
 
+Each saved clip becomes an independent WAV automatically. **Clip file saved**
+and **Save WAV** appear when it is ready. Copying runs on the host with progress,
+Stop and retry, so the phone can leave and reconnect. Labels and influence remain
+linked without copying the audio again. Existing ranges are saved when used.
+Learning verifies and reads these clip files; it does not rescan their full parent
+recordings. A saved clip still works when its original is unavailable. Missing or
+changed clip data fails explicitly instead of silently substituting the original.
+
+The host's configured `PYTHIAN_STUDIO_ARTIFACT_ROOT` holds canonical WAVs and
+`<catalog-namespace>/clips/<clip-id>.json` origin receipts. Each receipt links the
+original metadata snapshot, exact source-frame range, sample clock, audio hash
+and known license/provenance. Audio preserves source sample bytes and format;
+collection/clip labels remain in immutable playlist snapshots. The original file
+is retained. Library discovery metadata is not claimed as a full audio digest.
+
 ## 3. Generate
 
 Choose **Track length** in seconds, minutes or hours, then press **Generate music**.
@@ -62,9 +77,9 @@ File reads,
 pitch/beat detection and intermediate saves update the activity without resetting
 that progress. These are workflow steps, not an elapsed-time estimate;
 the line below the bar shows the current file bytes, audio frames or work count.
-Checking a full file's identity happens before learning its selected audio.
-Independent saved clip files are [in progress](TODO/NS-6_saved-clips_01.md);
-the progress repair itself does not remove full-parent reads yet.
+Whole-track learning checks the full file's identity. Saved clips check only
+their independent audio. Original comparison identifies the selected range in
+the parent track; learning receipts keep local clip and original coordinates.
 **Stop generation** cancels at a native checkpoint. A reconnect retries the saved
 request rather than starting a duplicate job.
 

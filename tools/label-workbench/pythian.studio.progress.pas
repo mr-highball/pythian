@@ -78,6 +78,11 @@ begin
     Exit;
   end;
   case AStage of
+    'clip_open_parent': Result := 'Open original for clip saving';
+    'wave_copy_range': Result := 'Save clip audio';
+    'wave_copy_range_ready', 'clip_publish': Result := 'Finish clip file';
+    'clip_ready', 'clip_save_progress': Result := 'Save clip files';
+    'clip_verified': Result := 'Check saved clip';
     'verifying_original_bytes': Result := 'Check original file';
     'verifying_catalog_bytes', 'verifying_source_bytes': Result := 'Check saved audio file';
     'hashing_source_bytes': Result := 'Check recording identity';
