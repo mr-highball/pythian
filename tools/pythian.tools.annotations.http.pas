@@ -1224,8 +1224,7 @@ begin
       Need(TryStrToInt(QueryValue(ARequest.Query, 'part'), LIndex), 'Invalid instrumental part');
       LMediaStream := OpenStudioInstrumentalAudio(ACatalogRoot, LText, LIndex, LHash);
       try
-        LText := StudioJobDirectory(ACatalogRoot, LText) + PathDelim +
-          'part-' + IntToStr(LIndex) + '.wav';
+        LText := LMediaStream.FileName;
         AHandedOff := DispatchListeningMedia(ASocket, LMediaStream,
           ARequest.Method, ARequest.Range, ARequest.IfRange, LHash, LText, LMediaStream.Size);
         if AHandedOff then LMediaStream := nil;

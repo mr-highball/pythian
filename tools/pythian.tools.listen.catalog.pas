@@ -66,12 +66,11 @@ uses
   {$ENDIF}
   pythian.audio,
   pythian.hash,
-  pythian.wave.read,
+  pythian.tools.listen.assets,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard;
 
 const
-  CMaximumAssetBytes: Int64 = 17179869184;
   CMaximumQueueBytes = 1048576;
   CMaximumPacketBytes = 4194304;
   CMaximumTransactionBytes = 32768;
@@ -81,15 +80,9 @@ const
   CMaximumValues = 32;
   CMaximumComments = 64;
   CMaximumRevision = 100000;
-  CCopyBytes = 65536;
 
 type
-  TAssetInfo = record
-    Bytes: Int64;
-    SampleRate: Integer;
-    Channels: Integer;
-    Frames: Int64;
-  end;
+  TAssetInfo = TListeningAssetInfo;
 
 procedure Need(const ACondition: Boolean; const AReason: String);
 begin
@@ -250,7 +243,7 @@ begin
   else
   begin
     Need(AStorage = 'listening', 'invalid asset storage');
-    Result := ListenPath(ACatalogRoot) + 'assets' + PathDelim + AHash + '.wav';
+    Result := ListeningAssetPath(ACatalogRoot, AHash);
   end;
 end;
 
@@ -294,49 +287,15 @@ begin
   Need(DirectoryExists(LRoot), 'catalog root does not exist');
   CheckNotLink(LRoot);
   CheckNotLink(LRoot + 'listening');
-  CheckNotLink(LRoot + 'listening' + PathDelim + 'assets');
-  Need(ForceDirectories(LRoot + 'listening' + PathDelim + 'assets'),
-    'cannot create listening asset directory');
+  Need(ForceDirectories(LRoot + 'listening'), 'cannot create listening directory');
   CheckNotLink(LRoot + 'listening');
-  CheckNotLink(LRoot + 'listening' + PathDelim + 'assets');
+  EnsureListeningAssetStorage(ACatalogRoot);
 end;
 
 function InspectWave(const APath, AHash: String;
   const AVerifyHash: Boolean): TAssetInfo;
-var
-  LStream: TFileStream;
-  LReader: TWaveFrameReader;
 begin
-  Result := Default(TAssetInfo);
-  CheckNotLink(APath);
-  LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
-  try
-    Need((LStream.Size >= 44) and (LStream.Size <= CMaximumAssetBytes),
-      'asset exceeds WAV size bound');
-    Result.Bytes := LStream.Size;
-    if AVerifyHash then
-    begin
-      Need(Sha256Stream(LStream, Result.Bytes) = AHash,
-        'asset SHA256 differs from declaration');
-    end;
-    LStream.Position := 0;
-    LReader := TWaveFrameReader.Create(LStream);
-    try
-      Result.SampleRate := LReader.SampleRate;
-      Result.Channels := LReader.Channels;
-      Result.Frames := LReader.FrameCount;
-      { 1 kHz RIFF PCM is parseable here but Chromium's media demuxer rejects
-        it. Keep 8 kHz as a conservative intake floor; browser QA currently
-        verifies the positive path at 48 kHz, not every rate above this floor. }
-      Need(Result.SampleRate >= 8000,
-        'listening WAV sample rate below 8000 Hz is unsupported for browser playback');
-      Need(Result.Frames > 0, 'asset WAV has no frames');
-    finally
-      LReader.Free;
-    end;
-  finally
-    LStream.Free;
-  end;
+  Result := InspectListeningWave(APath, AHash, AVerifyHash);
 end;
 
 function NewStagePath(const ATarget: String): String;
@@ -387,67 +346,9 @@ begin
 end;
 
 function StageListeningAsset(const ACatalogRoot, AInputPath: String): TJSONObject;
-var
-  LInput: TFileStream;
-  LOutput: TFileStream;
-  LHash: String;
-  LPath: String;
-  LStage: String;
-  LInfo: TAssetInfo;
-  LBuffer: array[0..CCopyBytes - 1] of Byte;
-  LRead: Integer;
 begin
   CheckStorage(ACatalogRoot);
-  LInput := TFileStream.Create(ExpandFileName(AInputPath),
-    fmOpenRead or fmShareDenyWrite);
-  try
-    Need((LInput.Size >= 44) and (LInput.Size <= CMaximumAssetBytes),
-      'stage WAV exceeds size bound');
-    LHash := Sha256Stream(LInput, LInput.Size);
-    LPath := AssetPath(ACatalogRoot, 'listening', LHash);
-    if not FileExists(LPath) then
-    begin
-      LStage := NewStagePath(LPath);
-      try
-        LInput.Position := 0;
-        LOutput := TFileStream.Create(LStage, fmCreate or fmShareExclusive);
-        try
-          repeat
-            LRead := LInput.Read(LBuffer, SizeOf(LBuffer));
-            if LRead > 0 then
-            begin
-              LOutput.WriteBuffer(LBuffer, LRead);
-            end;
-          until LRead = 0;
-        finally
-          LOutput.Free;
-        end;
-        LInfo := InspectWave(LStage, LHash, True);
-        CheckNotLink(LPath);
-        if not FileExists(LPath) then
-        begin
-          { Another publisher may have installed this content hash since the
-            existence check. The primary inspector below still verifies it. }
-          Need(RenameFile(LStage, LPath) or FileExists(LPath), 'cannot publish staged asset');
-        end;
-      finally
-        if FileExists(LStage) then
-        begin
-          SysUtils.DeleteFile(LStage);
-        end;
-      end;
-    end;
-    LInfo := InspectWave(LPath, LHash, True);
-  finally
-    LInput.Free;
-  end;
-  Result := TJSONObject.Create;
-  Result.Add('version', 1);
-  Result.Add('sha256', LHash);
-  Result.Add('bytes', LInfo.Bytes);
-  Result.Add('sample_rate', LInfo.SampleRate);
-  Result.Add('channels', LInfo.Channels);
-  Result.Add('frames', LInfo.Frames);
+  Result := ImportListeningAsset(ACatalogRoot, AInputPath);
 end;
 
 function NormalizeProvenance(const AInput: TJSONObject;
@@ -1865,8 +1766,10 @@ begin
     LPath := AssetPath(ACatalogRoot, LAsset.Strings['storage'],
       LAsset.Strings['sha256']);
     CheckNotLink(LPath);
-    VerifyGuardedSource(LPath, LAsset.Strings['sha256'],
-      LAsset.Int64s['bytes']);
+    if LAsset.Strings['storage'] = 'listening' then
+      VerifyListeningAsset(LPath, LAsset.Strings['sha256'], LAsset.Int64s['bytes'])
+    else
+      VerifyGuardedSource(LPath, LAsset.Strings['sha256'], LAsset.Int64s['bytes']);
   end;
 end;
 

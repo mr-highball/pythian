@@ -182,6 +182,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Hash compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.hash$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Hash checks failed' }
+  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.listen.assets.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Listening asset compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.listen.assets$executableSuffix") (Join-Path $buildRoot ('listening-assets-' + [Guid]::NewGuid().ToString('N')))
+  if ($LASTEXITCODE -ne 0) { throw 'Listening asset ownership and publication checks failed' }
   & $compilerPath @compilerArgs 'tests/pythian.tests.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.progress$executableSuffix")

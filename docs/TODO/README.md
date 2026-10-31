@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**9 open tasks · 108 total effort units · 11 current-goal DONE · 47 / 108 accepted (43.52%).**
+**9 open tasks · 113 total effort units · 12 current-goal DONE · 52 / 113 accepted (46.02%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
 The operator's latest priority is [Library → Selection → Generate](NS-6_simple-studio_01.md):
 a simple local music/playlist interface whose Generate action actually learns
@@ -54,7 +54,7 @@ and role/passage graph regeneration keep graph-controls open without partial cre
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Nine later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Ten later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -76,11 +76,12 @@ continuity experiments are selected.
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
 | [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
 | [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) — bound durable fine-phase publication | 2 | Accepted; unchanged native consumers, cancellation and actual HTTP worker |
-| [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio |
+| [NS-6_instrumental-artifacts_01 — DONE](DONE/NS-6_instrumental-artifacts_01.md) — one generated-audio store and responsive verified access | 5 | Accepted; actual native/browser jobs, shared review playback, ownership and legacy reads |
+| [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Instrumental Studio + canonical artifacts |
 
-The two tables together are all 20 current-goal tasks (9 open, eleven DONE),
-totaling 108 units: 61 open and 47 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 33, NS-5 15, NS-6 33. NS-1 remains a preserved core
+The two tables together are all 21 current-goal tasks (9 open, twelve DONE),
+totaling 113 units: 61 open and 52 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 33, NS-5 15, NS-6 38. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

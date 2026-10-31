@@ -54,6 +54,7 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.jobs, pythian.tools.studio.instrumental.config,
   pythian.tools.studio.material, pythian.tools.studio.material.reference,
   pythian.tools.studio.playlist.learning,
+  pythian.tools.listen.assets,
   pythian.tools.listen.catalog;
 
 const
@@ -95,8 +96,7 @@ var
   LSettings: array[0..6] of TBusSettings;
   LGraph: TBusGraph;
   LPlayer: TScheduledSynth;
-  LFile: TFileStream;
-  LSink: TStreamAudioSink;
+  LAssetWriter: TListeningAssetWriter;
   LWriter: TWavePcm16Writer;
   LSamples: TAudioSamples;
   LLeft, LRight: Double;
@@ -415,7 +415,7 @@ begin
       Dry stems have the saved mix level baked in; mute/solo never changes notes. }
     for LRender := 0 to 6 do
     begin
-      LGraph := nil; LPlayer := nil; LFile := nil; LSink := nil; LWriter := nil;
+      LGraph := nil; LPlayer := nil; LAssetWriter := nil; LWriter := nil;
       try
         for LRole := 0 to 6 do
         begin
@@ -428,10 +428,9 @@ begin
         for LRole := 0 to 5 do LGraph.AddSend(LRole, 6, stPostFader, 1, 0);
         LGraph.AddEffect(6, TLimiterEffect.Create(LPlan.SampleRate, -1, 0.08));
         LPlayer := LPlan.CreatePlayer(LGraph);
-        LPath := 'part-' + IntToStr(LRender) + '.wav';
-        LFile := TFileStream.Create(LDirectory + PathDelim + LPath, fmCreate);
-        LSink := TStreamAudioSink.Create(LFile);
-        LWriter := TWavePcm16Writer.Create(LSink, LPlan.SampleRate, 2, LPlan.FrameCount);
+        LAssetWriter := TListeningAssetWriter.Create(ACatalogRoot,
+          AJobId + '-part-' + IntToStr(LRender));
+        LWriter := TWavePcm16Writer.Create(LAssetWriter, LPlan.SampleRate, 2, LPlan.FrameCount);
         LDone := 0;
         while LDone < LPlan.FrameCount do
         begin
@@ -450,14 +449,14 @@ begin
             Int64(LRender) * LPlan.FrameCount + LDone, 7 * LPlan.FrameCount);
         end;
         LWriter.Finish;
+        ReportWork(AProgress, 'instrumental_publish', wuItems, LRender, 7);
+        LStaged := LAssetWriter.Finish;
       finally
-        LWriter.Free; LSink.Free; LFile.Free; LPlayer.Free; LGraph.Free;
+        LWriter.Free; LAssetWriter.Free; LPlayer.Free; LGraph.Free;
       end;
-      ReportWork(AProgress, 'instrumental_publish', wuItems, LRender, 7);
-      LStaged := StageListeningAsset(ACatalogRoot, LDirectory + PathDelim + LPath);
       try
         LRow := TJSONObject.Create;
-        LRow.Add('relative_file', LPath);
+        LRow.Add('storage', 'listening');
         LRow.Add('wav_sha256', LStaged.Strings['sha256']);
         LRow.Add('wav_bytes', LStaged.Int64s['bytes']);
         LRow.Add('sample_rate', LPlan.SampleRate);

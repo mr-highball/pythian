@@ -33,6 +33,28 @@ uses
   Classes,
   pythian.audio;
 
+type
+  TSha256Words = array[0..7] of Cardinal;
+  TSha256Block = array[0..63] of Byte;
+  { Fixed-storage primary accumulator. Updates validate before mutation; Finish
+    seals the prefix and is repeatable. Byte/stream/output consumers share its
+    compression, padding and byte accounting. It owns no I/O or callback. }
+  TSha256Hasher = class
+  private
+    FState: TSha256Words;
+    FBlock: TSha256Block;
+    FUsed: Integer;
+    FByteCount: Int64;
+    FFinished: Boolean;
+    FDigest: String;
+  public
+    constructor Create;
+    procedure Update(const ABytes: array of Byte; const AOffset, ACount: SizeInt);
+    function Finish: String;
+    property ByteCount: Int64 read FByteCount;
+    property Finished: Boolean read FFinished;
+  end;
+
 { SHA256 of exact bytes, retaining the Phanes provenance-helper contract.
   Native FIPS 180-4 algorithm with fixed-size working storage and RTL only.
   Digest publication follows the final callback, including forwarded native
@@ -60,8 +82,8 @@ uses
   pythian.stream.bytes;
 
 type
-  TShaState = array[0..7] of Cardinal;
-  TShaBlock = array[0..63] of Byte;
+  TShaState = TSha256Words;
+  TShaBlock = TSha256Block;
 
 function AddWords(const A, B: Cardinal): Cardinal; inline;
 begin
@@ -178,137 +200,139 @@ begin
   end;
 end;
 
-function Sha256Bytes(const ABytes: TAudioBytes;
-  const AProgress: TWorkProgressCallback): String;
+constructor TSha256Hasher.Create;
+var
+  I: Integer;
+begin
+  inherited Create;
+  for I := 0 to 7 do FState[I] := CInitial[I];
+  for I := 0 to 63 do FBlock[I] := 0;
+end;
+
+procedure TSha256Hasher.Update(const ABytes: array of Byte;
+  const AOffset, ACount: SizeInt);
+const
+  CMaximumHashBytes: Int64 = {$ifdef pas2js}9007199254740991{$else}2305843009213693951{$endif};
+var
+  LAt, LRemaining: SizeInt;
+  LTake, I: Integer;
+begin
+  if FFinished then raise EAudio.Create('SHA256 prefix is already finished');
+  if (AOffset < 0) or (ACount < 0) or (AOffset > Length(ABytes)) or
+    (ACount > Length(ABytes) - AOffset) or
+    (FByteCount > CMaximumHashBytes - ACount) then
+    raise EAudio.Create('Invalid incremental SHA256 extent');
+  LAt := AOffset;
+  LRemaining := ACount;
+  while LRemaining > 0 do
+  begin
+    LTake := 64 - FUsed;
+    if LRemaining < LTake then LTake := LRemaining;
+    {$ifdef pas2js}
+    for I := 0 to LTake - 1 do FBlock[FUsed + I] := ABytes[LAt + I];
+    {$else}
+    Move(ABytes[LAt], FBlock[FUsed], LTake);
+    {$endif}
+    Inc(FUsed, LTake);
+    Inc(LAt, LTake);
+    Dec(LRemaining, LTake);
+    if FUsed = 64 then
+    begin
+      Compress(FState, FBlock);
+      FUsed := 0;
+    end;
+  end;
+  Inc(FByteCount, ACount);
+end;
+
+function TSha256Hasher.Finish: String;
 var
   LState: TShaState;
   LBlock: TShaBlock;
+  I: Integer;
+begin
+  if not FFinished then
+  begin
+    { Explicit value copies also keep actual pas2js instances independent. }
+    for I := 0 to 7 do LState[I] := FState[I];
+    for I := 0 to 63 do LBlock[I] := FBlock[I];
+    for I := FUsed to 63 do LBlock[I] := 0;
+    FDigest := FinishHash(LState, LBlock, FUsed, QWord(FByteCount));
+    FFinished := True;
+  end;
+  Result := FDigest;
+end;
+
+function Sha256Bytes(const ABytes: TAudioBytes;
+  const AProgress: TWorkProgressCallback): String;
+var
+  LHasher: TSha256Hasher;
   LOffset: SizeInt;
-  LRemaining: Integer;
-  LIndex: Integer;
+  LCount: Integer;
   LDigest: String;
 begin
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, Length(ABytes));
-  LState := CInitial;
-  LOffset := 0;
-  while Length(ABytes) - LOffset >= 64 do
-  begin
-    {$ifdef pas2js}
-    for LIndex := 0 to 63 do
+  LHasher := TSha256Hasher.Create;
+  try
+    LOffset := 0;
+    while LOffset < Length(ABytes) do
     begin
-      LBlock[LIndex] := ABytes[LOffset + LIndex];
+      LCount := 8192;
+      if Length(ABytes) - LOffset < LCount then LCount := Length(ABytes) - LOffset;
+      LHasher.Update(ABytes, LOffset, LCount);
+      Inc(LOffset, LCount);
+      if LOffset < Length(ABytes) then
+        ReportWork(AProgress, 'verify_audio_bytes', wuBytes, LOffset, Length(ABytes));
     end;
-    {$else}
-    Move(ABytes[LOffset], LBlock[0], 64);
-    {$endif}
-    Compress(LState, LBlock);
-    Inc(LOffset, 64);
-    if (LOffset < Length(ABytes)) and (LOffset mod 8192 = 0) then ReportWork(AProgress, 'verify_audio_bytes', wuBytes, LOffset, Length(ABytes));
+    LDigest := LHasher.Finish;
+    ReportWork(AProgress, 'verify_audio_bytes', wuBytes, Length(ABytes), Length(ABytes));
+    Result := LDigest;
+  finally
+    LHasher.Free;
   end;
-  for LIndex := 0 to 63 do
-  begin
-    LBlock[LIndex] := 0;
-  end;
-  LRemaining := Length(ABytes) - LOffset;
-  if LRemaining > 0 then
-  begin
-    {$ifdef pas2js}
-    for LIndex := 0 to LRemaining - 1 do
-    begin
-      LBlock[LIndex] := ABytes[LOffset + LIndex];
-    end;
-    {$else}
-    Move(ABytes[LOffset], LBlock[0], LRemaining);
-    {$endif}
-  end;
-  LDigest := FinishHash(LState, LBlock, LRemaining, QWord(Length(ABytes)));
-  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, Length(ABytes), Length(ABytes));
-  Result := LDigest;
 end;
 
 function Sha256Stream(const AStream: TStream; const AByteCount: Int64;
   const AProgress: TWorkProgressCallback): String;
 var
-  LState: TShaState;
-  LBlock: TShaBlock;
+  LHasher: TSha256Hasher;
   LBuffer: TAudioBytes;
   LRemaining: Int64;
-  LChunk: Integer;
-  LRead: Integer;
-  LReceived: Integer;
-  LOffset: Integer;
-  LIndex: Integer;
+  LCount, LRead, LReceived: Integer;
   LDigest: String;
 begin
   if (AStream = nil) or (AByteCount < 0) or
     (AByteCount > 2305843009213693951)
     {$ifdef pas2js} or (AByteCount > 9007199254740991) {$endif} then
-  begin
     raise EAudio.Create('Invalid SHA256 stream or byte count');
-  end;
   ReportWork(AProgress, 'verify_audio_bytes', wuBytes, 0, AByteCount);
-  SetLength(LBuffer, 8192);
-  LState := CInitial;
-  LRemaining := AByteCount;
-  for LIndex := 0 to 63 do
-  begin
-    LBlock[LIndex] := 0;
-  end;
-  LOffset := 0;
-  LChunk := 0;
-  while LRemaining > 0 do
-  begin
-    LChunk := 8192;
-    if LRemaining < LChunk then
+  LHasher := TSha256Hasher.Create;
+  try
+    SetLength(LBuffer, 8192);
+    LRemaining := AByteCount;
+    while LRemaining > 0 do
     begin
-      LChunk := Integer(LRemaining);
-    end;
-    LReceived := 0;
-    while LReceived < LChunk do
-    begin
-      LRead := ReadStreamBytes(AStream, LBuffer, LReceived, LChunk - LReceived);
-      if (LRead <= 0) or (LRead > LChunk - LReceived) then
+      LCount := 8192;
+      if LRemaining < LCount then LCount := Integer(LRemaining);
+      LReceived := 0;
+      while LReceived < LCount do
       begin
-        raise EAudio.Create('SHA256 source ended early or returned an invalid read count');
+        LRead := ReadStreamBytes(AStream, LBuffer, LReceived, LCount - LReceived);
+        if (LRead <= 0) or (LRead > LCount - LReceived) then
+          raise EAudio.Create('SHA256 source ended early or returned an invalid read count');
+        Inc(LReceived, LRead);
       end;
-      Inc(LReceived, LRead);
+      LHasher.Update(LBuffer, 0, LCount);
+      Dec(LRemaining, LCount);
+      if LRemaining > 0 then
+        ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount - LRemaining, AByteCount);
     end;
-    LOffset := 0;
-    while LChunk - LOffset >= 64 do
-    begin
-      {$ifdef pas2js}
-      for LIndex := 0 to 63 do
-      begin
-        LBlock[LIndex] := LBuffer[LOffset + LIndex];
-      end;
-      {$else}
-      Move(LBuffer[LOffset], LBlock[0], 64);
-      {$endif}
-      Compress(LState, LBlock);
-      Inc(LOffset, 64);
-    end;
-    Dec(LRemaining, LChunk);
-    if LRemaining > 0 then
-      ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount - LRemaining, AByteCount);
+    LDigest := LHasher.Finish;
+    ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);
+    Result := LDigest;
+  finally
+    LHasher.Free;
   end;
-  for LIndex := 0 to 63 do
-  begin
-    LBlock[LIndex] := 0;
-  end;
-  if LChunk > LOffset then
-  begin
-    {$ifdef pas2js}
-    for LIndex := 0 to LChunk - LOffset - 1 do
-    begin
-      LBlock[LIndex] := LBuffer[LOffset + LIndex];
-    end;
-    {$else}
-    Move(LBuffer[LOffset], LBlock[0], LChunk - LOffset);
-    {$endif}
-  end;
-  LDigest := FinishHash(LState, LBlock, LChunk - LOffset, QWord(AByteCount));
-  ReportWork(AProgress, 'verify_audio_bytes', wuBytes, AByteCount, AByteCount);
-  Result := LDigest;
 end;
 
 procedure RequireSha256HexField(const ALength, AOffset: Integer; const AHash: String);

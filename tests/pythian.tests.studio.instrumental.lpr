@@ -27,7 +27,8 @@ program StudioInstrumentalConformance;
 {$H+}
 uses {$IFDEF UNIX}cthreads,{$ENDIF} Classes, SysUtils, fpjson,
   pythian.audio, pythian.wave.read, pythian.tools.studio.projects,
-  pythian.tools.studio.jobs, pythian.tools.studio.worker, pythian.tools.listen.catalog;
+  pythian.tools.studio.jobs, pythian.tools.studio.worker, pythian.tools.listen.catalog,
+  pythian.tools.listen.assets;
 type
   TInstrumentalCancelWorker = class(TThread)
   public
@@ -127,6 +128,11 @@ begin
         Check(LJob.Objects['results'].Arrays['graph'].Count = 16, 'Actual sixteen passes');
         Check(LJob.Objects['results'].Arrays['sources'].Count = 0, 'No used source audio invented');
         LHash := LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
+        Check(LJob.Objects['results'].Arrays['outputs'].Objects[0].Get('storage', '') = 'listening',
+          'Job output uses canonical listening store');
+        Check(FileExists(ListeningAssetPath(ARoot, LHash)) and
+          not FileExists(StudioJobDirectory(ARoot, LRequest.Strings['job_id']) + PathDelim + 'part-6.wav'),
+          'Generated mix exists once, without per-job WAV copy');
         if I = 1 then
         begin
           LFirstHash := LHash;
@@ -163,6 +169,12 @@ begin
       Check(LAsset.Objects['provenance'].Find('source_sha256') = nil, 'Authored feedback has no fictitious WAV');
       Check(Length(LAsset.Objects['provenance'].Strings['material_sha256']) = 64,
         'Feedback preserves authored material identity');
+      LPrepared := ResolveListeningAsset(ARoot, LQueue.Arrays['items'].Objects[0].Strings['id'],
+        LAsset.Strings['id']);
+      try
+        Check(LPrepared.Strings['path'] = ListeningAssetPath(ARoot, LAsset.Strings['sha256']),
+          'Review and job use the same canonical bytes');
+      finally LPrepared.Free; end;
     finally LQueue.Free end;
     LRequest.Strings['job_id'] := 'invalid';
     LRequest.Objects['instrumental'].Integers['cells'] := 257;

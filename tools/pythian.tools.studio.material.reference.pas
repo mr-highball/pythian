@@ -38,17 +38,16 @@ function StageStudioMaterialReference(const ACatalogRoot, AJobId: String;
 implementation
 
 uses Classes, SysUtils, Math, pythian.audio, pythian.wave.read,
-  pythian.wave.stream, pythian.tools.studio.jobs, pythian.tools.studio.projects,
-  pythian.tools.studio.capture, pythian.tools.listen.catalog;
+  pythian.wave.stream, pythian.tools.studio.projects,
+  pythian.tools.studio.capture, pythian.tools.listen.assets;
 
 function StageStudioMaterialReference(const ACatalogRoot, AJobId: String;
   const AMaterial: TJSONObject; const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LSource: TJSONObject;
   LInput: TFileStream;
-  LOutput: TFileStream;
+  LOutput: TListeningAssetWriter;
   LReader: TWaveFrameReader;
-  LSink: TStreamAudioSink;
   LWriter: TWavePcm16Writer;
   LStaged: TJSONObject;
   LPath: String;
@@ -65,7 +64,6 @@ begin
   LInput := nil;
   LReader := nil;
   LOutput := nil;
-  LSink := nil;
   LWriter := nil;
   LStaged := nil;
   try
@@ -85,10 +83,8 @@ begin
       (LFrames < 1) or (LFrames > Int64(LReader.SampleRate) * 30) then
       raise EAudio.Create('Original reference range differs from its saved source clock');
     LReader.SeekFrame(LSource.Int64s['start_frame']);
-    LPath := StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim + 'part-7.wav';
-    LOutput := TFileStream.Create(LPath, fmCreate);
-    LSink := TStreamAudioSink.Create(LOutput);
-    LWriter := TWavePcm16Writer.Create(LSink, LReader.SampleRate, LReader.Channels, LFrames);
+    LOutput := TListeningAssetWriter.Create(ACatalogRoot, AJobId + '-reference');
+    LWriter := TWavePcm16Writer.Create(LOutput, LReader.SampleRate, LReader.Channels, LFrames);
     LDone := 0;
     while LDone < LFrames do
     begin
@@ -101,13 +97,12 @@ begin
       Inc(LDone, LCount);
     end;
     LWriter.Finish;
+    LStaged := LOutput.Finish;
     FreeAndNil(LWriter);
-    FreeAndNil(LSink);
     FreeAndNil(LOutput);
-    LStaged := StageListeningAsset(ACatalogRoot, LPath);
     Result := TJSONObject(LSource.Clone);
     try
-      Result.Add('relative_file', 'part-7.wav');
+      Result.Add('storage', 'listening');
       Result.Add('wav_sha256', LStaged.Strings['sha256']);
       Result.Add('wav_bytes', LStaged.Int64s['bytes']);
       Result.Add('channels', LStaged.Integers['channels']);
@@ -122,7 +117,6 @@ begin
   finally
     LStaged.Free;
     LWriter.Free;
-    LSink.Free;
     LOutput.Free;
     LReader.Free;
     LInput.Free;

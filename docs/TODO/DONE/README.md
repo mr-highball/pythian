@@ -2,14 +2,16 @@
 
 ## Current goal: instrumental exploration
 
-Eleven current-goal tasks are accepted: **47 / 108 effort units (43.52%)**. Their
+Twelve current-goal tasks are accepted: **52 / 113 effort units (46.02%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
 into actual providers/instruments. This is not musical preference or whole-corpus
-style-learning acceptance. There are 108 DONE files: eleven current, 97 historical.
+style-learning acceptance. Canonical generated audio/storage is also accepted;
+long Studio generation remains open. There are109 DONE files: twelve current,97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_instrumental-artifacts_01](NS-6_instrumental-artifacts_01.md) | 2026-10-31 | 5/10 | Hash during output, canonical configured audio store, shared job/review playback, native identity reuse and legacy access |
 | [NS-4_assignment-restore_01](NS-4_assignment-restore_01.md) | 2026-10-30 | 3/10 | Actual models/controls and generated/caller-lock ownership reopen without solving; selected/dependent regeneration preserves unrelated states |
 | [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md) | 2026-10-29 | 7/10 | Actual musical WFC → primary instruments/buses/scheduler, inspectable graph and source-free caller |
 | [NS-2_percussion_01](NS-2_percussion_01.md) | 2026-10-30 | 6/10 | Source-free core kick/snare/hat, conditional rhythmic graph, six-part instrumental caller |

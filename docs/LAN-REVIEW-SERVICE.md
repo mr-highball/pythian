@@ -114,6 +114,23 @@ shared job staging allocator an explicit short host root; the latter stores
 source/clock/policy-bound musical proposals reused by playlist learning.
 Both are host configuration inherited by native workers, never browser paths.
 
+Set `PYTHIAN_STUDIO_ARTIFACT_ROOT` to
+`E:/CodexWork/pythian/runs/studio-audio` on this workstation. The service and
+its workers must inherit the same setting. New instrumental mix/stem WAVs and
+reference excerpts are written once into this store, in a catalog-specific
+namespace. Jobs and listening reviews share those files. Existing catalog assets
+and saved per-job WAVs remain readable without moving private audio or answers.
+Unconfigured installations keep their existing `catalog/listening/assets` root.
+
+The primary Pascal sink hashes confirmed output blocks during writing. A complete
+WAV is atomically renamed to its content hash. Incomplete `.partial` files retain
+their job label as local failure evidence; they never enter a review. Native
+Windows publication receipts record file identity and byte count, letting the
+existing guarded reader verify the same file without rereading gigabytes before
+first playback. Changed identity is rejected; original/legacy assets without a
+receipt still use ordinary hash verification. Receipts and host paths stay on the
+host. Other hosts retain ordinary hash verification.
+
 Open the selected host on port18097: source review is at `/`, and complete
 single/paired listening is at `/listen.html`, and the music playlist is at
 `/studio.html`. Playlist choices save automatically; Generate starts the explicit

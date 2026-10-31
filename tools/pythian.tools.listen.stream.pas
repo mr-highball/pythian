@@ -46,7 +46,7 @@ uses
   Sockets,
   {$IFDEF MSWINDOWS}WinSock2,{$ELSE}BaseUnix,{$ENDIF}
   pythian.tools.net.transport,
-  pythian.tools.annotations.sourceguard;
+  pythian.tools.listen.assets;
 
 const
   CBlockBytes = 65536;
@@ -260,7 +260,7 @@ begin
       if FVerifyPath <> '' then
       begin
         try
-          VerifyGuardedSource(FVerifyPath, FHash, FExpectedBytes);
+          VerifyListeningAsset(FVerifyPath, FHash, FExpectedBytes);
           if FStream.Size <> FExpectedBytes then
             raise Exception.Create('Listening asset changed after verification');
         except

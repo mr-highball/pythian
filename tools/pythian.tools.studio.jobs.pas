@@ -110,6 +110,7 @@ uses
   pythian.tools.studio.instrumental.config,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
+  pythian.tools.listen.assets,
   pythian.tools.studio.projects,
   pythian.tools.studio.&library.discovery
   {$IFDEF MSWINDOWS}, Windows{$ENDIF};
@@ -1188,10 +1189,19 @@ begin
     end
     else if APart = 6 then LAsset := LJob.Objects['results'].Arrays['outputs'].Objects[0]
     else LAsset := LJob.Objects['results'].Arrays['parts'].Objects[APart];
-    LPath := StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim +
-      'part-' + IntToStr(APart) + '.wav';
     AHash := LAsset.Strings['wav_sha256'];
-    VerifyGuardedSource(LPath, AHash, LAsset.Int64s['wav_bytes']);
+    if LAsset.Get('storage', '') = 'listening' then
+    begin
+      LPath := ListeningAssetPath(ACatalogRoot, AHash);
+      VerifyListeningAsset(LPath, AHash, LAsset.Int64s['wav_bytes']);
+    end
+    else
+    begin
+      { Actual saved jobs still own their old per-job files. }
+      LPath := StudioJobDirectory(ACatalogRoot, AJobId) + PathDelim +
+        'part-' + IntToStr(APart) + '.wav';
+      VerifyGuardedSource(LPath, AHash, LAsset.Int64s['wav_bytes']);
+    end;
     Result := OpenStudioReadStream(LPath);
   finally
     LJob.Free;

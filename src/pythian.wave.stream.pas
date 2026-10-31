@@ -32,6 +32,7 @@ interface
 uses
   Classes,
   pythian.audio,
+  pythian.hash,
   pythian.progress;
 
 const
@@ -55,6 +56,25 @@ type
   public
     constructor Create(const AStream: TStream);
     procedure WriteBytes(const ABytes: array of Byte); override;
+  end;
+
+  { Borrows the sink. Hashes only fully confirmed blocks; a sink/hash exception
+    permanently poisons publication. Finish seals the digest and is repeatable.
+    No full output buffer or second read is required. Calls are non-reentrant. }
+  THashedAudioByteSink = class(TAudioByteSink)
+  private
+    FSink: TAudioByteSink;
+    FHasher: TSha256Hasher;
+    FFailed: Boolean;
+    FWriting: Boolean;
+    function GetByteCount: Int64;
+  public
+    constructor Create(const ASink: TAudioByteSink);
+    destructor Destroy; override;
+    procedure WriteBytes(const ABytes: array of Byte); override;
+    function Finish: String;
+    property ByteCount: Int64 read GetByteCount;
+    property Failed: Boolean read FFailed;
   end;
 
   { Sequential PCM16 RIFF/RF64 writer extracted from WFC's sink contract.
@@ -133,6 +153,53 @@ begin
     raise EAudio.Create('Audio sink requires a stream');
   end;
   FStream := AStream;
+end;
+
+constructor THashedAudioByteSink.Create(const ASink: TAudioByteSink);
+begin
+  inherited Create;
+  if ASink = nil then
+    raise EAudio.Create('Hashed audio sink requires a sink');
+  FSink := ASink;
+  FHasher := TSha256Hasher.Create;
+end;
+
+destructor THashedAudioByteSink.Destroy;
+begin
+  FHasher.Free;
+  inherited Destroy;
+end;
+
+function THashedAudioByteSink.GetByteCount: Int64;
+begin
+  Result := FHasher.ByteCount;
+end;
+
+procedure THashedAudioByteSink.WriteBytes(const ABytes: array of Byte);
+begin
+  if FWriting or FFailed or FHasher.Finished then
+    raise EAudio.Create('Hashed audio sink is busy, failed or finished');
+  if Length(ABytes) > MaximumWaveStreamBytes - FHasher.ByteCount then
+    raise EAudio.Create('Hashed audio sink exceeds exact byte extent');
+  FWriting := True;
+  try
+    try
+      FSink.WriteBytes(ABytes);
+      FHasher.Update(ABytes, 0, Length(ABytes));
+    except
+      FFailed := True;
+      raise;
+    end;
+  finally
+    FWriting := False;
+  end;
+end;
+
+function THashedAudioByteSink.Finish: String;
+begin
+  if FWriting or FFailed then
+    raise EAudio.Create('Cannot finish a busy or failed hashed audio sink');
+  Result := FHasher.Finish;
 end;
 
 procedure TStreamAudioSink.WriteBytes(const ABytes: array of Byte);

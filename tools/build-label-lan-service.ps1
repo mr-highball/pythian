@@ -105,15 +105,15 @@ foreach ($name in $webNames) {
     throw "Missing staged browser asset: $name"
   }
 }
-$running = @(Get-CimInstance Win32_Process -Filter "name = 'pythian.label.catalog.exe'" |
-  Where-Object { $_.ExecutablePath -and
-    ([IO.Path]::GetFullPath($_.ExecutablePath) -ieq $targetExe) })
+$running = @(Get-Process -Name 'pythian.label.catalog' -ErrorAction SilentlyContinue |
+  Where-Object { $_.Path -and
+    ([IO.Path]::GetFullPath($_.Path) -ieq $targetExe) })
 if ($running.Count -ne 0) {
   throw "$Slot service is running; coordinate its stop before preparing another binary"
 }
-$runningWorker = @(Get-CimInstance Win32_Process -Filter "name = 'pythian.studio.worker.exe'" |
-  Where-Object { $_.ExecutablePath -and
-    ([IO.Path]::GetFullPath($_.ExecutablePath) -ieq $targetWorker) })
+$runningWorker = @(Get-Process -Name 'pythian.studio.worker' -ErrorAction SilentlyContinue |
+  Where-Object { $_.Path -and
+    ([IO.Path]::GetFullPath($_.Path) -ieq $targetWorker) })
 if ($runningWorker.Count -ne 0) {
   throw "$Slot Studio worker is running; wait for its job or stop its service before staging"
 }

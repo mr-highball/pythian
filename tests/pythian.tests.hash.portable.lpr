@@ -25,8 +25,16 @@ program pythian_tests_hash_portable;
 {$mode delphi}
 {$H+}
 uses SysUtils, Classes, pythian.audio, pythian.progress, pythian.hash,
-  pythian.stream.bytes;
+  pythian.stream.bytes, pythian.wave.stream;
 type
+  TRejectingSink = class(TAudioByteSink)
+  public
+    Calls: Integer;
+    Fail: Boolean;
+    Emitted: Integer;
+    Reenter: THashedAudioByteSink;
+    procedure WriteBytes(const ABytes: array of Byte); override;
+  end;
   TFragmentStream = class(TMemoryStream)
   public
     FailRead: Boolean;
@@ -48,6 +56,18 @@ var
   LChecks: Integer;
   LPublicationFailures: Integer;
   LPublicationAborts: Integer;
+
+procedure TRejectingSink.WriteBytes(const ABytes: array of Byte);
+begin
+  Inc(Calls);
+  if Fail then
+  begin
+    Inc(Emitted);
+    raise EAudio.Create('Output failure after partial write');
+  end;
+  Inc(Emitted, Length(ABytes));
+  if Reenter <> nil then Reenter.Finish;
+end;
 
 {$ifdef pas2js}
 function TFragmentStream.Read(ABuffer: TBytes; AOffset, ACount: LongInt): LongInt;
@@ -104,6 +124,125 @@ begin
     raise Exception.Create(AMessage);
   end;
   Inc(LChecks);
+end;
+
+procedure CheckIncremental;
+var
+  LBytes: TAudioBytes;
+  LHasher, LOther: TSha256Hasher;
+  LMemory: TMemoryStream;
+  LSink: TStreamAudioSink;
+  LHashSink: THashedAudioByteSink;
+  LReject: TRejectingSink;
+  LReference, LDigest: String;
+  LPart, LAt, LTake, I: Integer;
+  LRejected: Boolean;
+begin
+  SetLength(LBytes, 8193);
+  for I := 0 to High(LBytes) do LBytes[I] := I mod 256;
+  LReference := Sha256Bytes(LBytes);
+  for LPart := 1 to 129 do
+  begin
+    LHasher := TSha256Hasher.Create;
+    LOther := TSha256Hasher.Create;
+    try
+      LOther.Update(LBytes, 0, 55);
+      LAt := 0;
+      while LAt < Length(LBytes) do
+      begin
+        LTake := LPart;
+        if Length(LBytes) - LAt < LTake then LTake := Length(LBytes) - LAt;
+        LHasher.Update(LBytes, LAt, LTake);
+        Inc(LAt, LTake);
+      end;
+      Check(LHasher.ByteCount = Length(LBytes), 'Incremental byte count');
+      Check(LHasher.Finish = LReference, 'Incremental partition digest');
+      Check(LHasher.Finish = LReference, 'Repeatable digest');
+      Check(LOther.Finish =
+        '463eb28e72f82e0a96c0a4cc53690c571281131f672aa229e0d45ae59b598b59',
+        'Independent accumulator state');
+      LRejected := False;
+      try LHasher.Update(LBytes, 0, 0);
+      except on E: EAudio do LRejected := True; end;
+      Check(LRejected, 'Sealed accumulator accepted update');
+    finally
+      LOther.Free;
+      LHasher.Free;
+    end;
+  end;
+  LHasher := TSha256Hasher.Create;
+  try
+    LHasher.Update(LBytes, 0, 55);
+    for I := 0 to 3 do
+    begin
+      LRejected := False;
+      try
+        case I of
+          0: LHasher.Update(LBytes, -1, 1);
+          1: LHasher.Update(LBytes, 0, -1);
+          2: LHasher.Update(LBytes, Length(LBytes), 1);
+          3: LHasher.Update(LBytes, High(SizeInt), High(SizeInt));
+        end;
+      except on E: EAudio do LRejected := True; end;
+      Check(LRejected and (LHasher.ByteCount = 55), 'Rejected update mutated extent');
+    end;
+    LHasher.Update(LBytes, 55, Length(LBytes) - 55);
+    Check(LHasher.Finish = LReference, 'Rejected update mutated digest');
+  finally
+    LHasher.Free;
+  end;
+  LMemory := TMemoryStream.Create;
+  LSink := TStreamAudioSink.Create(LMemory);
+  LHashSink := THashedAudioByteSink.Create(LSink);
+  try
+    LHashSink.WriteBytes(LBytes);
+    LDigest := LHashSink.Finish;
+    LMemory.Position := 0;
+    Check((LHashSink.ByteCount = LMemory.Size) and
+      (LDigest = Sha256Stream(LMemory, LMemory.Size)), 'Output digest differs from actual bytes');
+    Check(LHashSink.Finish = LDigest, 'Repeatable output digest');
+    LRejected := False;
+    try LHashSink.WriteBytes(LBytes);
+    except on E: EAudio do LRejected := True; end;
+    Check(LRejected and (LMemory.Size = Length(LBytes)), 'Sealed sink emitted bytes');
+  finally
+    LHashSink.Free;
+    LSink.Free;
+    LMemory.Free;
+  end;
+  LReject := TRejectingSink.Create;
+  try
+    for I := 0 to 1 do
+    begin
+      LHashSink := THashedAudioByteSink.Create(LReject);
+      try
+        LReject.Fail := False;
+        LReject.Reenter := nil;
+        LReject.Emitted := 0;
+        LHashSink.WriteBytes(LBytes);
+        if I = 0 then LReject.Fail := True else LReject.Reenter := LHashSink;
+        LRejected := False;
+        try LHashSink.WriteBytes(LBytes);
+        except on E: EAudio do LRejected := True; end;
+        Check(LRejected and LHashSink.Failed and
+          (LHashSink.ByteCount = Length(LBytes)) and
+          (LReject.Emitted > LHashSink.ByteCount), 'Failed/partial block entered digest');
+        LAt := LReject.Calls;
+        LRejected := False;
+        try LHashSink.WriteBytes(LBytes);
+        except on E: EAudio do LRejected := True; end;
+        Check(LRejected and (LReject.Calls = LAt), 'Failed sink emitted more bytes');
+        LRejected := False;
+        try LHashSink.Finish;
+        except on E: EAudio do LRejected := True; end;
+        Check(LRejected, 'Failed sink published digest');
+      finally
+        LHashSink.Free;
+      end;
+    end;
+  finally
+    LReject.Free;
+  end;
 end;
 
 procedure Vector(const ASize: Integer; const AExpected: String);
@@ -243,6 +382,7 @@ var
   LUnsafeCount: Int64;
   {$endif}
 begin
+  CheckIncremental;
   CheckPublication;
   Vector(0, 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
   Vector(55, '463eb28e72f82e0a96c0a4cc53690c571281131f672aa229e0d45ae59b598b59');

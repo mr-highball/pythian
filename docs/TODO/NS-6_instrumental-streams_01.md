@@ -23,6 +23,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 **Blockers**
 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
+- [NS-6_instrumental-artifacts_01 — DONE](DONE/NS-6_instrumental-artifacts_01.md)
 
 **Dev Notes:**
 

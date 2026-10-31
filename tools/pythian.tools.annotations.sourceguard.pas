@@ -33,7 +33,12 @@ interface
   handle. The bounded media sender can verify concurrently with HTTP requests,
   so access to the shared guard table is serialized. Other hosts hash each edit. }
 procedure VerifyGuardedSource(const APath, AExpectedHash: String;
-  const AExpectedBytes: Int64);
+  const AExpectedBytes: Int64; const APublishedIdentity: String = '');
+{ Native publisher receipt only: capture after closing its successfully hashed
+  output. A matching receipt may replace the first full read, then the ordinary
+  locked-handle cache applies. Never accept an identity from a browser request.
+  Hosts without a stable file identity return empty and retain full hashing. }
+function SourceFileIdentity(const APath: String; const AExpectedBytes: Int64): String;
 
 implementation
 
@@ -90,6 +95,15 @@ begin
       ARight.ftLastWriteTime.dwLowDateTime);
 end;
 
+function IdentityText(const AInfo: TByHandleFileInformation): String;
+begin
+  Result := IntToStr(AInfo.dwVolumeSerialNumber) + ':' +
+    IntToStr(AInfo.nFileIndexHigh) + ':' + IntToStr(AInfo.nFileIndexLow) + ':' +
+    IntToStr(AInfo.nFileSizeHigh) + ':' + IntToStr(AInfo.nFileSizeLow) + ':' +
+    IntToStr(AInfo.ftLastWriteTime.dwHighDateTime) + ':' +
+    IntToStr(AInfo.ftLastWriteTime.dwLowDateTime);
+end;
+
 function GuardSlot(const APath, AHash: String;
   const ABytes: Int64): Integer;
 var
@@ -119,21 +133,37 @@ end;
 {$ENDIF}
 
 procedure VerifyGuardedSourceLocked(const APath, AExpectedHash: String;
-  const AExpectedBytes: Int64); forward;
+  const AExpectedBytes: Int64; const APublishedIdentity: String); forward;
+
+function SourceFileIdentity(const APath: String; const AExpectedBytes: Int64): String;
+var
+  LStream: TFileStream;
+begin
+  Result := '';
+  LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
+  try
+    Need(LStream.Size = AExpectedBytes, 'Published source byte count changed');
+    {$IFDEF MSWINDOWS}
+    Result := IdentityText(FileInfo(LStream));
+    {$ENDIF}
+  finally
+    LStream.Free;
+  end;
+end;
 
 procedure VerifyGuardedSource(const APath, AExpectedHash: String;
-  const AExpectedBytes: Int64);
+  const AExpectedBytes: Int64; const APublishedIdentity: String);
 begin
   EnterCriticalSection(GGuardLock);
   try
-    VerifyGuardedSourceLocked(APath, AExpectedHash, AExpectedBytes);
+    VerifyGuardedSourceLocked(APath, AExpectedHash, AExpectedBytes, APublishedIdentity);
   finally
     LeaveCriticalSection(GGuardLock);
   end;
 end;
 
 procedure VerifyGuardedSourceLocked(const APath, AExpectedHash: String;
-  const AExpectedBytes: Int64);
+  const AExpectedBytes: Int64; const APublishedIdentity: String);
 var
   LPath: String;
   LStream: TFileStream;
@@ -169,9 +199,13 @@ begin
       'Catalog source byte count changed');
     {$IFDEF MSWINDOWS}
     LBefore := FileInfo(LStream);
+    if APublishedIdentity <> '' then
+      Need(IdentityText(LBefore) = APublishedIdentity,
+        'Published source identity changed after writing');
+    if APublishedIdentity = '' then
     {$ENDIF}
-    Need(Sha256Stream(LStream, LStream.Size) = AExpectedHash,
-      'Catalog source SHA256 changed');
+      Need(Sha256Stream(LStream, LStream.Size) = AExpectedHash,
+        'Catalog source SHA256 changed');
     {$IFDEF MSWINDOWS}
     LAfter := FileInfo(LStream);
     Need(SameFileInfo(LBefore, LAfter),

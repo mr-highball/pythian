@@ -2,7 +2,75 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: persistent instrumental stream and native caller — 2026-10-31
+## Latest handoff: canonical audio accepted; long Studio consumer next — 2026-10-31
+
+Big Boss SOLO completes the concrete storage prerequisite discovered in the long
+consumer. [Artifact task](TODO/DONE/NS-6_instrumental-artifacts_01.md) is accepted:
+one primary incremental SHA/sink, native owned staging into a configured canonical
+store, shared job/review files, guarded native publication identities and retained
+catalog/per-job reads. No full generated-WAV copy or second hash pass is needed
+for a newly written native output. Imports still preserve their original files.
+Old private recordings, choices and answers are not moved. WFC source is unchanged.
+
+The stable slot now inherits its E-drive artifact root and serves the existing
+Studio address. The service, native worker and twelve web assets keep their fixed
+approved paths and existing TLS/private-LAN configuration. Both loopback and LAN
+Studio return200; retained operator output returns206. New review playback uses
+the same canonical audio as the job, verified through the real browser. No new
+user approval or labeling is needed to continue implementation.
+
+Evidence packet: `instrumental-artifacts-20261031-boss` in E-drive tests/runs.
+Portable SHA/sink337224 native and337225 actual pas2js checks pass, including
+24 original publication abort/retries; asset ownership/identity22, durable native
+Studio smoke23 and musical generation/reference99 pass with clean heaps. Retained
+listening publication/replay and primary WAVE stream/read RF64 fixtures pass.
+Browser synthetic playlist generation, reload, generated/Original playback,
+matching WAV download and the listening queue all pass. Mix, reference and legacy
+job ranges return206. Phone-width proof: `canonical-playback-phone.png` in runs.
+These are Big Boss's solo checks, not an independent or musical-quality verdict.
+
+Preserve the initial hash tail-padding rejection and pas2js integer-cast repair.
+The first browser playback rejected a stale HTTP reconstruction of the removed
+per-job file; the repaired sender uses the actual opened stream filename. Its
+failure log remains `qa-final-server-error.log`. The copied synthetic catalog
+also rejected a mismatched configured library root; correcting the isolated
+launcher binding repaired the fixture. Fixed-slot staging now avoids slow CIM
+inventory through exact process paths and still refuses a running slot. Exact QA
+tabs/audio/server/workers are closed; the stable review service remains running.
+
+CI517 for8f05d62 is terminal SUCCESS. This new batch closes all artifact criteria,
+so the consecutive nonclosing count stays zero. Accounting is52/113 (46.02%):
+nine open, twelve current DONE,61 open units; all21 current tasks still sum113.
+This accepts storage/access effort only. Studio still honestly limits previews
+to2–30seconds; the two-minute library example does not remove the app's cap.
+
+Next bounded batch returns to [instrumental streams](TODO/NS-6_instrumental-streams_01.md):
+one persistent performance feeds mix and six stems, then actual playlist jobs use
+bounded WFC lookahead. Deliver useful duration/disk estimates, longer controls,
+cumulative progress, reconnect and Stop. Check a multi-minute browser run and
+wide-duration admission without rendering24hours. Stop before new form/style or
+general callback audits; do not lift the UI cap until its actual consumer passes.
+
+## Batch selection: long Studio jobs and their canonical-output prerequisite — 2026-10-31
+
+Big Boss SOLO continues after8f05d62; the previous turn made progress by delivering
+the bounded primary/WFC runtime and sustained native consumer. CI517 later passed.
+Consecutive nonclosing count starts at zero. Criterion: an ordinary
+playlist Generate learns actual selected music and produces long instrumental
+output with bounded state, real resource estimates, durable progress/reconnect
+and cancellation. Deliver the native consumer and actual browser path; stop before
+new form/style work. Check a multi-minute run, wide-duration admission, same
+source/model lineage, output identity, reload and Stop before lifting the UI cap.
+
+Inspection found a genuine prerequisite: old jobs perform seven fresh renders and
+copy/hash complete output again into the listening store. Follow the linked
+five-unit [artifact task](TODO/DONE/NS-6_instrumental-artifacts_01.md) for one configured
+E-drive store and shared verified access. The parent retains mix/stem routing,
+duration/job admission and UX. No task acceptance follows this scope discovery.
+Accounting is47/113 (41.59%), ten open, eleven current DONE and66 open units.
+Preserve existing private recordings, answers and deployed fixed slots.
+
+## Previous handoff: persistent instrumental stream and native caller — 2026-10-31
 
 Big Boss SOLO resumes the parked instrumental streams implementation after the
 completed progress repair. The previous turn made progress: deployed cumulative
