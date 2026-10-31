@@ -47,6 +47,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
   under the dedicated E-drive roots. Keep the actual native publication failure
   in native01 and repaired native02/04 results. AC4 implementation/persistence
   checks now pass locally; complete CI and final integration remain pending.
+  Sourcebf524af is published; Native FPC CI534 (41248537215) is in progress.
 - The same browser's return-section Lead-only follow-up, seed1502445802,
   fails at cell144 in the pitched group after an earlier candidate chunk commits.
   Original job `music-1793485090576-185750` (generation seed623803102) remains

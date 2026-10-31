@@ -43,8 +43,10 @@ No task or effort acceptance this turn: **99/140 (70.71%), six open** stays.
 AC4's local persistence/replay checks pass; final integration/CI is still pending.
 Consecutive nonclosing batch count is one, inherited from zero at batch start.
 Do not begin a third nonclosing batch without reassessment. The goal remains
-active, with no operator input needed. Publish this source for CI/review before
-any stable deployment. The stable service remains on its previous checked bytes.
+active, with no operator input needed. Sourcebf524af is published on
+`origin/hello-pythian`; Native FPC CI534 (41248537215) is in progress. Do not
+claim its result or deploy stable before the final integration gates pass.
+The stable service remains on its previous checked bytes.
 QA tab41 is closed, viewport reset, all nine audio elements paused/no loop, exact
 QA service74168/conhost62824 stopped; no QA worker remains. Stable returns200.
 
