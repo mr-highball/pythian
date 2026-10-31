@@ -47,7 +47,17 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current accepted WFC pin: `7b3c0a5f7ed4b42c4199631449ebe5a7d68976e1`, on separate
+Current WFC integration candidate: `62c8597bc8add1d2e1956a9ed5cef3ddaf569d70`, on
+separate unmerged branch `codex/pythian-future-domains`. Its primary voice stream
+checks a bounded future window but publishes only the requested prefix. Native
+Win64/actual pas2js pass the generic ownership/domain/replay consumers and the
+original Pythian8/16cell guide now performs all six parts. Existing default stream
+and authored form decisions pass unchanged. [Upstream CI63](https://github.com/mr-highball/wfc/actions/runs/41240757803)
+and downstream integration remain pending; the five-unit
+[prerequisite](docs/TODO/NS-4_future-domains_01.md) is not accepted yet. No source
+edits occurred in this dependency checkout and no branch was merged.
+
+Previous accepted WFC pin: `7b3c0a5f7ed4b42c4199631449ebe5a7d68976e1`, on separate
 branch `codex/pythian-sequence-continuation`, unmerged. Generic segment boundary
 version2 requires structural support for following cells without inventing edges
 or allocating the whole requested duration. Native/actual pas2js checks reproduce

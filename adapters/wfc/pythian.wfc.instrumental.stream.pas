@@ -81,6 +81,10 @@ type
     FContextPending: TWfcGeneratedSequenceSegment;
     FContextAt: Integer;
     FContextLookaheadCells: Integer;
+    FVoiceLookaheadCells: Integer;
+    FLastVoicePlanningCells: Integer;
+    FContextBoundCells: Int64;
+    FFormBoundCells: Int64;
     FForm: TMusicFormCursor;
     FDrumStreams: array of TLearnedSequenceStream;
     FDrumPending: array of TWfcGeneratedSequenceSegment;
@@ -156,6 +160,10 @@ type
     { Form context can plan a bounded prefix/suffix window ahead of the emitted
       instrumental segment. PlannedCells includes that already fixed context. }
     property ContextLookaheadCells: Integer read FContextLookaheadCells;
+    { Voice suffixes are provisional. Unlike fixed context/drum pending cells,
+      they do not advance PlannedCells or forbid future-domain edits. }
+    property VoiceLookaheadCells: Integer read FVoiceLookaheadCells;
+    property LastVoicePlanningCells: Integer read FLastVoicePlanningCells;
   end;
 
 function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumentalStreamOptions;
@@ -274,9 +282,16 @@ begin
   end;
   if LStates * FOptions.SegmentCells > MaximumLayerStateCells then
     raise EAudio.Create('Instrumental lookahead exceeds its explicit state-cell budget');
+  FVoiceLookaheadCells := FOptions.SegmentCells;
+  if FForm <> nil then
+  begin
+    FVoiceLookaheadCells := Min(MaximumMusicDecisionCells, MaximumLayerStateCells div LStates);
+    FVoiceLookaheadCells := (FVoiceLookaheadCells div FOptions.SegmentCells) * FOptions.SegmentCells;
+  end;
   LStreamConfig := DefaultWfcMusicVoicesStreamConfig(FConfig, AOptions.StepTicks,
     LTicks, AOptions.Seed);
   LStreamConfig.SegmentCellCount := FOptions.SegmentCells;
+  LStreamConfig.LookaheadCellCount := FVoiceLookaheadCells;
   LStreamConfig.Search.SolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
   LStreamConfig.Search.MaxPassBacktracks := AOptions.MaxPassBacktracks;
   FVoices := TWfcMusicVoicesStream.Create(LStreamConfig);
@@ -601,13 +616,14 @@ var
   LSegment: TWfcMusicVoicesSegment;
   LMasks: TVoiceMasks;
   LMask: TWfcSequenceTokenConstraint;
-  LProvider, I: Integer;
+  LProvider, I, LPlanningCells, LWindowCells: Integer;
+  LBindCell: Int64;
   LExpected: String;
   LFrames: TWfcMusicEnsembleFrames;
   LRhythm, LContextTokens, LDrumCellTokens: TWfcModelTokens;
   LDrumTokens: TInstrumentalTokenStreams;
   LDecisions, LSinkCopy: TMusicDecisionChunk;
-  LRetained: TMusicDecisionProviders;
+  LRetained, LFutureRetained: TMusicDecisionProviders;
   LClock: TIncrementalTempoClock;
   LFrame: TChordFrame;
   LCell: Integer;
@@ -643,13 +659,8 @@ begin
   ReportWork(AProgress, 'instrumental_stream_plan', wuItems, FCells, FTotalCells);
   LRetained := nil;
   if FForm <> nil then LRetained := FForm.CopyLocks(LOptions.CellCount);
-  for I := 0 to High(LRetained) do
-  begin
-    LProvider := FormProviderIndex(LRetained[I].Key);
-    if LProvider >= 2 + Length(FRoleNames) then Continue;
-    for LCell := 0 to LOptions.CellCount - 1 do
-      FVoices.IntersectAllowedTokens(LProvider, FCells + LCell, [LRetained[I].Tokens[LCell]]);
-  end;
+  LPlanningCells := LOptions.CellCount;
+  if FForm <> nil then LPlanningCells := FForm.ReadyLookaheadCells(FVoiceLookaheadCells);
   LContextTokens := nil;
   if FContext <> nil then
   begin
@@ -660,22 +671,55 @@ begin
         '). Try a shorter track or a broader selection.');
     LContextTokens := LChunk.Tokens;
     KeepProvider(MusicalContextPassName, LChunk);
-    LMasks := BindMusicalContextTokens(LContextTokens, Length(FConfig.Voices), nil,
+    if FForm <> nil then
+    begin
+      LPlanningCells := Min(LPlanningCells,
+        Length(FContextPending.Tokens) - FContextAt + LOptions.CellCount);
+      LMasks := BindMusicalContextTokens(Copy(FContextPending.Tokens,
+        FContextAt - LOptions.CellCount, LPlanningCells), Length(FConfig.Voices), nil,
+        FOptions.ContextBinding = icbAllRoles);
+    end
+    else LMasks := BindMusicalContextTokens(LContextTokens, Length(FConfig.Voices), nil,
       FOptions.ContextBinding = icbAllRoles);
     for LProvider := 0 to High(LMasks) do
       for LMask in LMasks[LProvider] do
-        FVoices.IntersectAllowedTokens(LProvider, FCells + LMask.Position, LMask.AllowedTokens);
+        if FCells + LMask.Position >= FContextBoundCells then
+          FVoices.IntersectAllowedTokens(LProvider, FCells + LMask.Position, LMask.AllowedTokens);
+    FContextBoundCells := Max(FContextBoundCells, FCells + LPlanningCells);
+  end;
+  if FForm <> nil then
+  begin
+    if LPlanningCells < LOptions.CellCount then
+      raise EAudio.Create('Known future domains do not span the current musical prefix');
+    LBindCell := Max(FCells, FFormBoundCells);
+    while LBindCell < FCells + LPlanningCells do
+    begin
+      LWindowCells := FForm.WindowCellsAt(LBindCell, FCells + LPlanningCells - LBindCell);
+      if not FForm.TryCopyLocksAt(LBindCell, LWindowCells, LFutureRetained) then
+        raise EAudio.Create('Known future motif has no completed source decisions');
+      for I := 0 to High(LFutureRetained) do
+      begin
+        LProvider := FormProviderIndex(LFutureRetained[I].Key);
+        if LProvider >= 2 + Length(FRoleNames) then Continue;
+        for LCell := 0 to LWindowCells - 1 do
+          FVoices.IntersectAllowedTokens(LProvider, LBindCell + LCell,
+            [LFutureRetained[I].Tokens[LCell]]);
+      end;
+      Inc(LBindCell, LWindowCells);
+    end;
+    FFormBoundCells := Max(FFormBoundCells, LBindCell);
   end;
   LSegment := nil;
   LExpected := '';
   if (FContext <> nil) and (Length(LMasks[0]) > 0) then
     LExpected := '; next context harmony=' + LMasks[0][0].AllowedTokens[0];
   try
-    if FVoices.Next(LSegment, LVoiceReport) <> wmaspProduced then
+    if FVoices.Next(LSegment, LVoiceReport, LPlanningCells) <> wmaspProduced then
       raise EAudio.Create('Musical frontier cannot continue at cell ' + IntToStr(FCells) +
         ', negotiation ' + IntToStr(Ord(LVoiceReport.Status)) + ', pass ' +
         IntToStr(LVoiceReport.FinalReport.FailedPassIndex) + ': ' + FVoices.Failure +
         '; previous harmony=' + FVoices.CopyFrontier.Tokens[0] + LExpected);
+    FLastVoicePlanningCells := LSegment.PlanningCellCount;
     LFrames := LSegment.CopyFrames;
     LRhythm := LSegment.CopyGenerated(1).Tokens;
     KeepProvider('harmony', LSegment.CopyGenerated(0));

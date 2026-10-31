@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Twenty current-goal tasks are accepted: **94 / 135 effort units (69.63%)**. Their
+Twenty current-goal tasks are accepted: **94 / 140 effort units (67.14%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became

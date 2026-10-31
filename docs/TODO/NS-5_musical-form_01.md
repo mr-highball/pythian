@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** Dependency-blocked
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,11 +22,22 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Known future domains](NS-4_future-domains_01.md) — the same24cell authored
+  guide succeeds as a full joint graph but fails at cell16 in the companion's
+  direct8cell stream. Repair bounded future-aware prefix planning first.
+
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: the retained direct WFC reproduction establishes generic
+  ownership, replacing the earlier unresolved assessment below. Follow
+  [future domains](NS-4_future-domains_01.md): separate notified branch62c8597
+  repairs that same guide and the actual unequal-phrase native/pas2js render.
+  Existing form decisions and genuine Hat contradiction remain unchanged.
+  Upstream/downstream integration gates are pending; this task remains blocked
+  by the prerequisite, with Studio arrangement/section controls still required.
 - 2026-10-31, Big Boss: the shared runtime slice is implemented, not full task
   acceptance. [Musical form](../MUSICAL-FORM.md) owns explicit section/phrase
   records and a bounded detached motif cursor in the portable library. The

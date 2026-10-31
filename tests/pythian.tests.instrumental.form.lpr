@@ -29,7 +29,7 @@ uses Classes, SysUtils, Math, pythian.audio, pythian.bus, pythian.echo, pythian.
   pythian.music.form, pythian.music.decisions, pythian.music.pattern,
   pythian.music.stream, pythian.progress, pythian.pitch.track,
   pythian.wfc.instrumental.starter, pythian.wfc.instrumental.stream,
-  pythian.wfc.generation, pythian.wfc.percussion,
+  pythian.wfc.generation, pythian.wfc.percussion, pythian.wfc.voices,
   wfc, wfc_model, wfc_sequence, wfc_sequence_graph;
 
 type
@@ -199,6 +199,84 @@ begin
   end;
 end;
 
+function SourceFreeForm(const APull: Integer): TResult;
+var
+  LStarter: TInstrumentalStarter;
+  LGraph: TBusGraph;
+  LStream: TInstrumentalMusicStream;
+  LOptions: TInstrumentalStreamOptions;
+  LForm: TMusicForm;
+  LBlock: TAudioSamples;
+  LStems: TBusSampleBlocks;
+  LCapture: TCapture;
+  LGuide: TVoiceMasks;
+  I, J, K, LAt: Integer;
+  LEnergy: Double;
+begin
+  Result := Default(TResult);
+  LStarter := TInstrumentalStarter.Create;
+  LGraph := Graph;
+  LStream := nil;
+  LCapture := TCapture.Create;
+  try
+    SetLength(LForm, 2);
+    for I := 0 to 1 do
+    begin
+      LForm[I].Section := 'Authored';
+      LForm[I].Name := 'Phrase ' + IntToStr(I);
+      LForm[I].Cells := 8 + I * 8;
+      LForm[I].RepeatFrom := -1;
+    end;
+    LOptions := DefaultInstrumentalStreamOptions(8000 * 6);
+    LStream := TInstrumentalMusicStream.Create(LStarter.Config, LStarter.CopyRoles,
+      LStarter.CopyPercussion(8000), LGraph, LOptions, nil, LCapture.Keep, LForm);
+    { Big Boss: original retained positive reproduction: same guide/seed and
+      unequal8/16cell phrases. No learned context, seed sweep or relaxed domain. }
+    LGuide := LStarter.GuideMasks(24);
+    for I := 0 to High(LGuide) do
+      for J := 0 to High(LGuide[I]) do
+        LStream.IntersectFutureTokens(I, LGuide[I][J].Position, LGuide[I][J].AllowedTokens);
+    SetLength(Result.Mix, LStream.FrameCount * 2);
+    SetLength(Result.Stems, 6);
+    for I := 0 to 5 do SetLength(Result.Stems[I], Length(Result.Mix));
+    LAt := 0;
+    while LStream.ReadOutputs(APull, [0, 1, 2, 3, 4, 5], LBlock, LStems) do
+    begin
+      if LAt = 0 then
+      begin
+        Check((LStream.PlannedCells = 8) and (LStream.LastVoicePlanningCells = 24) and
+          (LStream.VoiceLookaheadCells <= 256), 'Only the8cell prefix commits from the24cell voice plan');
+        for I := 0 to High(LGuide[0]) do
+          if LGuide[0][I].Position = 16 then
+            LStream.IntersectFutureTokens(0, 16, LGuide[0][I].AllowedTokens);
+        Check(LStream.PlannedCells = 8, 'Provisional voice suffix permits future-domain edits');
+      end;
+      for I := 0 to High(LBlock) do
+      begin
+        Result.Mix[LAt + I] := LBlock[I];
+        for J := 0 to 5 do Result.Stems[J][LAt + I] := LStems[J][I];
+      end;
+      Inc(LAt, Length(LBlock));
+    end;
+    Result.Chunks := LCapture.Chunks;
+    Check((LStream.State = issCompleted) and (Length(Result.Chunks) = 3) and
+      (LAt = Length(Result.Mix)), 'Guided form performs unequal phrases without a context provider');
+    for I := 0 to High(Result.Chunks) do
+      Check(Length(Result.Chunks[I].Cells) = 8, 'Actual phrase boundaries set the common solve quantum');
+    for J := 0 to 5 do
+    begin
+      LEnergy := 0;
+      for K := 0 to High(Result.Stems[J]) do LEnergy := LEnergy + Abs(Result.Stems[J][K]);
+      Check(LEnergy > 0.1, 'Each pitched and synthesized drum part sounds in the retained guide');
+    end;
+  finally
+    LStream.Free;
+    LCapture.Free;
+    LGraph.Free;
+    LStarter.Free;
+  end;
+end;
+
 {$ifndef pas2js}
 procedure SaveProof(const AResult: TResult; const ADirectory: String);
 var LClip: TAudioClip; LSamples: TAudioSamples; LPath: String;
@@ -270,7 +348,7 @@ begin
 end;
 
 procedure Run;
-var LFirst, LSecond, LCancelled, LRejected: TResult;
+var LFirst, LSecond, LCancelled, LRejected, LShort, LShortReplay: TResult;
   I, J, K: Integer; LDifferent: Boolean;
   LDigest: String;
 begin
@@ -313,8 +391,17 @@ begin
   Check(Length(LCancelled.Chunks) = 4, 'Stopped form retains only its earlier declared phrase');
   LSecond := Render(2048, 64, icbDrivenRole);
   Check(Length(LSecond.Chunks) = 4, 'Driven-role context consumer also uses the form path');
+  LShort := SourceFreeForm(2048);
+  LShortReplay := SourceFreeForm(173);
+  Check(SameAudio(LShort.Mix, LShortReplay.Mix), 'Unequal-phrase mix replays across PCM pulls');
+  for I := 0 to 5 do
+    Check(SameAudio(LShort.Stems[I], LShortReplay.Stems[I]), 'Unequal-phrase parts replay across PCM pulls');
   {$ifndef pas2js}
-  if ParamCount = 1 then SaveProof(LFirst, ParamStr(1));
+  if ParamCount = 1 then
+  begin
+    SaveProof(LFirst, ParamStr(1));
+    SaveProof(LShort, IncludeTrailingPathDelimiter(ParamStr(1)) + 'unequal-phrases');
+  end;
   {$endif}
   WriteLn('PASS ', GChecks, ' instrumental form checks');
 end;

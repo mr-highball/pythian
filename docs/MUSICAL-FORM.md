@@ -64,12 +64,24 @@ generates and independently validates its new latent path against its real
 predecessor. Other providers remain generated; no captured note/PCM block is
 pasted over a different accompaniment.
 
-Instrumental solve windows divide the declared phrase lengths. Context and drum
-passes can plan up to256cells, also bounded by their state budget, to fit known
-upcoming returns before committing a contrast. Planning stops when a needed
-source motif must first finish. Unknown future motifs are never invented.
-`ContextLookaheadCells` exposes that limit; `PlannedCells` includes the actual
-already-fixed context/drum lookahead. Future edits cannot overwrite it.
+Instrumental solve windows divide the declared phrase lengths. Context, voice
+and drum passes can plan up to256cells, also bounded by their state budgets, to
+fit known upcoming returns before committing a contrast. Planning stops when a
+needed source motif must first finish. Unknown future motifs are never invented.
+
+Voice planning uses the companion's primary bounded future-domain stream. The
+whole temporary window honors available future context and known retained motifs,
+then passes independent proof. Only the current solve prefix is published; its
+provisional suffix is discarded. `VoiceLookaheadCells` exposes the configured
+limit and `LastVoicePlanningCells` the actual window checked. An8cell returned
+prefix can therefore be checked against a24cell guided plan without publishing
+or retaining all24cells. Hard restrictions remain hard; the stream does not
+change seeds or raise search budgets to recover.
+
+Context/drum pending choices differ: they are already fixed until consumed.
+`ContextLookaheadCells` exposes the context limit; `PlannedCells` includes the
+actual fixed context/drum lookahead and returned voice prefix. Future edits
+cannot overwrite that extent, but may change a merely provisional voice suffix.
 
 The primary instrument scheduler, oscillator/filter/envelope state and effects
 continue across every phrase. A repeated musical motif need not have identical
@@ -86,9 +98,11 @@ A-variation arrangement. Keep rejected material; do not silently change a seed,
 remove a retained part or invent a transition to claim success.
 
 Planning is bounded and conditional, with no cross-group/global backtracking
-guarantee. A separate no-context authored-guide probe with8/16cell phrases fails
-at cell16. Its native/pas2js request and failure are retained under
-`musical-form-20261031-boss`; investigate it before accepting the full form task.
-The verified sustained form consumer currently supplies an explicit authored
-musical-context model. This is not recording-derived structure learning, proof
-that all arrangements fit, or a musical-quality verdict.
+guarantee. The retained no-context authored guide with8/16cell phrases exposed a
+generic short-prefix dead end at cell16 despite a feasible complete24cell graph.
+The original failures stay under `musical-form-20261031-boss`; the future-domain
+repair and exact consumer live under `form-frontier-20261031-boss`. The sustained
+form consumer supplies an explicit authored context; the unequal-phrase consumer
+uses the original authored guide without a context provider. This is not
+recording-derived structure learning, proof that all arrangements fit, or a
+musical-quality verdict. Studio arrangement controls retain their own open task.

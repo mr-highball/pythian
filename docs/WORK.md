@@ -3,6 +3,70 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: future-domain runtime verified, CI pending — 2026-10-31
+
+Big Boss SOLO implements [future domains](TODO/NS-4_future-domains_01.md) AC1–AC2
+and the actual Pythian runtime consumer. Separate unmerged WFC branch
+`codex/pythian-future-domains` publishes62c8597, based solely on accepted7b3c0a5.
+Its primary stream independently checks a bounded future candidate, returns only
+the prefix, and discards provisional choices. Prefix tokens/states/coverage and
+EOS/following metadata are detached and correct; future edits, cancellation,
+failure and hooks preserve ownership. No vendor source edit or branch merge.
+The reviewed candidate gitlink is integrated; all acceptance stays pending
+upstream CI63 (41240757803) and downstream integration.
+
+Native1834/actual pas2js1890 generic checks pass. Pythian native Win64/actual
+pas2js pass798 form and4,043,522 unchanged default-stream checks. The retained
+no-context guide with8/16cell phrases now renders all six parts and replays
+across different PCM pulls. The old80second form still has identical journal
+digest `c4355af4...124a1130` and genuine adjacent-Hat rejection. Actual mix/six
+stems and journals are under `tests/form-frontier-20261031-boss/audio01` on E;
+the6second short consumer's journal is `716dccfe...e2fa38a`. Native heaps are clean.
+Core-only native passes18 with no WFC paths. The current CI532 atfbaab57 is
+verified SUCCESS. This runtime evidence does not accept musical preference.
+
+The operator's independent-clip requirement remains delivered: the existing
+saved-clip fixture rechecks32 with no leaked memory, including unavailable-parent
+reuse and explicit corruption/missing-file rejection. The main service still
+returns200; no UI deployment/restart or operator data change occurred. No QA
+browser or audio was started. New evidence uses only the dedicated E-drive
+form-frontier packet. Initial fork-fixture order-one failure remains preserved;
+an actual order-two dependency repairs that test, not a seed change.
+
+**94/140 accepted effort (67.14%), seven open and twenty current DONE.** Real
+runtime criteria close, so the consecutive nonclosing count returns to zero;
+the five-unit task stays In progress until both repositories' checks pass.
+Then accept only that prerequisite and return to the eight-unit form task's
+Studio arrangement/energy/density, persistence, section audition and targeted
+regeneration. Those controls remain undelivered. Broader goal stays active;
+no operator input or helper is needed.
+
+## Selected batch: bounded future-aware musical prefixes — 2026-10-31
+
+Big Boss SOLO follows [future domains](TODO/NS-4_future-domains_01.md), a demonstrated
+prerequisite of musical form. Criterion: the retained feasible24cell guide and
+8/16cell phrases must perform through real instruments without committing a
+prefix that ignores known later restrictions. Deliver one primary bounded WFC
+planning window that publishes only its checked prefix, with explicit extents,
+future-edit ownership, replay and terminal failure/cancellation. Closing evidence:
+small generic native/actual pas2js regression, upstream consumers/CI, reviewed pin
+and actual Pythian form/default consumers. Stop at this prerequisite, retaining
+Studio form controls as open. Previous batch closed no full criterion; carried
+consecutive nonclosing count is one. No operator input is required.
+
+The full finite graph succeeds, while direct WFC stream fails after16cells with
+the same models/guide/seed731 and no form cursor or audio renderer. The operator
+was notified before edits. Separate branch `codex/pythian-future-domains` starts
+at accepted7b3c0a5 in the dedicated E-drive form-frontier packet; primary WFC's
+unrelated `expansion` checkout remains intact. Vendor source is untouched.
+New prerequisite effort5 changes scope to94/140 (67.14%), seven open and twenty
+current DONE. No task or musical-quality acceptance follows from diagnosis.
+
+The operator's independent-clip requirement is already accepted and deployed
+under [saved clips](TODO/DONE/NS-6_saved-clips_01.md). Preserve that single primary
+implementation: immutable lossless range audio, parent/range/license receipts,
+clip-only learning, no missing/corrupt-file fallback, and automatic durable save.
+
 ## Current handoff: musical form runtime implemented, consumer still open — 2026-10-31
 
 Big Boss SOLO adds [explicit musical form](MUSICAL-FORM.md) to the primary
