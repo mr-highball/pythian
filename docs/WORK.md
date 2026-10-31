@@ -2,7 +2,60 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: retained-score sound runtime implemented — 2026-10-30
+## Current batch: accepted-session restoration prerequisite — 2026-10-30
+
+Big Boss SOLO encountered [assignment restoration](TODO/NS-4_assignment-restore_01.md)
+while connecting durable instrumental follow-ups. A one-cell generic Pascal probe
+against the accepted WFC pin proves public Entry.Value restoration changes generated
+results to caller locks: the original accepts an authorized change, the restored
+copy rejects it. Existing workspace replay is not non-solving state restoration.
+The user was informed before separate-repository edits. A new worktree/branch
+`codex/pythian-accepted-assignments` starts at reviewed `d4d30b1`; vendor source is untouched.
+
+The generic WFC fix is published as `b04a9e4`; all five jobs in
+[upstream CI59](https://github.com/mr-highball/wfc/actions/runs/41144571400)
+pass for that exact SHA. CaptureAssignments/RestoreAssignments preserve empty/generated/caller
+ownership with bounded layout/value/domain validation and atomic non-solving
+publication. Source and seeds/rules remain caller-owned configuration. Native
+Win32/Win64 and actual pas2js pass143 focused checks; Win64 selective124 and scope78
+also pass, with clean native heaps. All evidence and the separate worktree live
+under accepted-restore-20261030-boss on E. The first test compiler error (missing
+Classes import for EInvalidOperation) is preserved and repaired.
+
+Pythian typed clean accepted snapshots for named voices and layers pass focused
+Win32/Win64/actual pas2js restoration/regeneration checks (15,770 per target,
+clean native heaps). They retain canonical
+model text, controls/configuration and actual
+assignment ownership; restore decodes saved models and runs independent capture
+proof without learning or solver search. Mask copying moves into the primary layer
+foundation, shared by layer/voice/control consumers; options/projection copies are
+also shared. After relevant upstream and focused consumer checks, the gitlink
+explicitly advances to `b04a9e4`. Current validation builds against that pin;
+existing Win64/actual pas2js consumer checks also pass: layer preparation485687,
+layer publication424258, voice preparation17221, voice publication402167,
+controls208 and retained performance128, with clean native heaps. The extracted
+Win64 package check is still running. The task remains open until that relevant
+delivery check finishes; this published candidate claims no accepted effort.
+Preserve the harness's
+missing `wfc_music_sequence` import failure, repaired before final builds.
+
+An orchestration mistake launched two compilers into one cache. The first failed
+with an internal I/O error; the second exact compiler tree was stopped after the
+overlap was identified. Neither is qualification evidence. Their logs are retained;
+use fresh isolated target cache/output roots and run each target's builds sequentially.
+No observer timeout was treated as a worker failure or used alone to restart work.
+
+Accounting is now 44/102 (43.14%): 19 tasks, nine open/ten DONE, 58 open units; NS-4
+is 16/33. The new three-unit prerequisite was added before scope expansion and earns
+no upstream-only credit. Carried consecutive nonclosing count remains one during
+this active batch. No goal/parent acceptance is claimed. Stable Studio remains
+PID73508 at the prior `f630ebb` deployment; no service or operator data changed.
+No QA browser/audio/server was started. Continue the concrete prerequisite and
+then return to Studio follow-ups and role/passage regeneration.
+The previous implementation's [Pythian CI511](https://github.com/mr-highball/pythian/actions/runs/41142489684)
+has now passed (native job completed 23:31:38Z); the older running status below is historical.
+
+## Previous handoff: retained-score sound runtime implemented — 2026-10-30
 
 Big Boss SOLO continues [graph controls](TODO/NS-4_graph-controls_01.md).
 `TInstrumentalPlan.Reperform` now replaces one or several pitched instruments

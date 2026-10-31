@@ -58,7 +58,8 @@ on a common timeline rather than assuming equal file lengths.
 compiles bounds/preferences against supplied models and intersects existing masks.
 Its role order is the config's actual order, after harmony/rhythm. Empty outer
 vectors mean no edits; neutral controls do not stage empty edits on every provider.
-It reuses the named session's detached mask copier. No solver or learning engine
+It reuses the primary layer foundation's detached mask copier, shared with named
+sessions. No solver or learning engine
 is duplicated, and source models/masks remain borrowed and unchanged.
 
 Studio saves the actual controls with request/plan/result lineage. Save and the
@@ -71,3 +72,8 @@ change selected pitched instruments/expressions while keeping the graph and othe
 parts exact, without constructing/learning/solving models. `CopyScore` exposes the
 original gates and `CopyNotes` the performed gates. This in-memory API is not yet
 the durable Studio follow-up path; ordinary Generate still constructs a new plan.
+
+Named-voice and layer sessions now support [accepted-state snapshots](ACCEPTED-SESSIONS.md)
+that preserve real model text, controls and generated-versus-locked ownership.
+Restoring rebuilds configuration and checks the saved musical result without
+learning or solving. Instrument/drum archives and Studio follow-ups remain open.

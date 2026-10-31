@@ -22,6 +22,8 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [NS-4_assignment-restore_01](NS-4_assignment-restore_01.md) — preserve generated
+  assignment ownership while reopening durable accepted sessions.
 - [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) —
   actual finite instrumental progress now shares bounded durable publication.
 - [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — optional
@@ -30,6 +32,11 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-30, Big Boss: Durable Studio follow-up batch encountered a demonstrated
+  generic restore prerequisite before further scope expansion; see the linked
+  assignment-restore task. Plain Entry.Value restoration silently creates caller
+  locks. The separate WFC branch is authorized/notified; vendor source stays
+  untouched. Actual musical codecs and Studio behavior remain in this parent.
 - 2026-10-30, Big Boss: Retained-score runtime slice implemented as the atomic
   TInstrumentalPlan.Reperform operation and detached CopyScore. Initial generation
   and edits now share primary PlanNoteVoiceTones; the adapter's copied per-role

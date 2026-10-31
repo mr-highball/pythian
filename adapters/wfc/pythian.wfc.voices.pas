@@ -54,6 +54,19 @@ type
   TVoicePreferences = array of TLayerTokenPreferences;
   { Detached pending-state flags prepared with the accepted music snapshot. }
   TVoiceDirtyFlags = array of Boolean;
+  { Clean accepted snapshot. Config owns detached role/pair vectors, with nil
+    model pointers; Models carries their canonical serialized identities. }
+  TVoiceAcceptedSnapshot = record
+    Version: Integer;
+    Config: TWfcMusicVoicesGraphConfig;
+    Options: TVoiceSessionOptions;
+    RoleNames: TLayerNames;
+    Models: TLayerModelTexts;
+    Constraints: TVoiceMasks;
+    Preferences: TVoicePreferences;
+    Contracts: TProviderContracts;
+    Assignments: TGraphAssignmentSnapshot;
+  end;
   { Big Boss: detached descriptions of actual graph passes, including coverage
     proof passes. Model counts are zero for proof passes (not token models).
     Dependencies are actual graph indices, not inferred from role labels. }
@@ -121,6 +134,9 @@ type
     function CopyPreferences(const AName: String;
       const AProgress: TWorkProgressCallback = nil): TLayerTokenPreferences;
     function CopyAccepted(const AProgress: TWorkProgressCallback = nil): TWfcMusicVoicesGenerated;
+    function CopyAcceptedSnapshot(const AProgress: TWorkProgressCallback = nil): TVoiceAcceptedSnapshot;
+    class function FromAcceptedSnapshot(const ASnapshot: TVoiceAcceptedSnapshot;
+      const AProgress: TWorkProgressCallback = nil): TNamedVoiceSession; static;
     { Borrowed progress; capture/copies/readiness run in the graph commit guard.
       Cancellation preserves accepted music, pending edits and caller output. }
     function TryGenerate(var AGenerated: TWfcMusicVoicesGenerated;
@@ -135,10 +151,6 @@ type
   end;
 
 function DefaultVoiceSessionOptions: TVoiceSessionOptions;
-{ Detached mask copy shared by session and musical-control consumers. }
-function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
-  const AProgress: TWorkProgressCallback = nil;
-  const APass: Integer = 0): TWfcSequenceTokenConstraints;
 { Exact action, chord cardinality and velocities; optional absolute MIDI pitches
   or 12-TET pitch classes. No inferred roles, automatic octave remapping or
   relaxation if the returned vocabulary is empty. Borrows the model only here. }
@@ -152,7 +164,8 @@ uses
   SysUtils,
   pythian.audio,
   pythian.wfc.music,
-  pythian.wfc.progress;
+  pythian.wfc.progress,
+  wfc_sequence_text;
 
 type
   TNamedVoicePublication = class;
@@ -330,36 +343,6 @@ begin
   Result.RequireObservedEnd := True;
   Result.MaxBacktracks := 512;
   Result.MaxPassBacktracks := 32;
-end;
-
-function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
-  const AProgress: TWorkProgressCallback;
-  const APass: Integer): TWfcSequenceTokenConstraints;
-var
-  LCandidate: TWfcSequenceTokenConstraints;
-  LIndex: Integer;
-  LToken: Integer;
-  LWork: TWfcObservedWork;
-begin
-  LWork := TWfcObservedWork.Create(AProgress, 'voice_mask_copy_visits', APass);
-  try
-    SetLength(LCandidate, Length(AMask));
-    for LIndex := 0 to High(AMask) do
-    begin
-      LCandidate[LIndex].Position := AMask[LIndex].Position;
-      SetLength(LCandidate[LIndex].AllowedTokens, Length(AMask[LIndex].AllowedTokens));
-      for LToken := 0 to High(AMask[LIndex].AllowedTokens) do
-      begin
-        LCandidate[LIndex].AllowedTokens[LToken] := AMask[LIndex].AllowedTokens[LToken];
-        LWork.Visit;
-      end;
-      LWork.Visit;
-    end;
-    LWork.Finish;
-    Result := LCandidate;
-  finally
-    LWork.Free;
-  end;
 end;
 
 function CopyVoicePreferences(const AValue: TLayerTokenPreferences;
@@ -1199,6 +1182,133 @@ begin
     Result := CopyVoicePreferences(FPreferences[LIndex], AProgress, LIndex + 1);
   finally
     FBusy := False;
+  end;
+end;
+
+function TNamedVoiceSession.CopyAcceptedSnapshot(
+  const AProgress: TWorkProgressCallback): TVoiceAcceptedSnapshot;
+var
+  LIndex: Integer;
+  LTextUnits: Integer;
+  LBridge: TWfcSolveProgressBridge;
+begin
+  CheckIdle;
+  if Length(FAccepted.Layers) = 0 then raise EAudio.Create('Voice snapshot requires acceptance');
+  for LIndex := 0 to High(FDirty) do
+    if FDirty[LIndex] then raise EAudio.Create('Voice snapshot requires no pending edits');
+  Result := Default(TVoiceAcceptedSnapshot);
+  LBridge := nil;
+  FBusy := True;
+  try
+    Result.Version := 1;
+    Result.Options := FOptions;
+    Result.RoleNames := Copy(FNames, 2, Length(FNames) - 2);
+    Result.Config := CopyWfcMusicVoicesGraphConfig(FConfig);
+    Result.Config.HarmonyModel := nil;
+    Result.Config.RhythmModel := nil;
+    for LIndex := 0 to High(Result.Config.Voices) do Result.Config.Voices[LIndex].Model := nil;
+    SetLength(Result.Models, Length(FNames));
+    SetLength(Result.Constraints, Length(FNames));
+    SetLength(Result.Preferences, Length(FNames));
+    SetLength(Result.Contracts, Length(FNames));
+    LTextUnits := 0;
+    for LIndex := 0 to High(FNames) do
+    begin
+      ReportWork(AProgress, 'voice_snapshot_models', wuItems, LIndex, Length(FNames));
+      Result.Models[LIndex] := EncodeWfcSequenceText(WfcMusicVoicesModelAt(FConfig, LIndex));
+      if Length(Result.Models[LIndex]) > MaximumSessionSnapshotTextUnits - LTextUnits then
+        raise EAudio.Create('Voice snapshot model text exceeds its budget');
+      Inc(LTextUnits, Length(Result.Models[LIndex]));
+      Result.Constraints[LIndex] := CopyVoiceTokenConstraints(FCommitted[LIndex], AProgress, LIndex + 1);
+      Result.Preferences[LIndex] := CopyVoicePreferences(FCommittedPreferences[LIndex], AProgress, LIndex + 1);
+      Result.Contracts[LIndex] := CopyProviderContract(FContracts[LIndex]);
+    end;
+    LBridge := TWfcSolveProgressBridge.Create(AProgress);
+    Result.Assignments := FGraph.CaptureAssignments(MaximumLayerStateCells,
+      MaximumSessionSnapshotTextUnits, LBridge.SolveObserver());
+    ReportWork(AProgress, 'voice_snapshot_ready', wuItems, 1, 1);
+  finally
+    LBridge.Free;
+    FBusy := False;
+  end;
+end;
+
+class function TNamedVoiceSession.FromAcceptedSnapshot(
+  const ASnapshot: TVoiceAcceptedSnapshot;
+  const AProgress: TWorkProgressCallback): TNamedVoiceSession;
+var
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LCandidate: TNamedVoiceSession;
+  LIndex: Integer;
+  LCount: Integer;
+  LTextUnits: Integer;
+  LBridge: TWfcSolveProgressBridge;
+  LPublication: TNamedVoicePublication;
+  LActive: TGraphPassIndices;
+  LGenerated: TWfcMusicVoicesGenerated;
+begin
+  Result := nil;
+  LCount := Length(ASnapshot.RoleNames) + 2;
+  if (ASnapshot.Version <> 1) or (LCount < 3) or (LCount > MaximumLearnedLayers) or
+    (Length(ASnapshot.Config.Voices) <> LCount - 2) or
+    (Length(ASnapshot.Models) <> LCount) or (Length(ASnapshot.Constraints) <> LCount) or
+    (Length(ASnapshot.Preferences) <> LCount) or (Length(ASnapshot.Contracts) <> LCount) or
+    (ASnapshot.Config.HarmonyModel <> nil) or (ASnapshot.Config.RhythmModel <> nil) then
+    raise EAudio.Create('Voice snapshot version, provider counts or model ownership differs');
+  for LIndex := 0 to High(ASnapshot.Config.Voices) do
+    if ASnapshot.Config.Voices[LIndex].Model <> nil then
+      raise EAudio.Create('Voice snapshots require saved model text without borrowed model pointers');
+  LTextUnits := 0;
+  for LIndex := 0 to High(ASnapshot.Models) do
+  begin
+    if Length(ASnapshot.Models[LIndex]) > MaximumSessionSnapshotTextUnits - LTextUnits then
+      raise EAudio.Create('Voice snapshot model text exceeds its budget');
+    Inc(LTextUnits, Length(ASnapshot.Models[LIndex]));
+  end;
+  LConfig := CopyWfcMusicVoicesGraphConfig(ASnapshot.Config);
+  LCandidate := nil;
+  LBridge := nil;
+  LPublication := nil;
+  try
+    for LIndex := 0 to High(ASnapshot.Models) do
+    begin
+      ReportWork(AProgress, 'voice_snapshot_decode', wuItems, LIndex, LCount);
+      case LIndex of
+        0: LConfig.HarmonyModel := DecodeWfcSequenceText(ASnapshot.Models[LIndex]);
+        1: LConfig.RhythmModel := DecodeWfcSequenceText(ASnapshot.Models[LIndex]);
+      else
+        LConfig.Voices[LIndex - 2].Model := DecodeWfcSequenceText(ASnapshot.Models[LIndex]);
+      end;
+    end;
+    LCandidate := TNamedVoiceSession.Create(LConfig, ASnapshot.RoleNames,
+      ASnapshot.Options, ASnapshot.Contracts, AProgress);
+    SetLength(LActive, LCount);
+    for LIndex := 0 to LCount - 1 do
+    begin
+      LCandidate.SetConstraints(LCandidate.ProviderName(LIndex), ASnapshot.Constraints[LIndex], AProgress);
+      LCandidate.SetPreferences(LCandidate.ProviderName(LIndex), ASnapshot.Preferences[LIndex], AProgress);
+      LCandidate.ApplyMask(LIndex, ASnapshot.Constraints[LIndex], AProgress);
+      LActive[LIndex] := LIndex;
+    end;
+    LBridge := TWfcSolveProgressBridge.Create(AProgress);
+    LCandidate.FGraph.RestoreAssignments(ASnapshot.Assignments, MaximumLayerStateCells,
+      MaximumSessionSnapshotTextUnits, LBridge.SolveObserver());
+    { Reuse the ordinary independent musical/path proof and publication logic.
+      No solver/search call occurs while restoring the private candidate. }
+    LPublication := TNamedVoicePublication.Create(LCandidate, LActive, False, AProgress);
+    LPublication.Capture;
+    LPublication.Publish(LGenerated);
+    FreeAndNil(LPublication);
+    ReportWork(AProgress, 'voice_snapshot_restored', wuItems, 1, 1);
+    Result := LCandidate;
+    LCandidate := nil;
+  finally
+    LPublication.Free;
+    LBridge.Free;
+    LCandidate.Free;
+    LConfig.HarmonyModel.Free;
+    LConfig.RhythmModel.Free;
+    for LIndex := 0 to High(LConfig.Voices) do LConfig.Voices[LIndex].Model.Free;
   end;
 end;
 

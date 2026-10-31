@@ -49,6 +49,7 @@ const
   MaximumLayerPreferences = 1024;
   MaximumLayerPreferenceMultiplier = 1024;
   MaximumLayerPreferencePreparationWork = 16777216;
+  MaximumSessionSnapshotTextUnits = 16777216;
 
 type
   TLayerTokenPreference = record
@@ -98,6 +99,18 @@ type
     TimeGrids: TLayerTimeGrids;
   end;
   TLayerNames = array of String;
+  TLayerModelTexts = array of String;
+  { Accepted, clean session state. Layers' model pointers are nil; Models owns
+    their canonical text. Other vectors and assignments are detached. }
+  TLayerAcceptedSnapshot = record
+    Version: Integer;
+    Options: TLayerGenerationOptions;
+    Names: TLayerNames;
+    Layers: TLearnedLayers;
+    Models: TLayerModelTexts;
+    Projections: TLayerProjections;
+    Assignments: TGraphAssignmentSnapshot;
+  end;
   { Big Boss: one detached pass-description contract for all primary sessions.
     Model counts are zero for proof passes. Dependencies index this snapshot.
     GroupIndex identifies separate executed graphs; InputSourcePassIndex is a
@@ -142,6 +155,8 @@ type
     FHasBaseline: array of TLayerDomainFlags;
     FDirty: array of Boolean;
     FAccepted: TLayerSequences;
+    FSnapshotBusy: Boolean;
+    procedure CheckSnapshotIdle;
     function LayerIndex(const AName: String): Integer;
     function RegenerationRoots(const ARoots: array of String): TGraphPassLabels;
     procedure AcceptSolved(const APrepared: TLayerSequences);
@@ -185,9 +200,20 @@ type
     function CopyGraph: TLayerGraphPasses;
     function CopyModel(const AName: String;
       const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+    { Requires acceptance and no pending edits. These operations copy/decode
+      saved models and rebuild configuration, but never learn or solve.
+      Independent model/path/projection proof runs before returning restoration.
+      The observer must not mutate/free inputs or reenter the source session. }
+    function CopyAcceptedSnapshot(const AProgress: TWorkProgressCallback = nil): TLayerAcceptedSnapshot;
+    class function FromAcceptedSnapshot(const ASnapshot: TLayerAcceptedSnapshot;
+      const AProgress: TWorkProgressCallback = nil): TLearnedLayerSession; static;
   end;
 
 function DefaultLayerGenerationOptions: TLayerGenerationOptions;
+{ Shared detached mask copy for layer, voice and musical-control consumers. }
+function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
+  const AProgress: TWorkProgressCallback = nil;
+  const APass: Integer = 0): TWfcSequenceTokenConstraints;
 function DescribeLayerGraph(const AGraph: TGraph; const ANames: array of String;
   const AModels: array of TWfcSequenceModel): TLayerGraphPasses;
 function MakeLayerTokenPreference(const AToken: String;
@@ -718,6 +744,73 @@ begin
   LSequence.Tokens := FModel.ProjectStateIndices(LSequence.StateIndices,
     WfcSequenceWorkObserver(APreparation));
   Result := LSequence;
+end;
+
+function CopyVoiceTokenConstraints(const AMask: TWfcSequenceTokenConstraints;
+  const AProgress: TWorkProgressCallback;
+  const APass: Integer): TWfcSequenceTokenConstraints;
+var
+  LCandidate: TWfcSequenceTokenConstraints;
+  LIndex: Integer;
+  LToken: Integer;
+  LWork: TWfcObservedWork;
+begin
+  LWork := TWfcObservedWork.Create(AProgress, 'voice_mask_copy_visits', APass);
+  try
+    SetLength(LCandidate, Length(AMask));
+    for LIndex := 0 to High(AMask) do
+    begin
+      LCandidate[LIndex].Position := AMask[LIndex].Position;
+      SetLength(LCandidate[LIndex].AllowedTokens, Length(AMask[LIndex].AllowedTokens));
+      for LToken := 0 to High(AMask[LIndex].AllowedTokens) do
+      begin
+        LCandidate[LIndex].AllowedTokens[LToken] := AMask[LIndex].AllowedTokens[LToken];
+        LWork.Visit;
+      end;
+      LWork.Visit;
+    end;
+    LWork.Finish;
+    Result := LCandidate;
+  finally
+    LWork.Free;
+  end;
+end;
+
+function CopyLayerOptions(const ASource: TLayerGenerationOptions;
+  const AWork: TWfcObservedWork = nil): TLayerGenerationOptions;
+var
+  LIndex: Integer;
+begin
+  Result := ASource;
+  Result.Scopes := Copy(ASource.Scopes);
+  Result.TimeGrids := Copy(ASource.TimeGrids);
+  for LIndex := 0 to High(Result.TimeGrids) do
+  begin
+    Result.TimeGrids[LIndex].Boundaries := Copy(ASource.TimeGrids[LIndex].Boundaries);
+    if AWork <> nil then AWork.Visit;
+  end;
+end;
+
+function CopyLayerProjections(const ASource: TLayerProjections;
+  const AWork: TWfcObservedWork = nil): TLayerProjections;
+var
+  LIndex: Integer;
+  LRule: Integer;
+begin
+  Result := nil;
+  SetLength(Result, Length(ASource));
+  for LIndex := 0 to High(ASource) do
+  begin
+    Result[LIndex] := ASource[LIndex];
+    { Copy detaches the vector before editing its nested token vectors. }
+    Result[LIndex].Rules := Copy(ASource[LIndex].Rules);
+    for LRule := 0 to High(Result[LIndex].Rules) do
+    begin
+      Result[LIndex].Rules[LRule].SourceTokens := Copy(ASource[LIndex].Rules[LRule].SourceTokens);
+      if AWork <> nil then AWork.Visit;
+    end;
+    if AWork <> nil then AWork.Visit;
+  end;
 end;
 
 function DefaultLayerGenerationOptions: TLayerGenerationOptions;
@@ -2051,7 +2144,6 @@ constructor TLearnedLayerSession.Create(const ALayers: TLearnedLayers;
 var
   LIndex: Integer;
   LOther: Integer;
-  LRule: Integer;
   LCell: Integer;
   LPass: TGraph;
   LScope: TLayerScope;
@@ -2090,14 +2182,7 @@ begin
         end;
       end;
     end;
-    FOptions := AOptions;
-    FOptions.Scopes := Copy(AOptions.Scopes);
-    FOptions.TimeGrids := Copy(AOptions.TimeGrids);
-    for LIndex := 0 to High(FOptions.TimeGrids) do
-    begin
-      LPreparation.Visit;
-      FOptions.TimeGrids[LIndex].Boundaries := Copy(AOptions.TimeGrids[LIndex].Boundaries);
-    end;
+    FOptions := CopyLayerOptions(AOptions, LPreparation);
     FNames := Copy(ANames);
     SetLength(FLayers, Length(ALayers));
     SetLength(FDirty, Length(ALayers));
@@ -2111,22 +2196,7 @@ begin
       LPreparation.Checkpoint;
       FLayers[LIndex].Preferences := Copy(ALayers[LIndex].Preferences);
     end;
-    SetLength(FProjections, Length(AProjections));
-    for LIndex := 0 to High(AProjections) do
-    begin
-      LPreparation.Visit;
-      FProjections[LIndex].Provider := AProjections[LIndex].Provider;
-      FProjections[LIndex].Consumer := AProjections[LIndex].Consumer;
-      FProjections[LIndex].TimeMapping := AProjections[LIndex].TimeMapping;
-      SetLength(FProjections[LIndex].Rules, Length(AProjections[LIndex].Rules));
-      for LRule := 0 to High(AProjections[LIndex].Rules) do
-      begin
-        LPreparation.Visit;
-        FProjections[LIndex].Rules[LRule] := AProjections[LIndex].Rules[LRule];
-        FProjections[LIndex].Rules[LRule].SourceTokens :=
-          Copy(AProjections[LIndex].Rules[LRule].SourceTokens);
-      end;
-    end;
+    FProjections := CopyLayerProjections(AProjections, LPreparation);
     { Capture model/extent domains before adding caller masks. Clearing a mask
       must restore endpoint restrictions as well as the full token vocabulary. }
     FGraph := BuildLayerGraph(FLayers, FProjections, FOptions, LPreparation);
@@ -2185,9 +2255,9 @@ var
   LPrevious: TLayerDomains;
   LHadPrevious: TLayerDomainFlags;
   LConstraints: TWfcSequenceTokenConstraints;
-  LConstraint: Integer;
   LPreparation: TLayerPreparation;
 begin
+  CheckSnapshotIdle;
   LPreparation := TLayerPreparation.Create(AProgress, 'layer_constraint_visits');
   try
     LIndex := LayerIndex(AName);
@@ -2200,12 +2270,7 @@ begin
     ValidateSequenceTokenConstraints(FLayers[LIndex].Model, LScope.CellCount,
       AConstraints, LPreparation.SequenceObserver());
     LPreparation.Checkpoint;
-    LConstraints := Copy(AConstraints);
-    for LConstraint := 0 to High(LConstraints) do
-    begin
-      LPreparation.Visit;
-      LConstraints[LConstraint].AllowedTokens := Copy(AConstraints[LConstraint].AllowedTokens);
-    end;
+    LConstraints := CopyVoiceTokenConstraints(AConstraints, AProgress, LIndex + 1);
     LPass := FGraph.PassGraph[LIndex];
     SetLength(LPrevious, LScope.CellCount);
     SetLength(LHadPrevious, LScope.CellCount);
@@ -2263,6 +2328,7 @@ var
   LRequested: TLearnedLayers;
   LPreparation: TLayerPreparation;
 begin
+  CheckSnapshotIdle;
   LPreparation := TLayerPreparation.Create(AProgress, 'layer_preference_visits');
   try
     LIndex := LayerIndex(AName);
@@ -2318,6 +2384,111 @@ begin
   Result := CopyLayerSequences(FAccepted, AProgress);
 end;
 
+procedure TLearnedLayerSession.CheckSnapshotIdle;
+begin
+  if FSnapshotBusy then raise EAudio.Create('Layer snapshot operation cannot be reentered');
+end;
+
+function TLearnedLayerSession.CopyAcceptedSnapshot(
+  const AProgress: TWorkProgressCallback): TLayerAcceptedSnapshot;
+var
+  LIndex: Integer;
+  LWork: TWfcObservedWork;
+  LBridge: TWfcSolveProgressBridge;
+  LTextUnits: Integer;
+begin
+  CheckSnapshotIdle;
+  if Length(FAccepted) = 0 then raise EAudio.Create('Layer snapshot requires an accepted session');
+  for LIndex := 0 to High(FDirty) do
+    if FDirty[LIndex] then raise EAudio.Create('Layer snapshot requires no pending edits');
+  Result := Default(TLayerAcceptedSnapshot);
+  LWork := nil;
+  LBridge := nil;
+  FSnapshotBusy := True;
+  try
+    LWork := TWfcObservedWork.Create(AProgress, 'layer_snapshot_copy');
+    Result.Version := 1;
+    Result.Options := CopyLayerOptions(FOptions, LWork);
+    Result.Names := Copy(FNames);
+    Result.Projections := CopyLayerProjections(FProjections, LWork);
+    SetLength(Result.Layers, Length(FLayers));
+    SetLength(Result.Models, Length(FLayers));
+    LTextUnits := 0;
+    for LIndex := 0 to High(FLayers) do
+    begin
+      Result.Models[LIndex] := EncodeWfcSequenceText(FLayers[LIndex].Model);
+      if Length(Result.Models[LIndex]) > MaximumSessionSnapshotTextUnits - LTextUnits then
+        raise EAudio.Create('Layer snapshot model text exceeds its budget');
+      Inc(LTextUnits, Length(Result.Models[LIndex]));
+      Result.Layers[LIndex].Constraints := CopyVoiceTokenConstraints(
+        FLayers[LIndex].Constraints, AProgress, LIndex + 1);
+      Result.Layers[LIndex].Preferences := Copy(FLayers[LIndex].Preferences);
+      LWork.Visit;
+    end;
+    LBridge := TWfcSolveProgressBridge.Create(AProgress);
+    Result.Assignments := FGraph.CaptureAssignments(MaximumLayerStateCells,
+      MaximumSessionSnapshotTextUnits, LBridge.SolveObserver());
+    LWork.Finish;
+    ReportWork(AProgress, 'layer_snapshot_ready', wuItems, 1, 1);
+  finally
+    LBridge.Free;
+    LWork.Free;
+    FSnapshotBusy := False;
+  end;
+end;
+
+class function TLearnedLayerSession.FromAcceptedSnapshot(
+  const ASnapshot: TLayerAcceptedSnapshot;
+  const AProgress: TWorkProgressCallback): TLearnedLayerSession;
+var
+  LLayers: TLearnedLayers;
+  LCandidate: TLearnedLayerSession;
+  LBridge: TWfcSolveProgressBridge;
+  LIndex: Integer;
+  LTextUnits: Integer;
+  LCaptured: TLayerSequences;
+begin
+  Result := nil;
+  if (ASnapshot.Version <> 1) or (Length(ASnapshot.Layers) < 1) or
+    (Length(ASnapshot.Layers) > MaximumLearnedLayers) or
+    (Length(ASnapshot.Models) <> Length(ASnapshot.Layers)) or
+    (Length(ASnapshot.Names) <> Length(ASnapshot.Layers)) then
+    raise EAudio.Create('Layer snapshot version or provider counts differ');
+  LTextUnits := 0;
+  for LIndex := 0 to High(ASnapshot.Models) do
+  begin
+    if (ASnapshot.Layers[LIndex].Model <> nil) or
+      (Length(ASnapshot.Models[LIndex]) > MaximumSessionSnapshotTextUnits - LTextUnits) then
+      raise EAudio.Create('Layer snapshots require bounded model text without borrowed model pointers');
+    Inc(LTextUnits, Length(ASnapshot.Models[LIndex]));
+  end;
+  LLayers := Copy(ASnapshot.Layers);
+  LCandidate := nil;
+  LBridge := nil;
+  try
+    for LIndex := 0 to High(LLayers) do
+    begin
+      ReportWork(AProgress, 'layer_snapshot_models', wuItems, LIndex, Length(LLayers));
+      LLayers[LIndex].Model := DecodeWfcSequenceText(ASnapshot.Models[LIndex]);
+    end;
+    LCandidate := TLearnedLayerSession.Create(LLayers, ASnapshot.Projections,
+      ASnapshot.Names, ASnapshot.Options, AProgress);
+    LBridge := TWfcSolveProgressBridge.Create(AProgress);
+    LCandidate.FGraph.RestoreAssignments(ASnapshot.Assignments, MaximumLayerStateCells,
+      MaximumSessionSnapshotTextUnits, LBridge.SolveObserver());
+    LCaptured := CaptureLayers(LCandidate.FLayers, LCandidate.FProjections,
+      LCandidate.FOptions, LCandidate.FGraph, AProgress);
+    LCandidate.AcceptSolved(LCaptured);
+    ReportWork(AProgress, 'layer_snapshot_restored', wuItems, 1, 1);
+    Result := LCandidate;
+    LCandidate := nil;
+  finally
+    LBridge.Free;
+    LCandidate.Free;
+    for LIndex := 0 to High(LLayers) do LLayers[LIndex].Model.Free;
+  end;
+end;
+
 function TLearnedLayerSession.TryGenerate(var ASequences: TLayerSequences;
   out AReport: TGraphNegotiationReport;
   const AProgress: TWorkProgressCallback): Boolean;
@@ -2355,6 +2526,7 @@ var
   LConsumer: Integer;
   LProjection: TLayerProjection;
 begin
+  CheckSnapshotIdle;
   if (Length(FAccepted) = 0) or (Length(ARoots) < 1) or
     (Length(ARoots) > MaximumLearnedLayers) then
   begin

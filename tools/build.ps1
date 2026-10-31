@@ -755,6 +755,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Named voice publication progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voice.publication.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Named voice publication cancellation and replay checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.accepted.snapshot.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Accepted musical session snapshot compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.accepted.snapshot$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Accepted musical session restoration and regeneration checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.utf8.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Provider UTF-8 byte validation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.provider.utf8$executableSuffix")
