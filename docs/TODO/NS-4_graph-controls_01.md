@@ -37,6 +37,47 @@ Primary attribution: NS-4. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: bounded portable passage editor is implemented and checked;
+  this is a partial implementation handoff, not AC2/AC4 acceptance. Reconstruct
+  actual context, named voices/coverage and separate drum groups with primary
+  builders, generated assignment snapshots, dependency closure and independent
+  captures. Original models are borrowed unchanged. Held states, outside-range
+  notes and both latent seams remain exact. Selected pitch bounds and existing
+  root/activity preferences enter the graph; failure/cancellation returns no
+  candidate. Initial streams and edits now share percussion frame projection;
+  finite/stream/edit consumers share one percussion preference compiler.
+  Native Win64 and actual pas2js pass154 focused checks, including real Lead/Hat
+  changes, exact other five PCM stems, nine-provider context, partial ranges,
+  outgoing conflicts, final cancellation and mismatched source rejection.
+  Progress callback counts are separate from assertions. Existing replay387 and
+  percussion1119 checks pass on both targets; native heaps are clean. The new
+  fixture is in maintained native and optional WFC portability builds.
+  Preserve failures in studio-notes-20261031-boss under E-drive runs: source
+  guide continuation at cell16; missing imports; new graphs incorrectly wrapping;
+  an overconstrained unchanged-seed expectation; an order-one test corpus that
+  could not validate hold transitions; and a context test that pinned an
+  incompatible authored rhythm. The repaired context fixture lets the actual
+  upstream provider select its rhythm and verifies its original projections.
+  A Kick-silencing test correctly found no existing Kick hits in its selected
+  tail; the actual percussion change uses the present Hat part instead.
+  Do not count earlier Node exit0 alone as passing: ad hoc runs now require an
+  explicit PASS, and the maintained host propagates rtl.exitcode. Logs remain.
+  Native parent/child/rechild publication and desktop/phone Change notes use
+  are still required. Keep the normal three steps simple, reuse the score replay
+  and native instrument binding, and do not reread sources or retrain. No effort
+  units close. Consecutive nonclosing count is one; the next batch must deliver
+  the ordinary native/browser consumer or reassess before further implementation.
+
+- 2026-10-31, Big Boss: resume retained role/passage graph edits after the accepted
+  saved-clip operator blocker. Ordinary stream journals bind actual provider
+  models/states and cell clocks. A bounded edit must prove original provider paths,
+  musical/context/drum relationships and both seams before publishing changed
+  decisions. Keep unselected states and outside-range cells exact, preserve
+  explicit domains and report contradictions. Reuse primary WFC builders,
+  assignment ownership, projection functions and the existing score replayer;
+  do not substitute a score transpose or start a new learning pass. Stop after
+  actual native/browser parent/child use; no partial seven-unit credit.
+
 - 2026-10-31, Big Boss: retained-score sound follow-ups now work in ordinary
   Studio. The optional Change sounds dialog queues a durable native
   instrumental_reperform job, uses the primary score replayer and shares initial

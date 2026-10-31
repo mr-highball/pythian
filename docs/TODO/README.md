@@ -28,7 +28,9 @@ The accepted [decision-replay prerequisite](DONE/NS-4_decision-replay_01.md) now
 retains actual streamed notes/provider states and replays mix/stems exactly
 without learning or solving. New ordinary generations save these decisions;
 optional sound-only follow-ups now preserve that score and expose Before/After.
-Scoped role/passage graph changes still keep graph-controls open.
+The bounded portable role/passage editor now passes actual native/pas2js audio
+and preservation checks. Its durable native/Studio consumer still keeps
+graph-controls open, with no partial effort credit.
 Next follow the actual prerequisites of NS-5: finish musical controls/selective
 regeneration and reusable sound recipes, then evolving form and saved styles/
 blends. Graph inspection and useful synthesis reviews retain their own tasks.

@@ -112,6 +112,7 @@ type
 
 procedure ValidateMusicDecisionChunk(const AChunk: TMusicDecisionChunk;
   const AProgress: TWorkProgressCallback = nil);
+function SameMusicDecisionFrame(const A, B: TChordFrame): Boolean;
 function CopyMusicDecisionChunk(const AChunk: TMusicDecisionChunk): TMusicDecisionChunk;
 function MusicDecisionFrameCount(const AChunk: TMusicDecisionChunk): Int64;
 function EncodeMusicDecisions(const AChunk: TMusicDecisionChunk;
@@ -133,7 +134,7 @@ begin
   end;
 end;
 
-function SameFrame(const A, B: TChordFrame): Boolean;
+function SameMusicDecisionFrame(const A, B: TChordFrame): Boolean;
   var I, J: Integer;
 begin
   Result := False;
@@ -412,7 +413,7 @@ begin
   Need((AChunk.FirstCell = FCells) and (AChunk.StartFrame = FFrames),
     'Music decision journal has a discontinuous cell/frame clock');
   if FCells = 0 then Exit;
-  Need(SameFrame(AChunk.Previous, FPrevious), 'Music decision predecessor differs');
+  Need(SameMusicDecisionFrame(AChunk.Previous, FPrevious), 'Music decision predecessor differs');
   Need(Length(FKeys) = Length(AChunk.Providers), 'Music decision provider layout differs');
   for I := 0 to High(FKeys) do
     Need(FKeys[I] = AChunk.Providers[I].Key, 'Music decision provider order differs');

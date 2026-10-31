@@ -25,6 +25,8 @@ score decisions survive on disk and reproduce mix/stems without learning/solving
 Sound-only Studio follow-ups now replay those notes through changed pitched
 instruments with Before/After and previous-version recovery. Scoped role/passage
 graph changes remain in graph-controls; its seven units are still unaccepted.
+The bounded portable editor passes actual native/pas2js audio and preservation
+checks; its durable native/Studio consumer has not yet been delivered.
 The demonstrated prerequisite added required scope to the denominator.
 Coarse corpus learning and the simple Library→Selection→Generate flow are now
 accepted after actual native/pas2js and desktop/phone consumers pass. Optional

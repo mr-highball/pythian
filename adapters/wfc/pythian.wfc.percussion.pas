@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.time,
+  pythian.chord,
   pythian.progress,
   pythian.synth,
   pythian.percussion,
@@ -93,6 +94,11 @@ type
 
 function PercussionToken(const AVelocity: Integer): String;
 function PercussionVelocity(const AToken: String): Integer;
+function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
+{ Detached musical projection shared by initial streams and retained graph edits.
+  Drum tokens drive explicit synthesized hits, never source-audio windows. }
+function AppendPercussionDecisions(const APitched: TChordFrame;
+  const ATokens: TWfcModelTokens; const ADefinitions: TPercussionDefinitions): TChordFrame;
 function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;
   const ADefinition: TPercussionDefinition; const AToken: String): TWfcModelTokens;
 { Big Boss: one actual dependent graph with an exactly pinned rhythm-input pass
@@ -113,6 +119,35 @@ implementation
 uses
   SysUtils,
   pythian.audio;
+
+function AppendPercussionDecisions(const APitched: TChordFrame;
+  const ATokens: TWfcModelTokens; const ADefinitions: TPercussionDefinitions): TChordFrame;
+var
+  I: Integer;
+  LOffset: Integer;
+  LVelocity: Integer;
+begin
+  if Length(ATokens) <> Length(ADefinitions) then
+  begin
+    raise EAudio.Create('Percussion decision layout differs');
+  end;
+  Result := CopyChordFrame(APitched);
+  LOffset := Length(Result);
+  SetLength(Result, LOffset + Length(ADefinitions));
+  for I := 0 to High(ADefinitions) do
+  begin
+    Result[LOffset + I] := Default(TChordVoice);
+    LVelocity := PercussionVelocity(ATokens[I]);
+    if LVelocity = 0 then
+    begin
+      Continue;
+    end;
+    Result[LOffset + I].Action := caAttack;
+    SetLength(Result[LOffset + I].Tones, 1);
+    Result[LOffset + I].Tones[0].Pitch := PercussionKey(ADefinitions[I].Settings.Kind);
+    Result[LOffset + I].Tones[0].Velocity := LVelocity;
+  end;
+end;
 
 function PercussionToken(const AVelocity: Integer): String;
 begin
@@ -141,6 +176,31 @@ begin
   if (Result < 1) or (Result > 127) or (AToken <> PercussionToken(Result)) then
   begin
     raise EAudio.Create('Percussion hit token is not canonical');
+  end;
+end;
+
+function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
+var
+  I: Integer;
+  LWeight: Integer;
+  LToken: String;
+begin
+  if (ADefinition.Model = nil) or (ADefinition.HitWeight < 1) or
+    (ADefinition.HitWeight > MaximumLayerPreferenceMultiplier) then
+  begin
+    raise EAudio.Create('Percussion preferences require a model and hit weight 1..1024');
+  end;
+  Result := nil;
+  SetLength(Result, ADefinition.Model.PublicTokenCount);
+  for I := 0 to High(Result) do
+  begin
+    LToken := ADefinition.Model.PublicTokenAt(I);
+    LWeight := 1;
+    if PercussionVelocity(LToken) > 0 then
+    begin
+      LWeight := ADefinition.HitWeight;
+    end;
+    Result[I] := MakeLayerTokenPreference(LToken, LWeight);
   end;
 end;
 
@@ -312,7 +372,7 @@ begin
       LMaps[LPart].Consumer := LPart + 1;
       LMaps[LPart].Provider := 0;
       SetLength(LMaps[LPart].Rules, ADefinitions[LPart].Model.PublicTokenCount);
-      SetLength(LLayers[LPart + 1].Preferences, ADefinitions[LPart].Model.PublicTokenCount);
+      LLayers[LPart + 1].Preferences := PercussionPreferences(ADefinitions[LPart]);
       LHasRest := False;
       for LToken := 0 to ADefinitions[LPart].Model.PublicTokenCount - 1 do
       begin
@@ -322,13 +382,6 @@ begin
           ADefinitions[LPart].Model.PublicTokenAt(LToken));
         LMaps[LPart].Rules[LToken] := MakeWfcSequenceProjectionRule(
           ADefinitions[LPart].Model.PublicTokenAt(LToken), LAllowed);
-        LCount := 1;
-        if LVelocity > 0 then
-        begin
-          LCount := ADefinitions[LPart].HitWeight;
-        end;
-        LLayers[LPart + 1].Preferences[LToken] :=
-          MakeLayerTokenPreference(ADefinitions[LPart].Model.PublicTokenAt(LToken), LCount);
       end;
       if not ADefinitions[LPart].Enabled and not LHasRest then
       begin

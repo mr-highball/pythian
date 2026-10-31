@@ -883,6 +883,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.decisions$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.passage.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.passage$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")

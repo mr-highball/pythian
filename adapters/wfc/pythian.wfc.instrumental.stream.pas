@@ -341,16 +341,15 @@ var
   LSegment: TWfcMusicVoicesSegment;
   LMasks: TVoiceMasks;
   LMask: TWfcSequenceTokenConstraint;
-  LProvider, I, LToken, LWeight: Integer;
-  LName: String;
+  LProvider, I: Integer;
   LExpected: String;
   LFrames: TWfcMusicEnsembleFrames;
-  LRhythm, LContextTokens: TWfcModelTokens;
+  LRhythm, LContextTokens, LDrumCellTokens: TWfcModelTokens;
   LDrumTokens: TInstrumentalTokenStreams;
   LDecisions, LSinkCopy: TMusicDecisionChunk;
   LClock: TIncrementalTempoClock;
   LFrame: TChordFrame;
-  LCell, LAt, LVelocity: Integer;
+  LCell: Integer;
   LFrameCount, LFrameAt: Int64;
   procedure KeepProvider(const AKey: String; const AGenerated: TWfcGeneratedSequenceSegment);
   var LAt, LCell: Integer;
@@ -421,15 +420,7 @@ begin
   SetLength(LDrumTokens, Length(FDrumStreams));
   for I := 0 to High(FDrumStreams) do
   begin
-    LOptions.Preferences := nil;
-    SetLength(LOptions.Preferences, FDefinitions[I].Model.PublicTokenCount);
-    for LToken := 0 to High(LOptions.Preferences) do
-    begin
-      LName := FDefinitions[I].Model.PublicTokenAt(LToken);
-      LWeight := 1;
-      if PercussionVelocity(LName) > 0 then LWeight := FDefinitions[I].HitWeight;
-      LOptions.Preferences[LToken] := MakeLayerTokenPreference(LName, LWeight);
-    end;
+    LOptions.Preferences := PercussionPreferences(FDefinitions[I]);
     LOptions.Seed := WfcMusicArrangementSectionSeed(FOptions.Seed xor Cardinal(I + 1741), FSegments);
     if not FDrumStreams[I].TryNext(LOptions, DrumConstraints(I, LRhythm), LChunk,
       LReport, AProgress) then
@@ -447,19 +438,13 @@ begin
     LClock.Restore(FClock.Snapshot);
     for LCell := 0 to High(LFrames) do
     begin
-      LFrame := ProjectWfcChordFrame(LFrames[LCell]);
-      LAt := Length(LFrame);
-      SetLength(LFrame, LAt + Length(FDrums));
+      SetLength(LDrumCellTokens, Length(FDrums));
       for I := 0 to High(FDrums) do
       begin
-        LFrame[LAt + I] := Default(TChordVoice);
-        LVelocity := PercussionVelocity(LDrumTokens[I][LCell]);
-        if LVelocity = 0 then Continue;
-        LFrame[LAt + I].Action := caAttack;
-        SetLength(LFrame[LAt + I].Tones, 1);
-        LFrame[LAt + I].Tones[0].Pitch := PercussionKey(FDefinitions[I].Settings.Kind);
-        LFrame[LAt + I].Tones[0].Velocity := LVelocity;
+        LDrumCellTokens[I] := LDrumTokens[I][LCell];
       end;
+      LFrame := AppendPercussionDecisions(ProjectWfcChordFrame(LFrames[LCell]),
+        LDrumCellTokens, FDefinitions);
       LFrameCount := LClock.Advance(FOptions.StepTicks, FOptions.TempoMicroseconds);
       LFrameCount := Min(LFrameCount, FOptions.MusicFrames - LFrameAt);
       LDecisions.Cells[LCell].FrameCount := LFrameCount;

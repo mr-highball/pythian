@@ -2,6 +2,60 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
+## Current handoff: passage editor verified, Studio integration remains — 2026-10-31
+
+Big Boss SOLO retains [graph controls](TODO/NS-4_graph-controls_01.md) AC2/AC4.
+The portable bounded editor now rebuilds accepted context/named-voice/drum groups,
+preserves generated ownership and held states, solves the requested dependency
+closure and independently validates the candidate. Initial streams/edits share
+percussion frame projection; finite/stream/edit paths share drum preferences.
+Native Win64 and actual pas2js pass154 assertions: changed Lead and Hat audio,
+exact other five stems, nine-provider context, partial range/latent seams,
+contradictions, final cancellation and mismatched recorded notes. Callbacks are
+reported separately. Existing decision replay387/percussion1119 pass both targets;
+native heaps are clean. See the task's failure history and
+[API boundary](ACCEPTED-SESSIONS.md#current-boundary). Evidence is in
+`studio-notes-20261031-boss` under dedicated E-drive build/cache/runs roots.
+
+No ordinary Studio note-edit action is published yet. Next connect a durable
+instrumental graph-edit child to the accepted parent/root model and journal
+receipts, preserve original rendering randomness and settings, then replay through
+shared native instruments. The optional Change notes result dialog needs part/
+passage selection and explicit choices, Before/After/previous-version recovery,
+visible conflicts, no-source child/rechild, retry/cancel/reconnect and desktop/
+phone checks. Keep Library→Selection→Generate unchanged. Do not create a second
+renderer/model decoder or teach the operator a required graph-editor workflow.
+
+**91/131 effort remains accepted (69.47%), six open and nineteen current DONE.**
+No criterion closes in this partial implementation handoff; consecutive
+nonclosing count is one. Next batch must close the native/browser criterion or
+reassess before further implementation. No operator feedback is needed to build
+it. The goal remains active. Stable still serves the accepted independent-clip
+build; no QA service/browser/audio was started in this portable batch. Clip CI
+41215452373 completed successfully. Saved clips already learn without parent
+payload scans and preserve lineage; that operator request is deployed.
+
+## Selected batch: retained graph passage edits — 2026-10-31
+
+Big Boss SOLO selects [graph controls](TODO/NS-4_graph-controls_01.md) AC2/AC4.
+Criterion: change selected musical parts in a chosen passage of an ordinary
+learned Studio result, while retaining its other accepted decisions and drums.
+Deliverable: an optional Change notes result action, durable native graph edit
+and Before/After using the existing score replayer. Reuse the actual saved
+provider models, clock, constraints, primary musical projections and WFC
+dependency closure; no learning, source rereads or hidden constraint relaxation.
+Keep the three-step default flow intact.
+
+Closing evidence: bounded native/pas2js graph editing with exact retained latent
+states and outside-range decisions, incoming/outgoing musical seams, actual
+changed instrumental output, no-source parent/child/rechild, visible conflicts,
+cancellation/reconnect and desktop/phone use. Stop at this usable consumer;
+graph visualization and deeper sound recipes retain their own tasks. Current
+accepted effort stays91/131 until complete criteria pass. The previous clip turn
+is progress and closes its task; consecutive nonclosing count starts at zero.
+Packet: `studio-notes-20261031-boss` under dedicated E-drive roots. Clip CI
+41215452373 subsequently completed successfully; see the current handoff.
+
 ## Current handoff: independent clips accepted and deployed — 2026-10-31
 
 Big Boss SOLO accepts [saved clips](TODO/DONE/NS-6_saved-clips_01.md) AC1–AC5.

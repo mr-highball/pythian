@@ -70,6 +70,35 @@ does not itself restore a live editable graph. Studio follow-up controls remain
 in graph-controls. Existing jobs without retained decisions do not acquire their
 missing state indices retroactively. Ordinary Generate still makes new decisions.
 
+The portable `pythian.wfc.instrumental.edit` adapter now reconstructs one bounded
+decision chunk using the accepted immutable models, actual predecessor/successor
+provider rows and the existing WFC builders. `TryEditInstrumentalPassageChunk`
+proves the original paths, context projections, harmonic coverage and performed
+parts before searching. Generated assignment ownership survives restoration.
+The request selects ordered pitched/drum parts and an absolute sample-frame
+passage; overlapping cells snap outward and report their actual bounds.
+Unselected providers and outside-range cells retain exact latent states/tokens.
+Pitch bounds constrain selected parts; explicit harmony/rhythm flags allow those
+providers to change. Existing control compilation supplies soft root/activity
+preferences. Expression stays neutral here; retained-score performance owns it.
+
+Context, named voices/coverage and rhythm-conditioned drums keep the same ordered
+groups as initial generation. Primary WFC dependency closure and independent
+captures own solving and verification. Both latent seams are held, so some
+requested changes have no valid continuation. False or an exception preserves
+the caller's previous candidate; no constraint is silently removed. The adapter
+does not promise every seed changes the notes, global search across planning
+chunks or a uniform draw over all group combinations.
+
+This call borrows models and a synchronous progress callback. It performs no
+learning/source-audio reads and returns no partial candidate after cancellation.
+It does not authorize arbitrary stored observations: native consumers still must
+bind the complete source journal and models to the accepted job receipt. The
+durable native edit job and optional Studio Change notes action remain open in
+[graph controls](TODO/NS-4_graph-controls_01.md). The library fixture renders
+actual Before/After through the primary decision replayer, including exact
+unchanged stems; it is not operator musical approval or a completed Studio path.
+
 The generic assignment operation lives in the separate WFC branch
 [`codex/pythian-accepted-assignments`](https://github.com/mr-highball/wfc/tree/codex/pythian-accepted-assignments),
 commit `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`.
