@@ -61,7 +61,7 @@ procedure CheckSavedExperiment(const ARoot: String);
 var
   LWrite, LProject, LRead, LSettings, LRequest, LPrepared, LJob: TJSONObject;
   LRejected: Boolean;
-  LSnapshot: String;
+  LSnapshot, LBeforeHash: String;
 begin
   LSettings := Config;
   LSettings.Integers['tempo_bpm'] := 80;
@@ -128,8 +128,36 @@ begin
       Check(LJob.Objects['results'].Objects['settings'].Objects['controls'].Arrays['parts'].
         Objects[2].Integers['gate_percent'] = 75, 'Saved articulation reaches native performance');
       Check(LJob.Objects['results'].Arrays['parts'].Count = 6, 'Saved experiment publishes six actual parts');
+      LBeforeHash := LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
     finally LJob.Free end;
     LWrite.Integers['expected_revision'] := 1;
+    LSettings.Integers['tempo_bpm'] := 100;
+    LRead := SaveStudioProject(ARoot, LWrite);
+    try LSnapshot := LRead.Strings['snapshot_sha256'] finally LRead.Free end;
+    LRequest.Integers['project_revision'] := 2;
+    LRequest.Strings['project_snapshot_sha256'] := LSnapshot;
+    LRequest.Delete('instrumental'); LRequest.Add('instrumental', LSettings.Clone);
+    LRequest.Strings['job_id'] := 'saved-experiment-after';
+    LRequest.Add('parent_job_id', 'saved-experiment-run');
+    LJob := EnqueueStudioJob(ARoot, LRequest);
+    try Check(LJob.Strings['parent_job_id'] = 'saved-experiment-run', 'Queued experiment retains its earlier version')
+    finally LJob.Free end;
+    LJob := EnqueueStudioJob(ARoot, LRequest);
+    try Check(LJob.Booleans['already_queued'], 'Comparison request retries reconcile exactly')
+    finally LJob.Free end;
+    Check(RunStudioWorker(ARoot, 'saved-experiment-after', ARoot + '-absent-library'),
+      'Changed authored settings perform another native version');
+    LJob := ReadStudioJob(ARoot, 'saved-experiment-after');
+    try
+      Check(LJob.Strings['status'] = 'completed', 'Changed experiment completes');
+      Check(LJob.Objects['results'].Objects['before'].Strings['job_id'] = 'saved-experiment-run',
+        'Before points to the actual earlier performance');
+      Check(LJob.Objects['results'].Objects['before'].Strings['wav_sha256'] = LBeforeHash,
+        'Before retains its exact audio receipt');
+      Check(LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'] <> LBeforeHash,
+        'Changed tempo changes actual audio');
+    finally LJob.Free end;
+    LWrite.Integers['expected_revision'] := 2;
     LSettings.Add('unknown', True);
     LRejected := False;
     try LRead := SaveStudioProject(ARoot, LWrite); LRead.Free

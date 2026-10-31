@@ -31,9 +31,31 @@ interface
 uses JS, Web, SysUtils, Types;
 
 function AwaitStudioPromise(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
+function ReadStudioJSONResponse(APromise: TJSPromise): TJSObject; async;
 function SameStudioJSON(const ALeft, ARight: JSValue): Boolean;
 
 implementation
+
+function ReadStudioJSONResponse(APromise: TJSPromise): TJSObject; async;
+var LResponse: TJSResponse;
+begin
+  try
+    LResponse := TJSResponse(await(JSValue, AwaitStudioPromise(APromise, 20)));
+  except
+    raise Exception.Create('Connection interrupted. Reconnect to continue. Your choices are kept.');
+  end;
+  if LResponse.status <> 200 then
+  begin
+    if LResponse.status = 409 then
+      raise Exception.Create('Saved work changed or storage is busy. Retry shortly, reopen it or save a copy.');
+    raise Exception.Create('Request failed (HTTP ' + IntToStr(LResponse.status) + '). Reconnect or reopen saved work.');
+  end;
+  try
+    Result := await(TJSObject, LResponse.json());
+  except
+    raise Exception.Create('Studio received an unreadable response. Reconnect to continue.');
+  end;
+end;
 
 function SameStudioJSON(const ALeft, ARight: JSValue): Boolean;
 var

@@ -256,7 +256,7 @@ const
   CNames: array[1..4] of String =
     ('Learn your music', 'Plan the track', 'Synthesize audio', 'Save the result');
 var
-  LWorkflow: TJSObject;
+  LWorkflow, LRequest: TJSObject;
   LRoot, LBar, LSteps, LItem: TJSElement;
   LPhase, I: Integer;
   LDone, LTotal, LValue: Double;
@@ -265,6 +265,11 @@ var
   LNames: array[1..4] of String;
 begin
   for I := 1 to 4 do LNames[I] := CNames[I];
+  LRequest := nil;
+  if isObject(AJob['request']) then LRequest := TJSObject(AJob['request']);
+  if (StudioText(AJob, 'kind') = 'instrumental_generate') and (LRequest <> nil) and
+    isObject(LRequest['instrumental']) and not LRequest.hasOwnProperty('duration_ms') then
+    LNames[1] := 'Prepare the music';
   if (StudioText(AJob, 'kind') = 'instrumental_reperform') or
     (StudioText(AJob, 'kind') = 'instrumental_regenerate') then
   begin

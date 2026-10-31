@@ -47,7 +47,10 @@ $htmlPath = Join-Path $repository "tools/label-workbench/$testHtml"
 if ($Suite -eq 'live-policy') {
   $htmlPath = Join-Path $output 'fixture.html'
   [IO.File]::WriteAllText($htmlPath, '<!doctype html><body><div id="studio-live"></div></body>')
-} elseif ($Suite -eq 'recovery' -or $Suite -eq 'references') {
+} elseif ($Suite -eq 'recovery') {
+  $htmlPath = Join-Path $output 'fixture.html'
+  [IO.File]::WriteAllText($htmlPath, '<!doctype html><body></body>')
+} elseif ($Suite -eq 'references') {
   # Retained component checks have their own host. Do not keep obsolete
   # workflow mounts hidden in the replacement product UI for these tests.
   $htmlPath = Join-Path $output 'fixture.html'
@@ -72,6 +75,9 @@ dom.window.setTimeout = (fn, delay, ...args) =>
 dom.window.HTMLMediaElement.prototype.pause = function() { this.testPauseCount = (this.testPauseCount || 0) + 1; };
 dom.window.HTMLMediaElement.prototype.load = function() {};
 dom.window.HTMLMediaElement.prototype.testPauseCount = 0;
+// DOM host only. Real modal layout/focus is checked in the browser.
+dom.window.HTMLDialogElement.prototype.showModal = function() { this.setAttribute('open', ''); };
+dom.window.HTMLDialogElement.prototype.close = function() { this.removeAttribute('open'); };
 AUDIO_HOST
 dom.window.eval(fs.readFileSync(path.join(__dirname, TEST_PROGRAM), 'utf8'));
 dom.window.rtl.run();

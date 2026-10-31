@@ -663,7 +663,7 @@ code {
   }
 }
 /* Big Boss: the result stays in the Generate step, with quiet optional detail. */
-.generation-result { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border, #38515a); }
+.generation-result { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 .generation-result audio { display: block; width: 100%; max-width: 100%; margin: .75rem 0; }
 .generation-phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem; padding: 0; list-style: none; font-size: .8rem; color: var(--muted); }
 .generation-phases li { border-top: 3px solid #38515a; padding-top: .45rem; }
@@ -676,10 +676,24 @@ code {
 @media (max-width: 600px) { .version-comparison[data-compare] { grid-template-columns: 1fr; } }
 .note-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }
 .note-range input { width: 100%; min-width: 0; margin-top: .35rem; }
-.note-parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: .8rem; border: 1px solid var(--border); border-radius: .6rem; }
+.note-parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: .8rem; border: 1px solid var(--line); border-radius: .6rem; }
 .note-parts label, .note-toggle { display: flex; align-items: center; gap: .5rem; min-height: 44px; }
 .note-parts input, .note-toggle input { width: 1.2rem; height: 1.2rem; flex: 0 0 auto; }
 .note-tuning { margin: 1rem 0; }
 .note-tuning > label { margin: .7rem 0; }
 .note-tuning input[type="range"], .note-tuning select { display: block; width: 100%; margin-top: .4rem; }
 @media (max-width: 450px) { .note-parts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Big Boss: optional controls keep one small panel visible, including on phones. */
+#laboratory-dialog { width: min(44rem, calc(100% - 1rem)); }
+#laboratory-dialog[open] { display: flex; flex-direction: column; max-height: calc(100vh - 1rem); overflow: hidden; }
+#lab-controls { overflow-y: auto; min-height: 0; padding-right: .2rem; }
+.lab-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin: .8rem 0; }
+.lab-tabs [aria-selected="true"] { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; margin: .8rem 0; }
+.lab-grid label, .lab-saved label { min-width: 0; }
+#lab-controls input, #lab-controls select, #lab-name, #lab-saved { display: block; width: 100%; min-width: 0; margin-top: .3rem; }
+.lab-saved { display: flex; align-items: end; gap: .5rem; margin: .7rem 0; }
+.lab-saved label { flex: 1; }
+.lab-footer { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: .4rem; }
+.lab-footer p { flex-basis: 100%; }
+.lab-footer, .lab-saved, #laboratory-dialog > .dialog-heading { flex-shrink: 0; }

@@ -385,6 +385,8 @@ begin
     Result.Add('project_revision', ARequest.Int64s['project_revision']);
     Result.Add('project_snapshot_sha256', ARequest.Strings['project_snapshot_sha256']);
     Result.Add('request_sha256', ARequest.Strings['request_sha256']);
+    if ARequest.Find('comparison_before') <> nil then
+      Result.Add('before', ARequest.Objects['comparison_before'].Clone);
     Result.Add('sources', TJSONArray.Create);
     Result.Add('used_sources', TJSONArray.Create);
     if LIsPlaylist then

@@ -761,6 +761,30 @@ begin
           finally
             LExperiment.Free;
           end;
+          if AWrite.Find('parent_job_id') <> nil then
+          begin
+            LExisting := ReadStudioJob(ACatalogRoot, Text(AWrite, 'parent_job_id'));
+            try
+              Need((LExisting.Strings['kind'] = 'instrumental_generate') and
+                (LExisting.Strings['status'] = 'completed') and
+                (LExisting.Strings['project_id'] = LProject.Strings['project_id']),
+                'Compare against a finished version of this experiment');
+              LParentRequest := ReadStudioJobRequest(ACatalogRoot, Text(AWrite, 'parent_job_id'));
+              try
+                Need(LParentRequest.Objects['project_snapshot'].Find('instrumental') <> nil,
+                  'The previous version must be an authored experiment');
+              finally
+                LParentRequest.Free;
+              end;
+              LParentResult := LExisting.Objects['results'];
+              LRequest.Add('comparison_before', TJSONObject.Create([
+                'job_id', LExisting.Strings['job_id'],
+                'plan_sha256', LParentResult.Strings['plan_sha256'],
+                'wav_sha256', LParentResult.Arrays['outputs'].Objects[0].Strings['wav_sha256']]));
+            finally
+              LExisting.Free;
+            end;
+          end;
         end;
         if LProject.Find('playlist') <> nil then
         begin
@@ -1389,6 +1413,7 @@ begin
       LExisting.Delete('request_sha256');
       LExisting.Delete('project_snapshot');
       LExisting.Delete('worker_seconds');
+      LExisting.Delete('comparison_before');
       if IsStudioInstrumentalFollowup(LExisting.Strings['kind']) then
       begin
         LExisting.Delete('duration_ms');
@@ -1481,7 +1506,7 @@ begin
         LJob.Add('error_code', '');
         LJob.Add('error_message', '');
         LJob.Add('project_id', Text(AWrite, 'project_id', False));
-        if IsStudioInstrumentalFollowup(LKind) then
+        if IsStudioInstrumentalFollowup(LKind) or (LRequest.Find('comparison_before') <> nil) then
           LJob.Add('parent_job_id', LRequest.Strings['parent_job_id']);
         AddState(ACatalogRoot, LJobId, LJob);
       finally
