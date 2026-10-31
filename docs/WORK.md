@@ -12,8 +12,12 @@ Its primary stream independently checks a bounded future candidate, returns only
 the prefix, and discards provisional choices. Prefix tokens/states/coverage and
 EOS/following metadata are detached and correct; future edits, cancellation,
 failure and hooks preserve ownership. No vendor source edit or branch merge.
-The reviewed candidate gitlink is integrated; all acceptance stays pending
-upstream CI63 (41240757803) and downstream integration.
+The reviewed candidate gitlink is integrated at9204824. All five upstream CI63
+jobs (41240757803) now pass, including browser conformance and stable/development
+native consumers. Final acceptance waits for Pythian CI533 (41241297113), still
+running its maintained integration build. Do not restart that source run for a
+documentation-only handoff. After it passes, accept the linked five-unit
+prerequisite and update incoming links/accounting together; then return to form.
 
 Native1834/actual pas2js1890 generic checks pass. Pythian native Win64/actual
 pas2js pass798 form and4,043,522 unchanged default-stream checks. The retained

@@ -52,8 +52,9 @@ separate unmerged branch `codex/pythian-future-domains`. Its primary voice strea
 checks a bounded future window but publishes only the requested prefix. Native
 Win64/actual pas2js pass the generic ownership/domain/replay consumers and the
 original Pythian8/16cell guide now performs all six parts. Existing default stream
-and authored form decisions pass unchanged. [Upstream CI63](https://github.com/mr-highball/wfc/actions/runs/41240757803)
-and downstream integration remain pending; the five-unit
+and authored form decisions pass unchanged. All five [upstream CI63 jobs](https://github.com/mr-highball/wfc/actions/runs/41240757803)
+pass. [Pythian CI533](https://github.com/mr-highball/pythian/actions/runs/41241297113)
+at9204824 is running; the five-unit
 [prerequisite](docs/TODO/NS-4_future-domains_01.md) is not accepted yet. No source
 edits occurred in this dependency checkout and no branch was merged.
 

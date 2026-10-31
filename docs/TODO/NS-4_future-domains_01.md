@@ -64,8 +64,11 @@ not Studio form/section controls or additional credit for NS-5's implementation.
   paths. Native heaps are clean. Actual80second and6second mix/stems plus journals
   are in `tests/form-frontier-20261031-boss/audio01` under the dedicated E root.
   The short journal digest is `716dccfe...e2fa38a`. These are implementation
-  checks, not operator musical-quality approval. Upstream CI63 is running;
-  candidate pin integration and downstream CI remain open. No effort accepted.
+  checks, not operator musical-quality approval. All five upstream CI63 jobs
+  pass, including actual browser conformance and native packages on stable
+  Linux/macOS/Windows plus development FPC. The candidate pin is integrated at
+  Pythian9204824; [CI533](https://github.com/mr-highball/pythian/actions/runs/41241297113)
+  is still running. No effort accepted until that final integration gate passes.
 - 2026-10-31, Big Boss: direct `TNamedVoiceSession` over24cells succeeds; direct
   `TWfcMusicVoicesStream` with the same guide, seed731 and8cell chunks commits16
   cells, then fails harmony pass0. No AForm, audio rendering or Pythian stream
