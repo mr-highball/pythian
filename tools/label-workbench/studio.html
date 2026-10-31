@@ -62,6 +62,7 @@ SOFTWARE.
     <div class="page-heading"><p class="eyebrow">YOUR PLAYLIST</p><h1>Whole tracks or clips?</h1><p class="hint">Everything shown as selected will teach Pythian. Playing a track does not select it.</p></div>
     <label class="playlist-name"><span class="sr-only">Playlist name</span><input id="playlist-name" type="text" value="My playlist" maxlength="128" aria-label="Playlist name"></label>
     <p id="selection-summary" class="summary" role="status">Your playlist is empty.</p>
+    <div class="library-actions"><button id="choose-by-label" data-studio-action type="button">Choose by label</button><span id="learning-label-state" class="hint" role="status"></span></div>
     <p id="collection-choice-notice" class="hint" role="status"></p>
     <div id="playlist-tracks" class="tracks" aria-label="Selected music"></div>
     <div class="next-action"><button data-step="library" type="button">＋ Add more music</button><button class="primary" data-step="generate" type="button">Next: generate →</button></div>
@@ -104,13 +105,13 @@ SOFTWARE.
   </div>
   <output id="source-window" class="hint"></output>
   <div class="range-fields"><label>Start <small>min:sec</small><input id="source-start" type="text" inputmode="decimal" value="0:00.000"></label><label>End <small>min:sec</small><input id="source-end" type="text" inputmode="decimal" value="0:30.000"></label></div>
+  <label for="source-classifications">Labels <small>optional, comma separated</small></label><input id="source-classifications" type="text" maxlength="520" placeholder="warm, guitar, intro"><p class="hint">Choose by label can select matching clips later.</p>
   <div class="source-toolbar"><button id="source-mark-in" type="button">⇥ Start here</button><button id="source-mark-out" type="button">⇤ End here</button><button id="source-play-range" type="button">▶ Hear clip</button></div>
   <div class="source-toolbar"><button id="source-use-range" class="primary" type="button">Use this clip</button><button id="source-use-whole" type="button">Use whole track</button></div>
   <p id="source-notice" class="hint" role="status"></p>
   <details><summary>More tools</summary>
     <div class="source-jump"><label for="source-position">Go to <small>min:sec</small></label><input id="source-position" type="text" value="0:00.000" inputmode="decimal"><button id="source-go" type="button">Go</button></div>
     <div class="source-jump"><label for="source-view-length">View length</label><input id="source-view-length" type="text" value="0:30.000" inputmode="decimal"><button id="source-view-apply" type="button">Apply</button></div>
-    <label for="source-classifications">Clip labels <small>optional, comma separated</small></label><input id="source-classifications" type="text" maxlength="520" placeholder="warm, guitar, intro">
     <p id="source-preparation-purpose" class="hint"></p><button id="source-prepare" type="button" hidden>Prepare analysis &amp; effects</button><div id="studio-source-prepare"></div>
     <button id="source-analyze" type="button">Analyze at playhead · Experimental</button><p id="source-analysis-status" class="hint"></p><section id="source-musical-observations"></section>
     <label for="source-beat-layer">Beat overlay</label><select id="source-beat-layer"><option value="-1">No beat overlay</option></select>
@@ -125,6 +126,15 @@ SOFTWARE.
   <p id="playlist-dialog-status" class="hint" role="status" aria-live="polite"></p>
   <div id="playlist-list" class="playlist-list"></div>
   <p class="hint">Earlier saved projects open as new playlists. Their originals and review history stay saved.</p>
+</dialog>
+<dialog id="learning-label-dialog" aria-labelledby="learning-label-title">
+  <header class="dialog-heading"><h2 id="learning-label-title">Choose music by label</h2><button type="button" data-close="learning-label-dialog">Cancel</button></header>
+  <p>Choose a collection name or a saved clip label. Only matching music will teach Pythian.</p>
+  <label for="learning-label-choice">Label</label><select id="learning-label-choice"></select>
+  <p id="learning-label-preview" class="hint" role="status" aria-live="polite"></p>
+  <div id="learning-label-matches" aria-label="Matching music"></div>
+  <p class="hint">A matching whole track takes priority over its clips. Other tracks and clips stay saved.</p>
+  <button id="apply-learning-label" data-studio-action class="primary" type="button">Use matching music</button>
 </dialog>
 <script src="studio.js"></script><script>rtl.run();</script>
 </body>

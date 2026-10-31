@@ -28,7 +28,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.studio.projects, pythian.tools.studio.&library.discovery,
   pythian.tools.studio.jobs, pythian.tools.studio.playlist.learning,
   pythian.tools.studio.worker, pythian.tools.listen.catalog,
-  pythian.wfc.musical.corpus, pythian.wfc.layers,
+  pythian.wfc.musical.corpus, pythian.wfc.layers, pythian.hash,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -256,6 +256,177 @@ begin
   end;
 end;
 
+procedure CheckClassifiedLearning(const ARoot, ACatalog, ALibrary: String;
+  const APlaylist: TJSONObject);
+var
+  LWrite: TJSONObject;
+  LPlaylist: TJSONObject;
+  LSaved: TJSONObject;
+  LJob: TJSONObject;
+  LConfig: TJSONObject;
+  LStatus: TJSONObject;
+  LReceipt: TJSONObject;
+  LClip: TJSONObject;
+  LCanonical: TJSONObject;
+  LUnicode: TJSONObject;
+  LCorpus: TMusicalCorpus;
+  LGuard: TFileStream;
+  LAudio: TFileStream;
+  LHashes: array[0..1] of String;
+  LModels: array[0..1] of String;
+  LHash: String;
+  LId: String;
+  LText: String;
+  LExcludedFile: String;
+  LRate: Integer;
+  LFailed: Boolean;
+  LLeaves: TMusicalCorpusContributions;
+  I: Integer;
+  J: Integer;
+  K: Integer;
+begin
+  for I := 0 to 1 do
+  begin
+    LWrite := TJSONObject.Create(['format', StudioProjectWriteFormat,
+      'project_id', 'classified-' + IntToStr(I), 'expected_revision', 0,
+      'name', 'Classified ' + IntToStr(I), 'style_intent', '', 'learning_mode', 'instrumental']);
+    LSaved := nil;
+    LJob := nil;
+    LStatus := nil;
+    try
+      LWrite.Add('sources', TJSONArray.Create);
+      LPlaylist := TJSONObject(APlaylist.Clone);
+      LWrite.Add('playlist', LPlaylist);
+      LPlaylist.Add('learning_label', 'focus-' + IntToStr(I));
+      for J := 0 to 1 do
+      begin
+        LPlaylist.Arrays['items'].Objects[J].Add('classifications',
+          TJSONArray.Create(['focus-' + IntToStr(J)]));
+        LPlaylist.Arrays['items'].Objects[J].Integers['influence'] := 1;
+      end;
+      LText := LWrite.AsJSON;
+      LSaved := SaveStudioProject(ACatalog, LWrite);
+      Check((LWrite.AsJSON = LText) and (LSaved.Objects['playlist'].Arrays['items'].Count = 2),
+        'Classification save preserves caller data and nonmatching saved tracks');
+      Check((LSaved.Objects['playlist'].Arrays['items'].Objects[I].Strings['extent'] = 'whole') and
+        (LSaved.Objects['playlist'].Arrays['items'].Objects[1 - I].Strings['extent'] = 'clips'),
+        'Native canonical selection applies the label instead of trusting stale included flags');
+      LId := 'classified-job-' + IntToStr(I);
+      LJob := TJSONObject.Create(['format', StudioJobWriteFormat, 'job_id', LId,
+        'kind', 'instrumental_generate', 'project_id', 'classified-' + IntToStr(I),
+        'project_revision', 1, 'project_snapshot_sha256', LSaved.Strings['snapshot_sha256'],
+        'duration_ms', 2000]);
+      LJob.Add('seeds', TJSONArray.Create([731]));
+      LConfig := TJSONObject.Create(['tempo_bpm', 120, 'tonic', 0, 'cells', 16]);
+      LConfig.Add('instruments', TJSONArray.Create(['sine', 'triangle', 'saw']));
+      LConfig.Add('levels', TJSONArray.Create([70, 65, 60, 80, 60, 50]));
+      LJob.Add('instrumental', LConfig);
+      LStatus := PrepareStudioJob(ACatalog, LJob);
+      Check(LStatus.Integers['source_count'] = 1,
+        'Native preflight counts only the teaching source selected by classification');
+      FreeAndNil(LStatus);
+      LStatus := EnqueueStudioJob(ACatalog, LJob);
+      FreeAndNil(LStatus);
+      LExcludedFile := ALibrary + '/collections/Chillsynth/Evening.wav';
+      if LPlaylist.Arrays['items'].Objects[1 - I].Strings['title'] <> 'Evening.wav' then
+        LExcludedFile := ALibrary + '/collections/lofi/Soft steps.wav';
+      LGuard := TFileStream.Create(LExcludedFile, fmOpenReadWrite or fmShareExclusive);
+      try
+        Check(RunStudioWorker(ACatalog, LId, ALibrary),
+          'Actual classified native worker generates without opening the excluded recording');
+      finally
+        LGuard.Free;
+      end;
+      LStatus := ReadStudioJob(ACatalog, LId);
+      Check(LStatus.Strings['status'] = 'completed', 'Classified instrumental generation completes');
+      LReceipt := LStatus.Objects['results'].Objects['playlist_learning'];
+      Check((LReceipt.Arrays['sources'].Count = 1) and
+        (LReceipt.Arrays['excluded_sources'].Count = 1) and
+        (LReceipt.Objects['classification_selection'].Strings['label'] = 'focus-' + IntToStr(I)),
+        'Actual result explains classification, teaching source and excluded saved material');
+      Check((LReceipt.Arrays['sources'].Objects[0].Arrays['providers_taught'].Count = 9) and
+        (LStatus.Objects['results'].Arrays['parts'].Count = 6),
+        'Selected source teaches actual providers performed through all six instrumental parts');
+      LModels[I] := LStatus.Objects['results'].Strings['model_sha256'];
+      LAudio := OpenStudioInstrumentalAudio(ACatalog, LId, 6, LHash);
+      try
+        Check(LAudio.Size = 288044, 'Both classification experiments keep the same declared PCM clock');
+        LHashes[I] := Sha256Stream(LAudio, LAudio.Size);
+        Check(LHashes[I] = LHash, 'Actual generated WAV matches its published identity');
+      finally
+        LAudio.Free;
+      end;
+    finally
+      LStatus.Free;
+      LJob.Free;
+      LSaved.Free;
+      LWrite.Free;
+    end;
+  end;
+  Check((LModels[0] <> LModels[1]) and (LHashes[0] <> LHashes[1]),
+    'Changing only the teaching classification changes learned models and actual synthesized music');
+
+  LPlaylist := TJSONObject(APlaylist.Clone);
+  LReceipt := nil;
+  LCorpus := nil;
+  LCanonical := nil;
+  LUnicode := nil;
+  try
+    LPlaylist.Add('learning_label', 'warm');
+    LRate := LPlaylist.Arrays['items'].Objects[0].Integers['sample_rate'];
+    for I := 0 to 1 do
+    begin
+      LClip := TJSONObject.Create(['start_frame', I * 5 * LRate,
+        'end_frame', (I * 5 + 4) * LRate, 'included', False]);
+      LClip.Add('classifications', TJSONArray.Create(['warm']));
+      LPlaylist.Arrays['items'].Objects[0].Arrays['clips'].Add(LClip);
+    end;
+    LCorpus := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cc',
+      'classified-clips', LPlaylist, LReceipt);
+    Check((LReceipt.Arrays['sources'].Count = 1) and
+      (LReceipt.Arrays['sources'].Objects[0].Int64s['included_frames'] = 8 * LRate) and
+      (LReceipt.Arrays['sources'].Objects[0].Int64s['analyzed_frames'] = 8 * LRate),
+      'Clip classification traverses only its two disjoint original ranges');
+    Check((Length(LCorpus.CopySelections) = 2) and
+      (LCorpus.CopySelections[0].Classifications[0] = 'warm'),
+      'Shared corpus retains classifications on their actual selected source ranges');
+    LLeaves := LCorpus.CopyContributions;
+    for K := 0 to High(LLeaves) do
+      Check((LLeaves[K].EndFrame <= 4 * LRate) or (LLeaves[K].StartFrame >= 5 * LRate),
+        'Classification never teaches the original gap between selected clips');
+    FreeAndNil(LCorpus);
+    FreeAndNil(LReceipt);
+    LPlaylist.Arrays['items'].Objects[0].Arrays['clips'].Objects[1].Int64s['start_frame'] := 3 * LRate;
+    LText := LPlaylist.AsJSON;
+    LFailed := False;
+    try LCanonical := CanonicalStudioPlaylist(LPlaylist);
+    except on E: EAudio do LFailed := Pos('overlap', E.Message) > 0 end;
+    Check(LFailed and (LCanonical = nil) and (LPlaylist.AsJSON = LText),
+      'Native classification overlap failure preserves caller choices before any learning');
+    LPlaylist.Arrays['items'].Objects[0].Arrays['clips'].Objects[1].Int64s['start_frame'] := 5 * LRate;
+    LPlaylist.Strings['learning_label'] := 'not-a-label';
+    LFailed := False;
+    try LCanonical := CanonicalStudioPlaylist(LPlaylist);
+    except on E: EAudio do LFailed := Pos('No music', E.Message) > 0 end;
+    Check(LFailed and (LCanonical = nil), 'Unknown classifications never fall back to unrelated music');
+    LUnicode := ParseStudioProjectWrite('{"label":"\ud83c\udfb5","classifications":["\ud83c\udfb5"]}');
+    LPlaylist.Strings['learning_label'] := LUnicode.Strings['label'];
+    LPlaylist.Arrays['items'].Objects[1].Add('classifications', LUnicode.Arrays['classifications'].Clone);
+    LCanonical := CanonicalStudioPlaylist(LPlaylist);
+    Check((LCanonical.Strings['learning_label'] = LUnicode.Strings['label']) and
+      (LCanonical.Arrays['items'].Objects[1].Strings['extent'] = 'whole') and
+      (LCanonical.Arrays['items'].Objects[0].Strings['extent'] = 'clips') and
+      not LCanonical.Arrays['items'].Objects[0].Arrays['clips'].Objects[0].Booleans['included'],
+      'Native canonical label matching preserves supplementary Unicode without host transcoding');
+  finally
+    LUnicode.Free;
+    LCanonical.Free;
+    LCorpus.Free;
+    LReceipt.Free;
+    LPlaylist.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LCatalog, LLibrary, LFile: String;
@@ -404,6 +575,7 @@ begin
         LJob.Free;
       end;
     finally LRead.Free end;
+    CheckClassifiedLearning(ExpandFileName(ARoot), LCatalog, LLibrary, LPlaylist);
     CheckLearning(ExpandFileName(ARoot), LCatalog, LLibrary, LPlaylist);
   finally
     LWrite.Free;

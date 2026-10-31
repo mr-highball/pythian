@@ -524,7 +524,7 @@ var
   LRoot, LCard, LBar, LRow, LText: TJSElement;
   LTrack, LSelection: TJSObject;
   LFilter: TJSHTMLSelectElement;
-  LNames, LCollections: TJSArray;
+  LNames, LCollections, LClasses: TJSArray;
   LKey, LTitle, LTags, LFilterValue, LQuery, LCaption: String;
   LIndex, LOther, LWhole, LCount, LPass, LShown: Integer;
   LMatches, LMember, LWholeIncluded: Boolean;
@@ -621,7 +621,7 @@ begin
       Button(LRow, '+ Choose clip', 'open', LKey);
       if LWholeIncluded then LCaption := 'Selected: whole track'
       else LCaption := 'Selected: ' + IntToStr(LCount) + ' clip(s)';
-      if not LWholeIncluded and (LCount = 0) then LCaption := 'Choose a clip or select Whole track';
+      if not LWholeIncluded and (LCount = 0) then LCaption := 'Not selected for learning';
       Add(LCard, 'p', LCaption, 'training-state');
       for LOther := 0 to FSelections.length - 1 do
       begin
@@ -634,6 +634,9 @@ begin
           StudioTime(StudioNumber(LSelection, 'end_frame') / StudioNumber(LTrack, 'sample_rate'));
         IncludeControl(LRow, LCaption, 'include', IntToStr(LOther),
           not LWholeIncluded and StudioIncluded(LSelection));
+        LClasses := TJSArray(LSelection['classifications']);
+        if isArray(LClasses) and (LClasses.length > 0) then
+          Add(LRow, 'p', LClasses.join(', '), 'track-meta');
         LBar := QuickControls(LRow, LKey, LOther);
         Button(LBar, 'Edit', 'edit', IntToStr(LOther));
         Button(LBar, 'Delete', 'remove', IntToStr(LOther));

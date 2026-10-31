@@ -14,10 +14,14 @@ Generate must automatically learn from the actual selected music and perform
 instrumental output. No project setup, manual proposal approval or model editor
 is a required step. Advanced graph/instrument work remains a library capability
 and optional exploration, not a gate in this basic flow. The
-[replacement task](TODO/NS-6_simple-studio_01.md) and
-[weighted corpus learning](TODO/NS-3_style-vocabulary_01.md) take priority over
-full-plan archival and deeper graph controls. A new visual shell alone is not
-completion.
+[replacement task](TODO/DONE/NS-6_simple-studio_01.md) and
+[weighted corpus learning](TODO/DONE/NS-3_style-vocabulary_01.md) were prioritized
+before full-plan archival and deeper graph controls. A new visual shell alone is not
+completion. That flow and its coarse-learning prerequisite were accepted on
+2026-10-31 after actual native/pas2js and desktop/phone consumers passed. The
+remaining graph/sound, form, styles/blends and guided-review outcomes still
+define unfinished work; musical preference is not inferred from implementation
+acceptance.
 
 - **Real instrumental output.** Generated musical events drive Pythian oscillators/noise, wavetable, additive/FM/PM and layered instrument recipes, envelopes, modulation, filters, buses and effects. Source recordings teach or provide comparison context. A deliberately selected sampler instrument is explicit; assembling windows from a full training mix is not the primary output path.
 - **The breadth of the musical graph.** Time is the primary horizontal axis; bass, percussion, harmony, lead and other roles are visible lanes. Context, pitch/register, rhythm/groove, expression, musical affect, sound and structure have explicit dependencies, domains and editable controls. Inspect actual dimensions, passes, vocabularies and constraints. Change the model layout or add a useful dimension/pass when listening exposes a need; do not fix a giant arbitrary grid in advance.

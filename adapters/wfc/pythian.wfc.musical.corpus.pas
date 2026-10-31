@@ -29,7 +29,7 @@ unit pythian.wfc.musical.corpus;
 
 interface
 
-uses pythian.music.proposal, pythian.music.sound, pythian.progress,
+uses pythian.music.proposal, pythian.music.sound, pythian.progress, pythian.music.selection,
   pythian.wfc.percussion, pythian.wfc.layers,
   wfc_model, wfc_sequence, wfc_music_voices_graph;
 
@@ -46,13 +46,14 @@ type
     SampleRate: Integer;
     FrameCount: Int64;
     TrainingWeight: Integer;
-    Classifications: TMusicalProposalNames;
+    Classifications: TMusicClassifications;
   end;
   TMusicalCorpusSources = array of TMusicalCorpusSource;
   TMusicalCorpusSelection = record
     SourceIndex: Integer;
     StartFrame: Int64;
     EndFrame: Int64;
+    Classifications: TMusicClassifications;
   end;
   TMusicalCorpusSelections = array of TMusicalCorpusSelection;
   TMusicalCorpusRun = record
@@ -112,8 +113,9 @@ type
     Harmony/rhythm and the optional driven role stay paired by a context model;
     the remaining voices use learned models under those actual dependencies.
     Training weights multiply observations, not generation preferences.
-    Classification strings retain operator context only; they do not identify
-    instruments or silently change the proposal policy. }
+    Classifications retain exact caller source/selection context. The primary
+    music.selection rule can explicitly choose teaching examples before learning;
+    labels alone do not identify instruments or alter the proposal policy. }
   TMusicalCorpus = class
   private
     FSources: TMusicalCorpusSources;
@@ -293,11 +295,11 @@ begin
       (Length(LSource.GroupId) <= 256), 'Musical sources require extent and group identity');
     Need((LSource.TrainingWeight >= 1) and (LSource.TrainingWeight <= 16) and
       (LSource.TrainingWeight = Trunc(LSource.TrainingWeight)), 'Track influence must be an integer 1..16');
-    Need(Length(LSource.Classifications) <= 64, 'Too many source classifications');
+    Need(Length(LSource.Classifications) <= MaximumMusicClassifications,
+      'Too many source classifications');
     for J := 0 to High(LSource.Classifications) do
     begin
-      Need((LSource.Classifications[J] <> '') and (Length(LSource.Classifications[J]) <= 128),
-        'Source classifications require bounded nonempty labels');
+      ValidateMusicClassification(LSource.Classifications[J]);
     end;
     for J := 0 to I - 1 do
     begin
@@ -314,6 +316,12 @@ begin
     RequireExactTimingCounter(LEnd, 'Selection end');
     Need((LStart < LEnd) and (LEnd <= ASources[LSourceIndex].FrameCount),
       'Musical selection must be inside the original source clock');
+    Need(Length(ASelections[I].Classifications) <= MaximumMusicClassifications,
+      'Too many musical selection classifications');
+    for J := 0 to High(ASelections[I].Classifications) do
+    begin
+      ValidateMusicClassification(ASelections[I].Classifications[J]);
+    end;
     for J := 0 to I - 1 do
     begin
       if ASelections[J].SourceIndex = LSourceIndex then
@@ -371,6 +379,10 @@ begin
     FSources[I].Classifications := Copy(ASources[I].Classifications);
   end;
   FSelections := Copy(ASelections);
+  for I := 0 to High(FSelections) do
+  begin
+    FSelections[I].Classifications := Copy(ASelections[I].Classifications);
+  end;
   SetLength(FRuns, Length(ARuns));
   for I := 0 to High(ARuns) do
   begin
@@ -586,8 +598,14 @@ begin
 end;
 
 function TMusicalCorpus.CopySelections: TMusicalCorpusSelections;
+var
+  I: Integer;
 begin
   Result := Copy(FSelections);
+  for I := 0 to High(Result) do
+  begin
+    Result[I].Classifications := Copy(FSelections[I].Classifications);
+  end;
 end;
 
 function TMusicalCorpus.CopyRuns: TMusicalCorpusRuns;

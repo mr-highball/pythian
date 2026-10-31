@@ -685,7 +685,7 @@ begin
           'Save the project with Instrumental experiment selected');
         if LProject.Find('playlist') <> nil then
         begin
-          Need(LProject.Objects['playlist'].Arrays['items'].Count > 0,
+          Need(StudioPlaylistIncludedTrackCount(LProject.Objects['playlist']) > 0,
             'Add music to your playlist before generating');
           Need((Number(AWrite, 'duration_ms') >= 2000) and
             (Number(AWrite, 'duration_ms') <= 86400000), 'Track length must be2seconds to24hours');
@@ -945,8 +945,8 @@ begin
         begin
           Result.Strings['source_validation'] := 'selected_recordings_pending_content_verification';
           Result.Strings['material_origin'] := StudioPlaylistOrigin;
-          Result.Integers['source_count'] :=
-            LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count;
+          Result.Integers['source_count'] := StudioPlaylistIncludedTrackCount(
+            LRequest.Objects['project_snapshot'].Objects['playlist']);
           Result.Delete('unique_source_bytes_to_verify');
           Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
           Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms']));

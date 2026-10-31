@@ -22,10 +22,18 @@ Importing identical audio reuses its catalog recording and existing title.
 
 ## 2. Selection
 
-Everything in this playlist teaches Pythian. Whole tracks are selected by default.
+Tracks marked for learning teach Pythian. Whole tracks are selected by default.
 Choose **Choose clip** to save one or several passages instead. Audition or edit a clip,
 switch back to the whole recording, or remove a track. The selected duration
 updates immediately. Playback never changes training inclusion.
+
+Optional **Choose by label** selects matching collection/whole-track or saved clip
+labels. Preview the named tracks and exact ranges before applying. A matching
+whole track takes priority over its clips; otherwise the matching clips teach.
+Other saved choices stay in the playlist, marked **Not selected for learning**.
+Overlapping matching clips must be edited before applying. Labels match exactly;
+they select material and do not infer a genre's instruments. Add optional clip
+labels beside Start/End. Manual inclusion edits clear the label rule.
 
 Changes save automatically. **Playlists** reopens saved choices or starts a new
 playlist. Earlier projects open as separate playlists; original snapshots and
@@ -59,7 +67,8 @@ request rather than starting a duplicate job.
 Play the result and **Save WAV** in the same step. **Compare an original excerpt**
 plays a bounded reference from the actual selection. Playback pauses other app
 players. **What Pythian learned from** shows analyzed and model-used duration
-separately. A changed playlist is explicitly distinguished from an older result.
+separately, plus the active label, source influence, proposed roles and excluded
+recordings. A changed playlist is explicitly distinguished from an older result.
 
 ## Current experimental limits
 
@@ -80,8 +89,9 @@ Very short unsupported selections may be rejected with their choices preserved.
 The arrangements are **Experimental**. Chroma, periodic pitches and spectral changes
 propose bass, harmony, lead and percussion; this does not recover isolated source
 instruments. The result performs primary Pythian instruments, never windows cut
-from the training mix. Style tags currently provide collection context; influence
-changes actual training counts. A genre label alone does not choose an instrument.
+from the training mix. Labels provide context until explicitly used in **Choose
+by label**, where they select the sources/clips that teach. Influence changes
+actual training counts. A genre label alone does not choose an instrument.
 
 Source verification and first analysis can take time. Saved proposal caches are
 reused. This workstation also showed seconds of latency closing small files on

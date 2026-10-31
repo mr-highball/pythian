@@ -45,6 +45,11 @@ Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs
 Push-Location $projectRoot
 try {
   $compilerArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc', "-FU$unitRoot", "-FE$buildRoot")
+  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.selection.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Musical classification selection compilation failed' }
+  $selectionSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
+  & (Join-Path $buildRoot "pythian.tests.music.selection$selectionSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Musical classification selection checks failed' }
   & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar compilation failed' }
   $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }

@@ -2,16 +2,20 @@
 
 ## Current goal: instrumental exploration
 
-Fourteen current-goal tasks are accepted: **66 / 119 effort units (55.46%)**. Their
+Sixteen current-goal tasks are accepted: **79 / 119 effort units (66.39%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio, context/cancellation/identity repairs and editable recording proposals
-into actual providers/instruments. This is not musical preference or whole-corpus
-style-learning acceptance. Canonical generated audio/storage, supported context
-continuation and long Studio generation are also accepted. There are111 DONE
-files: fourteen current,97 historical.
+into actual providers/instruments. This is not musical preference or universal
+style-learning acceptance. Coarse classified whole/range learning and the simple
+playlist-to-Generate flow are accepted, with honest analyzed/model-used coverage.
+Canonical generated audio/storage, supported context
+continuation and long Studio generation are also accepted. There are113 DONE
+files: sixteen current,97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md) | 2026-10-31 | 7/10 | Source-bound weighted musical providers, stable meanings, optional exact-label selection and actual instrumental synthesis |
+| [NS-6_simple-studio_01](NS-6_simple-studio_01.md) | 2026-10-31 | 6/10 | Library→Selection→Generate, actual playlist learning, desktop/phone save/reopen, durable progress and generated/Original playback |
 | [NS-4_context-continuation_01](NS-4_context-continuation_01.md) | 2026-10-31 | 6/10 | Exact failed provider/seed continues through14400cells and actual hour job; generic upstream capacity/endpoint support, native/pas2js and CI |
 | [NS-6_instrumental-streams_01](NS-6_instrumental-streams_01.md) | 2026-10-31 | 8/10 | One performance/mix+six stems,2sec–24h estimates/admission, actual browser hour playback/seek and ordinary reconnect/Stop |
 | [NS-6_instrumental-artifacts_01](NS-6_instrumental-artifacts_01.md) | 2026-10-31 | 5/10 | Hash during output, canonical configured audio store, shared job/review playback, native identity reuse and legacy access |

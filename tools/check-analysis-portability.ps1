@@ -52,7 +52,8 @@ $fixtures = @('pythian.tests.hash.portable', 'pythian.tests.stream.bytes',
   'pythian.tests.binary.portable', 'pythian.tests.binary.fields', 'pythian.tests.wave.portable',
   'pythian.tests.wave.reader.portable', 'pythian.tests.analysis.portable',
   'pythian.tests.progress', 'pythian.tests.measurement.progress', 'pythian.tests.text',
-  'pythian.tests.music.observations', 'pythian.tests.music.pattern')
+  'pythian.tests.music.observations', 'pythian.tests.music.pattern',
+  'pythian.tests.music.selection')
 foreach ($program in $fixtures) {
   & $nativePath @NativeTargetArguments '-B' '-Sa' '-Cr' '-Co' '-Ci' '-gl' '-gh' `
     "-Fu$(Join-Path $repository 'src')" "-FU$units" "-FE$output" `

@@ -74,7 +74,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 - 2026-10-31, Big Boss: bounded primary instrument-stream implementation was
   parked in stash f57503d5bdd66b3edaa0871d74fcb7aa6df54dc6 for the operator's current
   progress defect. Do not pop the earlier unrelated full-plan archive stash.
-  The [simple Studio](../NS-6_simple-studio_01.md) repair persists actual cumulative
+  The [simple Studio](NS-6_simple-studio_01.md) repair persists actual cumulative
   selection/render counters separately from nested callbacks and exposes stable
   workflow phases. Reuse this contract when extending duration. No long output,
   complete streams task or partial effort is accepted by that repair.

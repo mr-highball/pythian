@@ -2,7 +2,93 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current batch: stable musical vocabulary rebuilds — 2026-10-31
+## Current handoff: coarse learning and simple Studio accepted — 2026-10-31
+
+Big Boss SOLO accepts [style vocabulary](TODO/DONE/NS-3_style-vocabulary_01.md)
+and [Library→Selection→Generate](TODO/DONE/NS-6_simple-studio_01.md) after all
+criteria and actual prerequisites pass. **79/119 effort accepted (66.39%), six
+open, sixteen current DONE,40 open units**. All22 current tasks total119;97
+historical DONE earn no current effort. This closes real batch criteria;
+consecutive nonclosing count stays zero. The overall goal remains active.
+
+The primary portable music.selection unit now explicitly selects teaching
+material by caller collection/track/clip labels. Matching whole tracks suppress
+their clips; invalid/no-match/overlap fails atomically. Native canonicalization
+recomputes inclusion through that same implementation. Excluded choices stay
+saved and their payloads are not prepared, hashed or analyzed. Source/range
+classifications, actual provider contributions and honest selected/analyzed/
+model-used/excluded duration reach the receipt. Labels are exact Unicode text,
+not inferred genre/instrument rules. Stable musical meanings and source ancestry
+from the previous batch remain in the real learned provider path.
+
+Native and actual pas2js selection93 and corpus377 checks pass; native full
+playlist/worker203 passes with clean heap. Same-seed/instrument classification
+changes produce different actual model and synthesized WAV hashes. A locked
+excluded payload remains unopened, disjoint clips exclude their gap, and missing
+labels/overlaps preserve the caller. All four web programs/twelve assets and
+both native binaries compile. Evidence: classified-learning-20261031-boss under
+the dedicated E-drive build/cache/tests/runs roots.
+
+Actual desktop/390pixel browser checks save a warm-labelled1–5second clip,
+retain an excluded second recording, preview exact names/ranges and Generate.
+Closing the tab while the native job runs then reopening restores that same
+completed request and label. Generated audio reaches3seconds including tail;
+Original reaches the exact4second source clip. All six media elements finish
+paused, nonlooping and error-free, with no horizontal overflow. Add music and
+Record entry are directly reachable; no microphone permission or operator
+response was submitted. Physical phone capture is not newly qualified here.
+Screenshots: classification-desktop.png, classification-phone.png and
+classified-result-phone.png in the current run packet.
+
+Preserve initial obsolete-variable native compile failure and repair logs. The
+strict optional-field contract retains legacy canonical playlist shapes. Actual
+browser inspection also repaired buried clip labels and late saved-job restore
+stealing navigation after a user's click: labels now sit by range controls and
+interaction wins navigation. A summary locator mismatch was a QA harness issue,
+not an app media failure. Earlier metadata-first Library/import, native Stop,
+continuous progress, ordinary two-minute reopen and actual hour playback checks
+remain applicable. No additional inference-accuracy or musical preference claim.
+
+Next follow NS-5's real prerequisites: finish graph-controls selective role/
+passage regeneration and durable retained-score sound follow-ups; sound recipes,
+graph inspection, form, styles/blends and guided reviews remain open. Do not
+insert another labeling, callback audit or continuation infrastructure batch
+without an actual blocked instrumental experiment. Previous CI521 for4cc58a7
+is terminal SUCCESS. New publication follows the checks above.
+
+Checked service/worker and twelve matching assets are deployed in the existing
+stable slot. Fourteen previous deployed files are backed up with verified hashes
+under this packet's stable-before. Catalog/inbox, source/audio/cache roots,
+Private binding and installed TLS remain unchanged. Loopback HTTP and LAN HTTPS
+return200 with the same page; all sixteen operator jobs remain terminal and the
+matching worker is available. No answers or private recordings were changed.
+The QA service and all its workers/tabs are closed, media paused/nonlooping and
+temporary viewport reset; shared browser/user tabs are preserved.
+
+Preserve deployment evidence: the first combined staging command was rejected
+by automatic review before executing. Separate guarded backup/staging and normal
+launch succeed without changing execution policy or requesting another approval.
+The short-lived shell's first hidden launcher did not survive; an OS-owned hidden
+launcher starts the same checked script, exits, and leaves the exact fixed stable
+server owning the verified port. Startup settings, hashes and process IDs remain
+local in this packet, not tracked host configuration.
+
+## Selected batch: classifications choose actual teaching material — 2026-10-31
+
+Big Boss SOLO continues after4cc58a7. The preceding turn made progress by closing
+the corpus AC2 rebuild contract; consecutive nonclosing count starts at zero.
+Selected criteria: corpus AC1/AC4, coarse caller labels explicitly select sources/
+clips and change real learning/synthesis. Deliver one shared portable label rule,
+native canonical selection and an optional contextual Selection dialog. Matching
+whole tracks take priority over their clips; saved nonmatching choices remain.
+No genre-to-instrument inference, extra mandatory Generate tuning or source joins.
+Check shared native/pas2js selection/replay/Unicode/overlap boundaries, actual
+native learning/cache/source exclusion and synthesized differences, then desktop/
+phone browser save/reopen/Generate. Stop before provider mixing or style archives.
+Packet: `classified-learning-20261031-boss` under dedicated E-drive roots.
+The goal remains active; no partial effort is accepted.
+
+## Previous batch: stable musical vocabulary rebuilds — 2026-10-31
 
 Big Boss SOLO continues aftera221384. The preceding turn made progress by
 accepting and deploying long Studio generation/context continuation; consecutive
@@ -443,7 +529,7 @@ The simpler Library/Selection implementation below is committed as `0c756e3`;
 CI513 is now terminal SUCCESS. Stable Studio is unchanged, and no new operator
 review is requested while its replacement Generate connection is incomplete.
 
-The bounded [style-vocabulary](TODO/NS-3_style-vocabulary_01.md) provider consumer
+The bounded [style-vocabulary](TODO/DONE/NS-3_style-vocabulary_01.md) provider consumer
 is implemented. Primary music.observations measures low/mid/high spectral changes
 in the same FFT as its existing features. Portable music.proposal makes explicitly
 Experimental arrangements from chroma, supported periodic pitch and spectral
@@ -496,8 +582,8 @@ the preview while Generate is disabled.
 ## Previous batch: simpler Studio, real playlist selection — 2026-10-30
 
 Big Boss SOLO follows the operator's **Library → Selection → Generate** priority.
-[Simple Studio](TODO/NS-6_simple-studio_01.md), effort six, is open; the existing
-[style-vocabulary task](TODO/NS-3_style-vocabulary_01.md) now explicitly owns
+[Simple Studio](TODO/DONE/NS-6_simple-studio_01.md), effort six, is open; the existing
+[style-vocabulary task](TODO/DONE/NS-3_style-vocabulary_01.md) now explicitly owns
 automatic selected-music learning and per-track training weights. The old
 project/save/manual-proposal/engine setup is removed from the main presentation.
 The replacement starts with a compact private library, then a playlist of whole

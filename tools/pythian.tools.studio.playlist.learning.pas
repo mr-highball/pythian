@@ -57,8 +57,8 @@ function StudioMusicalVocabulary(const ACorpus: TMusicalCorpus;
 implementation
 
 uses Classes, SysUtils, Math, pythian.audio, pythian.time, pythian.wave.read,
-  pythian.hash, pythian.stream.bytes, pythian.music.observations,
-  pythian.music.proposal, pythian.music.proposal.codec, pythian.music.pattern,
+  pythian.hash, pythian.stream.bytes, pythian.music.observations, pythian.music.selection,
+  pythian.music.proposal, pythian.music.proposal.codec, pythian.music.pattern, pythian.wfc.layers,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
   pythian.tools.studio.&library.discovery;
 
@@ -318,6 +318,9 @@ var
   LAdmitted: Integer;
   LExcludedItems: Integer;
   LHasSelection: Boolean;
+  LExcludedRows: TJSONArray;
+  LTaught: TJSONArray;
+  LProviderNames: TLayerModelTexts;
   function ItemFrames(const AItem: TJSONObject): Int64;
   var
     LIndex: Integer;
@@ -336,7 +339,8 @@ var
   begin
     Result := (AFrames div ARate) * 1000 + (AFrames mod ARate) * 1000 div ARate;
   end;
-  procedure AddSelection(const ASource: Integer; const AStart, AEnd: Int64);
+  procedure AddSelection(const ASource: Integer; const AStart, AEnd: Int64;
+    const AClassifications: TMusicClassifications);
   var LAt: Integer;
   begin
     LAt := Length(LSelections);
@@ -345,6 +349,7 @@ var
     LSelections[LAt].SourceIndex := ASource;
     LSelections[LAt].StartFrame := AStart;
     LSelections[LAt].EndFrame := AEnd;
+    LSelections[LAt].Classifications := Copy(AClassifications);
   end;
 begin
   LPlaylist := CanonicalStudioPlaylist(APlaylist);
@@ -355,19 +360,22 @@ begin
   LSourceMetadata := nil;
   LSelections := nil;
   LRuns := nil;
+  LExcludedRows := nil;
   try
     LItems := LPlaylist.Arrays['items'];
     LExcludedItems := 0;
+    LExcludedRows := TJSONArray.Create;
     { Big Boss: keep excluded choices in the immutable playlist, but do not
       prepare/hash a recording with no included whole track or clip. }
     for I := LItems.Count - 1 downto 0 do
     begin
-      LHasSelection := LItems.Objects[I].Strings['extent'] = 'whole';
-      for J := 0 to LItems.Objects[I].Arrays['clips'].Count - 1 do
-        LHasSelection := LHasSelection or
-          LItems.Objects[I].Arrays['clips'].Objects[J].Booleans['included'];
+      LHasSelection := StudioPlaylistItemIncluded(LItems.Objects[I]);
       if not LHasSelection then
       begin
+        LExcludedRows.Add(TJSONObject.Create(['title', LItems.Objects[I].Strings['title'],
+          'frame_count', LItems.Objects[I].Int64s['frame_count'],
+          'sample_rate', LItems.Objects[I].Integers['sample_rate'],
+          'reason', 'not_in_teaching_selection']));
         LItems.Delete(I);
         Inc(LExcludedItems);
       end;
@@ -392,6 +400,12 @@ begin
     LReceipt.Add('analysis_policy', StudioPlaylistAnalysisPolicy);
     LReceipt.Add('experimental', True);
     LReceipt.Add('excluded_playlist_item_count', LExcludedItems);
+    LReceipt.Add('excluded_sources', LExcludedRows);
+    LExcludedRows := nil;
+    if LPlaylist.Find('learning_label') <> nil then
+      LReceipt.Add('classification_selection', TJSONObject.Create([
+        'label', LPlaylist.Strings['learning_label'], 'policy', MusicalClassificationPolicy,
+        'effect', 'Select teaching recordings/clips; no genre or instrument inference']));
     LReceipt.Add('model_cell_budget', StudioPlaylistModelCells);
     LReceipt.Add('musical_block_cells', StudioPlaylistBlockCells);
     LReceipt.Add('tempo_policy', 'First-eight-second per-window pulse proposal; explicit120BPM when unavailable. Not whole-track tempo/downbeat truth.');
@@ -418,17 +432,18 @@ begin
       LSources[I].SampleRate := LItem.Integers['sample_rate'];
       LSources[I].FrameCount := LItem.Int64s['frame_count'];
       LSources[I].TrainingWeight := LItem.Integers['influence'];
-      LSources[I].Classifications := nil;
+      LSources[I].Classifications := StudioMusicClassifications(LItem);
       LStartSelection := Length(LSelections);
       if LItem.Strings['extent'] = 'whole' then
-        AddSelection(I, 0, LSources[I].FrameCount)
+        AddSelection(I, 0, LSources[I].FrameCount, LSources[I].Classifications)
       else
       begin
         for J := 0 to LItem.Arrays['clips'].Count - 1 do
         begin
           LClipRow := LItem.Arrays['clips'].Objects[J];
           if LClipRow.Booleans['included'] then
-            AddSelection(I, LClipRow.Int64s['start_frame'], LClipRow.Int64s['end_frame']);
+            AddSelection(I, LClipRow.Int64s['start_frame'], LClipRow.Int64s['end_frame'],
+              StudioMusicClassifications(LClipRow));
         end;
       end;
       LSelectedFrames := ItemFrames(LItem);
@@ -572,6 +587,7 @@ begin
     LCandidate := TMusicalCorpus.Create(LSources, LSelections, LRuns, 2, 2, 65536, AProgress);
     LReceipt.Add('vocabulary', StudioMusicalVocabulary(LCandidate, False, AProgress));
     LCoverage := LCandidate.CopyCoverage;
+    LProviderNames := LCandidate.CopyProviderNames;
     LTempoTotal := 0;
     LTempoWeight := 0;
     for R := 0 to High(LRuns) do
@@ -600,6 +616,12 @@ begin
       LRow.Add('measured_windows', LStats[I].MeasuredWindows);
       LRow.Add('cache_hits', LStats[I].CacheHits);
       LRow.Add('rejected_caches', LStats[I].RejectedCaches);
+      LTaught := TJSONArray.Create;
+      LRow.Add('providers_taught', LTaught);
+      if LCoverage[I].ModelCells > 0 then
+      begin
+        for J := 0 to High(LProviderNames) do LTaught.Add(LProviderNames[J]);
+      end;
     end;
     ReportWork(AProgress, 'playlist_learn_music', wuItems, 1, 1);
     AReceipt := LReceipt;
@@ -611,6 +633,7 @@ begin
     LReceipt.Free;
     LPlaylist.Free;
     LSourceMetadata.Free;
+    LExcludedRows.Free;
   end;
 end;
 

@@ -411,6 +411,7 @@ begin
       LSelections[I].SourceIndex := I;
       LSelections[I].StartFrame := 8000;
       LSelections[I].EndFrame := 40000;
+      LSelections[I].Classifications := ['warm'];
       LRuns[I].SourceIndex := I;
       LRuns[I].StartFrame := 8000;
       LRuns[I].Grid := LGrids[I];
@@ -455,10 +456,13 @@ begin
     LRunCopy[0].Grid.Frames[0][0].Tones[0].Pitch := 2;
     LSelectionCopy := LCorpus.CopySelections;
     LSelectionCopy[0].StartFrame := 0;
+    LSelectionCopy[0].Classifications[0] := 'changed';
     Check((LCorpus.CopySources[0].Classifications[0] = 'operator collection') and
       (LCorpus.CopySources[0].TrainingWeight = 8) and
       (LCorpus.CopyRuns[0].Grid.Frames[0][0].Tones[0].Pitch <> 2) and
-      (LCorpus.CopySelections[0].StartFrame = 8000), 'Corpus evidence and source clocks are detached');
+      (LCorpus.CopySelections[0].StartFrame = 8000) and
+      (LCorpus.CopySelections[0].Classifications[0] = 'warm'),
+      'Corpus evidence, classification arrays and source clocks are detached');
 
     LSources[0].TrainingWeight := 1;
     LSources[1].TrainingWeight := 8;

@@ -30,7 +30,7 @@ interface
 
 uses
   Classes,
-  fpjson, pythian.tools.json,
+  fpjson, pythian.tools.json, pythian.music.selection,
   pythian.audio;
 
 const
@@ -72,6 +72,9 @@ function ParseStudioProjectWrite(const AText: RawByteString): TJSONObject;
   clips remain saved when the whole track is selected. Influence is a learning
   weight, not a playback gain. Source binding happens on project admission. }
 function CanonicalStudioPlaylist(const APlaylist: TJSONObject): TJSONObject;
+function StudioPlaylistItemIncluded(const AItem: TJSONObject): Boolean;
+function StudioPlaylistIncludedTrackCount(const APlaylist: TJSONObject): Integer;
+function StudioMusicClassifications(const AObject: TJSONObject): TMusicClassifications;
 { expected_revision=0 creates a project. An identical retry against the directly
   preceding revision reconciles without another write. Other stale writes fail.
   Immutable accepted revisions are never replaced. The returned already_saved
@@ -89,7 +92,7 @@ uses
   jsonscanner,
   pythian.corpus,
   pythian.corpus.intake,
-  pythian.hash,
+  pythian.hash, pythian.text,
   pythian.wave.read,
   pythian.tools.annotations.catalog,
   pythian.tools.studio.material,
@@ -715,18 +718,133 @@ begin
   end;
 end;
 
+function StudioMusicClassifications(const AObject: TJSONObject): TMusicClassifications;
+var
+  LClasses: TJSONArray;
+  I: Integer;
+begin
+  Result := nil;
+  if AObject.Find('classifications') = nil then Exit;
+  LClasses := ArrayField(AObject, 'classifications');
+  Need(LClasses.Count <= MaximumMusicClassifications, 'Too many music labels');
+  SetLength(Result, LClasses.Count);
+  for I := 0 to LClasses.Count - 1 do
+  begin
+    Need(LClasses[I].JSONType = jtString, 'Music labels must be text');
+    ValidateMusicClassification(LClasses.Strings[I]);
+    Result[I] := LClasses.Strings[I];
+  end;
+end;
+
+function StudioPlaylistItemIncluded(const AItem: TJSONObject): Boolean;
+var
+  I: Integer;
+begin
+  if AItem.Strings['extent'] = 'whole' then
+  begin
+    Exit(True);
+  end;
+  for I := 0 to AItem.Arrays['clips'].Count - 1 do
+  begin
+    if AItem.Arrays['clips'].Objects[I].Booleans['included'] then
+    begin
+      Exit(True);
+    end;
+  end;
+  Result := False;
+end;
+
+procedure ApplyPlaylistClassification(const APlaylist: TJSONObject;
+  const ALabel: TScalarText);
+var
+  LSelections: TClassifiedMusicSelections;
+  LFlags: TMusicSelectionFlags;
+  LItems: TJSONArray;
+  LObjects: array of TJSONObject;
+  LItem: TJSONObject;
+  LClip: TJSONObject;
+  I: Integer;
+  J: Integer;
+  procedure Append(const AObject: TJSONObject; const AWhole: Boolean);
+  var
+    LAt: Integer;
+  begin
+    LAt := Length(LSelections);
+    SetLength(LSelections, LAt + 1);
+    SetLength(LObjects, LAt + 1);
+    LObjects[LAt] := AObject;
+    LSelections[LAt].SourceId := LItem.Strings['kind'] + ':' + LItem.Strings['id'];
+    LSelections[LAt].WholeRecording := AWhole;
+    if AWhole then
+    begin
+      LSelections[LAt].EndFrame := LItem.Int64s['frame_count'];
+    end
+    else
+    begin
+      LSelections[LAt].StartFrame := AObject.Int64s['start_frame'];
+      LSelections[LAt].EndFrame := AObject.Int64s['end_frame'];
+    end;
+    LSelections[LAt].Classifications := StudioMusicClassifications(AObject);
+  end;
+begin
+  LItems := APlaylist.Arrays['items'];
+  for I := 0 to LItems.Count - 1 do
+  begin
+    LItem := LItems.Objects[I];
+    Append(LItem, True);
+    for J := 0 to LItem.Arrays['clips'].Count - 1 do
+    begin
+      LClip := LItem.Arrays['clips'].Objects[J];
+      Append(LClip, False);
+    end;
+  end;
+  LFlags := ClassifyMusicSelection(LSelections, ALabel);
+  for I := 0 to High(LFlags) do
+  begin
+    if LSelections[I].WholeRecording then
+    begin
+      if LFlags[I] then LObjects[I].Strings['extent'] := 'whole'
+      else LObjects[I].Strings['extent'] := 'clips';
+    end
+    else
+    begin
+      LObjects[I].Booleans['included'] := LFlags[I];
+    end;
+  end;
+end;
+
+function StudioPlaylistIncludedTrackCount(const APlaylist: TJSONObject): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 0 to APlaylist.Arrays['items'].Count - 1 do
+  begin
+    if StudioPlaylistItemIncluded(APlaylist.Arrays['items'].Objects[I]) then Inc(Result);
+  end;
+end;
+
 function CanonicalStudioPlaylist(const APlaylist: TJSONObject): TJSONObject;
 var
   LItems, LClips, LOutItems, LOutClips: TJSONArray;
   LItem, LClip, LOut, LOutClip: TJSONObject;
   LIds: TStringList;
-  LKind, LId, LExtent, LText: String;
+  LKind, LId, LExtent, LFields: String;
   LRate, LFrames, LStart, LEnd, LWeight, LRevision: Int64;
   LIndex, LPart, LOther, LTotal: Integer;
   LIncluded: TJSONData;
   LClasses: TJSONArray;
+  LLearningLabel: TScalarText;
 begin
-  Fields(APlaylist, 'format,items');
+  LFields := 'format,items';
+  if APlaylist.Find('learning_label') <> nil then LFields := LFields + ',learning_label';
+  Fields(APlaylist, LFields);
+  LLearningLabel := '';
+  if APlaylist.Find('learning_label') <> nil then
+  begin
+    LLearningLabel := TextField(APlaylist, 'learning_label', 0, MaximumMusicClassificationBytes);
+    if LLearningLabel <> '' then ValidateMusicClassification(LLearningLabel);
+  end;
   Need(TextField(APlaylist, 'format', 1, 64) = StudioPlaylistFormat,
     'Playlist format is unsupported');
   LItems := ArrayField(APlaylist, 'items');
@@ -736,14 +854,17 @@ begin
     Result := TJSONObject.Create;
     try
       Result.Add('format', StudioPlaylistFormat);
+      if LLearningLabel <> '' then Result.Add('learning_label', LLearningLabel);
       LOutItems := TJSONArray.Create;
       Result.Add('items', LOutItems);
       LTotal := 0;
       for LIndex := 0 to LItems.Count - 1 do
       begin
         LItem := ObjectAt(LItems, LIndex);
-        Fields(LItem, 'kind,id,snapshot_sha256,discovery_revision,title,sample_rate,' +
-          'frame_count,influence,extent,clips');
+        LFields := 'kind,id,snapshot_sha256,discovery_revision,title,sample_rate,' +
+          'frame_count,influence,extent,clips';
+        if LItem.Find('classifications') <> nil then LFields := LFields + ',classifications';
+        Fields(LItem, LFields);
         LKind := TextField(LItem, 'kind', 1, 16);
         Need((LKind = 'library') or (LKind = 'catalog'), 'Playlist source kind is unsupported');
         LId := TextField(LItem, 'id', 64, 64);
@@ -776,6 +897,17 @@ begin
         LOut.Add('frame_count', LFrames);
         LOut.Add('influence', LWeight);
         LOut.Add('extent', LExtent);
+        if LItem.Find('classifications') <> nil then
+        begin
+          LClasses := ArrayField(LItem, 'classifications');
+          Need(LClasses.Count <= MaximumMusicClassifications, 'Too many track labels');
+          for LOther := 0 to LClasses.Count - 1 do
+          begin
+            Need(LClasses[LOther].JSONType = jtString, 'Track labels must be text');
+            ValidateMusicClassification(LClasses.Strings[LOther]);
+          end;
+          if LClasses.Count > 0 then LOut.Add('classifications', LClasses.Clone);
+        end;
         LOutClips := TJSONArray.Create;
         LOut.Add('clips', LOutClips);
         for LPart := 0 to LClips.Count - 1 do
@@ -792,7 +924,8 @@ begin
           begin
             Need((LStart <> LOutClips.Objects[LOther].Int64s['start_frame']) or
               (LEnd <> LOutClips.Objects[LOther].Int64s['end_frame']), 'Saved clip is repeated');
-            if LIncluded.AsBoolean and LOutClips.Objects[LOther].Booleans['included'] then
+            if (LLearningLabel = '') and LIncluded.AsBoolean and
+              LOutClips.Objects[LOther].Booleans['included'] then
               Need((LStart >= LOutClips.Objects[LOther].Int64s['end_frame']) or
                 (LEnd <= LOutClips.Objects[LOther].Int64s['start_frame']),
                 'Selected clips overlap; choose disjoint clips or the whole track');
@@ -802,9 +935,7 @@ begin
           for LOther := 0 to LClasses.Count - 1 do
           begin
             Need(LClasses[LOther].JSONType = jtString, 'Clip labels must be text');
-            LText := LClasses.Strings[LOther];
-            Need((Length(LText) > 0) and (Length(LText) <= 64), 'Clip label is too long');
-            ValidateCorpusText(UTF8String(LText));
+            ValidateMusicClassification(LClasses.Strings[LOther]);
           end;
           LOutClip := TJSONObject.Create;
           LOutClips.Add(LOutClip);
@@ -813,6 +944,10 @@ begin
           LOutClip.Add('included', LIncluded.AsBoolean);
           LOutClip.Add('classifications', LClasses.Clone);
         end;
+      end;
+      if LLearningLabel <> '' then
+      begin
+        ApplyPlaylistClassification(Result, LLearningLabel);
       end;
     except
       Result.Free;

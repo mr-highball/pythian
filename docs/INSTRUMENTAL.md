@@ -216,7 +216,8 @@ three percussion providers. Source training influence multiplies sample/count
 contributions; generation preferences remain separate. Unknown cells, omitted
 time and recording boundaries split open samples. Starting holds are explicitly
 rearticulated at the admitted boundary. Classification strings retain caller
-context only; no genre-to-instrument rule is implied.
+context. An explicit classification selection can choose teaching material as
+described below; no genre-to-instrument rule is implied.
 Only known pitched/context cells enter this coupled corpus, including their
 drum proposals. Drum-only or otherwise unsupported pitched material cannot yet
 bootstrap this complete arrangement; unknown time earns no model-used coverage.
@@ -257,8 +258,38 @@ The automatic Studio consumer uses the existing durable instrumental job with
 a48hour wall-clock limit for playlist generation and explicit progress/cancellation.
 Other training jobs retain their two-hour limit; requested music is at most24hours.
 Rebuild identities and source contributions are now explicit, as described below.
-Classification-driven selection/control and complete
-[style-vocabulary acceptance](TODO/NS-3_style-vocabulary_01.md) remain open.
+Coarse [style-vocabulary learning](TODO/DONE/NS-3_style-vocabulary_01.md) is
+accepted through the real native/Studio consumer. This is not universal
+transcription or complete musical coverage of all traversed time.
+
+### Explicit classification selection
+
+Primary [pythian.music.selection](../src/pythian.music.selection.pas) is portable
+and independent of WFC/browser code. `ClassifyMusicSelection` uses the caller's
+exact scalar-text label to choose whole tracks or clips. A matching whole source
+suppresses its clips; otherwise matching disjoint clips are selected. No match,
+invalid original half-open frame ranges or overlapping matching clips reject
+without publishing partial flags. This selects teaching material; it does not
+map a word such as lofi to a pitch, instrument or inferred musical truth.
+
+`MusicalClassificationPolicy` records `exact-label-whole-before-clips-v1`.
+The shared selector admits256 items with16 labels per item and256 canonical
+UTF-8 bytes per label; Unicode normalization is not performed and case matters.
+These selector bounds do not raise the corpus's32source/64selection limits.
+The native playlist contract retains optional `learning_label` and whole-track
+`classifications`; selected range labels also reach actual corpus records.
+Canonicalization recomputes inclusion through the same primary rule. Legacy
+playlists without these optional fields retain their canonical shapes.
+
+The native worker excludes nonselected tracks before payload preparation/hash/
+analysis. `classification_selection` states the actual label/policy and source
+selection effect; `excluded_sources` retains saved but unused names/clocks.
+Each used source's `providers_taught` lists its actual provider keys. Studio's
+optional Choose by label previews exact names/ranges, then autosaves the rule.
+Manual inclusion edits clear it; browsing and previewing never silently train.
+Same-seed actual native model and instrumental output changes, portable/native
+Unicode/overlap cases and desktop/phone save/reopen/Generate pass. No automatic
+genre/instrument identification or subjective quality acceptance follows.
 
 For playlist results, `playlist_learning.sources` and the immutable request bind
 the complete training selection and influence. `original_reference` and the

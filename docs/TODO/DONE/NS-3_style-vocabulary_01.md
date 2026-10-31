@@ -1,17 +1,19 @@
 # NS-3_style-vocabulary_01 — Learn reusable musical vocabularies from coarse classified corpora
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Teach from whole tracks or coarse passages across private collections without exhaustive annotation. Build musical/provider vocabularies that can drive instruments, with incremental additions and honest coverage. Stop on treating feature buckets or file processing alone as learned musical roles.
 
-Primary attribution: NS-3. Effort estimates relative implementation/integration complexity, not musical value, accuracy, elapsed time or assigned percentage. No part of this new outcome is accepted by planning or by historical component tests.
+Primary attribution: NS-3. Accepted 2026-10-31 after the actual portable, native
+worker and Studio consumers passed. Effort estimates implementation/integration
+complexity, not musical quality, inference accuracy or elapsed time.
 
 **Acceptance Criteria:**
 
@@ -29,9 +31,49 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-3_experimental-learning_01](DONE/NS-3_experimental-learning_01.md)
+- [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — accepted.
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss, accepted AC1–AC5. Caller collection/whole-track and clip
+  labels now choose actual teaching material through the primary portable
+  music.selection rule; this is explicit source selection, not genre or stem
+  identification. Whole-track precedence prevents duplicated clip time; invalid
+  or overlapping matching clips reject atomically. Native canonicalization
+  recomputes inclusion rather than trusting browser flags. Excluded tracks remain
+  saved and their payloads are never opened. Source/clip labels and coverage
+  receipts state actual inclusion, influence and the nine proposed providers.
+  Same-seed, same-instrument native classification changes produce different
+  real model and synthesized WAV hashes. Disjoint ranges analyze only their
+  selected time. Stable rebuild identities and bounded whole/multiple-recording
+  traversal/reuse from the preceding batches remain in the actual worker path.
+- Final checks: native/actual pas2js selection93 and corpus377; native full
+  playlist/worker203, all native heaps clean. Ordinary desktop/phone Studio saves
+  a labelled1–5second clip, excludes the other saved recording, generates real
+  instruments and plays the3second result plus its exact4second Original. Closing
+  the tab while running and reopening restores that same completed job and label.
+  Optional coverage shows selected/analyzed/model-used time and excluded names.
+  No feedback answers were saved; no musical preference or universal transcription
+  acceptance is claimed. Practical sampling/resource limits remain documented in
+  [the API](../../INSTRUMENTAL.md#experimental-coarse-musical-providers).
+- Preserve first full-playlist compile rejection (an obsolete LText assignment)
+  and its repaired log. Strict optional-field canonicalization retains legacy
+  playlist shapes. Browser inspection exposed buried clip labels and late job
+  restoration overriding navigation: labels now sit by the range controls and
+  user interaction takes navigation priority. Evidence packet:
+  classified-learning-20261031-boss under E-drive tests/runs; solo verification.
+  This closes the task and the linked simple Studio prerequisite. No extra
+  genre mapping, style archive or manual source-label queue is introduced.
+
+- 2026-10-31, Big Boss: selected AC1/AC4 classification-driven source selection.
+  A caller-defined collection/whole-track or clip label chooses actual teaching
+  material using a shared native/pas2js rule. Matching whole tracks suppress
+  their clips, avoiding duplicate time; overlapping matching clips reject.
+  Keep this optional in Selection and preserve excluded saved choices. Native
+  learning receipts must explain actual inclusion/exclusion and the providers
+  taught. Verify actual learned counts and synthesized changes, then ordinary
+  browser save/reopen/Generate. No genre/instrument truth mapping or extra
+  mandatory tuning. Evidence packet: classified-learning-20261031-boss under E.
 
 - 2026-10-31, Big Boss, AC2 rebuild boundary closed: actual provider tokens now
   have content-bound codec/key/schema/value identities and exact model-local
@@ -45,7 +87,7 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   Generate runs the external fixed-slot worker, saves nine vocabularies and five
   real contributions, plays its result and retains truthful source coverage.
   Full bindings are saved in musical-vocabulary.json; ordinary receipts omit
-  full token text. See [the shared contract](../INSTRUMENTAL.md#stable-musical-meaning-across-rebuilds).
+  full token text. See [the shared contract](../../INSTRUMENTAL.md#stable-musical-meaning-across-rebuilds).
   Preserve initial parity evidence: synthesized fixture source WAV bytes differ
   between native/JS, so their source-bound ancestry hashes need not match. The
   initial Unicode fixture cast also transcoded through Windows' code page;
@@ -105,14 +147,14 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   quality verdict. Consecutive nonclosing count remains zero; effort stays open.
   Long-recording traversal/journal reuse and ordinary Studio Generate (AC3/AC5)
   remain required. Practical sample/vocabulary limits are documented in
-  [the actual API](../INSTRUMENTAL.md#experimental-coarse-musical-providers).
+  [the actual API](../../INSTRUMENTAL.md#experimental-coarse-musical-providers).
   Evidence: E-drive musical-corpus-20261030-boss. Preserve initial native array
   alias-type compile rejection, overly specific spectral-note/fixed-pass test
   assumptions, test variable-scope errors and the whole-render work-bound
   rejection. Tests now use native type aliases, actual graph dependencies,
   periodic-versus-spectral origins and bounded primary render blocks. The
   optional semantic archive pas2js rejection is linked to the existing
-  [style consumer](NS-5_instrumental-styles_01.md); it is not introduced as a
+  [style consumer](../NS-5_instrumental-styles_01.md); it is not introduced as a
   blanket gate on this portable musical provider path.
 - 2026-10-30, Big Boss, next bounded batch: close the source-contribution and
   instrumental-consumer boundary with shared portable musical proposals and
@@ -140,5 +182,5 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
   pitch/context and explicit cutoff/sustain recipes remove this prerequisite.
   Coarse whole-corpus vocabulary work remains unimplemented and earns no partial effort.
 - 2026-10-29, Big Boss: Private corpus intake, classifications, journal storage, semantic styles, contribution accounting and saved model contracts exist. Raw-acoustic classifications currently affect identity rather than musical meaning; this task supplies actual mappings.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

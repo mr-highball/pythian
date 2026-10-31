@@ -1,10 +1,10 @@
 # NS-6_simple-studio_01 — Library → Selection → Generate
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -13,7 +13,9 @@ Replace the operator's confusing Studio workflow with three clear steps. Browse
 the local music folder and make a playlist; choose whole tracks or passages;
 set output length and track influence, then Generate. Primary attribution: NS-6.
 Keep private music, saved selections, answers, provenance and native jobs.
-This is a new operator outcome, not retroactive credit for the earlier Studio.
+Accepted 2026-10-31 after the playlist learning prerequisite and actual desktop/
+phone consumers passed. This is a new operator outcome, not retroactive credit
+for the earlier Studio.
 
 **Acceptance Criteria:**
 
@@ -41,12 +43,37 @@ This is a new operator outcome, not retroactive credit for the earlier Studio.
 
 **Blockers**
 
-- [Style vocabulary](NS-3_style-vocabulary_01.md) — Generate must actually learn
-  from the chosen playlist. Library/Selection implementation can proceed now.
-- [Instrumental streams — DONE](DONE/NS-6_instrumental-streams_01.md) — accepted
+- [Style vocabulary — DONE](NS-3_style-vocabulary_01.md) — actual weighted
+  whole/range learning and explicit classification selection are accepted.
+- [Instrumental streams — DONE](NS-6_instrumental-streams_01.md) — accepted
   long duration, estimates, continuous performance, playback/reconnect and Stop.
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss, accepted AC1–AC5 after the real corpus prerequisite
+  passes. Library is metadata-first and starts without a project form; Add music,
+  Record and Music folder are direct controls. Playing never changes inclusion.
+  Whole tracks, several clips, influence, autosave and reopening are exercised
+  by actual desktop/phone checks. Optional Choose by label previews exact matching
+  tracks/ranges before applying; it adds no mandatory Generate tuning. Whole
+  track priority avoids double teaching, and manual inclusion edits clear the
+  optional rule. Source clip labels sit beside Start/End instead of buried tools.
+- Native playlist/worker203 checks pass with clean heap, including selected-only
+  analysis and no payload access for an exclusively locked excluded recording.
+  The actual phone-width browser job completes after its tab closes, then restores
+  the same request, warm-labelled clip, result and source comparison. Generated
+  playback reaches3seconds and Original reaches4seconds without media errors,
+  looping or simultaneous players. Add music/Record entry remain obvious and
+  enabled on loopback; physical microphone capture is not newly qualified here.
+  Earlier import→analysis→library, whole/multiple clips, influence, native Stop,
+  progress, two-minute reconnect and hour playback evidence remain applicable.
+- A real navigation race was repaired: late saved-job restoration may restore
+  data but cannot redirect after user interaction. All12 matching web assets and
+  both native binaries compile. Browser output fits390pixel width. QA media are
+  paused and its tab/viewport override are closed/reset. No saved operator answers
+  are changed and no feedback action silently trains. Final packet:
+  classified-learning-20261031-boss under E-drive tests/runs. Remaining graph,
+  sound, form, styles/blends and guided-review tasks retain their own scope.
 
 - 2026-10-31, Big Boss: the linked long-output prerequisite is accepted and
   deployed. Duration units/default two minutes,2second–24hour admission, atomic

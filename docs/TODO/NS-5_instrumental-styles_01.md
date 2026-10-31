@@ -22,7 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md)
+- [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](NS-4_graph-controls_01.md)
 - [NS-2_sound-design_01](NS-2_sound-design_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)

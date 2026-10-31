@@ -3,30 +3,28 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 119 total effort units · 14 current-goal DONE · 66 / 119 accepted (55.46%).**
+**6 open tasks · 119 total effort units · 16 current-goal DONE · 79 / 119 accepted (66.39%).**
 Effort is relative complexity on a 1–10 scale, not assigned musical credit.
-The operator's latest priority is [Library → Selection → Generate](NS-6_simple-studio_01.md):
-a simple local music/playlist interface whose Generate action actually learns
-from the chosen tracks/passages with per-track training influence. The linked
-corpus learning task now takes implementation priority; the full-plan archive
-slice is preserved for later. Adding this six-unit operator outcome grows scope;
-it does not erase previous delivered code or award completion for the redesign.
-The shared corpus now learns source/run-aware weighted symbolic providers and
-reloads them into actual six-part synthesis in native/pas2js consumers. The simple
-native job now traverses included whole/range recordings, reuses bound proposal
-caches and generates actual instruments from per-track weighted providers.
-Its deployed UI accepts2seconds–24hour plans with explicit output estimates.
-Growing vocabulary/style ancestry remain open. No partial task effort is accepted,
-and this delivery is not a request for more labeling.
-Rebuilds now preserve stable musical token meanings and unique admitted source
-contributions. Saved Studio vocabulary bindings distinguish exact model-local
-indices from persistent meaning; source addition/reweighting and actual native/
-browser consumers pass. Deliberate classification mappings and remaining corpus
-criteria keep the parent task open, without extra effort or musical credit.
+The operator's [Library → Selection → Generate](DONE/NS-6_simple-studio_01.md)
+flow and [coarse corpus learning](DONE/NS-3_style-vocabulary_01.md) are accepted.
+Actual selected whole tracks/passages teach weighted symbolic providers which
+drive six-part instrumental synthesis. The optional Choose by label action
+previews matching tracks/clips and changes actual teaching material; it never
+pretends to identify instruments from genre names. Saved nonmatching choices
+remain excluded, and receipts separate selected, analyzed and model-used time.
+Rebuilds preserve stable musical meanings and distinct source ancestry. Native,
+actual pas2js and desktop/phone consumers pass, including save/reopen and a job
+finishing after its tab closes. Duration plans span2seconds–24hours with estimates;
+actual24hour rendering and musical preference are not claimed. No more operator
+labeling is required to continue implementation.
+Next follow the actual prerequisites of NS-5: finish musical controls/selective
+regeneration and reusable sound recipes, then evolving form and saved styles/
+blends. Graph inspection and useful synthesis reviews retain their own tasks.
 Generate now separates durable overall workflow/selection counters from nested
 analysis operations, so file/pitch/beat callbacks cannot restart its bar. This
 repairs the simple consumer's progress criterion without accepting a whole task
-or changing the effort denominator.
+or changing the effort denominator. The complete simple task is now accepted
+after its learning prerequisite and all consumer criteria pass.
 Long instrumental jobs and supported learned-context continuation are accepted:
 one persistent performance feeds mix and six stems, the retained failed hour
 completes with its original provider/seed, and ordinary browser generation,
@@ -59,14 +57,14 @@ and role/passage graph regeneration keep graph-controls open without partial cre
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Six later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
 
 | Task | Effort | Actual prerequisites |
 | --- | ---: | --- |
-| [NS-6_simple-studio_01](NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Style vocabulary for actual playlist learning; streams for longer output |
+| [NS-6_simple-studio_01 — DONE](DONE/NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Accepted; actual playlist learning, optional label selection, durable native output and browser playback |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Runtime + accepted assignment restoration |
@@ -74,7 +72,7 @@ continuity experiments are selected.
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
 | [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Accepted; actual selected-role context, repaired melody and role/correction variants |
 | [NS-3_experimental-learning_01 — DONE](DONE/NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Accepted; editable context/pitch/sound, actual instruments and Original/feedback lineage |
-| [NS-3_style-vocabulary_01](NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Experimental learning |
+| [NS-3_style-vocabulary_01 — DONE](DONE/NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Accepted; weighted providers, source-bound ancestry, explicit classification selection and real instrumental output |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Graph controls + instrumental Studio |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
@@ -85,8 +83,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 22 current-goal tasks (8 open, fourteen DONE),
-totaling 119 units: 53 open and 66 accepted. Subtotals:
+The two tables together are all 22 current-goal tasks (6 open, sixteen DONE),
+totaling 119 units: 40 open and 79 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 39, NS-5 15, NS-6 38. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

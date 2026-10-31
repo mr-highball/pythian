@@ -28,7 +28,7 @@ program PythianStudio;
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
-  pythian.wave.stream;
+  pythian.wave.stream, pythian.music.selection;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -60,6 +60,11 @@ type
     FGenerationMessage: String;
     FResumeOnConnect: Boolean;
     FIncludedSeconds: Double;
+    FLearningLabel: String;
+    function ClassifiedSelections: TClassifiedMusicSelections;
+    procedure OpenLearningLabel;
+    procedure PreviewLearningLabel;
+    procedure ApplyLearningLabel;
     function OutputSeconds(out ASeconds: Double): Boolean;
     procedure Generate; async;
     procedure RestoreGeneration; async;
@@ -99,6 +104,7 @@ type
     function Leaving(AEvent: TEventListenerEvent): Boolean;
     function CaptureClosed(AEvent: TEventListenerEvent): Boolean;
     function TabKey(AEvent: TJSKeyboardEvent): Boolean;
+    function UserInteraction(AEvent: TEventListenerEvent): Boolean;
   public
     procedure Run;
   end;
@@ -201,6 +207,7 @@ begin
 end;
 procedure TStudio.NewPlaylist;
 begin
+  FLearningLabel := '';
   FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
   FRevision := 0;
   FSnapshotHash := '';
@@ -223,6 +230,7 @@ begin
   LState['snapshot_sha256'] := FSnapshotHash;
   LState['name'] := FName;
   LState['selections'] := FSelections;
+  LState['learning_label'] := FLearningLabel;
   LState['dirty'] := FDirty;
   LState['changes'] := FChanges;
   LState['pending_version'] := FPendingVersion;
@@ -235,6 +243,7 @@ begin
 end;
 procedure TStudio.Changed;
 begin
+  FLearningLabel := '';
   QueueSave;
   Draw;
 end;
@@ -257,6 +266,7 @@ var
 begin
   Result := TJSObject.new;
   Result['format'] := 'pythian.studio.playlist.v1';
+  if FLearningLabel <> '' then Result['learning_label'] := FLearningLabel;
   LItems := TJSArray.new;
   Result['items'] := LItems;
   for I := 0 to FSelections.length - 1 do
@@ -281,6 +291,9 @@ begin
     LItem['influence'] := Max(1, Num(LRow, 'influence'));
     LItem['extent'] := 'clips';
     if StudioIncluded(LRow) then LItem['extent'] := 'whole';
+    LClasses := Arr(LRow, 'classifications');
+    if (LClasses <> nil) and (LClasses.length > 0) then
+      LItem['classifications'] := LClasses;
     LClips := TJSArray.new;
     LItem['clips'] := LClips;
     for J := 0 to FSelections.length - 1 do
@@ -416,7 +429,7 @@ procedure TStudio.DrawGeneration;
 var
   LState: String;
   LActive: Boolean;
-  LResult, LReference, LLearning, LRow: TJSObject;
+  LResult, LReference, LLearning, LRow, LClassChoice: TJSObject;
   LRows: TJSArray;
   LUrl: String;
   LSeconds: Double;
@@ -483,15 +496,33 @@ begin
     end;
     El('generation-learning').innerHTML := '';
     LLearning := Obj(LResult['playlist_learning']);
+    LClassChoice := nil;
+    if LLearning <> nil then LClassChoice := Obj(LLearning['classification_selection']);
+    if LClassChoice <> nil then
+      Add(El('generation-learning'), 'p', 'Label: ' + Str(LClassChoice, 'label'));
     LRows := Arr(LLearning, 'sources');
     if LRows <> nil then
       for I := 0 to LRows.length - 1 do
       begin
         LRow := Obj(LRows[I]);
         Add(El('generation-learning'), 'p', Str(Obj(LRow['playlist_item']), 'title') + ': ' +
-          StudioTime(Num(LRow, 'analyzed_frames') / Num(LRow, 'sample_rate')) +
-          ' analyzed · ' + StudioTime(Num(LRow, 'model_used_frames') / Num(LRow, 'sample_rate')) +
-          ' of musical decisions used · ' + FloatToStr(Num(LRow, 'influence')) + '× influence');
+          'selected ' + StudioTime(Num(LRow, 'included_frames') / Num(LRow, 'sample_rate')) +
+          ' · analyzed ' + StudioTime(Num(LRow, 'analyzed_frames') / Num(LRow, 'sample_rate')) +
+          ' · used in model ' + StudioTime(Num(LRow, 'model_used_frames') / Num(LRow, 'sample_rate')));
+        Add(El('generation-learning'), 'p',
+          StudioTime(Num(LRow, 'excluded_frames') / Num(LRow, 'sample_rate')) +
+          ' not selected · ' + FloatToStr(Num(LRow, 'influence')) + '× influence');
+        if (Arr(LRow, 'providers_taught') <> nil) and
+          (Arr(LRow, 'providers_taught').length > 0) then
+          Add(El('generation-learning'), 'p', 'Proposes bass, harmony, lead and drums.');
+      end;
+    LRows := Arr(LLearning, 'excluded_sources');
+    if LRows <> nil then
+      for I := 0 to LRows.length - 1 do
+      begin
+        LRow := Obj(LRows[I]);
+        Add(El('generation-learning'), 'p', 'Not used: ' + Str(LRow, 'title') + ' · ' +
+          StudioTime(Num(LRow, 'frame_count') / Num(LRow, 'sample_rate')) + ' not selected');
       end;
   end;
   El('generation-result').removeAttribute('hidden');
@@ -735,34 +766,203 @@ begin
     LButton.addEventListener('click', @Click);
   end;
 end;
+
+function TStudio.ClassifiedSelections: TClassifiedMusicSelections;
+var
+  LRow: TJSObject;
+  LTrack: TJSObject;
+  LClasses: TJSArray;
+  LCollections: TJSArray;
+  LLabel: String;
+  I: Integer;
+  J: Integer;
+  procedure AddLabel(const AValue: String);
+  var
+    LAt: Integer;
+  begin
+    if FindMusicClassification(Result[I].Classifications, AValue) >= 0 then Exit;
+    LAt := Length(Result[I].Classifications);
+    SetLength(Result[I].Classifications, LAt + 1);
+    Result[I].Classifications[LAt] := AValue;
+  end;
+begin
+  Result := nil;
+  SetLength(Result, FSelections.length);
+  for I := 0 to FSelections.length - 1 do
+  begin
+    LRow := Obj(FSelections[I]);
+    Result[I].SourceId := StudioSourceKey(LRow);
+    Result[I].WholeRecording := Str(LRow, 'selection') = 'full';
+    Result[I].StartFrame := Trunc(Num(LRow, 'start_frame'));
+    Result[I].EndFrame := Trunc(Num(LRow, 'end_frame'));
+    LClasses := Arr(LRow, 'classifications');
+    if LClasses <> nil then
+      for J := 0 to LClasses.length - 1 do AddLabel(String(LClasses[J]));
+    if not Result[I].WholeRecording then Continue;
+    LCollections := nil;
+    { Collection names become explicit caller labels only when the operator
+      applies this selection. Browsing/reopening never changes a saved draft. }
+    for J := 0 to FTracks.length - 1 do
+    begin
+      LTrack := Obj(FTracks[J]);
+      if StudioSourceKey(LTrack) <> StudioSourceKey(LRow) then Continue;
+      LCollections := Arr(LTrack, 'collections');
+      Break;
+    end;
+    if LCollections <> nil then
+      for J := 0 to LCollections.length - 1 do
+      begin
+        LLabel := Str(Obj(LCollections[J]), 'name');
+        if LLabel <> '' then AddLabel(LLabel);
+      end;
+    LCollections := nil;
+  end;
+end;
+
+procedure TStudio.OpenLearningLabel;
+var
+  LLabels: TMusicClassifications;
+  LOption: TJSElement;
+  I: Integer;
+begin
+  try
+    LLabels := AvailableMusicClassifications(ClassifiedSelections);
+    El('learning-label-choice').innerHTML := '';
+    for I := 0 to High(LLabels) do
+    begin
+      LOption := Add(El('learning-label-choice'), 'option', LLabels[I]);
+      LOption.setAttribute('value', LLabels[I]);
+    end;
+    if FindMusicClassification(LLabels, FLearningLabel) >= 0 then
+      TJSHTMLSelectElement(El('learning-label-choice')).value := FLearningLabel;
+    PreviewLearningLabel;
+    TStudioDialog(El('learning-label-dialog')).showModal;
+  except
+    on E: Exception do Notice(E.Message, True);
+  end;
+end;
+
+procedure TStudio.PreviewLearningLabel;
+var
+  LRows: TClassifiedMusicSelections;
+  LFlags: TMusicSelectionFlags;
+  LWhole: Integer;
+  LClips: Integer;
+  LSeconds: Double;
+  LWholeText: String;
+  LClipText: String;
+  LDescription: String;
+  I: Integer;
+begin
+  TJSHTMLButtonElement(El('apply-learning-label')).disabled := True;
+  El('learning-label-preview').className := 'hint';
+  El('learning-label-matches').innerHTML := '';
+  try
+    LRows := ClassifiedSelections;
+    LFlags := ClassifyMusicSelection(LRows,
+      TJSHTMLSelectElement(El('learning-label-choice')).value);
+    LWhole := 0;
+    LClips := 0;
+    LSeconds := 0;
+    for I := 0 to High(LFlags) do
+    begin
+      if not LFlags[I] then Continue;
+      if LRows[I].WholeRecording then Inc(LWhole) else Inc(LClips);
+      LDescription := Str(Obj(FSelections[I]), 'title') + ' · whole track';
+      if not LRows[I].WholeRecording then
+        LDescription := Str(Obj(FSelections[I]), 'title') + ' · ' +
+          StudioTime(LRows[I].StartFrame / Num(Obj(FSelections[I]), 'sample_rate')) + '–' +
+          StudioTime(LRows[I].EndFrame / Num(Obj(FSelections[I]), 'sample_rate'));
+      Add(El('learning-label-matches'), 'p', LDescription);
+      LSeconds := LSeconds + (LRows[I].EndFrame - LRows[I].StartFrame) /
+        Num(Obj(FSelections[I]), 'sample_rate');
+    end;
+    LWholeText := IntToStr(LWhole) + ' whole track';
+    if LWhole <> 1 then LWholeText := LWholeText + 's';
+    LClipText := IntToStr(LClips) + ' clip';
+    if LClips <> 1 then LClipText := LClipText + 's';
+    El('learning-label-preview').textContent := LWholeText + ', ' + LClipText +
+      ' · ' + StudioTime(LSeconds) + ' will teach Pythian.';
+    TJSHTMLButtonElement(El('apply-learning-label')).disabled := False;
+  except
+    on E: Exception do
+    begin
+      El('learning-label-preview').textContent := E.Message;
+      El('learning-label-preview').className := 'field-error';
+    end;
+  end;
+end;
+
+procedure TStudio.ApplyLearningLabel;
+var
+  LRows: TClassifiedMusicSelections;
+  LFlags: TMusicSelectionFlags;
+  LClasses: TJSArray;
+  LLabel: String;
+  I: Integer;
+  J: Integer;
+begin
+  try
+    LLabel := TJSHTMLSelectElement(El('learning-label-choice')).value;
+    LRows := ClassifiedSelections;
+    LFlags := ClassifyMusicSelection(LRows, LLabel);
+    for I := 0 to High(LFlags) do
+    begin
+      Obj(FSelections[I])['included'] := LFlags[I];
+      if LRows[I].WholeRecording then
+      begin
+        LClasses := TJSArray.new;
+        for J := 0 to High(LRows[I].Classifications) do
+          LClasses.push(LRows[I].Classifications[J]);
+        Obj(FSelections[I])['classifications'] := LClasses;
+      end;
+    end;
+    FLearningLabel := LLabel;
+    QueueSave;
+    Draw;
+    TStudioDialog(El('learning-label-dialog')).close;
+  except
+    on E: Exception do
+    begin
+      El('learning-label-preview').textContent := E.Message;
+      El('learning-label-preview').className := 'field-error';
+    end;
+  end;
+end;
+
 procedure TStudio.Draw;
 var
   LItem, LOther: TJSObject;
   LRow, LLabel, LControl: TJSElement;
-  I, J, LCount: Integer;
-  LSeconds: Double;
+  I, J, LCount, LSavedCount: Integer;
+  LSeconds, LItemSeconds: Double;
   LWhole: Boolean;
 begin
   BindSelectedTracks;
   FSourceEditor.Bind(FTracks, FSelections, not FConnected or FLoading);
   LCount := 0;
+  LSavedCount := 0;
   LSeconds := 0;
   El('track-influences').innerHTML := '';
   for I := 0 to FSelections.length - 1 do
   begin
     LItem := Obj(FSelections[I]);
     if Str(LItem, 'selection') <> 'full' then Continue;
-    Inc(LCount);
+    Inc(LSavedCount);
+    LItemSeconds := 0;
     LWhole := StudioIncluded(LItem);
-    if LWhole then LSeconds := LSeconds + Num(LItem, 'frame_count') / Num(LItem, 'sample_rate')
+    if LWhole then LItemSeconds := Num(LItem, 'frame_count') / Num(LItem, 'sample_rate')
     else
       for J := 0 to FSelections.length - 1 do
       begin
         LOther := Obj(FSelections[J]);
         if (StudioSourceKey(LOther) = StudioSourceKey(LItem)) and
           (Str(LOther, 'selection') <> 'full') and StudioIncluded(LOther) then
-          LSeconds := LSeconds + (Num(LOther, 'end_frame') - Num(LOther, 'start_frame')) / Num(LItem, 'sample_rate');
+          LItemSeconds := LItemSeconds + (Num(LOther, 'end_frame') - Num(LOther, 'start_frame')) / Num(LItem, 'sample_rate');
       end;
+    if LItemSeconds = 0 then Continue;
+    Inc(LCount);
+    LSeconds := LSeconds + LItemSeconds;
     LRow := Add(El('track-influences'), 'label', '');
     LRow.className := 'influence-row';
     LLabel := Add(LRow, 'span', Str(LItem, 'title'));
@@ -778,7 +978,13 @@ begin
   end;
   El('selection-count').textContent := IntToStr(LCount);
   FIncludedSeconds := LSeconds;
-  El('selection-summary').textContent := IntToStr(LCount) + ' tracks · ' + StudioTime(LSeconds) + ' selected for learning';
+  El('selection-summary').textContent := IntToStr(LCount) + ' of ' + IntToStr(LSavedCount) +
+    ' tracks · ' + StudioTime(LSeconds) + ' selected for learning';
+  El('learning-label-state').textContent := '';
+  if FLearningLabel <> '' then
+    El('learning-label-state').textContent := 'Label: ' + FLearningLabel + ' · change a checkbox to choose manually';
+  TJSHTMLButtonElement(El('choose-by-label')).disabled :=
+    not FConnected or FLoading or (LSavedCount = 0);
   El('generate-summary').textContent := El('selection-summary').textContent;
   TJSHTMLInputElement(El('track-search')).disabled := not FConnected;
   TJSHTMLButtonElement(El('new-playlist')).disabled := FLoading or FSaving or FDirty or (FPendingWrite <> nil);
@@ -809,6 +1015,7 @@ var
   LItem, LTrack, LRow, LClip: TJSObject;
   I, J: Integer;
 begin
+  FLearningLabel := Str(APlaylist, 'learning_label');
   FSelections := TJSArray.new;
   LItems := Arr(APlaylist, 'items');
   if (Str(APlaylist, 'format') <> 'pythian.studio.playlist.v1') or (LItems = nil) then
@@ -841,7 +1048,8 @@ begin
     LRow['start_frame'] := 0;
     LRow['end_frame'] := Num(LItem, 'frame_count');
     LRow['influence'] := Num(LItem, 'influence');
-    LRow['classifications'] := TJSArray.new;
+    LRow['classifications'] := Arr(LItem, 'classifications');
+    if LRow['classifications'] = nil then LRow['classifications'] := TJSArray.new;
     FSelections.push(LRow);
     LClips := Arr(LItem, 'clips');
     for J := 0 to LClips.length - 1 do
@@ -860,6 +1068,7 @@ procedure TStudio.LoadProject(AProject: TJSObject);
 var LRows: TJSArray; LRow, LWhole: TJSObject; I, J: Integer; LName: String;
   LNames: array of String;
 begin
+  FLearningLabel := '';
   ClearGeneration;
   FSnapshotHash := Str(AProject, 'snapshot_sha256');
   FSelections := TJSArray.new;
@@ -985,6 +1194,7 @@ begin
         FRevision := Trunc(Num(LState, 'revision'));
         FName := Str(LState, 'name');
         FSelections := Arr(LState, 'selections');
+        FLearningLabel := Str(LState, 'learning_label');
         FDirty := isBoolean(LState['dirty']) and Boolean(LState['dirty']);
         FPendingWrite := Obj(LState['pending_write']);
         FPendingVersion := Trunc(Num(LState, 'pending_version'));
@@ -1042,6 +1252,8 @@ begin
         TStudioDialog(El('playlists-dialog')).close;
         ShowStep('library');
       end;
+    'choose-by-label': OpenLearningLabel;
+    'apply-learning-label': ApplyLearningLabel;
     'record-audio': begin TStudioDialog(El('capture-panel')).showModal; FCapture.OpenRecorder end;
     'import-audio': begin TStudioDialog(El('capture-panel')).showModal; FCapture.OpenImporter end;
     'retry-save': Save;
@@ -1055,6 +1267,16 @@ begin
   Result := False;
   if FLoading then Exit;
   LControl := TJSElement(AEvent.target);
+  if LControl.id = 'learning-label-choice' then
+  begin
+    PreviewLearningLabel;
+    Exit;
+  end;
+  if LControl.id = 'playlist-name' then
+  begin
+    QueueSave;
+    Exit;
+  end;
   if LControl.id = 'track-search' then begin FSourceEditor.Search; Exit end;
   if (LControl.id = 'output-duration') or (LControl.id = 'output-duration-unit') then
   begin
@@ -1072,6 +1294,14 @@ begin
   end;
   Changed;
 end;
+function TStudio.UserInteraction(AEvent: TEventListenerEvent): Boolean;
+begin
+  { Big Boss: a late saved-run response may restore data, but must not take
+    navigation away after the operator has started using the page. }
+  FResumeOnConnect := False;
+  Result := False;
+end;
+
 function TStudio.Playing(AEvent: TEventListenerEvent): Boolean;
 var LPlayers: TJSNodeList; I: Integer;
 begin
@@ -1130,12 +1360,15 @@ begin
   El('output-duration').addEventListener('change', @Edit);
   El('output-duration').addEventListener('input', @Edit);
   El('output-duration-unit').addEventListener('change', @Edit);
+  El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);
   El('tab-library').addEventListener('keydown', @TabKey);
   El('tab-selection').addEventListener('keydown', @TabKey);
   El('tab-generate').addEventListener('keydown', @TabKey);
   document.addEventListener('play', @Playing, True);
+  document.addEventListener('pointerdown', @UserInteraction, True);
+  document.addEventListener('keydown', @UserInteraction, True);
   window.addEventListener('pagehide', @Leaving);
   ShowStep('library');
   if (window.location.hash = '#listen') or (window.location.hash = '#prepare') then
