@@ -27,7 +27,8 @@ param(
   [Parameter(Mandatory=$true)][string] $RtlJavascript,
   [string[]] $NativeTargetArguments = @(),
   [string] $Node = 'node',
-  [string] $OutputRoot = $env:PYTHIAN_BUILD_ROOT
+  [string] $OutputRoot = $env:PYTHIAN_BUILD_ROOT,
+  [switch] $IncludeWfc
 )
 $ErrorActionPreference = 'Stop'
 $repository = Split-Path -Parent $PSScriptRoot
@@ -49,10 +50,16 @@ $suffix = if ($targetOs -in @('win32','win64')) { '.exe' } else { '' }
 $units = Join-Path $output 'units'
 New-Item -ItemType Directory -Force -Path $units | Out-Null
 $fixtures = @('pythian.tests.render.progress', 'pythian.tests.synthesis.portable',
-  'pythian.tests.time.portable')
+  'pythian.tests.time.portable', 'pythian.tests.music.stream')
+if ($IncludeWfc) { $fixtures += 'pythian.tests.instrumental.stream' }
 foreach ($program in $fixtures) {
   $source = Join-Path $repository "tests/$program.lpr"
-  & $nativePath @NativeTargetArguments '-B' '-Sa' '-Cr' '-Co' '-Ci' '-gl' '-gh' `
+  $fixtureArguments = @()
+  if ($program -eq 'pythian.tests.instrumental.stream') {
+    $fixtureArguments = @("-Fu$(Join-Path $repository 'adapters/wfc')",
+      "-Fu$(Join-Path $repository 'vendor/wfc/src')")
+  }
+  & $nativePath @NativeTargetArguments @fixtureArguments '-B' '-O2' '-Sa' '-Cr' '-Co' '-Ci' '-gl' '-gh' `
     "-Fu$(Join-Path $repository 'src')" "-FU$units" "-FE$output" $source `
     *> (Join-Path $output "$program.native-build.log")
   if ($LASTEXITCODE -ne 0) { throw "Native compilation failed: $program (see $output)" }
@@ -62,14 +69,14 @@ foreach ($program in $fixtures) {
   if ($LASTEXITCODE -ne 0) { throw "Native checks failed: $program (see $output)" }
   $script = Join-Path $output "$program.js"
   & $compilerPath '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
-    "-Fu$RtlSource" "-Fu$(Join-Path $repository 'src')" "-o$script" $source `
+    @fixtureArguments "-Fu$RtlSource" "-Fu$(Join-Path $repository 'src')" "-o$script" $source `
     *> (Join-Path $output "$program.pas2js-build.log")
   if ($LASTEXITCODE -ne 0) { throw "pas2js compilation failed: $program (see $output)" }
   # Test-host startup only. All synthesis, timing and comparisons are Pascal.
   & $nodePath '-e' 'const fs=require("node:fs"),vm=require("node:vm");vm.runInThisContext(fs.readFileSync(process.argv[1],"utf8"));process.exitCode=rtl.exitcode;' $script `
     *> (Join-Path $output "$program.pas2js.log")
   if ($LASTEXITCODE -ne 0) { throw "pas2js checks failed: $program (see $output)" }
-  if ($program -ne 'pythian.tests.render.progress') {
+  if ($program -in @('pythian.tests.synthesis.portable', 'pythian.tests.time.portable')) {
     $nativeLog = Join-Path $output "$program.native.log"
     $jsLog = Join-Path $output "$program.pas2js.log"
     & (Join-Path $output "$program$suffix") '--compare' $nativeLog $jsLog `

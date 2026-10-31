@@ -30,6 +30,7 @@ interface
 
 uses
   pythian.progress,
+  pythian.wfc.layers,
   wfc,
   wfc_sequence,
   wfc_sequence_graph;
@@ -43,6 +44,7 @@ type
     Seed: TGraphSeed;
     MaxBacktracks: Integer;
     RequireObservedEnd: Boolean;
+    Preferences: TLayerTokenPreferences;
   end;
 
   { Sequential owner of one authenticated latent boundary. Model is immutable,
@@ -83,6 +85,7 @@ uses
 
 function DefaultSequenceChunkOptions: TSequenceChunkOptions;
 begin
+  Result := Default(TSequenceChunkOptions);
   Result.CellCount := 256;
   Result.Seed := 731;
   Result.MaxBacktracks := 256;
@@ -154,6 +157,7 @@ begin
   LOptions.CellCount := AOptions.CellCount;
   LOptions.Seed := AOptions.Seed;
   LOptions.MaxBacktracks := AOptions.MaxBacktracks;
+  LOptions.Preferences := AOptions.Preferences;
   AReport := Default(TGraphSolveReport);
   FBusy := True;
   try

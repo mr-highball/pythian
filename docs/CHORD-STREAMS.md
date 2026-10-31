@@ -9,6 +9,10 @@ a time, preserves phase through holds, and can end a gate whose duration was
 unknown when it started. A short output delay lets it shape the gate's final
 samples retrospectively. No complete score or audio clip is retained.
 
+For primary instruments, layered synthesis and persistent effects, use
+[instrumental streams](INSTRUMENTAL-STREAMS.md). This triangle preview retains its
+distinct purpose while sharing the native chord admission contract.
+
 ## Native contract
 
 `TChordStreamRenderer` takes `TChordStreamOptions` and one declared maximum chord

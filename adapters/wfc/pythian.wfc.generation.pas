@@ -31,6 +31,7 @@ interface
 uses
   pythian.learning,
   pythian.progress,
+  pythian.wfc.layers,
   wfc,
   wfc_model,
   wfc_sequence,
@@ -60,6 +61,7 @@ type
     Seed: TGraphSeed;
     MaxBacktracks: Integer;
     StateCellBudget: Integer;
+    Preferences: TLayerTokenPreferences;
   end;
 
 function DefaultSequenceSegmentOptions: TSequenceSegmentOptions;
@@ -137,6 +139,7 @@ end;
 
 function DefaultSequenceSegmentOptions: TSequenceSegmentOptions;
 begin
+  Result := Default(TSequenceSegmentOptions);
   Result.CellCount := 256;
   Result.Seed := 731;
   Result.MaxBacktracks := 256;
@@ -243,11 +246,13 @@ var
   LValidation: TWfcSequenceGraphValidationReport;
   LSolve: TGraphSolveOptions;
   LFalsePosition: Integer;
+  LPreferences: TSequencePreferenceScope;
 begin
   RequireGenerationBounds(AModel, AOptions.CellCount, AOptions.MaxBacktracks,
     AOptions.StateCellBudget);
   AReport := Default(TGraphSolveReport);
   LProgress := nil;
+  LPreferences := nil;
   LGraph := TGraph.Create;
   try
     LProgress := TWfcSolveProgressBridge.Create(AProgress);
@@ -260,11 +265,14 @@ begin
       LProgress.SequenceWorkObserver());
     LSolve := DefaultGraphSolveOptions;
     LSolve.MaxBacktracks := AOptions.MaxBacktracks;
+    LPreferences := TSequencePreferenceScope.Create(AModel, LGraph,
+      AOptions.Preferences, AProgress);
     Result := LGraph.TrySolve(LSolve, AReport, LProgress.SolveObserver());
     if not Result then
     begin
       Exit;
     end;
+    LPreferences.UseOriginal(AProgress);
     if not CaptureSolvedSequenceSegment(AModel, LGraph, ABoundary,
       LCandidate, LValidation, LProgress.SequenceWorkObserver()) or
       not SequenceStatesSatisfyEntryConstraints(AModel, LGraph,
@@ -275,6 +283,7 @@ begin
     ReportWork(AProgress, 'sequence_segment_publication_ready', wuItems, 1, 1);
     ASequence := LCandidate;
   finally
+    LPreferences.Free;
     LProgress.Free;
     LGraph.Free;
   end;

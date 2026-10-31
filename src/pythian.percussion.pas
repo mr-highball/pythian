@@ -62,6 +62,9 @@ type
       const ASeed: Cardinal): TFrameTones;
     function CopySettings: TPercussionSettings;
     property SampleRate: Integer read FRate;
+    { Borrowed primary recipe, including its owned automation curves. Keep this
+      percussion instrument alive through every stream using the recipe. }
+    property Instrument: TInstrument read FInstrument;
   end;
 
 function DefaultPercussionSettings(const AKind: TPercussionKind;

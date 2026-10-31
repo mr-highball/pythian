@@ -2,7 +2,77 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Current handoff: one continuous Generate progress view — 2026-10-31
+## Current handoff: persistent instrumental stream and native caller — 2026-10-31
+
+Big Boss SOLO resumes the parked instrumental streams implementation after the
+completed progress repair. The previous turn made progress: deployed cumulative
+native counters and the actual Studio consumer, published as08e6be2. CI516 is
+terminal SUCCESS. Consecutive nonclosing count started at zero.
+Criterion: real instruments preserve held-note/source/FX state across musical
+planning windows without a full-score or full-PCM allocation. Deliver the shared
+primary stream, the bounded WFC consumer and its native sustained audition.
+Check partition replay, holds/one-shots, atomic failed admission, cancellation,
+pause/stop, multi-hour clocks and bounded resources on native/actual pas2js.
+Stop at this consumer boundary before changing form/style learning; retain the
+Studio duration limit until its real long consumer is integrated. Resume only
+the selected source files from f57503d5, retaining newer progress work and docs.
+This closes the library/native-consumer criterion; the count remains zero.
+The whole task stays In progress: ordinary long Studio jobs/playback, resource
+admission, reconnect and failure/publication still need their actual consumer.
+Accounting stays47/108 (43.52%), nine open, eleven current DONE,61 open units.
+The two old stashes remain provenance; selected stream sources are now integrated.
+
+Read [the stream contract](INSTRUMENTAL-STREAMS.md). Primary instruments,
+scheduler and buses keep held sources, oscillators, envelopes and effects alive
+across windows/pulls. Shared chord validation replaces the preview duplicate.
+Atomic scheduling constructs new sources before releasing predecessors. One-day
+gates retain their separate real release tails. The WFC adapter reuses companion
+voice frontiers and existing sequence frontiers, finite context projection,
+percussion rhythm mapping and preference validation/restoration. No generic WFC
+source change. Context explicitly binds all symbolic roles together by default;
+the alternative selected-role mode leaves other parts free and can fail to
+continue. No infinite-solvability guarantee or raw-audio fallback is claimed.
+
+The native authored audition is120seconds plus one-second tail:24kHz stereo,
+2,904,000 frames,30 WFC windows,608 synthesized drum hits and12 peak voices.
+WAV/model/settings sidecar: E:/CodexWork/pythian/runs/instrumental-streams-20261031-boss/instrumental-120s.wav.
+The final eight-second caller smoke also passes. These are explicitly authored
+instrumental examples, not recording-derived style-quality evidence.
+
+Core stream6036 and WFC stream2,310,607 checks pass native and actual pas2js.
+Counts include per-sample comparisons, not separate musical criteria. They cover
+held notes/echo, natural one-shots, source-failure rollback, cancel, pause/stop,
+unaligned fifteen-cell windows, partial final cells and24-hour plans, including
+384kHz/1PPQ exact wide clocks. Native heaps are clean. The primary stream
+also enforces combined source/FX work admission: a legal maximum-cost voice plus a bus
+cannot bypass the pull budget by forcing a one-frame block. Its focused native
+and pas2js boundary reruns pass after that final guard.
+Shared sequence publication
+350,509 checks/270 abort-retries and finite material1439 checks also pass cleanly.
+The maintained portability command passes four core fixtures, with synthesis/time
+comparisons. Its WFC trial rejected an8kHz echo left in the new384kHz fixture;
+after correcting the fixture, focused native/pas2js WFC reruns pass. Do not claim
+the earlier combined command as an uninterrupted full pass.
+
+Preserve compile repairs (token import, fluent Intersect return, enum, pas2js
+StdErr), the original rejected-ID contract and the musical failures: free-role
+four-cell windows stopped at16cells; selected-context four-cell windows stopped
+at32. All-role context fixes the exercised continuation, not every possible
+model. The sixteen-cell test's bar-aligned boundaries legitimately had no holds;
+the final fifteen-cell test really exercises holds. The original free long-plan
+fixture hit finite search limits; its resource check now uses the same known
+joint context as the sustained consumer. Failed fixture setup left owned
+resources; final complete native runs have zero unfreed blocks. Full evidence
+stays under instrumental-streams-20261031-boss in the dedicated E-drive roots.
+
+Next: connect learned providers and persistent performance to durable Studio
+jobs, replace finite duration-sized planning, declare output/disk limits and
+reuse cumulative workflow progress. Keep Studio's2–30s limit until that consumer
+works. The progress-only deployed service was not replaced or interrupted here;
+no audio was autoplayed or QA browser launched. Do not reapply the old stashes
+wholesale, resume the unrelated archive or expand into a broad callback audit.
+
+## Previous handoff: one continuous Generate progress view — 2026-10-31
 
 Big Boss SOLO follows the operator's progress-bar defect under simple Studio
 AC4 and instrumental streams AC3. Criterion: a Generate request shows stable

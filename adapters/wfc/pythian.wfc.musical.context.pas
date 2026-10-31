@@ -69,6 +69,12 @@ type
     property DrivenRole: Integer read FDrivenRole;
   end;
 
+{ Shared context-to-musical-domain projection for finite and frontier consumers.
+  Returns detached masks; no solve, source inference or caller mutation. }
+function BindMusicalContextTokens(const ATokens: TWfcModelTokens;
+  const ARoleCount: Integer; const AMasks: TVoiceMasks;
+  const AAllRoles: Boolean = False): TVoiceMasks;
+
 implementation
 
 uses SysUtils, pythian.audio, wfc_music_ensemble;
@@ -92,15 +98,21 @@ begin
   end;
 end;
 
-function DrivenVoiceToken(const AChoice: TStyleProviderChoice): String;
+function ContextVoiceToken(const AChoice: TStyleProviderChoice; const ARole: Integer): String;
 var
   LFrame: TWfcMusicEnsembleFrame;
 begin
-  Result := '';
-  if AChoice.Context.DrivenRole < 0 then Exit;
+  LFrame.Voices := nil;
   SetLength(LFrame.Voices, 1);
-  LFrame.Voices[0] := AChoice.Context.Frame.Voices[AChoice.Context.DrivenRole];
+  LFrame.Voices[0] := AChoice.Context.Frame.Voices[ARole];
   Result := EncodeWfcMusicEnsembleFrame(LFrame);
+end;
+
+function DrivenVoiceToken(const AChoice: TStyleProviderChoice): String;
+begin
+  Result := '';
+  if AChoice.Context.DrivenRole >= 0 then
+    Result := ContextVoiceToken(AChoice, AChoice.Context.DrivenRole);
 end;
 
 constructor TMusicalContextPlan.Create(const AModel: TWfcSequenceModel;
@@ -313,6 +325,13 @@ begin
 end;
 
 function TMusicalContextPlan.BindMasks(const AMasks: TVoiceMasks): TVoiceMasks;
+begin
+  Result := BindMusicalContextTokens(FAccepted[0].Tokens, Length(FRoleNames), AMasks);
+end;
+
+function BindMusicalContextTokens(const ATokens: TWfcModelTokens;
+  const ARoleCount: Integer; const AMasks: TVoiceMasks;
+  const AAllRoles: Boolean): TVoiceMasks;
 var
   LProvider, LMask, LCell, LCount: Integer;
   LHarmony, LRhythm: String;
@@ -321,29 +340,41 @@ var
   LLastProvider: Integer;
   LTargetToken: String;
 begin
+  if (ARoleCount < 1) or (ARoleCount > 6) or (Length(ATokens) < 1) or
+    ((Length(AMasks) <> 0) and (Length(AMasks) <> ARoleCount + 2)) then
+    raise EAudio.Create('Context tokens require matching ordered musical domains');
   Result := nil;
-  SetLength(Result, Length(FRoleNames) + 2);
+  SetLength(Result, ARoleCount + 2);
   for LProvider := 0 to High(AMasks) do
   begin
     Result[LProvider] := Copy(AMasks[LProvider]);
     for LMask := 0 to High(Result[LProvider]) do
       Result[LProvider][LMask].AllowedTokens := Copy(AMasks[LProvider][LMask].AllowedTokens);
   end;
-  for LCell := 0 to FOptions.CellCount - 1 do
+  for LCell := 0 to High(ATokens) do
   begin
-    LChoice := DecodeStyleProviderChoice(spvMusicalContext, FAccepted[0].Tokens[LCell]);
+    LChoice := DecodeStyleProviderChoice(spvMusicalContext, ATokens[LCell]);
+    if (LChoice.Harmony.StepsPerOctave <> 12) or
+      (Length(LChoice.Rhythm.Actions) <> ARoleCount) or
+      (Length(LChoice.Context.Frame.Voices) <> ARoleCount) or
+      (LChoice.Context.DrivenRole >= ARoleCount) then
+      raise EAudio.Create('Context token differs from its musical role domains');
     LHarmony := EncodeWfcMusicPitchClassSet(LChoice.Harmony);
     LRhythm := EncodeWfcMusicRhythmFrame(LChoice.Rhythm);
     LLastProvider := 1;
-    if FDrivenRole >= 0 then LLastProvider := 2;
+    if LChoice.Context.DrivenRole >= 0 then LLastProvider := 2;
+    if AAllRoles then LLastProvider := ARoleCount + 1;
     for LProvider := 0 to LLastProvider do
     begin
       LTargetProvider := LProvider;
-      if LProvider = 2 then LTargetProvider := FDrivenRole + 2;
+      if not AAllRoles and (LProvider = 2) then
+        LTargetProvider := LChoice.Context.DrivenRole + 2;
       case LProvider of
         0: LTargetToken := LHarmony;
         1: LTargetToken := LRhythm;
-      else LTargetToken := DrivenVoiceToken(LChoice);
+      else
+        if AAllRoles then LTargetToken := ContextVoiceToken(LChoice, LProvider - 2)
+        else LTargetToken := DrivenVoiceToken(LChoice);
       end;
       LCount := Length(Result[LTargetProvider]);
       SetLength(Result[LTargetProvider], LCount + 1);

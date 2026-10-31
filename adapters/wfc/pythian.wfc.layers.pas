@@ -57,6 +57,19 @@ type
     Multiplier: Integer;
   end;
   TLayerTokenPreferences = array of TLayerTokenPreference;
+  { Borrowed single-pass graph/model; dispose before the graph. Reuses the
+    primary layer preference validation, weight mapping and restoration.
+    Original weights must be restored before authenticating captured paths. }
+  TSequencePreferenceScope = class
+  private
+    FInner: TObject;
+  public
+    constructor Create(const AModel: TWfcSequenceModel; const AGraph: TGraph;
+      const APreferences: TLayerTokenPreferences;
+      const AProgress: TWorkProgressCallback = nil);
+    destructor Destroy; override;
+    procedure UseOriginal(const AProgress: TWorkProgressCallback = nil);
+  end;
   TLearnedLayer = record
     Model: TWfcSequenceModel;
     Constraints: TWfcSequenceTokenConstraints;
@@ -1639,6 +1652,56 @@ begin
     UseOriginal;
   end;
   inherited Destroy;
+end;
+
+constructor TSequencePreferenceScope.Create(const AModel: TWfcSequenceModel;
+  const AGraph: TGraph; const APreferences: TLayerTokenPreferences;
+  const AProgress: TWorkProgressCallback);
+var
+  LLayers: TLearnedLayers;
+  LOptions: TLayerGenerationOptions;
+  LPreparation: TLayerPreparation;
+  LWork: Int64;
+begin
+  inherited Create;
+  if (AModel = nil) or (AGraph = nil) then
+    raise EAudio.Create('Sequence preferences require a model and private graph');
+  LLayers := nil;
+  SetLength(LLayers, 1);
+  LLayers[0].Model := AModel;
+  LLayers[0].Preferences := Copy(APreferences);
+  LOptions := DefaultLayerGenerationOptions;
+  LOptions.CellCount := AGraph.Dimension.Width;
+  LWork := 0;
+  LPreparation := TLayerPreparation.Create(AProgress, 'sequence_preference_visits');
+  try
+    ValidatePreferences(LLayers[0], 1, False, LWork, LPreparation);
+    if LWork > MaximumLayerPreferencePreparationWork then
+      raise EAudio.Create('Sequence preference preparation exceeds its work budget');
+    FInner := TLayerPreferenceScope.Create(LLayers, AGraph, LOptions, LPreparation);
+    LPreparation.Finish;
+  finally
+    LPreparation.Free;
+  end;
+end;
+
+destructor TSequencePreferenceScope.Destroy;
+begin
+  FInner.Free;
+  inherited Destroy;
+end;
+
+procedure TSequencePreferenceScope.UseOriginal(const AProgress: TWorkProgressCallback);
+var
+  LPreparation: TLayerPreparation;
+begin
+  LPreparation := TLayerPreparation.Create(AProgress, 'sequence_restore_weight_visits');
+  try
+    TLayerPreferenceScope(FInner).UseOriginal(LPreparation);
+    LPreparation.Finish;
+  finally
+    LPreparation.Free;
+  end;
 end;
 
 procedure ApplyMappedProjection(const AProjection: TLayerProjection;

@@ -22,6 +22,11 @@ Generate now separates durable overall workflow/selection counters from nested
 analysis operations, so file/pitch/beat callbacks cannot restart its bar. This
 repairs the simple consumer's progress criterion without accepting a whole task
 or changing the effort denominator.
+The primary persistent instrument stream and bounded WFC-frontier consumer now
+produce sustained native music, including a two-minute authored audition.
+Long-duration Studio jobs/playback remain in progress; the app's finite limit
+stays explicit until that consumer is integrated. No stream-task effort is
+accepted by the library delivery alone.
 The operator has resumed implementation solo. The shared instrumental runtime
 and explicit percussion are accepted. Finite instrumental Studio and its real
 cancellation prerequisite are now accepted; the first operator review is waiting.

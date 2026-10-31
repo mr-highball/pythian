@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -25,6 +25,23 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: delivered the [persistent primary/WFC stream and native
+  consumer](../INSTRUMENTAL-STREAMS.md), including a120-second instrumental WAV
+  plus real tail:30 bounded windows,608 drum hits and12 peak voices. Native and
+  actual pas2js check holds/FX, replay, failed admission, one-shots, cancellation
+  and24-hour clocks. All-role context keeps joint symbolic choices together;
+  selected-role mode retains more freedom and its observed continuation failures.
+  No original-mix grains or generic WFC change. The actual long Studio job,
+  output/resource admission and browser/reconnect consumer remain unfinished;
+  keep the task open with no partial effort. Failure details are in WORK.
+
+- 2026-10-31, Big Boss: resumed the preserved source implementation after08e6be2.
+  Deliver continuous primary instruments and a bounded WFC-frontier consumer;
+  verify held notes/FX, pull replay, failed admission/cancel, pause/stop and24-hour
+  clocks before exposing longer Studio duration. Keep callbacks in the existing
+  cumulative workflow. Current evidence packet: instrumental-streams-20261031-boss
+  in the dedicated E-drive roots. No accepted effort until all task gates pass.
 
 - 2026-10-31, Big Boss: bounded primary instrument-stream implementation was
   parked in stash f57503d5bdd66b3edaa0871d74fcb7aa6df54dc6 for the operator's current

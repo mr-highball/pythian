@@ -145,7 +145,8 @@ type
     property Failed: Boolean read FFailed;
   end;
 
-{ Voice duration is at most one day; absolute starts use checked Int64 frames. }
+{ A gate and its release are each bounded to one day; the release may follow a
+  complete one-day gate. Absolute starts/ends use checked Int64 frames. }
 function ValidateFrameTone(const ATone: TFrameTone; const ASampleRate: Integer): Int64;
 { Policy work: source plus gate envelope and each evaluated automation curve.
   Scheduling reserves a separate 16 units for voice processing overhead. }
@@ -440,7 +441,7 @@ begin
     raise EAudio.Create('Voice time exceeds nonnegative one-day duration bound');
   end;
   Result := ATone.GateFrames + SynthReleaseFrames(ATone.Voice, ASampleRate);
-  if (Result > LMaximumFrames) or (ATone.StartFrame > MaximumTimingInteger - Result) then
+  if ATone.StartFrame > MaximumTimingInteger - Result then
   begin
     raise EAudio.Create('Voice end exceeds duration or absolute frame bound');
   end;

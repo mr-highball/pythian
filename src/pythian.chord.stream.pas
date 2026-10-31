@@ -37,8 +37,8 @@ uses
 const
   ChordStreamVersion = 1;
   ChordStreamBlockFrames = 2048;
-  MaximumChordStreamVoices = 4096;
-  MaximumChordStreamTones = 4096;
+  MaximumChordStreamVoices = pythian.chord.MaximumChordVoices;
+  MaximumChordStreamTones = pythian.chord.MaximumChordTones;
   MaximumChordReleaseWork = 16777216;
   { Native Int64; pas2js exact integers through 2^53-1. }
   MaximumChordStreamFrames = MaximumBinaryInteger;
@@ -53,7 +53,7 @@ type
   TChordTones = pythian.chord.TChordTones;
   TChordVoice = pythian.chord.TChordVoice;
   TChordFrame = pythian.chord.TChordFrame;
-  TChordCapacities = array of Integer;
+  TChordCapacities = pythian.chord.TChordCapacities;
   TChordStreamOptions = record
     SampleRate: Integer;
     MasterVolume: Integer;
@@ -231,67 +231,23 @@ procedure TChordStreamRenderer.ValidateFrame(const AFrame: TChordFrame);
 var
   LVoice: Integer;
   LTone: Integer;
-  LAction: Integer;
+  LPrevious: TChordFrame;
 begin
-  if Length(AFrame) <> Length(FVoices) then
+  SetLength(LPrevious, Length(FVoices));
+  for LVoice := 0 to High(FVoices) do
   begin
-    raise EAudio.Create('Chord frame voice count does not match capacities');
-  end;
-  for LVoice := 0 to High(AFrame) do
-  begin
-    LAction := Ord(AFrame[LVoice].Action);
-    case LAction of
-      Ord(caRest), Ord(caAttack), Ord(caHold):
-      begin
-      end;
-    else
-      raise EAudio.Create('Unknown chord action');
-    end;
-    if Length(AFrame[LVoice].Tones) > FCapacities[LVoice] then
+    if Length(FVoices[LVoice].Tones) > 0 then
     begin
-      raise EAudio.Create('Chord exceeds its declared tone capacity');
+      LPrevious[LVoice].Action := caAttack;
     end;
-    if AFrame[LVoice].Action = caRest then
+    SetLength(LPrevious[LVoice].Tones, Length(FVoices[LVoice].Tones));
+    for LTone := 0 to High(FVoices[LVoice].Tones) do
     begin
-      if Length(AFrame[LVoice].Tones) <> 0 then
-      begin
-        raise EAudio.Create('Chord rest contains tones');
-      end;
-      Continue;
-    end;
-    if Length(AFrame[LVoice].Tones) = 0 then
-    begin
-      raise EAudio.Create('Sounding chord has no tones');
-    end;
-    if (AFrame[LVoice].Action = caHold) and
-      (Length(AFrame[LVoice].Tones) <> Length(FVoices[LVoice].Tones)) then
-    begin
-      raise EAudio.Create('Chord hold has no identical active predecessor');
-    end;
-    for LTone := 0 to High(AFrame[LVoice].Tones) do
-    begin
-      if (AFrame[LVoice].Tones[LTone].Pitch < 0) or
-        (AFrame[LVoice].Tones[LTone].Pitch > 127) or
-        (AFrame[LVoice].Tones[LTone].Velocity < 1) or
-        (AFrame[LVoice].Tones[LTone].Velocity > 127) then
-      begin
-        raise EAudio.Create('Chord pitch must be 0..127 and velocity 1..127');
-      end;
-      if (LTone > 0) and
-        (AFrame[LVoice].Tones[LTone - 1].Pitch >= AFrame[LVoice].Tones[LTone].Pitch) then
-      begin
-        raise EAudio.Create('Chord pitches must be strictly increasing');
-      end;
-      if AFrame[LVoice].Action = caHold then
-      begin
-        if (AFrame[LVoice].Tones[LTone].Pitch <> FVoices[LVoice].Tones[LTone].Pitch) or
-          (AFrame[LVoice].Tones[LTone].Velocity <> FVoices[LVoice].Tones[LTone].Velocity) then
-        begin
-          raise EAudio.Create('Chord hold changes an active pitch or velocity');
-        end;
-      end;
+      LPrevious[LVoice].Tones[LTone].Pitch := FVoices[LVoice].Tones[LTone].Pitch;
+      LPrevious[LVoice].Tones[LTone].Velocity := FVoices[LVoice].Tones[LTone].Velocity;
     end;
   end;
+  ValidateChordTransition(AFrame, LPrevious, FCapacities);
 end;
 
 function TChordStreamRenderer.AttackGain(const AAge: Int64): Integer;

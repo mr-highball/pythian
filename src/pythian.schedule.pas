@@ -40,6 +40,12 @@ const
 
 type
   TScheduleResult = (srScheduled, srVoiceLimit, srWorkLimit);
+  TScheduledTone = record
+    Tone: TFrameTone;
+    Bus: Integer;
+    Group: Integer;
+  end;
+  TScheduledTones = array of TScheduledTone;
 
   { Owns admitted voices; borrows graph and factories. NextFrame is the next
     unrendered absolute frame. Pending starts >= NextFrame are cancellable.
@@ -74,12 +80,22 @@ type
     function GetPendingCount: Integer;
     function StopSelected(const AGroup: Integer; const AId: Int64;
       const AById: Boolean): Integer;
+    function StopSelectedInside(const AGroup: Integer; const AId: Int64;
+      const AById: Boolean): Integer;
   public
     constructor Create(const AGraph: TBusGraph; const AVoiceLimit: Integer = 128;
       const AWorkLimit: Integer = 1000000; const AStartFrame: Int64 = 0);
     destructor Destroy; override;
     function TrySchedule(const ATone: TFrameTone; const ABus, AGroup: Integer;
       out AId: Int64): TScheduleResult;
+    { Big Boss: validate and construct all new voices before releasing groups
+      or admitting any tone. Staging failure/cancellation preserves state and
+      IDs. Released voices keep their native release tails. Unexpected failures
+      during release/publication poison the scheduler, as StopGroup does.
+      Observer callbacks precede publication and must not reenter. }
+    function TryScheduleBatch(const ATones: TScheduledTones;
+      const AReleaseGroups: array of Integer; out AFirstId: Int64;
+      const AProgress: TWorkProgressCallback = nil): TScheduleResult;
     function CancelFuture(const AGroup: Integer; const AFromFrame: Int64): Integer;
     { Big Boss: build a complete future replacement before publishing. Failed
       admission, source construction or the optional borrowed work callback
@@ -215,51 +231,125 @@ end;
 function TScheduledSynth.TrySchedule(const ATone: TFrameTone; const ABus, AGroup: Integer;
   out AId: Int64): TScheduleResult;
 var
+  LInput: TScheduledTone;
+begin
+  LInput.Tone := ATone;
+  LInput.Bus := ABus;
+  LInput.Group := AGroup;
+  Result := TryScheduleBatch([LInput], [], AId);
+end;
+
+function TScheduledSynth.TryScheduleBatch(const ATones: TScheduledTones;
+  const AReleaseGroups: array of Integer; out AFirstId: Int64;
+  const AProgress: TWorkProgressCallback): TScheduleResult;
+var
+  LVoices: array of TPlayingTone;
+  LCosts: array of Integer;
+  LIndex: Integer;
+  LGroupIndex: Integer;
+  LKept: Integer;
+  LWork: Int64;
   LFrames: Int64;
-  LCost: Integer;
-  LVoice: TPlayingTone;
+  LRetired: Boolean;
+  LPublishing: Boolean;
 begin
   RequireReady;
-  if (ABus < 0) or (ABus >= FGraph.BusCount) or (ATone.StartFrame < FNextFrame) then
+  if Length(ATones) > Length(FSlots) then
   begin
-    raise EAudio.Create('Scheduled bus or start is outside the unrendered timeline');
+    Exit(srVoiceLimit);
   end;
   FBusy := True;
-  LVoice := nil;
+  LPublishing := False;
   try
-    LFrames := ValidateFrameTone(ATone, FGraph.SampleRate);
-    if LFrames = 0 then
-    begin
-      raise EAudio.Create('Scheduled voice must span at least one frame');
+    try
+      LKept := 0;
+      LWork := 0;
+      for LIndex := 0 to FCount - 1 do
+      begin
+        LRetired := False;
+        if FSlots[LIndex].StartFrame >= FNextFrame then
+        begin
+          for LGroupIndex := 0 to High(AReleaseGroups) do
+          begin
+            LRetired := LRetired or (FSlots[LIndex].Group = AReleaseGroups[LGroupIndex]);
+          end;
+        end;
+        if not LRetired then
+        begin
+          Inc(LKept);
+          Inc(LWork, FSlots[LIndex].Cost);
+        end;
+      end;
+      SetLength(LCosts, Length(ATones));
+      for LIndex := 0 to High(ATones) do
+      begin
+        ReportWork(AProgress, 'schedule_batch_validate', wuItems, LIndex, Length(ATones));
+        if (ATones[LIndex].Bus < 0) or (ATones[LIndex].Bus >= FGraph.BusCount) or
+          (ATones[LIndex].Tone.StartFrame < FNextFrame) then
+        begin
+          raise EAudio.Create('Scheduled bus or start is outside the unrendered timeline');
+        end;
+        LFrames := ValidateFrameTone(ATones[LIndex].Tone, FGraph.SampleRate);
+        if LFrames = 0 then
+        begin
+          raise EAudio.Create('Scheduled voice must span at least one frame');
+        end;
+        LCosts[LIndex] := SynthFrameCost(ATones[LIndex].Tone.Voice, FGraph.SampleRate) + 16;
+        Inc(LWork, LCosts[LIndex]);
+      end;
+      if LKept + Length(ATones) > Length(FSlots) then
+      begin
+        Exit(srVoiceLimit);
+      end;
+      if LWork > FWorkLimit then
+      begin
+        Exit(srWorkLimit);
+      end;
+      if FLastId > High(Int64) - Length(ATones) then
+      begin
+        raise EAudio.Create('Voice identity space exhausted');
+      end;
+      SetLength(LVoices, Length(ATones));
+      for LIndex := 0 to High(ATones) do
+      begin
+        ReportWork(AProgress, 'schedule_batch_construct', wuItems, LIndex, Length(ATones));
+        LVoices[LIndex] := TPlayingTone.Create(FGraph.SampleRate, ATones[LIndex].Tone);
+      end;
+      ReportWork(AProgress, 'schedule_batch_ready', wuItems, Length(ATones), Length(ATones));
+      LPublishing := True;
+      for LGroupIndex := 0 to High(AReleaseGroups) do
+      begin
+        StopSelectedInside(AReleaseGroups[LGroupIndex], 0, False);
+      end;
+      for LIndex := 0 to High(ATones) do
+      begin
+        Inc(FLastId);
+        FSlots[FCount].Id := FLastId;
+        FSlots[FCount].StartFrame := ATones[LIndex].Tone.StartFrame;
+        FSlots[FCount].Bus := ATones[LIndex].Bus;
+        FSlots[FCount].Group := ATones[LIndex].Group;
+        FSlots[FCount].Cost := LCosts[LIndex];
+        FSlots[FCount].Voice := LVoices[LIndex];
+        LVoices[LIndex] := nil;
+        Inc(FCount);
+        Inc(FReservedWork, LCosts[LIndex]);
+      end;
+      AFirstId := 0;
+      if Length(ATones) > 0 then
+      begin
+        AFirstId := FLastId - Length(ATones) + 1;
+      end;
+      LPublishing := False;
+      Result := srScheduled;
+    except
+      if LPublishing then FFailed := True;
+      raise;
     end;
-    LCost := SynthFrameCost(ATone.Voice, FGraph.SampleRate) + 16;
-    if FCount = Length(FSlots) then
-    begin
-      Exit(srVoiceLimit);
-    end;
-    if Int64(FReservedWork) + LCost > FWorkLimit then
-    begin
-      Exit(srWorkLimit);
-    end;
-    if FLastId = High(Int64) then
-    begin
-      raise EAudio.Create('Voice identity space exhausted');
-    end;
-    LVoice := TPlayingTone.Create(FGraph.SampleRate, ATone);
-    Inc(FLastId);
-    FSlots[FCount].Id := FLastId;
-    FSlots[FCount].StartFrame := ATone.StartFrame;
-    FSlots[FCount].Bus := ABus;
-    FSlots[FCount].Group := AGroup;
-    FSlots[FCount].Cost := LCost;
-    FSlots[FCount].Voice := LVoice;
-    LVoice := nil;
-    Inc(FCount);
-    Inc(FReservedWork, LCost);
-    AId := FLastId;
-    Result := srScheduled;
   finally
-    LVoice.Free;
+    for LIndex := 0 to High(LVoices) do
+    begin
+      LVoices[LIndex].Free;
+    end;
     FBusy := False;
   end;
 end;
@@ -440,14 +530,23 @@ end;
 
 function TScheduledSynth.StopSelected(const AGroup: Integer; const AId: Int64;
   const AById: Boolean): Integer;
+begin
+  RequireReady;
+  FBusy := True;
+  try
+    Result := StopSelectedInside(AGroup, AId, AById);
+  finally
+    FBusy := False;
+  end;
+end;
+
+function TScheduledSynth.StopSelectedInside(const AGroup: Integer; const AId: Int64;
+  const AById: Boolean): Integer;
 var
   LIndex: Integer;
 begin
-  RequireReady;
   Result := 0;
-  FBusy := True;
   try
-    try
       for LIndex := 0 to FCount - 1 do
       begin
         if (AById and (FSlots[LIndex].Id = AId)) or
@@ -465,12 +564,9 @@ begin
         end;
       end;
       Compact;
-    except
-      FFailed := True;
-      raise;
-    end;
-  finally
-    FBusy := False;
+  except
+    FFailed := True;
+    raise;
   end;
 end;
 

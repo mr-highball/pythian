@@ -93,6 +93,8 @@ type
 
 function PercussionToken(const AVelocity: Integer): String;
 function PercussionVelocity(const AToken: String): Integer;
+function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;
+  const ADefinition: TPercussionDefinition; const AToken: String): TWfcModelTokens;
 { Big Boss: one actual dependent graph with an exactly pinned rhythm-input pass
   and one unpitched pass per drum. It does not alter/re-solve pitched providers.
   Generic WFC layers own learning/projections/solve. This adapter owns event and
@@ -140,6 +142,21 @@ begin
   begin
     raise EAudio.Create('Percussion hit token is not canonical');
   end;
+end;
+
+function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;
+  const ADefinition: TPercussionDefinition; const AToken: String): TWfcModelTokens;
+var
+  I: Integer;
+begin
+  Result := nil;
+  if ARhythmModel = nil then raise EAudio.Create('Percussion needs a rhythm model');
+  if (PercussionVelocity(AToken) = 0) or (Length(ADefinition.AllowedHitRhythms) = 0) then
+  begin
+    SetLength(Result, ARhythmModel.PublicTokenCount);
+    for I := 0 to High(Result) do Result[I] := ARhythmModel.PublicTokenAt(I);
+  end
+  else Result := Copy(ADefinition.AllowedHitRhythms);
 end;
 
 constructor TPercussionPlan.Create;
@@ -301,19 +318,8 @@ begin
       begin
         LVelocity := PercussionVelocity(ADefinitions[LPart].Model.PublicTokenAt(LToken));
         LHasRest := LHasRest or (LVelocity = 0);
-        LAllowed := nil;
-        if (LVelocity = 0) or (Length(ADefinitions[LPart].AllowedHitRhythms) = 0) then
-        begin
-          SetLength(LAllowed, ARhythmModel.PublicTokenCount);
-          for LOther := 0 to ARhythmModel.PublicTokenCount - 1 do
-          begin
-            LAllowed[LOther] := ARhythmModel.PublicTokenAt(LOther);
-          end;
-        end
-        else
-        begin
-          LAllowed := ADefinitions[LPart].AllowedHitRhythms;
-        end;
+        LAllowed := AllowedPercussionRhythms(ARhythmModel, ADefinitions[LPart],
+          ADefinitions[LPart].Model.PublicTokenAt(LToken));
         LMaps[LPart].Rules[LToken] := MakeWfcSequenceProjectionRule(
           ADefinitions[LPart].Model.PublicTokenAt(LToken), LAllowed);
         LCount := 1;

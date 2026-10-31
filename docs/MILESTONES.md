@@ -15,6 +15,9 @@ their criteria, including the discovered live-cancellation prerequisite.
 The current Generate progress repair closes the observed simple-consumer defect:
 stable workflow stages and cumulative selected-audio/render counters survive
 reconnect. It adds no task effort or musical acceptance; long output remains open.
+The primary instrumental stream and bounded WFC-frontier caller now deliver a
+two-minute authored instrumental audition. Long Studio generation/playback still
+needs integration, so the stream task and effort accounting remain open/unchanged.
 This is a scope-delivery estimate, not a musical-quality score. No arbitrary
 per-task percentages or north-star weights apply.
 

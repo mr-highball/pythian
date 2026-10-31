@@ -198,6 +198,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Chord stream compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.chord.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Chord stream checks failed' }
+  & $compilerPath @compilerArgs 'tests/pythian.tests.music.stream.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Instrument music stream compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.music.stream$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Instrument music stream checks failed' }
   & $compilerPath @compilerArgs 'tools/pythian.chord.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Chord demo compilation failed' }
   & (Join-Path $buildRoot "pythian.chord.demo$executableSuffix") (Join-Path $buildRoot 'chords.wav')
@@ -853,6 +857,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.stream$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")
@@ -875,6 +883,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC percussion checks failed' }
     & $compilerPath @adapterArgs 'examples/pythian.example.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller compilation failed' }
+    & $compilerPath @adapterArgs '-O2' 'examples/pythian.example.instrumental.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental streaming caller compilation failed' }
+    & (Join-Path $buildRoot "pythian.example.instrumental.stream$executableSuffix") (Join-Path $buildRoot 'instrumental-stream.wav') '8'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental streaming caller failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental.wav') '32'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental-drums.wav') '32' '731' '120' '0' '--drums'

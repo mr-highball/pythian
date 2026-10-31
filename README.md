@@ -26,6 +26,7 @@ chillwave, stoner rock and lofi are internal examples.
 [WAV learning and listening](docs/WAV-LEARNING.md) ·
 [Operator Studio scope](docs/OPERATOR-STUDIO.md) ·
 [Instrumental WFC runtime](docs/INSTRUMENTAL.md) ·
+[Persistent instrumental streams](docs/INSTRUMENTAL-STREAMS.md) ·
 [Synthesized percussion](docs/PERCUSSION.md) ·
 [Harmonic/percussive separation](docs/SEPARATION.md) ·
 [MIDI and exact timing](docs/MIDI.md) ·
