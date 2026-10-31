@@ -176,6 +176,11 @@ mapping; deeper recipes and graph visualization retain their own tasks.
 [Musical form](TODO/NS-5_musical-form_01.md) adds editable phrase/section continuity,
 variation and repetition. [Instrumental styles](TODO/NS-5_instrumental-styles_01.md)
 save real provider/control/sound recipes and exercise selective blends and reblends.
+The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
+arrangement with exact motif returns and selective Lead/Hat retention while other
+parts vary. It uses real context/voice/drum domains and one continuous performance.
+Studio arrangement, per-section controls, persistence and a no-context frontier
+probe remain open; no NS-5 effort is accepted yet.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge
@@ -187,13 +192,14 @@ experimental jobs, Original/Before/After feedback, inspectable results, efficien
 long playback and mobile recovery. Reuse existing working UI and native transport.
 [JSON identity](TODO/DONE/NS-6_json-identity_01.md) repairs the demonstrated musical
 choice save/reopen prerequisite. Its three implementation units are accepted after
-native storage and actual HTTP checks; the parent experimental editor is now accepted.
+native storage and actual HTTP checks; the optional experimental editor is reopened.
 [Source-free draft reopening](TODO/DONE/NS-6_sourcefree-draft_01.md) repairs the
 optional-recipe browser prerequisite. [Instrumental progress](TODO/DONE/NS-6_instrumental-progress_01.md)
 is accepted after bounded cross-phase publication, unchanged native consumers,
 live cancellation and the actual HTTP worker. Musical controls now expose pitch
 bounds, upstream activity, expression and editable affect mappings in Studio;
-the parent remains open for selective regeneration and retained model/score work.
+the parent is accepted after retained selective regeneration and the optional
+laboratory consumer pass. Graph visualization and deeper sound recipes remain open.
 
 ## Completion accounting
 

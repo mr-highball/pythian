@@ -17,12 +17,13 @@ The [simple Studio](OPERATOR-STUDIO.md) uses **Library → Selection → Generat
 Whole tracks or clips and per-track learning influence feed Experimental musical
 providers automatically. The native job uses these actual providers with six
 instrumental parts; no authored starter fills in selected-music learning.
-The simple interface plays the mix and an original comparison excerpt. Native
+The simple interface plays the mix, individual parts and an original comparison excerpt. Native
 artifacts retain all six stems, actual graph dimensions, provider model files,
 source clocks, proposal origins and coverage. The host keeps working when the
-page closes. This finite path accepts 2–30 second previews plus a release tail.
-Deeper graph editing, sound design and long instrumental
-streams retain their linked [tasks](TODO/README.md).
+page closes. Ordinary recording-based generation supports2seconds–24hours with
+bounded lookahead; actual hour rendering/playback and24hour admission/cancellation
+are accepted. Full24hour rendering is not claimed. Deeper graph inspection and
+sound design retain their linked [tasks](TODO/README.md).
 
 ## Public API and ownership
 
@@ -41,7 +42,7 @@ before instrument planning. `CopyMusic` retains actual symbolic decisions;
 `CopyNotes` describes the performed gates/velocities. Empty expression preserves the
 original path. The runtime also supports the retained-score sound edits below;
 Studio's ordinary Generate still starts a new plan. This is finite generation,
-not passage/role graph regeneration.
+while Change notes separately regenerates retained role/passage graphs.
 
 Call TryCreateInstrumentalPlan with an actual TWfcMusicVoicesGraphConfig, ordered
 role/instrument/bus bindings, session options, explicit PPQ tempo changes and
@@ -100,9 +101,14 @@ unrelated parts. Both initial generation and reperformance use this same planner
 
 This operation addresses an in-memory finite plan. Durable Studio sound changes
 use the decision journal/replayer below; scoped note changes additionally use the
-[bounded graph editor](ACCEPTED-SESSIONS.md#current-boundary). The optional
-authored/affect consumer still keeps [graph controls](TODO/DONE/NS-4_graph-controls_01.md)
-open. Saving feedback invokes none of these changes.
+[bounded graph editor](ACCEPTED-SESSIONS.md#current-boundary). The optional Lab
+now exposes authored tempo/key, per-part expression and editable affect mappings;
+[graph controls](TODO/DONE/NS-4_graph-controls_01.md) is accepted. Saving feedback
+invokes none of these changes.
+
+The new [experimental musical form API](MUSICAL-FORM.md) gives the bounded stream
+explicit section/phrase inputs and retained motif constraints. Its full Studio
+consumer, section controls and saved form workflow remain open.
 
 CreatePlayer takes a healthy matching-rate bus graph and returns a new owned
 TScheduledSynth. Every note is admitted before return; rejected construction

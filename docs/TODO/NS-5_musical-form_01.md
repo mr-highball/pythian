@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -27,6 +27,56 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: the shared runtime slice is implemented, not full task
+  acceptance. [Musical form](../MUSICAL-FORM.md) owns explicit section/phrase
+  records and a bounded detached motif cursor in the portable library. The
+  primary instrumental stream applies retained musical tokens to actual context,
+  named-voice and drum domains; it does not splice notes or PCM. Known upcoming
+  returns constrain bounded context/drum lookahead before a contrast commits.
+  Source completion, real frontiers, separate regenerated states and continuous
+  note/effect state remain explicit. No vendor source was edited.
+  The actual80second five-section consumer returns A exactly and varies other
+  parts while holding Lead/Hat: Bass/Harmony change55 of64cells each, Kick4 and
+  Snare15; Lead/Hat change0. The primary decision reader verifies
+  these actual results. Mix/six WAV stems and the complete decision journal are
+  under `tests/musical-form-20261031-boss/audio08` on E. Native Win64/actual
+  pas2js pass767 form checks with identical decision digest `c4355af4...124a1130`;
+  pure core passes18, including a no-WFC consumer, and the old stream passes
+  4,043,522 on both targets. Native heaps are clean.
+  Complete arrangement UI, per-section energy/density, saved form and targeted
+  regeneration remain open. No eight-unit acceptance or musical-quality credit.
+- Preserve the real failures. The first context-only frontier chose an exit that
+  could not reach the requested return. Known-future context/drum planning repairs
+  that dependency. The four-section adjacent return/variation request remains
+  correctly rejected: a separate primary cyclic graph proves the captured Hat
+  motif cannot close. The explicit five-section arrangement includes a generated
+  bridge with the same seed/models; no seed sweep, relaxed Keep or invented edge.
+  A separate no-context authored-guide probe (8/16cell phrases, seed731) fails at
+  cell16 in both targets. Preserve `instrumental.form-native06/07.log`, matching
+  pas2js logs and `instrumental.form-sourcefree-repro.lpr` in the run packet.
+  It is not a current passing consumer or an established generic WFC defect.
+  Before accepting this task, isolate the same request without AForm and compare
+  the full24cell finite graph. Follow the cross-repository procedure and notify
+  the operator before any demonstrated generic repair; never patch vendor here.
+  Do not turn that unresolved positive probe into a required-failure CI assertion.
+  The maintained passing form fixture covers the supported authored-context path;
+  the broader criterion and full task remain open. Current batch is progress but
+  earns no full criterion closure; consecutive nonclosing count is one.
+
+- 2026-10-31, Big Boss: select the shared phrase-retention/runtime slice first.
+  Deliver an explicit caller-authored section/phrase plan, source phrase links
+  and named retained providers that constrain the actual future WFC graphs.
+  Other providers remain generated, and real frontiers still decide whether a
+  repeat fits. Subdivide phrase lengths without treating solve chunks as form;
+  preserve one continuous primary instrument/effect performance. Minimal closing
+  checks: actual six-part output, retained public musical choices, context/drum
+  relationships, real boundary rejection, replay across PCM pulls, cancellation
+  and native/actual pas2js parity. Stop at that public usable library consumer.
+  No effort acceptance before the complete arrangement/section Studio consumer,
+  per-section energy/density, saving and targeted regeneration pass. Existing
+  ConfigureSegment/domain APIs suffice; no generic WFC gap is demonstrated.
+  Previous goal turn is progress; consecutive nonclosing count starts at zero.
+  New artifacts use `musical-form-20261031-boss` in dedicated E-drive roots.
 - 2026-10-31, Big Boss: musical controls and optional Lab are now accepted;
   the actual prerequisite is satisfied. Ready for the least-complete NS-5
   outcome. Preserve this task's explicit phrase/section decisions and audible

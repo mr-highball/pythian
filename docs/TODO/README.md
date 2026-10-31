@@ -35,11 +35,15 @@ bounded long generation, retained decisions, playback and durable native jobs ar
 accepted. Actual24hour rendering, universal transcription and musical preference
 are not claimed. No further labeling is needed to continue implementation.
 
-Next follow NS-5's actual prerequisites: evolving musical form is ready; saved
+Next follow NS-5's actual prerequisites: evolving musical form is in progress; saved
 styles/blends also require reusable sound recipes. Graph inspection, recording
 proposal corrections, sound design and useful synthesis reviews retain their own
 open tasks. Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
+The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
+and selective motif retention through the actual six-part graph. The full task
+stays open pending Studio arrangement/section controls, persistence and the
+retained no-context frontier probe; partial implementation earns no units.
 
 ## First operator-facing milestone
 

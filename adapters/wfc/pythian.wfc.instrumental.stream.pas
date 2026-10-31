@@ -29,7 +29,7 @@ unit pythian.wfc.instrumental.stream;
 interface
 
 uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
-  pythian.music.decisions,
+  pythian.music.decisions, pythian.music.form,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
   pythian.wfc.percussion, pythian.wfc.stream, wfc, wfc_model, wfc_sequence,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
@@ -77,7 +77,14 @@ type
     FConfig: TWfcMusicVoicesGraphConfig;
     FVoices: TWfcMusicVoicesStream;
     FContext: TLearnedSequenceStream;
+    FContextModel: TWfcSequenceModel;
+    FContextPending: TWfcGeneratedSequenceSegment;
+    FContextAt: Integer;
+    FContextLookaheadCells: Integer;
+    FForm: TMusicFormCursor;
     FDrumStreams: array of TLearnedSequenceStream;
+    FDrumPending: array of TWfcGeneratedSequenceSegment;
+    FDrumAt: array of Integer;
     FDrums: array of TPercussionInstrument;
     FDefinitions: TPercussionDefinitions;
     FMusic: TInstrumentMusicStream;
@@ -98,7 +105,19 @@ type
     procedure PlanSegment(const AProgress: TWorkProgressCallback);
     procedure AdmitCell(const AProgress: TWorkProgressCallback);
     function DrumConstraints(const APart: Integer;
-      const ARhythm: TWfcModelTokens): TWfcSequenceTokenConstraints;
+      const ARhythm: TWfcModelTokens;
+      const ARetained: TMusicDecisionProviders;
+      const AFirstCell: Int64): TWfcSequenceTokenConstraints;
+    function FormProviderIndex(const AKey: String): Integer;
+    function ContextFormConstraints(const ARetained: TMusicDecisionProviders;
+      const ACellCount: Integer; const AProgress: TWorkProgressCallback): TWfcSequenceTokenConstraints;
+    function NextContext(const AOptions: TSequenceChunkOptions;
+      out AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+      const AProgress: TWorkProgressCallback): Boolean;
+    function NextDrum(const APart: Integer; const AOptions: TSequenceChunkOptions;
+      const ARhythm: TWfcModelTokens; const ARetained: TMusicDecisionProviders;
+      out AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+      const AProgress: TWorkProgressCallback): Boolean;
     function GetPosition: Int64;
     function GetFrameCount: Int64;
     function GetState: TInstrumentStreamState;
@@ -109,7 +128,8 @@ type
       const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
       const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
       const AContext: TWfcSequenceModel = nil;
-      const ADecisionSink: TMusicDecisionSink = nil);
+      const ADecisionSink: TMusicDecisionSink = nil;
+      const AForm: TMusicForm = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -133,6 +153,9 @@ type
     property PlannedSegments: Int64 read FSegments;
     property PeakVoices: Integer read GetPeakVoices;
     property PercussionHits: Int64 read FPercussionHits;
+    { Form context can plan a bounded prefix/suffix window ahead of the emitted
+      instrumental segment. PlannedCells includes that already fixed context. }
+    property ContextLookaheadCells: Integer read FContextLookaheadCells;
   end;
 
 function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumentalStreamOptions;
@@ -162,7 +185,8 @@ end;
 constructor TInstrumentalMusicStream.Create(const AConfig: TWfcMusicVoicesGraphConfig;
   const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
   const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
-  const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink);
+  const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink;
+  const AForm: TMusicForm);
 var
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
@@ -171,6 +195,7 @@ var
   LTicks, LMaximumTicks: Integer;
   LIndex, J: Integer;
   LStates: Int64;
+  LFormKeys: TMusicDecisionTokens;
 begin
   inherited Create;
   if (AGraph = nil) or (Length(ARoles) < 1) or (Length(ARoles) > 6) or
@@ -182,6 +207,7 @@ begin
     not (AOptions.ContextBinding in [icbDrivenRole, icbAllRoles]) then
     raise EAudio.Create('Instrumental stream needs ordered roles, bounded lookahead and search');
   FOptions := AOptions;
+  FContextModel := AContext;
   FDecisionSink := ADecisionSink;
   SetLength(FRoleNames, Length(ARoles));
   for LIndex := 0 to High(ARoles) do FRoleNames[LIndex] := ARoles[LIndex].Name;
@@ -214,6 +240,29 @@ begin
   finally
     LMap.Free;
   end;
+  if Length(AForm) > 0 then
+  begin
+    SetLength(LFormKeys, 2 + Length(ARoles) + Length(APercussion));
+    LFormKeys[0] := 'harmony';
+    LFormKeys[1] := 'rhythm';
+    for LIndex := 0 to High(ARoles) do LFormKeys[LIndex + 2] := ARoles[LIndex].Name;
+    for LIndex := 0 to High(APercussion) do
+      LFormKeys[LIndex + 2 + Length(ARoles)] := APercussion[LIndex].Name;
+    FForm := TMusicFormCursor.Create(AForm, LFormKeys);
+    if FForm.TotalCells <> FTotalCells then
+      raise EAudio.Create('Musical form must span the requested cell clock exactly');
+    FOptions.SegmentCells := MusicFormLookahead(AForm, AOptions.SegmentCells);
+  end;
+  FContextLookaheadCells := FOptions.SegmentCells;
+  if (FForm <> nil) and (AContext <> nil) then
+  begin
+    if AContext.StateCount < 1 then raise EAudio.Create('Form context needs actual model states');
+    FContextLookaheadCells := Min(MaximumMusicDecisionCells,
+      MaximumLayerStateCells div AContext.StateCount);
+    FContextLookaheadCells := (FContextLookaheadCells div FOptions.SegmentCells) * FOptions.SegmentCells;
+    if FContextLookaheadCells < FOptions.SegmentCells then
+      raise EAudio.Create('Form context exceeds the bounded lookahead state budget');
+  end;
   LStates := 0;
   for LIndex := 0 to WfcMusicVoicesModelCount(FConfig) - 1 do
     Inc(LStates, WfcMusicVoicesModelAt(FConfig, LIndex).StateCount);
@@ -223,17 +272,19 @@ begin
     if APercussion[LIndex].Model = nil then raise EAudio.Create('Drum stream needs a model');
     Inc(LStates, APercussion[LIndex].Model.StateCount);
   end;
-  if LStates * AOptions.SegmentCells > MaximumLayerStateCells then
+  if LStates * FOptions.SegmentCells > MaximumLayerStateCells then
     raise EAudio.Create('Instrumental lookahead exceeds its explicit state-cell budget');
   LStreamConfig := DefaultWfcMusicVoicesStreamConfig(FConfig, AOptions.StepTicks,
     LTicks, AOptions.Seed);
-  LStreamConfig.SegmentCellCount := AOptions.SegmentCells;
+  LStreamConfig.SegmentCellCount := FOptions.SegmentCells;
   LStreamConfig.Search.SolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
   LStreamConfig.Search.MaxPassBacktracks := AOptions.MaxPassBacktracks;
   FVoices := TWfcMusicVoicesStream.Create(LStreamConfig);
   if AContext <> nil then FContext := TLearnedSequenceStream.Create(AContext);
   FDefinitions := Copy(APercussion);
   SetLength(FDrumStreams, Length(APercussion));
+  SetLength(FDrumPending, Length(APercussion));
+  SetLength(FDrumAt, Length(APercussion));
   SetLength(FDrums, Length(APercussion));
   LBindings := nil;
   SetLength(LBindings, Length(ARoles) + Length(APercussion));
@@ -280,6 +331,7 @@ begin
   FMusic.Free;
   FVoices.Free;
   FContext.Free;
+  FForm.Free;
   for I := 0 to High(FDrumStreams) do FDrumStreams[I].Free;
   for I := 0 to High(FDrums) do FDrums[I].Free;
   FClock.Free;
@@ -292,9 +344,11 @@ begin
 end;
 
 function TInstrumentalMusicStream.DrumConstraints(const APart: Integer;
-  const ARhythm: TWfcModelTokens): TWfcSequenceTokenConstraints;
+  const ARhythm: TWfcModelTokens;
+  const ARetained: TMusicDecisionProviders;
+  const AFirstCell: Int64): TWfcSequenceTokenConstraints;
 var
-  LCell, LToken, LCount, LMask: Integer;
+  LCell, LToken, LCount, LMask, LKeep: Integer;
   LAllowedRhythms, LTokens: TWfcModelTokens;
   LTokenText, LR: String;
   LAllowed, LLock: Boolean;
@@ -313,8 +367,11 @@ begin
       LLock := False;
       for LR in LAllowedRhythms do LLock := LLock or (LR = ARhythm[LCell]);
       LAllowed := LAllowed and LLock;
+      for LKeep := 0 to High(ARetained) do
+        if ARetained[LKeep].Key = FDefinitions[APart].Name then
+          LAllowed := LAllowed and (LTokenText = ARetained[LKeep].Tokens[LCell]);
       for LMask := 0 to High(FDefinitions[APart].Constraints) do
-        if FDefinitions[APart].Constraints[LMask].Position = FCells + LCell then
+        if FDefinitions[APart].Constraints[LMask].Position = AFirstCell + LCell then
         begin
           LLock := False;
           for LR in FDefinitions[APart].Constraints[LMask].AllowedTokens do
@@ -332,6 +389,209 @@ begin
   end;
 end;
 
+procedure TakeMusicalPrefix(const APending: TWfcGeneratedSequenceSegment;
+  var AAt: Integer; const ACellCount: Integer; out AChunk: TWfcGeneratedSequenceSegment);
+begin
+  AChunk := Default(TWfcGeneratedSequenceSegment);
+  AChunk.Boundary := APending.Boundary;
+  if AAt > 0 then
+    AChunk.Boundary := MakeWfcSequenceContinuingSegmentBoundary(APending.StateIndices[AAt - 1], False);
+  AChunk.Tokens := Copy(APending.Tokens, AAt, ACellCount);
+  AChunk.StateIndices := Copy(APending.StateIndices, AAt, ACellCount);
+  if Length(AChunk.Tokens) <> ACellCount then
+    raise EAudio.Create('Musical lookahead differs from the form window');
+  Inc(AAt, ACellCount);
+end;
+
+function TInstrumentalMusicStream.FormProviderIndex(const AKey: String): Integer;
+var I: Integer;
+begin
+  if AKey = 'harmony' then Exit(0);
+  if AKey = 'rhythm' then Exit(1);
+  for I := 0 to High(FRoleNames) do
+    if AKey = FRoleNames[I] then Exit(I + 2);
+  for I := 0 to High(FDefinitions) do
+    if AKey = FDefinitions[I].Name then Exit(I + 2 + Length(FRoleNames));
+  raise EAudio.Create('Retained motif refers to an unknown musical provider');
+end;
+
+function TInstrumentalMusicStream.ContextFormConstraints(
+  const ARetained: TMusicDecisionProviders; const ACellCount: Integer;
+  const AProgress: TWorkProgressCallback): TWfcSequenceTokenConstraints;
+var
+  LAllowed: TInstrumentalTokenStreams;
+  LProjection: TVoiceMasks;
+  LOne, LDrumRhythms: TWfcModelTokens;
+  LToken, LCell, LKeep, LProvider, LDrum, LAt: Integer;
+  LAccept, LMatch: Boolean;
+  LRhythm: String;
+begin
+  Result := nil;
+  if (FContextModel = nil) or (Length(ARetained) = 0) then Exit;
+  if Int64(FContextModel.PublicTokenCount) * ACellCount * Length(ARetained) >
+    MaximumLayerProjectionWork then
+    raise EAudio.Create('Motif/context projection exceeds its bounded preparation work');
+  SetLength(LAllowed, ACellCount);
+  SetLength(LOne, 1);
+  for LToken := 0 to FContextModel.PublicTokenCount - 1 do
+  begin
+    if LToken mod 32 = 0 then
+      ReportWork(AProgress, 'instrumental_form_context', wuItems,
+        LToken, FContextModel.PublicTokenCount);
+    LOne[0] := FContextModel.PublicTokenAt(LToken);
+    { Reuse the primary context projection. In driven-role mode an independent
+      part is deliberately not pinned by context; its own graph applies Keep. }
+    LProjection := BindMusicalContextTokens(LOne, Length(FRoleNames), nil,
+      FOptions.ContextBinding = icbAllRoles);
+    for LCell := 0 to ACellCount - 1 do
+    begin
+      LAccept := True;
+      for LKeep := 0 to High(ARetained) do
+      begin
+        LProvider := FormProviderIndex(ARetained[LKeep].Key);
+        if LProvider < Length(LProjection) then
+        begin
+          if Length(LProjection[LProvider]) > 0 then
+            LAccept := LAccept and
+              (LProjection[LProvider][0].AllowedTokens[0] = ARetained[LKeep].Tokens[LCell]);
+        end
+        else
+        begin
+          LDrum := LProvider - Length(LProjection);
+          LDrumRhythms := AllowedPercussionRhythms(FConfig.RhythmModel,
+            FDefinitions[LDrum], ARetained[LKeep].Tokens[LCell]);
+          LMatch := False;
+          for LRhythm in LDrumRhythms do
+            LMatch := LMatch or (LRhythm = LProjection[1][0].AllowedTokens[0]);
+          LAccept := LAccept and LMatch;
+        end;
+      end;
+      if LAccept then
+      begin
+        LAt := Length(LAllowed[LCell]);
+        SetLength(LAllowed[LCell], LAt + 1);
+        LAllowed[LCell][LAt] := LOne[0];
+      end;
+    end;
+  end;
+  SetLength(Result, ACellCount);
+  for LCell := 0 to ACellCount - 1 do
+    Result[LCell] := MakeWfcSequenceTokenConstraint(LCell, LAllowed[LCell]);
+end;
+
+function TInstrumentalMusicStream.NextContext(const AOptions: TSequenceChunkOptions;
+  out AChunk: TWfcGeneratedSequenceSegment; out AReport: TGraphSolveReport;
+  const AProgress: TWorkProgressCallback): Boolean;
+var
+  LRequest: TSequenceChunkOptions;
+  LCandidate: TWfcGeneratedSequenceSegment;
+  LLocks: TMusicDecisionProviders;
+  LConstraints, LPart: TWfcSequenceTokenConstraints;
+  LMaximum, LAt, LCells, I, LCount: Integer;
+begin
+  if FForm = nil then Exit(FContext.TryNext(AOptions, [], AChunk, AReport, AProgress));
+  if FContextAt = Length(FContextPending.Tokens) then
+  begin
+    LRequest := AOptions;
+    LMaximum := FForm.ReadyLookaheadCells(FContextLookaheadCells);
+    LAt := 0;
+    LConstraints := nil;
+    while LAt < LMaximum do
+    begin
+      LCells := FForm.WindowCellsAt(FCells + LAt, LMaximum - LAt);
+      { Do not assume the content of a motif whose source is still being made.
+        Known upcoming repeats constrain the contrast before it is committed. }
+      if not FForm.TryCopyLocksAt(FCells + LAt, LCells, LLocks) then Break;
+      LPart := ContextFormConstraints(LLocks, LCells, AProgress);
+      for I := 0 to High(LPart) do
+      begin
+        LCount := Length(LConstraints);
+        SetLength(LConstraints, LCount + 1);
+        LConstraints[LCount] := LPart[I];
+        Inc(LConstraints[LCount].Position, LAt);
+      end;
+      Inc(LAt, LCells);
+    end;
+    if LAt < AOptions.CellCount then
+      raise EAudio.Create('Current form motif has no completed source decisions');
+    LRequest.CellCount := LAt;
+    LRequest.MinimumFollowingCells := Min(Int64(High(Integer)), FTotalCells - FCells - LAt);
+    LCandidate := Default(TWfcGeneratedSequenceSegment);
+    Result := FContext.TryNext(LRequest, LConstraints, LCandidate, AReport, AProgress);
+    if not Result then Exit;
+    FContextPending := LCandidate;
+    FContextAt := 0;
+  end;
+  TakeMusicalPrefix(FContextPending, FContextAt, AOptions.CellCount, AChunk);
+  Result := True;
+end;
+
+function TInstrumentalMusicStream.NextDrum(const APart: Integer;
+  const AOptions: TSequenceChunkOptions; const ARhythm: TWfcModelTokens;
+  const ARetained: TMusicDecisionProviders; out AChunk: TWfcGeneratedSequenceSegment;
+  out AReport: TGraphSolveReport; const AProgress: TWorkProgressCallback): Boolean;
+var LRequest: TSequenceChunkOptions;
+  LCandidate: TWfcGeneratedSequenceSegment;
+  LProjection: TVoiceMasks;
+  LRhythms, LContextTokens: TWfcModelTokens;
+  LLocks: TMusicDecisionProviders;
+  LConstraints, LPart: TWfcSequenceTokenConstraints;
+  LMaximum, LAt, LCells, I, LCount: Integer;
+begin
+  if FForm = nil then
+    Exit(FDrumStreams[APart].TryNext(AOptions,
+      DrumConstraints(APart, ARhythm, ARetained, FCells), AChunk, AReport, AProgress));
+  if FDrumAt[APart] = Length(FDrumPending[APart].Tokens) then
+  begin
+    LMaximum := AOptions.CellCount;
+    LRhythms := Copy(ARhythm);
+    if FContext <> nil then
+    begin
+      if FDefinitions[APart].Model.StateCount < 1 then
+        raise EAudio.Create('Form percussion needs actual model states');
+      LMaximum := Min(MaximumMusicDecisionCells,
+        MaximumLayerStateCells div FDefinitions[APart].Model.StateCount);
+      LMaximum := (LMaximum div FOptions.SegmentCells) * FOptions.SegmentCells;
+      if LMaximum < AOptions.CellCount then
+        raise EAudio.Create('Form percussion exceeds the bounded lookahead state budget');
+      LMaximum := Min(LMaximum, Length(FContextPending.Tokens) - FContextAt + AOptions.CellCount);
+      LMaximum := FForm.ReadyLookaheadCells(LMaximum);
+      LContextTokens := Copy(FContextPending.Tokens, FContextAt - AOptions.CellCount, LMaximum);
+      LProjection := BindMusicalContextTokens(LContextTokens, Length(FRoleNames), nil,
+        FOptions.ContextBinding = icbAllRoles);
+      SetLength(LRhythms, LMaximum);
+      for I := 0 to LMaximum - 1 do LRhythms[I] := LProjection[1][I].AllowedTokens[0];
+    end;
+    LAt := 0;
+    LConstraints := nil;
+    while LAt < LMaximum do
+    begin
+      LCells := FForm.WindowCellsAt(FCells + LAt, LMaximum - LAt);
+      if not FForm.TryCopyLocksAt(FCells + LAt, LCells, LLocks) then Break;
+      LPart := DrumConstraints(APart, Copy(LRhythms, LAt, LCells), LLocks, FCells + LAt);
+      for I := 0 to High(LPart) do
+      begin
+        LCount := Length(LConstraints);
+        SetLength(LConstraints, LCount + 1);
+        LConstraints[LCount] := LPart[I];
+        Inc(LConstraints[LCount].Position, LAt);
+      end;
+      Inc(LAt, LCells);
+    end;
+    if LAt < AOptions.CellCount then raise EAudio.Create('Form drum lookahead is incomplete');
+    LRequest := AOptions;
+    LRequest.CellCount := LAt;
+    LRequest.MinimumFollowingCells := Min(Int64(High(Integer)), FTotalCells - FCells - LAt);
+    LCandidate := Default(TWfcGeneratedSequenceSegment);
+    Result := FDrumStreams[APart].TryNext(LRequest, LConstraints, LCandidate, AReport, AProgress);
+    if not Result then Exit;
+    FDrumPending[APart] := LCandidate;
+    FDrumAt[APart] := 0;
+  end;
+  TakeMusicalPrefix(FDrumPending[APart], FDrumAt[APart], AOptions.CellCount, AChunk);
+  Result := True;
+end;
+
 procedure TInstrumentalMusicStream.PlanSegment(const AProgress: TWorkProgressCallback);
 var
   LChunk: TWfcGeneratedSequenceSegment;
@@ -347,6 +607,7 @@ var
   LRhythm, LContextTokens, LDrumCellTokens: TWfcModelTokens;
   LDrumTokens: TInstrumentalTokenStreams;
   LDecisions, LSinkCopy: TMusicDecisionChunk;
+  LRetained: TMusicDecisionProviders;
   LClock: TIncrementalTempoClock;
   LFrame: TChordFrame;
   LCell: Integer;
@@ -380,10 +641,19 @@ begin
   LOptions.MaxBacktracks := FOptions.MaxBacktracks;
   LOptions.Seed := WfcMusicArrangementSectionSeed(FOptions.Seed, FSegments);
   ReportWork(AProgress, 'instrumental_stream_plan', wuItems, FCells, FTotalCells);
+  LRetained := nil;
+  if FForm <> nil then LRetained := FForm.CopyLocks(LOptions.CellCount);
+  for I := 0 to High(LRetained) do
+  begin
+    LProvider := FormProviderIndex(LRetained[I].Key);
+    if LProvider >= 2 + Length(FRoleNames) then Continue;
+    for LCell := 0 to LOptions.CellCount - 1 do
+      FVoices.IntersectAllowedTokens(LProvider, FCells + LCell, [LRetained[I].Tokens[LCell]]);
+  end;
   LContextTokens := nil;
   if FContext <> nil then
   begin
-    if not FContext.TryNext(LOptions, [], LChunk, LReport, AProgress) then
+    if not NextContext(LOptions, LChunk, LReport, AProgress) then
       raise EAudio.Create('Learned context cannot plan step ' + IntToStr(FCells) +
         ' (solver status ' + IntToStr(Ord(LReport.Status)) + ', following cells ' +
         IntToStr(LOptions.MinimumFollowingCells) +
@@ -422,9 +692,10 @@ begin
   begin
     LOptions.Preferences := PercussionPreferences(FDefinitions[I]);
     LOptions.Seed := WfcMusicArrangementSectionSeed(FOptions.Seed xor Cardinal(I + 1741), FSegments);
-    if not FDrumStreams[I].TryNext(LOptions, DrumConstraints(I, LRhythm), LChunk,
+    if not NextDrum(I, LOptions, LRhythm, LRetained, LChunk,
       LReport, AProgress) then
-      raise EAudio.Create('Drum frontier cannot continue: ' + FDefinitions[I].Name);
+      raise EAudio.Create('Drum frontier cannot continue: ' + FDefinitions[I].Name +
+        ' at cell ' + IntToStr(FCells) + ' (solver status ' + IntToStr(Ord(LReport.Status)) + ')');
     LDrumTokens[I] := LChunk.Tokens;
     KeepProvider(FDefinitions[I].Name, LChunk);
   end;
@@ -457,6 +728,7 @@ begin
   ValidateMusicDecisionChunk(LDecisions, AProgress);
   ReportWork(AProgress, 'instrumental_stream_ready', wuItems,
     FCells + Length(LFrames), FTotalCells);
+  if FForm <> nil then FForm.Append(LDecisions);
   if Assigned(FDecisionSink) then
   begin
     LSinkCopy := CopyMusicDecisionChunk(LDecisions);
@@ -547,8 +819,11 @@ begin
 end;
 
 function TInstrumentalMusicStream.GetPlannedCells: Int64;
+var I: Integer;
 begin
   Result := FCells + Length(FFrames) - FCell;
+  if FContext <> nil then Result := Max(Result, FContext.CellCount);
+  for I := 0 to High(FDrumStreams) do Result := Max(Result, FDrumStreams[I].CellCount);
 end;
 
 procedure TInstrumentalMusicStream.Pause;
@@ -575,6 +850,8 @@ procedure TInstrumentalMusicStream.IntersectFutureTokens(const AProvider: Intege
 begin
   RequireIdle;
   if State <> issReady then raise EAudio.Create('Only ready musical streams accept future edits');
+  if ACell < PlannedCells then
+    raise EAudio.Create('Future edits cannot replace already planned musical context');
   FVoices.IntersectAllowedTokens(AProvider, ACell, ATokens);
 end;
 

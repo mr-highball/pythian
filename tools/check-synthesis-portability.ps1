@@ -50,14 +50,15 @@ $suffix = if ($targetOs -in @('win32','win64')) { '.exe' } else { '' }
 $units = Join-Path $output 'units'
 New-Item -ItemType Directory -Force -Path $units | Out-Null
 $fixtures = @('pythian.tests.render.progress', 'pythian.tests.synthesis.portable',
-  'pythian.tests.time.portable', 'pythian.tests.music.stream')
+  'pythian.tests.time.portable', 'pythian.tests.music.stream', 'pythian.tests.music.form')
 if ($IncludeWfc) { $fixtures += @('pythian.tests.instrumental.stream',
-  'pythian.tests.instrumental.decisions', 'pythian.tests.instrumental.passage') }
+  'pythian.tests.instrumental.decisions', 'pythian.tests.instrumental.passage',
+  'pythian.tests.instrumental.form') }
 foreach ($program in $fixtures) {
   $source = Join-Path $repository "tests/$program.lpr"
   $fixtureArguments = @()
   if ($program -in @('pythian.tests.instrumental.stream', 'pythian.tests.instrumental.decisions',
-      'pythian.tests.instrumental.passage')) {
+      'pythian.tests.instrumental.passage', 'pythian.tests.instrumental.form')) {
     $fixtureArguments = @("-Fu$(Join-Path $repository 'adapters/wfc')",
       "-Fu$(Join-Path $repository 'vendor/wfc/src')")
   }

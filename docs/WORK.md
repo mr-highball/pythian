@@ -3,6 +3,69 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: musical form runtime implemented, consumer still open — 2026-10-31
+
+Big Boss SOLO adds [explicit musical form](MUSICAL-FORM.md) to the primary
+instrumental stream. A portable detached section/phrase plan references earlier
+motifs and names retained musical providers. Actual context/voice/drum domains
+honor those choices, generating new independently checked latent states. Bounded
+known-future planning fits returns before committing a contrast; required source
+motifs finish before later planning. No source audio or captured PCM is assembled.
+One persistent instrument/effect stream performs the complete result.
+
+Native Win64 and actual pas2js pass767 instrumental-form and18 portable-form
+checks. Actual decision journals have identical digest
+`c4355af44c11e9643dcd6bb220305d36b5663e5c4fe5083ed4bd8e0a124a1130`.
+The core fixture also passes with no WFC paths/units; native heaps are clean.
+The unchanged default streaming fixture passes4,043,522 on both targets.
+The actual80second five-section render produces mix/six stems plus a validated
+decision journal. Reading the saved journal through the primary reader finds an exact full
+return and a selective variation: Bass/Harmony change55/64cells each, Kick4,
+Snare15, Lead/Hat0. Real clocks/predecessors, bounded future-edit protection,
+PCM-pull replay and cancellation pass. Native/portability orchestration includes
+the maintained fixtures. There is no Studio layout change or new deployment.
+
+Preserve failures in `musical-form-20261031-boss` under dedicated E-drive roots.
+Initial greedy context planning could not reach a return; bounded known-future
+context/drum planning repairs that dependency. The four-section adjacent A-return/
+A-variation request is correctly rejected, independently confirmed by the primary
+cyclic graph: its captured Hat motif cannot loop. An explicitly changed five-
+section arrangement adds a generated bridge with the same models/seed. No seed
+sweep, Keep relaxation or invented transition occurs.
+
+An additional no-context authored-guide request with8/16cell phrases still fails
+at cell16 in both targets. Its full Pascal reproduction and native06/07/pas2js
+failures are preserved; it is not presented as a passing consumer or converted
+into a required-failure CI assertion. First isolate it without AForm and compare
+the full24cell finite graph. Ownership is not yet established as a generic WFC
+gap; do not edit vendor or its separate repository without the required notice/
+new-branch procedure after a demonstrated reproduction.
+
+The eight-unit [musical-form task](TODO/NS-5_musical-form_01.md) stays In progress:
+Studio arrangement/section audition, energy/density, saved form, targeted
+regeneration and the retained frontier probe remain required. **94/135 accepted
+effort, six open and twenty current DONE remain unchanged.** This is concrete
+implementation progress, but no full criterion/task acceptance is claimed;
+consecutive nonclosing count is one. The next batch must close a real criterion
+or reassess before a third. Broader goal remains active; no operator input is
+needed. Previous release d018ec6 passes complete CI531. No helper was used.
+
+## Selected batch: real phrase retention across continuous synthesis — 2026-10-31
+
+Big Boss SOLO selects [musical form](TODO/NS-5_musical-form_01.md), the ready
+least-complete NS-5 outcome. Deliver a shared caller-authored section/phrase plan
+whose selected earlier motif providers enter future WFC token domains. Preserve
+real latent frontiers and dependency proofs, with no note/PCM splicing, invented
+transitions or silent relaxation. One primary stream keeps instruments/effects
+continuous. Closing evidence is actual multi-phrase six-part audio, selected
+retention and free variation, boundary/failure/replay/cancel checks on native and
+actual pas2js. Stop at that public runtime consumer; complete Studio arrangement,
+per-section controls, saved form and targeted regeneration still remain required.
+No task effort closes yet. Current accounting stays94/135; previous turn is
+progress, consecutive nonclosing count zero. Artifacts use
+`musical-form-20261031-boss` in dedicated E-drive roots. CI530 was superseded by
+the later documentation push; CI531 atd018ec6 is verified running now, not green.
+
 ## Current handoff: optional controls restored and deployed — 2026-10-31
 
 Big Boss SOLO closes [optional laboratory](TODO/DONE/NS-6_optional-lab_01.md)
