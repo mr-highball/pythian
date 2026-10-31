@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 140 total effort units · 20 current-goal DONE · 94 / 140 accepted (67.14%).**
+**6 open tasks · 140 total effort units · 21 current-goal DONE · 99 / 140 accepted (70.71%).**
 
 The optional [musical laboratory — DONE](DONE/NS-6_optional-lab_01.md) restores
 reachable authored key/tempo, per-role expression and editable affect controls
@@ -35,18 +35,18 @@ bounded long generation, retained decisions, playback and durable native jobs ar
 accepted. Actual24hour rendering, universal transcription and musical preference
 are not claimed. No further labeling is needed to continue implementation.
 
-Next follow NS-5's actual prerequisites: evolving musical form is dependency-blocked
-by [bounded future domains](NS-4_future-domains_01.md). The same24cell guide succeeds
-as a whole but fails after two8cell WFC commits. Its five-unit prerequisite repairs
-the primary companion stream, not Studio form controls. Saved
+Next follow NS-5: [bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
+unblocks evolving musical form. The original24cell guide now performs through
+three8cell commits; all upstream and downstream gates pass. These five units
+repair the primary companion stream, not Studio form controls. Saved
 styles/blends also require reusable sound recipes. Graph inspection, recording
 proposal corrections, sound design and useful synthesis reviews retain their own
 open tasks. Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
 and selective motif retention through the actual six-part graph. The full task
-stays open pending Studio arrangement/section controls, persistence and the
-retained no-context frontier probe; partial implementation earns no units.
+stays open pending Studio arrangement/section controls, persistence, per-section
+musical controls and operator listening; partial implementation earns no units.
 
 ## First operator-facing milestone
 
@@ -60,7 +60,7 @@ retained no-context frontier probe; partial implementation earns no units.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Six later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -80,8 +80,8 @@ continuity experiments are selected.
 | [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Accepted; actual selected-role context, repaired melody and role/correction variants |
 | [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Reopened; restore the optional recording-proposal correction consumer after the laboratory |
 | [NS-3_style-vocabulary_01 — DONE](DONE/NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Accepted; weighted providers, source-bound ancestry, explicit classification selection and real instrumental output |
-| [NS-4_future-domains_01](NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | In progress; reviewed context-continuation pin, retained direct WFC reproduction |
-| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Dependency-blocked; future domains + graph controls + instrumental Studio |
+| [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
+| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | In progress; future domains + graph controls + instrumental Studio are accepted |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
@@ -91,8 +91,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 27 current-goal tasks (7 open, twenty DONE),
-totaling 140 units: 46 open and 94 accepted. Subtotals:
+The two tables together are all 27 current-goal tasks (6 open, twenty-one DONE),
+totaling 140 units: 41 open and 99 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 49, NS-5 15, NS-6 49. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

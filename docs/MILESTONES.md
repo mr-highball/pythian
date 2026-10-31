@@ -11,12 +11,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 94 / 140 effort units accepted (67.14%); seven open, twenty current-goal DONE.**
-The five-unit [future-domain prerequisite](TODO/NS-4_future-domains_01.md) is new
-required scope: the actual guide solves24cells together but fails at cell16 when
-the companion commits8cell prefixes. Musical form waits for bounded future-aware
-planning in the separately notified WFC branch. No partial implementation credit
-is assigned; form's Studio and musical criteria retain their separate eight units.
+**Current snapshot: 99 / 140 effort units accepted (70.71%); six open, twenty-one current-goal DONE.**
+The five-unit [future-domain prerequisite — DONE](TODO/DONE/NS-4_future-domains_01.md)
+repairs the original feasible24cell guide's dead end after two8cell commits.
+The separately notified WFC branch now checks bounded future domains before
+publishing a prefix. Native/pas2js, all five upstream CI63 jobs and Pythian CI533
+with extracted core/WFC packages pass. Musical form resumes; its Studio and
+musical criteria retain their separate eight open units. No quality credit follows.
 The [recording-proposal editor](TODO/NS-3_experimental-learning_01.md) is reopened:
 its earlier correction/bypass UI is unreachable after the simple Studio rewrite.
 Eight units return to open effort; native analysis/providers and automatic corpus
@@ -66,10 +67,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 12 | 37 | 37 / 49 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection and musical controls | 7 | 42 | 42 / 49 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 44 | 44 / 49 |
-| **Total** | **27 current-goal tasks** | **46** | **94** | **67.14%** |
+| **Total** | **27 current-goal tasks** | **41** | **99** | **70.71%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -88,7 +89,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **94/140**; no partial effort or musical-quality credit follows.
+Accounting is **99/140**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -174,6 +175,9 @@ is no cross-group backtracking or universal success claim. Its five units close
 the demonstrated melody/role repair; no recording-style or musical-quality credit
 follows. Experimental learning also supplies explicit instrument cutoff/sustain
 mapping; deeper recipes and graph visualization retain their own tasks.
+The accepted [future-domain stream](TODO/DONE/NS-4_future-domains_01.md) checks
+known later restrictions before publishing each prefix; the retained unequal-
+phrase guide and existing form/default consumers pass all affected gates.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -184,8 +188,9 @@ save real provider/control/sound recipes and exercise selective blends and reble
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other
 parts vary. It uses real context/voice/drum domains and one continuous performance.
-Studio arrangement, per-section controls, persistence and a no-context frontier
-probe remain open; no NS-5 effort is accepted yet.
+The retained no-context guide is repaired under NS-4. Studio arrangement,
+per-section controls, persistence, section audition/changes and operator listening
+remain open; no NS-5 effort is accepted yet.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge
@@ -218,8 +223,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 20 current DONE; legacy records: 53 retired +
-97 historical DONE (117 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 6 open + 21 current DONE; legacy records: 53 retired +
+97 historical DONE (118 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

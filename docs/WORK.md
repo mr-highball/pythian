@@ -3,9 +3,41 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: future-domain runtime verified, CI pending — 2026-10-31
+## Current handoff: future domains accepted; Studio form next — 2026-10-31
 
-Big Boss SOLO implements [future domains](TODO/NS-4_future-domains_01.md) AC1–AC2
+Big Boss SOLO accepts [future domains — DONE](TODO/DONE/NS-4_future-domains_01.md)
+after exact source9204824 completes Pythian CI533 (41241297113), including the
+maintained integration build and both extracted core/WFC packages. All five
+upstream CI63 jobs already passed at62c8597. The accepted pin remains on separate
+unmerged `codex/pythian-future-domains`; WFC's unrelated main checkout and private
+attachments are preserved. No source edit in vendor, service restart or operator
+data mutation. Native1834/pas2js1890 generic checks,798 form and4,043,522 default
+stream checks, exact original guide, real six-part audio/journals and core-only
+evidence are linked from the accepted task. This is implementation acceptance,
+not musical-quality approval or full form acceptance.
+
+**99/140 accepted effort (70.71%): six open, twenty-one current DONE and97
+historical DONE (118 total DONE files).** NS-4 is42/49; NS-5 remains0/15.
+The last goal turn is progress; this turn completes its live validation gate and
+acceptance/accounting. Consecutive nonclosing count remains zero. Broader goal
+stays active and no helper or operator input is needed.
+
+Return [musical form](TODO/NS-5_musical-form_01.md) to In progress. Before the
+next batch: criterion is an operator-editable arrangement performed through
+Pythian, with real repeats/retained parts and visible section audition/changes.
+Deliver an optional Structure control in the laboratory, saved form on the
+ordinary immutable experiment/job, and generalized primary bounded rendering
+for authored/learned provider inputs. Reuse existing playback, passage editing,
+Original/Before/After, progress and Stop. Closing evidence is actual native
+save/reopen/generation/replay and desktop/phone-width consumer behavior with
+one sustained multi-section six-part output. Stop at that usable consumer;
+per-section energy/density and actual operator listening remain explicit
+criteria, not automatic credit. The task's eight units stay open until all pass.
+The current simple playlist flow and independent saved clips remain delivered.
+
+## Previous handoff: future-domain runtime verified, CI pending — 2026-10-31
+
+Big Boss SOLO implements [future domains](TODO/DONE/NS-4_future-domains_01.md) AC1–AC2
 and the actual Pythian runtime consumer. Separate unmerged WFC branch
 `codex/pythian-future-domains` publishes62c8597, based solely on accepted7b3c0a5.
 Its primary stream independently checks a bounded future candidate, returns only
@@ -47,7 +79,7 @@ no operator input or helper is needed.
 
 ## Selected batch: bounded future-aware musical prefixes — 2026-10-31
 
-Big Boss SOLO follows [future domains](TODO/NS-4_future-domains_01.md), a demonstrated
+Big Boss SOLO follows [future domains](TODO/DONE/NS-4_future-domains_01.md), a demonstrated
 prerequisite of musical form. Criterion: the retained feasible24cell guide and
 8/16cell phrases must perform through real instruments without committing a
 prefix that ignores known later restrictions. Deliver one primary bounded WFC

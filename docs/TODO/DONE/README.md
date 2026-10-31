@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Twenty current-goal tasks are accepted: **94 / 140 effort units (67.14%)**. Their
+Twenty-one current-goal tasks are accepted: **99 / 140 effort units (70.71%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -13,11 +13,13 @@ Canonical generated audio/storage, supported context
 continuation and long Studio generation are also accepted. Actual bounded
 decision recording, exact saved-score replay and visible Generate operation
 counters are accepted. Independent lossless clips now feed learning and Original
-comparison without full-parent reads. There are 117 DONE files: twenty current,
+comparison without full-parent reads. Bounded future voice domains now preserve
+known later restrictions before committing a prefix. There are 118 DONE files: twenty-one current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-4_future-domains_01](NS-4_future-domains_01.md) | 2026-10-31 | 5/10 | Primary bounded WFC lookahead, original guide and real form/default consumers; upstream CI63 and downstream CI533/packages pass |
 | [NS-6_optional-lab_01](NS-6_optional-lab_01.md) | 2026-10-31 | 4/10 | Reachable signed authored controls, editable affect, real paired audio, contextual tabs/help and native recovery |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) | 2026-10-31 | 7/10 | Explicit musical controls, retained selective role/passage edits, sound replay and preserved Before/After lineage |
 | [NS-6_saved-clips_01](NS-6_saved-clips_01.md) | 2026-10-31 | 5/10 | Automatic durable lossless clip files, real audio hashes, parent/range lineage, clip-only learning/reference, native failures and desktop/phone flow |

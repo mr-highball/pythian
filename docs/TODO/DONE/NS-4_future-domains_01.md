@@ -1,10 +1,10 @@
 # NS-4_future-domains_01 — Fit known future musical domains before committing a prefix
 
-[Tasks](README.md) · [Musical form](NS-5_musical-form_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Musical form](../NS-5_musical-form_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 5/10
-**Status:** In progress
+**Status:** Accepted — 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -16,6 +16,15 @@ cursor or audio renderer. Add explicit bounded future-aware planning to that
 primary stream, then use it in Pythian's musical-form consumer. Primary NS-4
 attribution; these units repair a distinct generic shared-stream prerequisite,
 not Studio form/section controls or additional credit for NS-5's implementation.
+
+Accepted at Pythian9204824 after all five
+[upstream CI63 jobs](https://github.com/mr-highball/wfc/actions/runs/41240757803)
+and complete [Pythian CI533](https://github.com/mr-highball/pythian/actions/runs/41241297113)
+pass, including extracted core/WFC packages. Native Win64/actual pas2js exercise
+the original guide and real instrumental form, default streams, deterministic
+replay, boundaries, ownership and genuine conflicts. Core-only compilation has
+no WFC paths. Artifacts and failure history remain in the dedicated E-drive
+form-frontier packet. No Studio arrangement or musical-quality acceptance.
 
 **Acceptance Criteria:**
 
@@ -37,12 +46,18 @@ not Studio form/section controls or additional credit for NS-5's implementation.
 
 **Blockers**
 
-- [Shared instrumental runtime — DONE](DONE/NS-4_instrumental-runtime_01.md)
+- [Shared instrumental runtime — DONE](NS-4_instrumental-runtime_01.md)
 - Reviewed WFC sequence-continuation pin from
-  [context continuation — DONE](DONE/NS-4_context-continuation_01.md).
+  [context continuation — DONE](NS-4_context-continuation_01.md).
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: final downstream gate is terminal SUCCESS at9204824;
+  source and both extracted packages pass. All criteria/prerequisites close.
+  Accept five NS-4 effort units:99/140, six open and twenty-one current DONE.
+  Form's eight units remain open. The companion branch stays unmerged; main
+  WFC `expansion` and private attachments are intact. No service restart or
+  operator-data mutation was required. Solo checks are not independent QA.
 - 2026-10-31, Big Boss: implement the primary companion extension at
   [62c8597](https://github.com/mr-highball/wfc/commit/62c8597bc8add1d2e1956a9ed5cef3ddaf569d70)
   on the notified separate branch. Native1834 and actual pas2js1890 checks pass:

@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Dependency-blocked
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,18 +22,36 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Known future domains](NS-4_future-domains_01.md) — the same24cell authored
-  guide succeeds as a full joint graph but fails at cell16 in the companion's
-  direct8cell stream. Repair bounded future-aware prefix planning first.
+- [Known future domains — DONE](DONE/NS-4_future-domains_01.md) — original24cell
+  guide and real8/16cell form now pass with native/pas2js and full CI/packages.
 
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: the future-domain prerequisite is accepted after full
+  upstream CI63 and Pythian CI533, including extracted consumers. Return this
+  task to In progress. Its eight units remain open; deliver the actual optional
+  Structure consumer, section audition/targeted changes and persisted form,
+  then finish per-section musical controls and operator listening criteria.
+- 2026-10-31, Big Boss: actual Studio consumer assessment while CI533 runs:
+  authored laboratory jobs still construct a finite `TInstrumentalPlan` in
+  `tools/pythian.tools.studio.instrumental.pas`; recording-based jobs already
+  use `RunStudioPlaylistStream`. Integrate forms through that primary bounded
+  performance/publication/replay path, generalized to explicit authored or
+  learned provider inputs. Do not add a form-only renderer or another job/player.
+  Preserve actual origins, controls, saved decisions, Original/Before/After and
+  historical finite-job reads. The portable finite graph API remains a genuine
+  public consumer, not a reason to keep duplicate application render logic.
+  Expose arrangement in the optional laboratory with contextual help; retain the
+  simple ordinary playlist flow. Section audition and targeted changes should
+  reuse current playback and retained passage edits. Energy/density are still
+  required musical controls: reuse primary expression/preference contracts,
+  never post-filter notes or claim a generic WFC gap from API inspection alone.
 - 2026-10-31, Big Boss: the retained direct WFC reproduction establishes generic
   ownership, replacing the earlier unresolved assessment below. Follow
-  [future domains](NS-4_future-domains_01.md): separate notified branch62c8597
+  [future domains](DONE/NS-4_future-domains_01.md): separate notified branch62c8597
   repairs that same guide and the actual unequal-phrase native/pas2js render.
   Existing form decisions and genuine Hat contradiction remain unchanged.
   Upstream/downstream integration gates are pending; this task remains blocked

@@ -100,8 +100,10 @@ remove a retained part or invent a transition to claim success.
 Planning is bounded and conditional, with no cross-group/global backtracking
 guarantee. The retained no-context authored guide with8/16cell phrases exposed a
 generic short-prefix dead end at cell16 despite a feasible complete24cell graph.
-The original failures stay under `musical-form-20261031-boss`; the future-domain
-repair and exact consumer live under `form-frontier-20261031-boss`. The sustained
+The original failures stay under `musical-form-20261031-boss`; the accepted
+[future-domain repair](TODO/DONE/NS-4_future-domains_01.md) and exact consumer live
+under `form-frontier-20261031-boss`. Upstream CI63 and downstream CI533/packages
+pass. The sustained
 form consumer supplies an explicit authored context; the unequal-phrase consumer
 uses the original authored guide without a context provider. This is not
 recording-derived structure learning, proof that all arrangements fit, or a
