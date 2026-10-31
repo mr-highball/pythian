@@ -118,10 +118,31 @@ The actual Studio48second A/B/A consumer retains all eight requested providers
 in its return; the primary journal reader verifies the actual tokens. Playback
 seeks to32seconds and pauses at48seconds. A six-second unequal-section consumer
 also saves/reopens, replays changed sounds and changes six actual Lead cells
-without recordings. The longer return-section Lead edit fails at cell144 after
-an earlier candidate chunk commits. Preserve that failed request and the original
-playable result; bounded search failure is not proof of musical impossibility.
-No seed sweep or relaxed Keep is used. Full form acceptance remains open.
+without recordings. The longer return-section Lead edit originally failed at
+cell144 after an earlier candidate chunk committed. The primary streamed passage
+editor now checks known future accompaniment before publishing each original
+journal prefix. That exact original request/seed completes and changes24 actual
+Lead cells; all five unselected PCM stems remain identical. The failed child and
+its original playable parent remain preserved. No seed sweep or relaxed Keep is
+used. Full form acceptance remains open.
+
+[`TInstrumentalPassageStream`](../adapters/wfc/pythian.wfc.instrumental.edit.stream.pas)
+borrows immutable models and a fresh primary decision reader. It calls the same
+finite musical graph editor over a bounded window, returns only the next original
+journal chunk and discards provisional later choices. Kept future providers and
+outside-range states remain hard constraints. The window is at most256cells,
+further limited by actual model-state capacity; callers may lower that ceiling.
+Read-ahead retains at most that window plus one original chunk. No complete song
+score or PCM is allocated. The single-window primitive remains usable.
+
+The portable decision library owns detached adjacent musical views and exact
+slices, so native and pas2js share clocks, predecessor and provider-order checks.
+Studio no longer contains a separate chunk-by-chunk musical edit loop. Returned
+prefixes are detached; cancellation or rejection is terminal and cannot publish
+a partial current prefix. A caller binds the complete source journal to an
+accepted receipt and publishes only after the iterator completes. This is bounded
+conditional proof, not full-duration/global backtracking or a guarantee that
+every feasible request will be found. Conflicts remain visible and preserved.
 
 An arbitrary captured phrase is not necessarily a loop. The maintained fixture's
 adjacent A-return/A-variation request rejects because the captured Hat motif cannot

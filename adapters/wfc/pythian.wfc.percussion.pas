@@ -92,6 +92,8 @@ type
     function CopyPartTones(const AIndex: Integer): TFrameTones;
   end;
 
+{ Detached definition arrays; immutable models remain borrowed. }
+function CopyPercussionDefinitions(const ADefinitions: TPercussionDefinitions): TPercussionDefinitions;
 function PercussionToken(const AVelocity: Integer): String;
 function PercussionVelocity(const AToken: String): Integer;
 function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
@@ -147,6 +149,23 @@ begin
     Result[LOffset + I].Tones[0].Pitch := PercussionKey(ADefinitions[I].Settings.Kind);
     Result[LOffset + I].Tones[0].Velocity := LVelocity;
   end;
+end;
+
+function CopyPercussionDefinitions(const ADefinitions: TPercussionDefinitions): TPercussionDefinitions;
+var
+  LResult: TPercussionDefinitions;
+  I: Integer;
+  J: Integer;
+begin
+  LResult := Copy(ADefinitions);
+  for I := 0 to High(LResult) do
+  begin
+    LResult[I].AllowedHitRhythms := Copy(ADefinitions[I].AllowedHitRhythms);
+    LResult[I].Constraints := Copy(ADefinitions[I].Constraints);
+    for J := 0 to High(LResult[I].Constraints) do
+      LResult[I].Constraints[J].AllowedTokens := Copy(ADefinitions[I].Constraints[J].AllowedTokens);
+  end;
+  Result := LResult;
 end;
 
 function PercussionToken(const AVelocity: Integer): String;

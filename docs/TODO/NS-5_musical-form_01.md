@@ -30,6 +30,31 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: **AC4 closes** at publishedbf524af after complete Native
+  FPC CI534 (41248537215), including extracted core/WFC packages, passes. Native
+  save/reopen/replay and desktop/390px arrangement/section consumers supply the
+  actual behavior. This is a criterion closure, not acceptance of all eight units
+  or a musical-quality verdict. Consecutive nonclosing count resets to zero.
+- The exact failed return-section Lead request is repaired in the primary
+  streamed passage editor. It proves a bounded future window through the existing
+  finite musical graphs and returns only the original prefix; provisional later
+  choices are discarded. Studio removes its inferior one-chunk loop. Native
+  actual-job1534 checks, native/actual pas2js1533 each and decision-view45 each
+  pass. The portable source normalizes exactly to the original Studio journal;
+  the unchanged edit seed changes24 actual Lead cells with all five other actual
+  PCM stems exact. Caller mutations, cancellation, reentry, input clocks and
+  bounded read-ahead pass. Existing passage180 and playlist290 checks pass with
+  clean native heaps. No vendor edit, seed sweep or relaxed Keep. Native source
+  and evidence use `edit-window-20261031-boss` in the dedicated E-drive roots.
+- Actual browser child `music-1793487193341-383538` changes four cells in the same
+ 32..48second Lead section through the ordinary controls, with Before/After,
+  exact section seek/stop, reconnect and the changed-range summary retained.
+  This is an additional normal UI request, not a retry of the original failed
+  seed. Both the failed job and its exact repaired sibling `section-window-repair01`
+  remain in isolated QA data. Full source integration/CI and stable deployment
+  of this repair are pending. Per-section energy/density and actual operator
+  listening remain open; no effort units accepted.
+
 - 2026-10-31, Big Boss: the optional Studio Structure consumer is implemented
   and locally exercised, not full task acceptance. Named sections, repeat sources
   and retained providers save/reopen through the primary form cursor; ordinary

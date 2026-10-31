@@ -161,6 +161,113 @@ begin
   end;
 end;
 
+procedure RepairEdit(const ARoot, AParentId, AFailedId, ANewId: String);
+var
+  LParent: TJSONObject;
+  LFailed: TJSONObject;
+  LRequest: TJSONObject;
+  LWrite: TJSONObject;
+  LJob: TJSONObject;
+  LParentInput: TStream;
+  LChildInput: TStream;
+  LParentReader: TMusicDecisionReader;
+  LChildReader: TMusicDecisionReader;
+  LBefore: TMusicDecisionChunk;
+  LAfter: TMusicDecisionChunk;
+  LFrame: Int64;
+  LStart: Int64;
+  LEnd: Int64;
+  LChanges: Integer;
+  I: Integer;
+  J: Integer;
+  LInside: Boolean;
+begin
+  LParent := ReadStudioJob(ARoot, AParentId);
+  LFailed := ReadStudioJob(ARoot, AFailedId);
+  LRequest := ReadStudioJobRequest(ARoot, AFailedId);
+  LWrite := nil;
+  LJob := nil;
+  LParentInput := nil;
+  LChildInput := nil;
+  LParentReader := nil;
+  LChildReader := nil;
+  try
+    Check(LFailed.Strings['status'] = 'failed', 'Keep the actual failed edit as evidence');
+    LWrite := TJSONObject.Create(['format', StudioJobWriteFormat,
+      'job_id', ANewId, 'kind', 'instrumental_regenerate',
+      'project_id', LParent.Objects['results'].Strings['project_id'],
+      'project_revision', LParent.Objects['results'].Int64s['project_revision'],
+      'project_snapshot_sha256', LParent.Objects['results'].Strings['project_snapshot_sha256'],
+      'parent_job_id', AParentId,
+      'parent_plan_sha256', LParent.Objects['results'].Strings['plan_sha256'],
+      'note_edit', LRequest.Objects['note_edit'].Clone]);
+    LJob := EnqueueStudioJob(ARoot, LWrite);
+    FreeAndNil(LJob);
+    Check(RunStudioWorker(ARoot, ANewId, ARoot + '-no-recordings'),
+      'The exact failed section, controls and seed complete through the shared bounded editor');
+    LJob := ReadStudioJob(ARoot, ANewId);
+    Check(LJob.Strings['status'] = 'completed', 'The actual repaired native job completes');
+    Check(LJob.Objects['results'].Objects['note_edit'].AsJSON = LRequest.Objects['note_edit'].AsJSON,
+      'Repair does not sweep seeds, change the range or relax the requested parts');
+    Check(LJob.Objects['results'].Arrays['sections'].AsJSON =
+      LParent.Objects['results'].Arrays['sections'].AsJSON, 'Repaired version retains the actual arrangement');
+    LStart := LRequest.Objects['note_edit'].Int64s['start_frame'];
+    LEnd := LRequest.Objects['note_edit'].Int64s['end_frame'];
+    LParentInput := OpenStudioDecisionJournal(ARoot, LParent.Objects['results'].Objects['decisions']);
+    LChildInput := OpenStudioDecisionJournal(ARoot, LJob.Objects['results'].Objects['decisions']);
+    LParentReader := TMusicDecisionReader.Create(LParentInput);
+    LChildReader := TMusicDecisionReader.Create(LChildInput);
+    LChanges := 0;
+    while LParentReader.TryNext(LBefore) do
+    begin
+      Check(LChildReader.TryNext(LAfter), 'Repaired journal retains every original chunk');
+      Check((LBefore.FirstCell = LAfter.FirstCell) and (LBefore.StartFrame = LAfter.StartFrame) and
+        (Length(LBefore.Cells) = Length(LAfter.Cells)), 'Prefix publication preserves original journal clocks');
+      LFrame := LBefore.StartFrame;
+      for I := 0 to High(LBefore.Cells) do
+      begin
+        LInside := (LFrame < LEnd) and (LFrame + LBefore.Cells[I].FrameCount > LStart);
+        if not SameMusicDecisionFrame(LBefore.Cells[I].Parts, LAfter.Cells[I].Parts) then
+        begin
+          Inc(LChanges);
+          Check(LInside, 'No actual musical decision changes outside the requested section');
+        end;
+        for J := 0 to High(LBefore.Providers) do
+          if not LInside or (LBefore.Providers[J].Key <> 'lead') then
+            Check((LBefore.Providers[J].Tokens[I] = LAfter.Providers[J].Tokens[I]) and
+              (LBefore.Providers[J].States[I] = LAfter.Providers[J].States[I]),
+              'Other providers and outside-range latent states remain exact');
+        Inc(LFrame, LBefore.Cells[I].FrameCount);
+      end;
+    end;
+    Check(not LChildReader.TryNext(LAfter), 'Repaired result adds no hidden musical cells');
+    Check((LChanges > 0) and
+      (LChanges = LJob.Objects['results'].Objects['edit_report'].Int64s['changed_cells']),
+      'Change report counts only actual published-prefix changes, not provisional future notes');
+    for I := 0 to 5 do
+      if I <> 2 then
+        Check(LJob.Objects['results'].Arrays['parts'].Objects[I].Strings['wav_sha256'] =
+          LParent.Objects['results'].Arrays['parts'].Objects[I].Strings['wav_sha256'],
+          'All five unselected actual PCM stems stay identical');
+    Check(LJob.Objects['results'].Arrays['parts'].Objects[2].Strings['wav_sha256'] <>
+      LParent.Objects['results'].Arrays['parts'].Objects[2].Strings['wav_sha256'],
+      'The requested Lead changes in the actual synthesized output');
+    FreeAndNil(LJob);
+    LJob := ReadStudioJob(ARoot, AFailedId);
+    Check(LJob.AsJSON = LFailed.AsJSON, 'The original failed request and evidence stay unchanged');
+  finally
+    LChildReader.Free;
+    LParentReader.Free;
+    LChildInput.Free;
+    LParentInput.Free;
+    LJob.Free;
+    LWrite.Free;
+    LRequest.Free;
+    LFailed.Free;
+    LParent.Free;
+  end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LSettings, LWrite, LProject, LRead, LRequest, LJob, LMeta: TJSONObject;
@@ -251,7 +358,9 @@ end;
 
 begin
   try
-    if (ParamCount = 3) and (ParamStr(1) = '--inspect-repeat') then
+    if (ParamCount = 5) and (ParamStr(1) = '--repair-edit') then
+      RepairEdit(ExpandFileName(ParamStr(2)), ParamStr(3), ParamStr(4), ParamStr(5))
+    else if (ParamCount = 3) and (ParamStr(1) = '--inspect-repeat') then
       InspectRepeat(ExpandFileName(ParamStr(2)), ParamStr(3))
     else if (ParamCount = 2) and (ParamStr(1) = '--followup') then
       Followups(ExpandFileName(ParamStr(2)))

@@ -114,6 +114,14 @@ procedure ValidateMusicDecisionChunk(const AChunk: TMusicDecisionChunk;
   const AProgress: TWorkProgressCallback = nil);
 function SameMusicDecisionFrame(const A, B: TChordFrame): Boolean;
 function CopyMusicDecisionChunk(const AChunk: TMusicDecisionChunk): TMusicDecisionChunk;
+{ Detached bounded musical views. Append requires the actual adjacent clock,
+  predecessor and provider order. Slice keeps original absolute clocks and the
+  real predecessor of its first cell. Neither operation assembles audio. }
+function AppendMusicDecisionChunk(const AFirst, ASecond: TMusicDecisionChunk;
+  const AProgress: TWorkProgressCallback = nil): TMusicDecisionChunk;
+function SliceMusicDecisionChunk(const AChunk: TMusicDecisionChunk;
+  const AFirstCell, ACellCount: Integer;
+  const AProgress: TWorkProgressCallback = nil): TMusicDecisionChunk;
 function MusicDecisionFrameCount(const AChunk: TMusicDecisionChunk): Int64;
 function EncodeMusicDecisions(const AChunk: TMusicDecisionChunk;
   const AProgress: TWorkProgressCallback = nil): TAudioBytes;
@@ -244,6 +252,90 @@ begin
     LCopy.Providers[I].States := Copy(AChunk.Providers[I].States);
   end;
   Result := LCopy;
+end;
+
+function AppendMusicDecisionChunk(const AFirst, ASecond: TMusicDecisionChunk;
+  const AProgress: TWorkProgressCallback): TMusicDecisionChunk;
+var
+  LResult: TMusicDecisionChunk;
+  LFirstCount: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  ValidateMusicDecisionChunk(AFirst, AProgress);
+  ValidateMusicDecisionChunk(ASecond, AProgress);
+  LFirstCount := Length(AFirst.Cells);
+  Need(Length(ASecond.Cells) <= MaximumMusicDecisionCells - LFirstCount,
+    'Combined musical view exceeds the bounded cell limit');
+  Need((ASecond.FirstCell = AFirst.FirstCell + LFirstCount) and
+    (ASecond.StartFrame = AFirst.StartFrame + MusicDecisionFrameCount(AFirst)) and
+    SameMusicDecisionFrame(ASecond.Previous, AFirst.Cells[LFirstCount - 1].Parts),
+    'Combined musical view needs actual adjacent clocks and predecessor');
+  Need(Length(AFirst.Providers) = Length(ASecond.Providers),
+    'Combined musical view provider layout differs');
+  for I := 0 to High(AFirst.Providers) do
+    Need(AFirst.Providers[I].Key = ASecond.Providers[I].Key,
+      'Combined musical view provider order differs');
+  LResult := CopyMusicDecisionChunk(AFirst);
+  SetLength(LResult.Cells, LFirstCount + Length(ASecond.Cells));
+  for I := 0 to High(ASecond.Cells) do
+  begin
+    LResult.Cells[LFirstCount + I].FrameCount := ASecond.Cells[I].FrameCount;
+    LResult.Cells[LFirstCount + I].Parts := CopyChordFrame(ASecond.Cells[I].Parts);
+  end;
+  for I := 0 to High(LResult.Providers) do
+  begin
+    SetLength(LResult.Providers[I].Tokens, Length(LResult.Cells));
+    SetLength(LResult.Providers[I].States, Length(LResult.Cells));
+    for J := 0 to High(ASecond.Cells) do
+    begin
+      LResult.Providers[I].Tokens[LFirstCount + J] := ASecond.Providers[I].Tokens[J];
+      LResult.Providers[I].States[LFirstCount + J] := ASecond.Providers[I].States[J];
+    end;
+  end;
+  ValidateMusicDecisionChunk(LResult, AProgress);
+  Result := LResult;
+end;
+
+function SliceMusicDecisionChunk(const AChunk: TMusicDecisionChunk;
+  const AFirstCell, ACellCount: Integer;
+  const AProgress: TWorkProgressCallback): TMusicDecisionChunk;
+var
+  LResult: TMusicDecisionChunk;
+  I: Integer;
+  J: Integer;
+begin
+  ValidateMusicDecisionChunk(AChunk, AProgress);
+  Need((AFirstCell = Trunc(AFirstCell)) and (ACellCount = Trunc(ACellCount)) and
+    (AFirstCell >= 0) and (ACellCount > 0) and
+    (AFirstCell <= Length(AChunk.Cells) - ACellCount), 'Musical slice lies outside its source');
+  LResult := Default(TMusicDecisionChunk);
+  LResult.Version := AChunk.Version;
+  LResult.FirstCell := AChunk.FirstCell + AFirstCell;
+  LResult.StartFrame := AChunk.StartFrame;
+  for I := 0 to AFirstCell - 1 do Inc(LResult.StartFrame, AChunk.Cells[I].FrameCount);
+  if AFirstCell = 0 then LResult.Previous := CopyChordFrame(AChunk.Previous)
+  else LResult.Previous := CopyChordFrame(AChunk.Cells[AFirstCell - 1].Parts);
+  SetLength(LResult.Cells, ACellCount);
+  for I := 0 to ACellCount - 1 do
+  begin
+    LResult.Cells[I].FrameCount := AChunk.Cells[AFirstCell + I].FrameCount;
+    LResult.Cells[I].Parts := CopyChordFrame(AChunk.Cells[AFirstCell + I].Parts);
+  end;
+  SetLength(LResult.Providers, Length(AChunk.Providers));
+  for I := 0 to High(LResult.Providers) do
+  begin
+    LResult.Providers[I].Key := AChunk.Providers[I].Key;
+    SetLength(LResult.Providers[I].Tokens, ACellCount);
+    SetLength(LResult.Providers[I].States, ACellCount);
+    for J := 0 to ACellCount - 1 do
+    begin
+      LResult.Providers[I].Tokens[J] := AChunk.Providers[I].Tokens[AFirstCell + J];
+      LResult.Providers[I].States[J] := AChunk.Providers[I].States[AFirstCell + J];
+    end;
+  end;
+  ValidateMusicDecisionChunk(LResult, AProgress);
+  Result := LResult;
 end;
 
 function EncodeMusicDecisions(const AChunk: TMusicDecisionChunk;

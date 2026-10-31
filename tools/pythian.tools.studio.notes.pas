@@ -40,13 +40,14 @@ function EditStudioRetainedNotes(const ACatalogRoot, AJobId: String;
 
 implementation
 
-uses SysUtils, pythian.audio, pythian.chord, pythian.music.decisions,
+uses SysUtils, pythian.audio, pythian.music.decisions,
   pythian.wfc.layers, pythian.wfc.percussion, pythian.wfc.instrumental.edit,
+  pythian.wfc.instrumental.edit.stream,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions,
   pythian.tools.studio.instrumental.config,
   pythian.tools.studio.instrumental.settings,
   wfc_sequence, wfc_sequence_text, wfc_sequence_graph,
-  wfc_music_voices_graph, wfc_music_ensemble_graph, wfc_music_arrangement;
+  wfc_music_voices_graph, wfc_music_ensemble_graph;
 
 type
   TStoredMusicalModels = class
@@ -183,21 +184,14 @@ var
   LModels: TStoredMusicalModels;
   LReader: TMusicDecisionReader;
   LWriter: TStudioDecisionWriter;
-  LCurrent: TMusicDecisionChunk;
-  LNext: TMusicDecisionChunk;
   LAfter: TMusicDecisionChunk;
-  LSourcePrevious: TMusicDecisionChunk;
-  LCandidatePrevious: TMusicDecisionChunk;
-  LEdges: TInstrumentalPassageEdges;
-  LChunkEdit: TInstrumentalPassageEdit;
-  LPreviousParts: TChordFrame;
+  LEditor: TInstrumentalPassageStream;
   LEdit: TInstrumentalPassageEdit;
   LSupplied: TStudioPassageEdit;
   LReport: TInstrumentalPassageReport;
   LReportJson: TJSONObject;
   LResult: TJSONObject;
   LPasses: TStringList;
-  LHasNext: Boolean;
   LChanged: Int64;
   LActualStart: Int64;
   LActualEnd: Int64;
@@ -206,7 +200,7 @@ var
   var
     LFailure: TJSONObject;
   begin
-    LFailure := TJSONObject.Create(['first_cell', LCurrent.FirstCell,
+    LFailure := TJSONObject.Create(['first_cell', LEditor.Position,
       'group', LReport.Group, 'detail', ADetail]);
     try
       WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
@@ -220,6 +214,7 @@ begin
   Result := nil;
   LModels := nil;
   LReader := nil;
+  LEditor := nil;
   LWriter := nil;
   LResult := TJSONObject.Create;
   LPasses := TStringList.Create;
@@ -242,63 +237,48 @@ begin
     LWriter := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);
     LPasses.Sorted := True;
     LPasses.Duplicates := dupIgnore;
-    LSourcePrevious := Default(TMusicDecisionChunk);
-    LCandidatePrevious := Default(TMusicDecisionChunk);
     LChanged := 0;
     LActualStart := -1;
     LActualEnd := -1;
-    Need(LReader.TryNext(LCurrent, AProgress), 'Saved musical decisions are empty');
-    LPreviousParts := CopyChordFrame(LCurrent.Previous);
-    repeat
-      LNext := Default(TMusicDecisionChunk);
-      LHasNext := LReader.TryNext(LNext, AProgress);
-      LEdges := RetainedInstrumentalPassageEdges(LSourcePrevious, LNext);
-      LEdges.CandidatePrevious := LCandidatePrevious;
-      LEdges.FollowingCells := AMeta.Int64s['total_cells'] -
-        LCurrent.FirstCell - Length(LCurrent.Cells);
-      LChunkEdit := LEdit;
-      LChunkEdit.Seed := WfcMusicArrangementSectionSeed(LEdit.Seed, LCurrent.FirstCell);
-      try
-        if not TryEditInstrumentalPassageChunk(LModels.Config, LModels.Names, LModels.Drums,
-          LModels.Context, LCurrent, LEdges, LChunkEdit, LAfter, LReport, AProgress) then
-        begin
-          Reject(LReport.Detail,
-            'Could not complete these changes with the current search. Try a shorter passage or more parts.');
-        end;
-      except
-        on E: EAudio do
-        begin
-          if Pos('Pitch bounds leave role', E.Message) = 1 then
-            Reject(E.Message, 'No learned notes fit that pitch range. Try a wider range.');
-          raise;
-        end;
-      end;
-      Inc(LChanged, LReport.ChangedCells);
-      if LReport.ActualEndFrame > LReport.ActualStartFrame then
+    LEditor := TInstrumentalPassageStream.Create(LModels.Config, LModels.Names,
+      LModels.Drums, LModels.Context, LReader, AMeta.Int64s['total_cells'], LEdit);
+    try
+      while LEditor.TryNext(LAfter, LReport, AProgress) do
       begin
-        if LActualStart < 0 then LActualStart := LReport.ActualStartFrame;
-        LActualEnd := LReport.ActualEndFrame;
+        Inc(LChanged, LReport.ChangedCells);
+        if LReport.ActualEndFrame > LReport.ActualStartFrame then
+        begin
+          if LActualStart < 0 then LActualStart := LReport.ActualStartFrame;
+          LActualEnd := LReport.ActualEndFrame;
+        end;
+        for I := 0 to High(LReport.ActivePasses) do LPasses.Add(LReport.ActivePasses[I]);
+        LWriter.Append(LAfter);
+        ReportWork(AProgress, 'instrumental_edit_progress', wuItems,
+          LEditor.Position, AMeta.Int64s['total_cells']);
       end;
-      for I := 0 to High(LReport.ActivePasses) do
-        LPasses.Add(LReport.ActivePasses[I]);
-      LAfter.Previous := CopyChordFrame(LPreviousParts);
-      LWriter.Append(LAfter);
-      LSourcePrevious := LCurrent;
-      LCandidatePrevious := LAfter;
-      LPreviousParts := CopyChordFrame(LAfter.Cells[High(LAfter.Cells)].Parts);
-      ReportWork(AProgress, 'instrumental_edit_progress', wuItems,
-        LAfter.FirstCell + Length(LAfter.Cells), AMeta.Int64s['total_cells']);
-      LCurrent := LNext;
-    until not LHasNext;
+      if LEditor.State <> ipesCompleted then
+        Reject(LReport.Detail,
+          'Could not complete these changes with the current search. Try a shorter passage or more parts.');
+    except
+      on E: EAudio do
+      begin
+        if Pos('Pitch bounds leave role', E.Message) = 1 then
+          Reject(E.Message, 'No learned notes fit that pitch range. Try a wider range.');
+        raise;
+      end;
+    end;
     Need((LReader.CellCount = AMeta.Objects['decisions'].Int64s['cells']) and
       (LReader.FrameCount = AMeta.Objects['decisions'].Int64s['music_frames']),
       'Saved musical decisions differ from their declared extent');
     LResult.Add('decisions', LWriter.Finish(LReader.CellCount, LReader.FrameCount, AProgress));
     LReportJson := TJSONObject.Create(['runtime_version', InstrumentalPassageEditVersion,
+      'stream_version', InstrumentalPassageStreamVersion,
+      'lookahead_cells', LEditor.WindowLimit,
+      'maximum_window_cells', LEditor.MaximumWindowCells,
       'changed_cells', LChanged,
       'requested_start_frame', LEdit.StartFrame, 'requested_end_frame', LEdit.EndFrame,
       'actual_start_frame', LActualStart, 'actual_end_frame', LActualEnd,
-      'seam_policy', 'retain_outside_scope; continue_candidate_inside_scope']);
+      'seam_policy', 'retain_outside_scope; prove_future_accompaniment; publish_prefix']);
     LResult.Add('edit_report', LReportJson);
     LReportJson.Add('active_passes', TJSONArray.Create);
     for I := 0 to LPasses.Count - 1 do
@@ -310,6 +290,7 @@ begin
     LPasses.Free;
     LResult.Free;
     LWriter.Free;
+    LEditor.Free;
     LReader.Free;
     LModels.Free;
   end;

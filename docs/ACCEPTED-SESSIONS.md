@@ -105,9 +105,20 @@ Change notes retains instruments, rendering randomness, source lineage and
 learning receipts. Change sounds retains the accepted notes. Both can be followed
 by further edits. A failed or cancelled child leaves its parent available.
 Before/After and individual-part playback compare actual saved performances.
-The broader [graph-controls task](TODO/DONE/NS-4_graph-controls_01.md) still requires
-the optional authored/affect UI consumer; these operations do not imply musical
+The [graph-controls task](TODO/DONE/NS-4_graph-controls_01.md) and its optional
+authored/affect UI consumer are accepted. These operations do not imply musical
 quality approval or universal edit solvability.
+
+Studio now uses `TInstrumentalPassageStream` from
+`pythian.wfc.instrumental.edit.stream`. It proves kept future accompaniment in a
+bounded window through the same finite editor, then returns only the next
+original journal prefix. Later selected choices remain provisional. The default
+256cell ceiling is reduced by the actual model-state budget and can be lowered
+by a caller; the reader retains at most one window plus one original chunk.
+This repairs the retained48second authored source's original failed32..48second
+Lead edit with its exact seed and controls. Unselected states and all five other
+PCM stems remain exact. No duration-sized score, new solver, learning or source
+audio scan is introduced. The full source journal still needs its accepted receipt.
 
 The generic assignment operation lives in the separate WFC branch
 [`codex/pythian-accepted-assignments`](https://github.com/mr-highball/wfc/tree/codex/pythian-accepted-assignments),

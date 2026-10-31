@@ -95,6 +95,71 @@ begin
   Check(LRejected, 'Malformed musical decisions reject');
 end;
 
+procedure CheckViews;
+var
+  LFirst: TMusicDecisionChunk;
+  LSecond: TMusicDecisionChunk;
+  LJoined: TMusicDecisionChunk;
+  LSlice: TMusicDecisionChunk;
+  LBad: TMusicDecisionChunk;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  LFirst := Chunk;
+  LSecond := CopyMusicDecisionChunk(LFirst);
+  LSecond.FirstCell := 2;
+  LSecond.StartFrame := 4001;
+  LSecond.Previous := CopyChordFrame(LFirst.Cells[1].Parts);
+  LJoined := AppendMusicDecisionChunk(LFirst, LSecond);
+  Check((Length(LJoined.Cells) = 4) and (MusicDecisionFrameCount(LJoined) = 8002),
+    'Bounded musical views join exact unequal cell clocks');
+  LSlice := SliceMusicDecisionChunk(LJoined, 2, 2);
+  Check(Sha256Bytes(EncodeMusicDecisions(LSlice)) = Sha256Bytes(EncodeMusicDecisions(LSecond)),
+    'A musical slice retains the actual original clock, predecessor and provider records');
+  LSlice.Cells[0].Parts[0].Tones[0].Pitch := 72;
+  LSlice.Providers[0].Tokens[0] := 'detached';
+  LJoined.Previous[0].Action := caAttack;
+  LJoined.Cells[2].Parts[0].Tones[0].Pitch := 84;
+  LJoined.Providers[0].States[2] := 99;
+  Check((LFirst.Previous[0].Action = caRest) and
+    (LSecond.Cells[0].Parts[0].Tones[0].Pitch = 60) and
+    (LSecond.Providers[0].States[0] = 7) and
+    (LSecond.Providers[0].Tokens[0] = 'attack:60:83'),
+    'Join and slice detach nested arrays from both sources');
+  for I := 0 to 4 do
+  begin
+    LBad := CopyMusicDecisionChunk(LSecond);
+    case I of
+      0: LBad.FirstCell := 3;
+      1: LBad.StartFrame := 4002;
+      2: LBad.Previous[0] := Default(TChordVoice);
+      3: LBad.Providers[0].Key := 'other';
+      4: SetLength(LBad.Providers, 0);
+    end;
+    LRejected := False;
+    try LJoined := AppendMusicDecisionChunk(LFirst, LBad);
+    except on EAudio do LRejected := True end;
+    Check(LRejected, 'A bounded musical view rejects altered clocks, predecessor or provider identity');
+  end;
+  LRejected := False;
+  try LSlice := SliceMusicDecisionChunk(LFirst, 1, 2);
+  except on EAudio do LRejected := True end;
+  Check(LRejected, 'A musical slice cannot overrun its source');
+  LJoined := CopyMusicDecisionChunk(LFirst);
+  for I := 1 to (MaximumMusicDecisionCells div 2) - 1 do
+  begin
+    LSecond.FirstCell := I * 2;
+    LSecond.StartFrame := I * 4001;
+    LJoined := AppendMusicDecisionChunk(LJoined, LSecond);
+  end;
+  LSecond.FirstCell := MaximumMusicDecisionCells;
+  LSecond.StartFrame := (MaximumMusicDecisionCells div 2) * 4001;
+  LRejected := False;
+  try LJoined := AppendMusicDecisionChunk(LJoined, LSecond);
+  except on EAudio do LRejected := True end;
+  Check(LRejected, 'Joining does not exceed the portable decision cell budget');
+end;
+
 procedure Run;
 var
   A, B, C: TMusicDecisionChunk;
@@ -107,6 +172,7 @@ var
   LHash: String;
   I: Integer;
 begin
+  CheckViews;
   A := Chunk;
   ValidateMusicDecisionChunk(A);
   LBytes := EncodeMusicDecisions(A);

@@ -52,6 +52,7 @@ begin
   if Copy(AStage, 1, 18) = 'instrumental_edit_' then
   begin
     if AStage = 'instrumental_edit_models' then Result := 'Open saved musical choices'
+    else if AStage = 'instrumental_edit_window' then Result := 'Check the music ahead'
     else Result := 'Change the selected parts';
     Exit;
   end;

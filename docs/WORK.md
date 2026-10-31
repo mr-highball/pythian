@@ -3,7 +3,61 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: Studio sections implemented; form task stays open — 2026-10-31
+## Current handoff: long section edits repaired; AC4 closes — 2026-10-31
+
+Big Boss SOLO completes the selected bounded future-accompaniment edit repair.
+The actual failed32..48second Lead request, original seed1502445802 and source
+generation623803102 now succeed through the ordinary native worker.24 actual
+Lead cells change; all five other PCM stems and outside-range provider states
+stay exact. Keep original failed child `music-1793485261505-670885`, parent
+`music-1793485090576-185750` and new sibling `section-window-repair01` in the
+isolated QA catalog. No seed sweep or relaxed Keep. This is a Pythian musical
+adapter repair using existing WFC builders, not a new generic dependency gap.
+
+The new primary `TInstrumentalPassageStream` proves a bounded musical window
+through the same finite editor, publishes only the next original journal prefix
+and discards provisional suffix choices. The default ceiling is256cells, reduced
+by actual model-state capacity; callers may lower it. Read-ahead holds at most
+one window plus one original chunk. Portable decision views/slices own clocks,
+predecessors, provider order and detachment. Shared percussion definition copying
+replaces duplicated ownership logic. Native Studio removes its inferior one-chunk
+musical loop, retaining only metadata/I/O/publication. Actual generations and
+note/sound follow-ups still use the primary instruments and saved decisions.
+
+Evidence under `edit-window-20261031-boss`: exact native job1534 checks;
+native/actual pas2js1533 stream checks each; portable decision views45 each;
+existing native passage180 and playlist290. Native heaps are clean. The portable
+source normalizes exactly to the actual original Studio journal digest. A64cell
+consumer buffers80 of192cells, retains original16cell chunks, rejects reentry,
+detaches input/output arrays and preserves accepted output after cancellation.
+Retain the fixture constructor compile failure in build01; use the primary
+read-only byte stream and repaired build02/03. No manufactured musical rejection.
+
+Actual browser child `music-1793487193341-383538` changes four Lead cells in
+the same32..48second section through ordinary controls. Before/After, exact
+section seek/stop, reconnect and390px result display pass. Preserve the changed
+range summary instead of overwriting it with the authored-origin note. This
+normal UI request has seed1507392823; it does not replace the exact original
+regression. Complete source integration/CI for this repair and stable deployment
+remain pending. Stable remains on its prior checked service/worker/assets.
+
+The previously published form consumer atbf524af completes all Native FPC CI534
+(41248537215) steps, including extracted core/WFC packages. Together with its
+actual save/reopen, replay, boundary and browser evidence, **musical-form AC4
+closes**. This real criterion closure resets consecutive nonclosing count tozero.
+The full task's eight units remain open for per-section energy/density and actual
+operator listening. Accounting stays **99/140 (70.71%), six open**. The previous
+goal turn was progress; this turn repairs its concrete failure and closes the
+outstanding persistence/replay gate. The goal remains active; no input needed.
+
+Next finish exact-source CI and checked fixed-slot integration, then continue
+per-section musical controls. Do not infer global feasibility or musical quality
+from these checks. Keep the simple playlist flow and independent saved clips.
+QA tab42 is closed, viewport override reset, all nine audio elements paused
+with looping off. Exact QA service44968 and its console child are stopped; no QA
+listener/worker remains. Stable Studio returns200 on its previous checked bytes.
+
+## Previous handoff: Studio sections implemented; form task stays open — 2026-10-31
 
 Big Boss SOLO implements the optional Structure consumer on the existing bounded
 instrumental job/player/passage path. Named sections, repeat sources and retained

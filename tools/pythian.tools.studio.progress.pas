@@ -88,7 +88,8 @@ begin
   end
   else if (AStage = 'playlist_learn_music') or
     (AStage = 'instrumental_plan_begin') then LPhase := 2
-  else if AStage = 'instrumental_edit_progress' then
+  else if (AStage = 'instrumental_edit_progress') or
+    (AStage = 'instrumental_edit_prefix') then
   begin
     LPhase := 2;
     LUnits := 'cells';

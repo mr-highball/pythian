@@ -209,7 +209,7 @@ var
   LStreamConfig: TWfcMusicVoicesStreamConfig;
   LMap: TTempoMap;
   LTicks, LMaximumTicks: Integer;
-  LIndex, J: Integer;
+  LIndex: Integer;
   LStates: Int64;
   LFormKeys: TMusicDecisionTokens;
 begin
@@ -305,7 +305,7 @@ begin
   LStreamConfig.Search.MaxPassBacktracks := AOptions.MaxPassBacktracks;
   FVoices := TWfcMusicVoicesStream.Create(LStreamConfig);
   if AContext <> nil then FContext := TLearnedSequenceStream.Create(AContext);
-  FDefinitions := Copy(APercussion);
+  FDefinitions := CopyPercussionDefinitions(APercussion);
   SetLength(FDrumStreams, Length(APercussion));
   SetLength(FDrumPending, Length(APercussion));
   SetLength(FDrumAt, Length(APercussion));
@@ -325,11 +325,6 @@ begin
       (APercussion[LIndex].HitWeight < 1) or
       (APercussion[LIndex].HitWeight > MaximumLayerPreferenceMultiplier) then
       raise EAudio.Create('Drum stream requires origin and hit weight1..1024');
-    FDefinitions[LIndex].AllowedHitRhythms := Copy(APercussion[LIndex].AllowedHitRhythms);
-    FDefinitions[LIndex].Constraints := Copy(APercussion[LIndex].Constraints);
-    for J := 0 to High(FDefinitions[LIndex].Constraints) do
-      FDefinitions[LIndex].Constraints[J].AllowedTokens :=
-        Copy(APercussion[LIndex].Constraints[J].AllowedTokens);
     ValidateSequenceTokenConstraints(APercussion[LIndex].Model,
       FTotalCells, APercussion[LIndex].Constraints);
     FDrumStreams[LIndex] := TLearnedSequenceStream.Create(APercussion[LIndex].Model);

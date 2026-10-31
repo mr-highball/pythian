@@ -190,8 +190,10 @@ arrangement with exact motif returns and selective Lead/Hat retention while othe
 parts vary. It uses real context/voice/drum domains and one continuous performance.
 The retained no-context guide is repaired under NS-4. The optional Studio form
 consumer locally saves/reopens and generates48second A/B/A, with exact section
-audition. Integration/CI, remaining section-edit limits, per-section controls and operator listening
-remain open; no NS-5 effort is accepted yet.
+audition. Its persistence/replay criterion passes full CI534. The exact longer
+Lead-edit failure is repaired through shared bounded future-accompaniment proof,
+with native/pas2js and browser evidence; final repair integration/deployment,
+per-section controls and operator listening remain open. No NS-5 effort accepted.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge

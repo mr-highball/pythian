@@ -46,8 +46,11 @@ credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
 and selective motif retention through the actual six-part graph. The full task
 has locally exercised Studio arrangement, persistence and exact section playback.
-The full task stays open pending integration/CI, remaining section-edit limits,
-per-section musical controls and operator listening; partial work earns no units.
+The full task stays open for per-section musical controls and operator listening;
+partial work earns no units. AC4's persistence/replay consumer passes full CI534.
+The exact longer section-edit failure is repaired by a shared bounded future
+accompaniment iterator, with native/pas2js and actual browser evidence; its final
+integration/CI and stable deployment remain pending.
 
 ## First operator-facing milestone
 

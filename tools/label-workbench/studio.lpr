@@ -830,7 +830,10 @@ begin
   end;
   if ResultProjectId <> FProjectId then
   begin
-    El('generation-revision-note').textContent := 'Authored experiment · no recordings were learned.';
+    if El('generation-revision-note').textContent = '' then
+      El('generation-revision-note').textContent := 'Authored experiment · no recordings were learned.'
+    else El('generation-revision-note').textContent :=
+      El('generation-revision-note').textContent + ' No recordings were learned.';
     if (FLaboratory.ProjectId = ResultProjectId) and
       (FLaboratory.Revision > Num(LResult, 'project_revision')) then
       El('generation-revision-note').textContent :=

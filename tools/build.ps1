@@ -900,6 +900,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.passage$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.edit.stream.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental future-accompaniment edit compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.edit.stream$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental future-accompaniment edit checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")
