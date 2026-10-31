@@ -187,6 +187,7 @@ begin
     wspValidateProjectionStates: LStage := 'wfc_sequence_projection_states';
     wspProjectStateTokens: LStage := 'wfc_sequence_project_tokens';
     wspCaptureReady: LStage := 'wfc_sequence_capture_ready';
+    wspAnalyzeContinuation: LStage := 'wfc_sequence_continuation_states';
   else
     raise EAudio.Create('Unknown companion sequence work phase');
   end;

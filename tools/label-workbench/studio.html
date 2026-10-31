@@ -68,9 +68,13 @@ SOFTWARE.
   </section>
   <section id="step-generate" role="tabpanel" aria-labelledby="tab-generate" hidden>
     <div class="page-heading"><p class="eyebrow">MAKE SOMETHING NEW</p><h1>Let it play.</h1><p id="generate-summary" class="summary"></p></div>
-    <label class="duration-control" for="output-duration">Track length <small>minutes:seconds</small><input id="output-duration" type="text" value="0:30" inputmode="decimal"></label>
+      <div class="duration-controls">
+        <label class="duration-control" for="output-duration">Track length<input id="output-duration" type="number" min="0.001" step="any" value="2" inputmode="decimal"></label>
+        <label class="duration-control" for="output-duration-unit">Unit<select id="output-duration-unit"><option value="seconds">Seconds</option><option value="minutes" selected>Minutes</option><option value="hours">Hours</option></select></label>
+      </div>
+      <p id="output-estimate" class="hint" aria-live="polite"></p>
     <details><summary>Track influence <span class="hint">optional</span></summary><p class="hint">Higher influence gives a track more weight in learning. This does not change its playback volume.</p><div id="track-influences"></div></details>
-    <p class="hint">Experimental · 2–30 second previews, plus an effect tail.</p>
+      <p class="hint">Experimental · 2 seconds to 24 hours, plus a 1-second effect tail.</p>
     <button id="generate-music" data-studio-action type="button" class="primary generate-button" disabled>Generate music</button>
     <p id="generation-status" class="hint" role="status" aria-live="polite">Choose your music, then Generate.</p>
     <div id="generation-progress"></div>
@@ -115,7 +119,13 @@ SOFTWARE.
 </dialog>
 <dialog id="capture-panel" aria-label="Add or record music"><header class="dialog-heading"><h2>Add a sound</h2><button type="button" data-close="capture-panel">Done</button></header><div id="studio-capture"></div></dialog>
 <dialog id="folder-dialog" aria-labelledby="folder-title"><header class="dialog-heading"><h2 id="folder-title">Your music folder</h2><button type="button" data-close="folder-dialog">Done</button></header><p>Put WAV files in a folder for each style:</p><code>local-audio/collections/lofi/</code><p class="hint">Or use your configured audio-library folder. Folder names become collections. Your music stays local and outside Git.</p><div id="studio-library-refresh"></div><p class="hint">Refresh reads the track list and metadata. Adding to a playlist does not load the full audio.</p></dialog>
-<dialog id="playlists-dialog" aria-labelledby="playlists-title"><header class="dialog-heading"><h2 id="playlists-title">Your playlists</h2><button type="button" data-close="playlists-dialog">Done</button></header><button id="new-playlist" data-studio-action type="button">＋ New playlist</button><div id="playlist-list" class="playlist-list"></div><p class="hint">Earlier saved projects open as new playlists. Their originals and review history stay saved.</p></dialog>
+<dialog id="playlists-dialog" aria-labelledby="playlists-title">
+  <header class="dialog-heading"><h2 id="playlists-title">Your playlists</h2><button type="button" data-close="playlists-dialog">Done</button></header>
+  <button id="new-playlist" data-studio-action type="button">＋ New playlist</button>
+  <p id="playlist-dialog-status" class="hint" role="status" aria-live="polite"></p>
+  <div id="playlist-list" class="playlist-list"></div>
+  <p class="hint">Earlier saved projects open as new playlists. Their originals and review history stay saved.</p>
+</dialog>
 <script src="studio.js"></script><script>rtl.run();</script>
 </body>
 </html>

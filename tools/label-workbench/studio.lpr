@@ -27,7 +27,8 @@ program PythianStudio;
 {$modeswitch externalclass}
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
-  pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress;
+  pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
+  pythian.wave.stream;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -59,6 +60,7 @@ type
     FGenerationMessage: String;
     FResumeOnConnect: Boolean;
     FIncludedSeconds: Double;
+    function OutputSeconds(out ASeconds: Double): Boolean;
     procedure Generate; async;
     procedure RestoreGeneration; async;
     procedure PollGeneration; async;
@@ -173,6 +175,7 @@ end;
 procedure TStudio.Notice(const AText: String; const AError: Boolean);
 begin
   El('connection-state').textContent := AText;
+  El('playlist-dialog-status').textContent := AText;
   El('connection-state').className := 'hint';
   if AError then El('connection-state').className := 'field-error';
 end;
@@ -314,6 +317,8 @@ var LSaved: TJSObject; LVersion, I: Integer; LFound: Boolean;
 begin
   if FSaving or FLoading or not FConnected or (not FDirty and (FPendingWrite = nil)) then Exit;
   FSaving := True;
+  El('save-state').textContent := 'Saving…';
+  El('retry-save').setAttribute('hidden', '');
   if FPendingWrite = nil then
   begin
     FPendingWrite := BuildWrite;
@@ -339,6 +344,7 @@ begin
     FDirty := FChanges <> LVersion;
     El('save-state').textContent := 'Saved';
     El('retry-save').setAttribute('hidden', '');
+    Notice('');
     Remember;
   except
     on E: Exception do
@@ -384,11 +390,26 @@ begin
   LState['job_id'] := FJobId;
   LState['request'] := FJobWrite;
   LState['duration'] := TJSHTMLInputElement(El('output-duration')).value;
+  LState['duration_unit'] := TJSHTMLSelectElement(El('output-duration-unit')).value;
   try
     window.localStorage.setItem('pythian.studio.generation.' + FStorageScope + '.' + FProjectId, TJSJSON.stringify(LState));
   except
     on E: Exception do FGenerationMessage := 'This run is saved on the computer. Reopen this playlist to reconnect.';
   end;
+end;
+
+function TStudio.OutputSeconds(out ASeconds: Double): Boolean;
+var
+  LUnit: String;
+begin
+  ASeconds := 0;
+  Result := TryStrToFloat(TJSHTMLInputElement(El('output-duration')).value, ASeconds);
+  if not Result or IsNan(ASeconds) or IsInfinite(ASeconds) then Exit(False);
+  LUnit := TJSHTMLSelectElement(El('output-duration-unit')).value;
+  if LUnit = 'minutes' then ASeconds := ASeconds * 60
+  else if LUnit = 'hours' then ASeconds := ASeconds * 3600
+  else if LUnit <> 'seconds' then Exit(False);
+  Result := (ASeconds >= 2) and (ASeconds <= 86400);
 end;
 
 procedure TStudio.DrawGeneration;
@@ -398,10 +419,21 @@ var
   LResult, LReference, LLearning, LRow: TJSObject;
   LRows: TJSArray;
   LUrl: String;
+  LSeconds: Double;
+  LBytes: Int64;
   I: Integer;
 begin
+  if OutputSeconds(LSeconds) then
+  begin
+    LBytes := WavePcm16ByteCount(24000, 2, Round(LSeconds * 1000) * 24 + 24000);
+    El('output-estimate').textContent := 'About ' + StudioByteSize(LBytes * 7) +
+      ' on this computer for your mix and six parts. Stereo WAV · 24 kHz.';
+  end
+  else El('output-estimate').textContent := 'Choose 2 seconds to 24 hours.';
   LState := Str(FJob, 'status');
   LActive := (LState = 'queued') or (LState = 'running') or FSubmitting or FGenerateAfterSave;
+  TJSHTMLInputElement(El('output-duration')).disabled := LActive;
+  TJSHTMLSelectElement(El('output-duration-unit')).disabled := LActive;
   TJSHTMLButtonElement(El('generate-music')).disabled := not FConnected or FLoading or
     (FIncludedSeconds <= 0) or LActive or FGenerateAfterSave;
   El('generation-progress').innerHTML := '';
@@ -484,10 +516,9 @@ begin
   end;
   FGenerateAfterSave := False;
   if (FJobWrite = nil) and
-    (not ParseSourceTime(TJSHTMLInputElement(El('output-duration')).value, LSeconds) or
-    (LSeconds < 2) or (LSeconds > 30)) then
+    not OutputSeconds(LSeconds) then
   begin
-    FGenerationMessage := 'Choose a preview from 0:02 to 0:30.';
+    FGenerationMessage := 'Choose a track length from 2 seconds to 24 hours.';
     DrawGeneration;
     Exit;
   end;
@@ -520,7 +551,7 @@ begin
       LSettings := TJSObject.new;
       LSettings['tempo_bpm'] := 120;
       LSettings['tonic'] := 0;
-      LSettings['cells'] := Ceil(LSeconds * 4);
+      LSettings['cells'] := 16;
       LSettings['instruments'] := TJSArray.new('saw', 'triangle', 'square');
       LSettings['levels'] := TJSArray.new(75, 65, 60, 80, 65, 50);
       LWrite['instrumental'] := LSettings;
@@ -582,6 +613,7 @@ end;
 
 procedure TStudio.RestoreGeneration; async;
 var LText: String; LState, LJobs: TJSObject; LRows: TJSArray; I, LEpoch: Integer;
+  LLegacySeconds: Double;
 begin
   if (FProjectId = '') or not FConnected then Exit;
   if FJobId <> '' then begin PollGeneration; Exit end;
@@ -594,7 +626,18 @@ begin
       FJobId := Str(LState, 'job_id');
       FJobWrite := Obj(LState['request']);
       if Str(LState, 'duration') <> '' then
-        TJSHTMLInputElement(El('output-duration')).value := Str(LState, 'duration');
+      begin
+        if Str(LState, 'duration_unit') <> '' then
+        begin
+          TJSHTMLInputElement(El('output-duration')).value := Str(LState, 'duration');
+          TJSHTMLSelectElement(El('output-duration-unit')).value := Str(LState, 'duration_unit');
+        end
+        else if ParseSourceTime(Str(LState, 'duration'), LLegacySeconds) then
+        begin
+          TJSHTMLInputElement(El('output-duration')).value := FloatToStr(LLegacySeconds);
+          TJSHTMLSelectElement(El('output-duration-unit')).value := 'seconds';
+        end;
+      end;
     end;
     if FJobId = '' then
     begin
@@ -889,6 +932,7 @@ begin
   try
     LProject := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(AId), 'GET', ''));
     LoadProject(LProject);
+    Notice('');
     TStudioDialog(El('playlists-dialog')).close;
     Draw;
     ShowStep('selection');
@@ -1012,7 +1056,12 @@ begin
   if FLoading then Exit;
   LControl := TJSElement(AEvent.target);
   if LControl.id = 'track-search' then begin FSourceEditor.Search; Exit end;
-  if LControl.id = 'output-duration' then begin RememberGeneration; Exit end;
+  if (LControl.id = 'output-duration') or (LControl.id = 'output-duration-unit') then
+  begin
+    RememberGeneration;
+    DrawGeneration;
+    Exit;
+  end;
   if LControl.hasAttribute('data-influence') then
   begin
     LIndex := StrToInt(LControl.getAttribute('data-influence'));
@@ -1079,6 +1128,8 @@ begin
   El('track-search').addEventListener('input', @Edit);
   El('playlist-name').addEventListener('change', @Edit);
   El('output-duration').addEventListener('change', @Edit);
+  El('output-duration').addEventListener('input', @Edit);
+  El('output-duration-unit').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);
   El('tab-library').addEventListener('keydown', @TabKey);

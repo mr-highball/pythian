@@ -112,7 +112,8 @@ var
 begin
   Result := BoolToStr(AValue.Boundary.HasPrevious, True) + ':' +
     IntToStr(AValue.Boundary.PreviousState) + ':' +
-    BoolToStr(AValue.Boundary.RequireObservedEnd, True) + '|';
+    BoolToStr(AValue.Boundary.RequireObservedEnd, True) + ':' +
+    IntToStr(AValue.Boundary.MinimumFollowingCells) + '|';
   for LIndex := 0 to High(AValue.Tokens) do
   begin
     Result := Result + AValue.Tokens[LIndex] + '=' +
@@ -189,6 +190,8 @@ begin
   LOptions.CellCount := 257;
   LOptions.Seed := 1731;
   LOptions.RequireObservedEnd := GScenario = scEnd;
+  if GScenario = scInitial then
+    LOptions.MinimumFollowingCells := 1024;
   LSegment := DefaultSequenceSegmentOptions;
   LSegment.CellCount := 257;
   LSegment.Seed := 1731;
@@ -349,6 +352,11 @@ begin
     begin
       RequirePoint(LPoints, 'sequence_stream_chunk_ready', 0);
       RequirePoint(LPoints, 'sequence_stream_chunk_ready', 2);
+    end;
+    if AScenario = scInitial then
+    begin
+      RequirePoint(LPoints, 'wfc_sequence_continuation_states', 0);
+      RequirePoint(LPoints, 'wfc_sequence_continuation_states', 2);
     end;
     case AScenario of
       scCopy:

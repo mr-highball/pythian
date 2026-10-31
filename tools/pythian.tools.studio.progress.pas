@@ -93,7 +93,12 @@ begin
     LPhase := 3;
     LUnits := 'frames';
   end
-  else if AStage = 'instrumental_save' then LPhase := 4;
+  else if AStage = 'instrumental_save' then LPhase := 4
+  else if AStage = 'instrumental_publish' then
+  begin
+    LPhase := 4;
+    LUnits := 'save_steps';
+  end;
   if (LPhase = 0) or (LPhase < Phase) then Exit;
   if LPhase > Phase then
   begin

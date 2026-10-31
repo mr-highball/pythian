@@ -85,7 +85,11 @@ begin
       Result := '2 · Apply musical limits and preferences';
     'musical_expression': Result := '2 · Shape note strength and length';
     'instrumental_render': Result := '3 · Synthesize mix and parts';
-    'instrumental_publish': Result := '4 · Save music for review';
+    'instrumental_publish': Result := '4 · Save audio parts';
+    'instrumental_save': Result := '4 · Finish your track';
+    'instrument_stream_render', 'instrument_stream_ready': Result := '3 · Synthesize audio';
+    'instrumental_stream_plan', 'instrumental_stream_voices', 'instrumental_stream_ready':
+      Result := 'Arrange the next passage';
     'instrumental_ready', 'instrumental_plan', 'percussion_ready', 'percussion_instruments':
       Result := '2 · Plan instruments and drums';
     'audio_pull', 'audio_pull_ready': Result := 'Render the next audio block';
@@ -242,6 +246,11 @@ begin
   else if (LTotal > 0) and (LPhase = 3) then
     Add(LRoot, 'p', IntToStr(Trunc(100 * LDone / LTotal)) +
       '% of mix and instrument audio synthesized');
+  if (LPhase = 4) and (StudioText(LWorkflow, 'unit') = 'save_steps') then
+  begin
+    if LDone < 7 then Add(LRoot, 'p', IntToStr(Trunc(LDone)) + ' of 7 audio outputs saved')
+    else Add(LRoot, 'p', 'Audio saved. Finishing your track…');
+  end;
   LOperation := StudioStageText(StudioText(AJob, 'stage'));
   if Pos(' · ', LOperation) = 2 then Delete(LOperation, 1, 4);
   Add(LRoot, 'small', LOperation + '…');

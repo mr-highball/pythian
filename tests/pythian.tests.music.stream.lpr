@@ -46,6 +46,7 @@ type
     Destroyed: Integer;
     OffCount: Integer;
     OffFrame: Integer;
+    Reads: Integer;
     Fail: Boolean;
     Cost: Integer;
     function CreateSource(const ASampleRate: Integer; const ASeed: Cardinal): TAudioSource; override;
@@ -97,6 +98,7 @@ function TProbeSource.ReadFrame(const AFrequencyHz: Double;
   out ALeft, ARight: Double): Boolean;
 begin
   Inc(Frames);
+  Inc(Factory.Reads);
   ALeft := Sin(Frames * 0.17) * 0.1;
   ARight := ALeft * 0.5;
   Result := True;
@@ -438,7 +440,106 @@ begin
   end;
 end;
 
+function RenderOutputs(const APull: Integer): TBusSampleBlocks;
+var
+  LSettings: array[0..2] of TBusSettings;
+  LGraph: TBusGraph;
+  LInstrument: TInstrument;
+  LFactory: TProbeFactory;
+  LStream: TInstrumentMusicStream;
+  LOptions: TInstrumentStreamOptions;
+  LEcho: TEchoSettings;
+  LMaster: TAudioSamples;
+  LTaps: TBusSampleBlocks;
+  LFrame: TStereoFrame;
+  LAt, I, J: Integer;
+  LRejected: Boolean;
 begin
+  Result := nil;
+  LFactory := TProbeFactory.Create;
+  LInstrument := Instrument(LFactory);
+  for I := 0 to 2 do LSettings[I] := DefaultBusSettings;
+  LSettings[1].Gain := 0.5;
+  LSettings[2].Gain := 0.7;
+  LGraph := TBusGraph.Create(8000, LSettings);
+  LStream := nil;
+  try
+    LGraph.AddSend(0, 1, stPostFader, 1, 0);
+    LGraph.AddSend(0, 2, stPostFader, 1, 0);
+    LEcho := DefaultEchoSettings(8000);
+    LEcho.DelayFrames := 47;
+    LEcho.Feedback := 0.65;
+    LEcho.WetGain := 0.3;
+    LGraph.AddEffect(1, TEchoEffect.Create(8000, LEcho));
+    LEcho.DelayFrames := 59;
+    LGraph.AddEffect(2, TEchoEffect.Create(8000, LEcho));
+    LRejected := False;
+    try LFrame := LGraph.LastOutput(0);
+    except on EAudio do LRejected := True; end;
+    Check(LRejected, 'No bus output before processing');
+    LOptions := DefaultInstrumentStreamOptions(600);
+    LOptions.TailFrames := 320;
+    LStream := TInstrumentMusicStream.Create([Binding(LInstrument)], LGraph, LOptions);
+    LRejected := False;
+    try LStream.ReadOutputs(APull, [3], LMaster, LTaps);
+    except on EAudio do LRejected := True; end;
+    Check(LRejected and (LStream.Position = 0) and (LFactory.Created = 0) and
+      LStream.NeedsInput, 'Bad tap rejects before admission or render');
+    SetLength(Result, 4);
+    for I := 0 to 3 do SetLength(Result[I], 1840);
+    LStream.AdmitFrame(Frame(caAttack), 600);
+    LAt := 0;
+    while LStream.ReadOutputs(APull, [0, 1, 2], LMaster, LTaps) do
+    begin
+      Check((Length(LTaps) = 3) and (Length(LMaster) <= 4096), 'Bounded multiple outputs');
+      for I := 0 to High(LMaster) do
+      begin
+        Check(LMaster[I] = LTaps[2][I], 'Master and its tap share the completed frame');
+        Result[3][LAt + I] := LMaster[I];
+        for J := 0 to 2 do Result[J][LAt + I] := LTaps[J][I];
+      end;
+      Inc(LAt, Length(LMaster));
+      { Neither a returned tap nor a record read aliases retained bus state. }
+      LFrame := LGraph.LastOutput(0);
+      LFrame.Left := 123;
+      Check(LGraph.LastOutput(0).Left <> 123, 'Detached bus frame');
+      LTaps[0][0] := 123;
+    end;
+    Check((LAt = 1840) and (LFactory.Created = 1) and (LFactory.Reads <= 920),
+      'One instrument performance supplies every output');
+    LGraph.Reset;
+    LRejected := False;
+    try LFrame := LGraph.LastOutput(0);
+    except on EAudio do LRejected := True; end;
+    Check(LRejected, 'Reset hides the prior bus output');
+  finally
+    LStream.Free;
+    LGraph.Free;
+    LInstrument.Free;
+    LFactory.Free;
+  end;
+end;
+
+procedure MultiOutput;
+var
+  LOne, LSplit: TBusSampleBlocks;
+  I, J: Integer;
+  LDifferent: Boolean;
+begin
+  LOne := RenderOutputs(2048);
+  LSplit := RenderOutputs(17);
+  LDifferent := False;
+  for J := 0 to High(LOne) do
+    for I := 0 to High(LOne[J]) do
+    begin
+      Check(LOne[J][I] = LSplit[J][I], 'Every tap preserves partition replay and FX history');
+      if (J = 1) and (LOne[1][I] <> LOne[2][I]) then LDifferent := True;
+    end;
+  Check(LDifferent, 'Independent stem/master processing is audible in actual samples');
+end;
+
+begin
+  MultiOutput;
   Continuity;
   OneShots;
   AdmissionAndControl;

@@ -207,7 +207,7 @@ begin
   try
     LCandidate := Default(TWfcGeneratedSequenceSegment);
     LCandidate.Boundary := MakeWfcSequenceInitialSegmentBoundary(
-      ASuffix.Boundary.RequireObservedEnd);
+      ASuffix.Boundary.RequireObservedEnd, ASuffix.Boundary.MinimumFollowingCells);
     SetLength(LCandidate.StateIndices, APrefixCount + Length(ASuffix.StateIndices));
     SetLength(LCandidate.Tokens, Length(LCandidate.StateIndices));
     for LIndex := 0 to High(LCandidate.Tokens) do

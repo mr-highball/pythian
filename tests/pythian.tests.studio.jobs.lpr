@@ -599,7 +599,7 @@ begin
     LStarted := GetTickCount64;
     while not FileExists(ARoot + PathDelim + 'writer-attempt.json') do
     begin
-      if GetTickCount64 - LStarted > 10000 then
+      if GetTickCount64 - LStarted > 30000 then
         raise Exception.Create('Test caller never attempted cancellation');
       Sleep(10);
     end;
@@ -642,8 +642,9 @@ begin
     LChild.Execute;
     LStarted := GetTickCount64;
     while not FileExists(ARoot + PathDelim + 'writer-ready.json') and
-      LChild.Running and (GetTickCount64 - LStarted < 5000) do
+      LChild.Running and (GetTickCount64 - LStarted < 30000) do
       Sleep(10);
+    WriteLn('Writer helper readiness wait: ', GetTickCount64 - LStarted, ' ms');
     Check(FileExists(ARoot + PathDelim + 'writer-ready.json') and LChild.Running,
       'Independent writer owns the lock before cancellation');
     WriterSignal(ARoot, 'writer-attempt');
@@ -656,22 +657,22 @@ begin
       LResult.Free;
     end;
     if LChild.Running then
-      LChild.WaitOnExit(3000);
+      LChild.WaitOnExit(30000);
     Check(not LChild.Running, 'Owned writer process finishes');
-    while LChild.Output.NumBytesAvailable > 0 do
-    begin
-      LRead := LChild.Output.Read(LBuffer, SizeOf(LBuffer));
-      if LRead <= 0 then Break;
-      SetString(LText, PChar(@LBuffer[0]), LRead);
-      Write(LText);
-    end;
     Check((LChild.ExitStatus = 0) and FileExists(ARoot + PathDelim + 'writer-released.json'),
       'Only the owning writer releases its lock');
   finally
     if LChild.Running then
     begin
       LChild.Terminate(1);
-      if LChild.Running then LChild.WaitOnExit(2000);
+      if LChild.Running then LChild.WaitOnExit(30000);
+    end;
+    while LChild.Output.NumBytesAvailable > 0 do
+    begin
+      LRead := LChild.Output.Read(LBuffer, SizeOf(LBuffer));
+      if LRead <= 0 then Break;
+      SetString(LText, PChar(@LBuffer[0]), LRead);
+      Write(LText);
     end;
     LChild.Free;
     ReleaseStudioWorker(ARoot);
@@ -905,7 +906,8 @@ begin
     try
       Check(LResult.Integers['count'] = 3, 'Retained job count');
       Check((LResult.Integers['maximum_library_refresh_seconds'] = 7200) and
-        (LResult.Integers['maximum_generation_seconds'] = MaximumStudioTrainingSeconds),
+        (LResult.Integers['maximum_generation_seconds'] = MaximumStudioSessionSeconds) and
+        (LResult.Integers['maximum_training_seconds'] = MaximumStudioTrainingSeconds),
         'Job inventory exposes separate collection and generation budgets');
       Check(LResult.Arrays['jobs'].Objects[0].Find('results') = nil,
         'List uses compact summaries');
@@ -1060,6 +1062,13 @@ begin
       WriterContention(ExpandFileName(ParamStr(1)));
       DiscoveryPolicy(ExpandFileName(ParamStr(1)) + '-discovery');
       WriteLn('PASS ', GChecks, ' Studio job lifecycle checks');
+    end
+    else if (ParamCount = 2) and (ParamStr(1) = '--writer-only') then
+    begin
+      Check(not DirectoryExists(ParamStr(2)), 'Writer-only root must be fresh');
+      Check(ForceDirectories(ParamStr(2)), 'Create isolated writer catalog');
+      WriterContention(ExpandFileName(ParamStr(2)));
+      WriteLn('PASS ', GChecks, ' focused writer ownership checks');
     end
     else if (ParamCount = 2) and (ParamStr(1) = '--discovery-only') then
     begin

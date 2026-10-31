@@ -285,9 +285,21 @@ begin
         LResult := PrepareStudioJob(LCatalog, LJob);
         try
           Check((LResult.Integers['source_count'] = 2) and
-            (LResult.Objects['limits'].Integers['worker_seconds'] = 7200),
+            (LResult.Objects['limits'].Integers['worker_seconds'] = MaximumStudioSessionSeconds),
             'Playlist preflight declares actual source learning and its durable runtime budget');
+          Check((LResult.Objects['output_resources'].Integers['retained_outputs'] = 7) and
+            (LResult.Objects['output_resources'].Int64s['music_frames'] = 48000),
+            'Preflight counts mix and six stems on the native output clock');
         finally LResult.Free end;
+        LJob.Int64s['duration_ms'] := 86400000;
+        LResult := PrepareStudioJob(LCatalog, LJob);
+        try
+          Check((LResult.Objects['output_resources'].Int64s['frame_count'] = 2073624000) and
+            (LResult.Objects['output_resources'].Int64s['wav_bytes_each'] = 8294496080) and
+            (LResult.Objects['output_resources'].Int64s['audio_bytes'] = 58061472560),
+            '24-hour admission uses wide RF64 bytes without allocating score or PCM');
+        finally LResult.Free end;
+        LJob.Int64s['duration_ms'] := 2000;
         LResult := EnqueueStudioJob(LCatalog, LJob);
         LResult.Free;
         Check(RunStudioWorker(LCatalog, LJob.Strings['job_id'], LLibrary),
@@ -298,6 +310,9 @@ begin
           Check((LResult.Objects['workflow'].Integers['phase'] = 4) and
             (LResult.Objects['workflow'].Integers['phases'] = 4),
             'Durable completed job retains its native workflow for reconnect');
+          Check((LResult.Objects['workflow'].Integers['done'] = 8) and
+            (LResult.Objects['workflow'].Integers['total'] = 8),
+            'Success atomically closes final saving work without a premature running100percent');
           Check((LResult.Objects['results'].Objects['playlist_learning'].Arrays['sources'].Count = 2) and
             (LResult.Objects['results'].Arrays['parts'].Count = 6),
             'Actual worker result retains source contributions and all six synthesized parts');

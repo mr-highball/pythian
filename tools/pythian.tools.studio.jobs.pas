@@ -108,6 +108,7 @@ uses
   pythian.hash,
   pythian.tools.studio.preparation,
   pythian.tools.studio.instrumental.config,
+  pythian.tools.studio.instrumental.output,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.assets,
@@ -153,7 +154,7 @@ begin
   if (ARequest.Strings['kind'] = 'instrumental_generate') and
     (ARequest.Find('project_snapshot') <> nil) and
     (ARequest.Objects['project_snapshot'].Find('playlist') <> nil) then
-    LMaximum := MaximumStudioTrainingSeconds;
+    LMaximum := MaximumStudioSessionSeconds;
   Need((LValue.JSONType = jtNumber) and (LValue.AsFloat = LValue.AsInt64) and
     (LValue.AsInt64 >= 1) and
     (LValue.AsInt64 <= LMaximum),
@@ -687,7 +688,9 @@ begin
           Need(LProject.Objects['playlist'].Arrays['items'].Count > 0,
             'Add music to your playlist before generating');
           Need((Number(AWrite, 'duration_ms') >= 2000) and
-            (Number(AWrite, 'duration_ms') <= 30000), 'Experimental music previews require2..30seconds');
+            (Number(AWrite, 'duration_ms') <= 86400000), 'Track length must be2seconds to24hours');
+          Need(AWrite.Objects['instrumental'].Find('controls') = nil,
+            'Playlist streaming uses learned musical inputs. Use the authored experiment editor for graph controls.');
         end
         else Need(AWrite.Find('duration_ms') = nil,
           'Duration in seconds belongs to playlist learning; authored experiments use cells');
@@ -870,7 +873,7 @@ begin
     LRequest.Add('worker_seconds', StudioJobRuntimeSeconds(LKind));
     if (LKind = 'instrumental_generate') and
       (LRequest.Objects['project_snapshot'].Find('playlist') <> nil) then
-      LRequest.Integers['worker_seconds'] := MaximumStudioTrainingSeconds;
+      LRequest.Integers['worker_seconds'] := MaximumStudioSessionSeconds;
     LRequest.Add('request_sha256', StudioTextHash(LRequest.AsJSON));
     Result := LRequest;
     LRequest := nil;
@@ -946,6 +949,7 @@ begin
             LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count;
           Result.Delete('unique_source_bytes_to_verify');
           Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
+          Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms']));
           Result.Add('analysis_coverage', 'All included time; bounded representative musical cells enter providers');
         end;
         if LRequest.Objects['project_snapshot'].Find('musical_material') <> nil then
@@ -1365,8 +1369,10 @@ begin
     Result.Add('count', LRows.Count);
     Result.Add('maximum_retained', MaximumStudioJobs);
     Result.Add('maximum_queued', MaximumStudioQueuedJobs);
-    Result.Add('maximum_worker_seconds', MaximumStudioLibrarySeconds);
-    Result.Add('maximum_generation_seconds', MaximumStudioTrainingSeconds);
+    Result.Add('maximum_worker_seconds', MaximumStudioSessionSeconds);
+    Result.Add('maximum_generation_seconds', MaximumStudioSessionSeconds);
+    Result.Add('maximum_training_seconds', MaximumStudioTrainingSeconds);
+    Result.Add('maximum_track_duration_ms', 86400000);
     Result.Add('maximum_library_refresh_seconds', MaximumStudioLibrarySeconds);
     Result.Add('logical_memory_budget_bytes', MaximumStudioJobMemoryBytes);
   except

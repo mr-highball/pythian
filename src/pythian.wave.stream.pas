@@ -124,6 +124,9 @@ procedure WriteWavePcm16(const AStream: TStream; const AClip: TAudioClip;
   frame count becomes known only at stop. Owns validation and RIFF/RF64 choice. }
 function WavePcm16Header(const ASampleRate, AChannels: Integer;
   const AFrames: Int64): TAudioBytes;
+{ Exact complete RIFF/RF64 extent through the same header validation. }
+function WavePcm16ByteCount(const ASampleRate, AChannels: Integer;
+  const AFrames: Int64): Int64;
 
 implementation
 
@@ -134,6 +137,13 @@ uses
 
 const
   DWordMaximum: Int64 = 4294967295;
+
+function WavePcm16ByteCount(const ASampleRate, AChannels: Integer;
+  const AFrames: Int64): Int64;
+begin
+  Result := Length(WavePcm16Header(ASampleRate, AChannels, AFrames)) +
+    AFrames * AChannels * 2;
+end;
 
 procedure PutTag(var ABytes: TAudioBytes; const AOffset: Integer; const ATag: String);
 var

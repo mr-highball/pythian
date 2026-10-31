@@ -167,13 +167,22 @@ begin
   LView.Observe('playlist_selection_progress', 0, 135000);
   Check(LView.Phase = 2, 'Earlier nested stage cannot move workflow backwards');
   LView.Observe('instrumental_render', 100, 700);
-  LView.Observe('instrumental_publish', 0, 7);
+  LView.Observe('instrument_stream_ready', 20, 20);
   Check((LView.Phase = 3) and (LView.Done = 100) and (LView.Total = 700),
-    'Saving an intermediate stem does not reset render progress');
+    'A completed nested pull does not reset whole-performance progress');
   LView.Observe('instrumental_render', 700, 700);
   Check(LView.Phase = 3, 'Finished PCM is not a saved job');
   LView.Observe('instrumental_save', 0, 1);
   Check((LView.Phase = 4) and (LView.Total = 0), 'Final save remains a real separate phase');
+  LView.Observe('instrumental_publish', 0, 8);
+  LView.Observe('instrumental_publish', 3, 8);
+  LView.Observe('instrumental_stream_plan', 0, 100);
+  Check((LView.Phase = 4) and (LView.Done = 3) and (LView.Total = 8),
+    'Confirmed saved outputs preserve cumulative finalization progress');
+  LView.Observe('instrumental_publish', 7, 8);
+  LView.Observe('instrumental_save', 0, 1);
+  Check((LView.Done = 7) and (LView.Total = 8),
+    'Seven saved audio outputs leave final publication unfinished until job success');
   LGate := Default(TStudioRenderProgressGate);
   Check(LGate.Accept('start', 0, 1, 0, True), 'Workflow publication initialized');
   LGate.PublishedAt(10000);

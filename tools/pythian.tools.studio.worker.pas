@@ -38,7 +38,8 @@ type
     const AProgress: TWorkProgressCallback): TJSONObject;
 
 { One claimed job, no service/session/browser dependency. Raw auditions last
-  20..40 seconds; instrumental jobs use finite bars. Missing modes never fall
+  20..40 seconds; authored instrumental jobs use finite bars and playlist jobs
+  use bounded instrumental streams. Missing modes never fall
   back to inferred notes or source grains. }
 function RunStudioWorker(const ACatalogRoot, AJobId, ALibraryRoot: String;
   const AExtension: TStudioWorkerExtension = nil): Boolean;
@@ -1882,6 +1883,7 @@ var
   LRequest: TJSONObject;
   LResults: TJSONObject;
   LWork: TStudioWork;
+  LWorkflow: TJSONObject;
   LMessage: String;
 begin
   Result := False;
@@ -1891,11 +1893,19 @@ begin
     try
       try
         LResults := LWork.Run(ALibraryRoot, AExtension);
+        LWorkflow := nil;
         try
           LWork.CheckNow;
-          AdvanceStudioJob(ACatalogRoot, AJobId, 'completed', 'completed', 1, 1, LResults);
+          if LRequest.Strings['kind'] = 'instrumental_generate' then
+          begin
+            LWorkflow := TJSONObject.Create(['phase', 4, 'phases', 4,
+              'done', 8, 'total', 8, 'unit', 'save_steps']);
+          end;
+          AdvanceStudioJob(ACatalogRoot, AJobId, 'completed', 'completed', 1, 1,
+            LResults, '', '', '', 0, LWorkflow);
           Result := True;
         finally
+          LWorkflow.Free;
           LResults.Free;
         end;
       except

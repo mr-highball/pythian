@@ -88,6 +88,7 @@ var
   LOptions: TInstrumentalStreamOptions;
   LFrames: TWfcMusicEnsembleFrames;
   LBlock: TAudioSamples;
+  LTaps: TBusSampleBlocks;
   LBefore, LAt, LHold, I, J: Integer;
 begin
   LStarter := MakeStarter;
@@ -104,11 +105,13 @@ begin
     LAt := 0;
     LHold := 0;
     LBefore := 0;
-    while LStream.ReadSamples(APull, LBlock) do
+    while LStream.ReadOutputs(APull, [6, 0], LBlock, LTaps) do
     begin
       for I := 0 to High(LBlock) do
       begin
         Check(not IsNan(LBlock[I]) and not IsInfinite(LBlock[I]), 'Finite instrumental PCM');
+        Check((Length(LTaps) = 2) and (LBlock[I] = LTaps[0][I]),
+          'WFC master and taps share one completed performance');
         Result[LAt] := LBlock[I];
         Inc(LAt);
       end;
@@ -164,6 +167,7 @@ var
   LOptions: TInstrumentalStreamOptions;
   LObserver: TObserver;
   LSamples: TAudioSamples;
+  LOutputs: TBusSampleBlocks;
   LRejected: Boolean;
 begin
   LStarter := MakeStarter;
@@ -181,6 +185,11 @@ begin
     except on EAudio do LRejected := True end;
     Check(LRejected and (LStream.State = issReady) and (LStream.PlannedCells = 0),
       'Invalid pulls cannot consume a musical frontier');
+    LRejected := False;
+    try LStream.ReadOutputs(1, [7], LSamples, LOutputs);
+    except on EAudio do LRejected := True; end;
+    Check(LRejected and (LStream.State = issReady) and (LStream.PlannedCells = 0),
+      'Invalid output tap cannot plan or consume a musical frontier');
     LStream.Pause;
     Check(not LStream.ReadSamples(2048, LSamples) and (LStream.Position = 0),
       'Paused planning consumes no provider frontier');

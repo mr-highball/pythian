@@ -36,7 +36,7 @@ uses
   wfc_sequence_graph;
 
 const
-  SequenceStreamVersion = 1;
+  SequenceStreamVersion = 2;
 
 type
   TSequenceChunkOptions = record
@@ -44,6 +44,9 @@ type
     Seed: TGraphSeed;
     MaxBacktracks: Integer;
     RequireObservedEnd: Boolean;
+    { Structural support after this chunk, before future caller constraints.
+      Zero retains a finite segment without an exit-support requirement. }
+    MinimumFollowingCells: Integer;
     Preferences: TLayerTokenPreferences;
   end;
 
@@ -139,6 +142,7 @@ begin
     (AOptions.CellCount > MaximumGeneratedAcousticFrames) or
     (Int64(AOptions.CellCount) * FModel.StateCount > DefaultAcousticStateCells) or
     (AOptions.MaxBacktracks < 0) or (AOptions.MaxBacktracks > 65536) or
+    (AOptions.MinimumFollowingCells < 0) or
     (Length(AConstraints) > AOptions.CellCount) or
     (FCellCount > MaximumTimingInteger - AOptions.CellCount) then
   begin
@@ -146,12 +150,13 @@ begin
   end;
   if FCellCount = 0 then
   begin
-    LBoundary := MakeWfcSequenceInitialSegmentBoundary(AOptions.RequireObservedEnd);
+    LBoundary := MakeWfcSequenceInitialSegmentBoundary(AOptions.RequireObservedEnd,
+      AOptions.MinimumFollowingCells);
   end
   else
   begin
     LBoundary := MakeWfcSequenceContinuingSegmentBoundary(FPreviousState,
-      AOptions.RequireObservedEnd);
+      AOptions.RequireObservedEnd, AOptions.MinimumFollowingCells);
   end;
   LOptions := DefaultSequenceSegmentOptions;
   LOptions.CellCount := AOptions.CellCount;

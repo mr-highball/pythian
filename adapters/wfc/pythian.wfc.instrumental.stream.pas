@@ -35,7 +35,7 @@ uses pythian.audio, pythian.time, pythian.progress, pythian.bus,
   wfc_music_voices_stream;
 
 const
-  InstrumentalStreamVersion = 1;
+  InstrumentalStreamVersion = 2;
 
 type
   TInstrumentalTokenStreams = array of TWfcModelTokens;
@@ -107,6 +107,9 @@ type
       const AContext: TWfcSequenceModel = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
+    function ReadOutputs(const AMaximumFrames: Integer; const AOutputBuses: array of Integer;
+      out ASamples: TAudioSamples; out AOutputs: TBusSampleBlocks;
       const AProgress: TWorkProgressCallback = nil): Boolean;
     procedure Pause;
     procedure Resume;
@@ -336,6 +339,11 @@ var
 begin
   LOptions := DefaultSequenceChunkOptions;
   LOptions.CellCount := Min(Int64(FOptions.SegmentCells), FTotalCells - FCells);
+  { Big Boss: a bounded segment must leave a viable structural exit for the
+    requested remainder. Finite capacity is below the model's state count, so
+    capping this threshold at High(Integer) preserves the long-clock decision. }
+  LOptions.MinimumFollowingCells := Min(Int64(High(Integer)),
+    FTotalCells - FCells - LOptions.CellCount);
   LOptions.MaxBacktracks := FOptions.MaxBacktracks;
   LOptions.Seed := WfcMusicArrangementSectionSeed(FOptions.Seed, FSegments);
   ReportWork(AProgress, 'instrumental_stream_plan', wuItems, FCells, FTotalCells);
@@ -343,7 +351,10 @@ begin
   if FContext <> nil then
   begin
     if not FContext.TryNext(LOptions, [], LChunk, LReport, AProgress) then
-      raise EAudio.Create('Context frontier cannot continue at cell' + IntToStr(FCells));
+      raise EAudio.Create('Learned context cannot plan step ' + IntToStr(FCells) +
+        ' (solver status ' + IntToStr(Ord(LReport.Status)) + ', following cells ' +
+        IntToStr(LOptions.MinimumFollowingCells) +
+        '). Try a shorter track or a broader selection.');
     LContextTokens := LChunk.Tokens;
     LMasks := BindMusicalContextTokens(LContextTokens, Length(FConfig.Voices), nil,
       FOptions.ContextBinding = icbAllRoles);
@@ -425,21 +436,31 @@ end;
 
 function TInstrumentalMusicStream.ReadSamples(const AMaximumFrames: Integer;
   out ASamples: TAudioSamples; const AProgress: TWorkProgressCallback): Boolean;
+var
+  LOutputs: TBusSampleBlocks;
+begin
+  Result := ReadOutputs(AMaximumFrames, [], ASamples, LOutputs, AProgress);
+end;
+
+function TInstrumentalMusicStream.ReadOutputs(const AMaximumFrames: Integer;
+  const AOutputBuses: array of Integer; out ASamples: TAudioSamples;
+  out AOutputs: TBusSampleBlocks; const AProgress: TWorkProgressCallback): Boolean;
 begin
   RequireIdle;
   ASamples := nil;
-  if (AMaximumFrames < 1) or (AMaximumFrames > 65536) then
-    raise EAudio.Create('Instrumental pull must request1..65536 frames');
+  AOutputs := nil;
+  FMusic.ValidatePull(AMaximumFrames, AOutputBuses);
   if FFailed then raise EAudio.Create('Instrumental stream failed; start a new replay');
   if State <> issReady then Exit(False);
   FBusy := True;
   try
     try
       if FMusic.NeedsInput then AdmitCell(AProgress);
-      Result := FMusic.ReadSamples(AMaximumFrames, ASamples, AProgress);
+      Result := FMusic.ReadOutputs(AMaximumFrames, AOutputBuses, ASamples, AOutputs, AProgress);
     except
       FFailed := True;
       ASamples := nil;
+      AOutputs := nil;
       raise;
     end;
   finally

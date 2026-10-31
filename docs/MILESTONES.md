@@ -11,7 +11,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 52 / 113 effort units accepted (46.02%); nine open, twelve current-goal DONE.**
+**Current snapshot: 52 / 119 effort units accepted (43.70%); ten open, twelve current-goal DONE.**
 The long consumer exposed a five-unit [canonical artifact prerequisite — DONE](TODO/DONE/NS-6_instrumental-artifacts_01.md):
 avoid repeated generated-audio copies/hashes and retain responsive, verified
 access from the configured E-drive store. Actual native/browser publication,
@@ -30,10 +30,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 7 | 8 | 8 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 14 | 19 | 19 / 33 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, graph inspection and musical controls | 20 | 19 | 19 / 39 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 19 | 19 | 19 / 38 |
-| **Total** | **21 current-goal tasks** | **61** | **52** | **46.02%** |
+| **Total** | **22 current-goal tasks** | **67** | **52** | **43.70%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -49,7 +49,9 @@ Whole/range traversal, source-bound cache reuse and separate model-used coverage
 are implemented. Desktop/phone-width playback and reconnect checks protect the
 new path; flexible long output, vocabulary ancestry and remaining task criteria
 still prevent acceptance of either open task. The separate storage/access
-prerequisite is now accepted; accounting is **52/113**.
+prerequisite is now accepted. The actual hour-request trial exposed a six-unit
+[learned-context continuation prerequisite](TODO/NS-4_context-continuation_01.md)
+at cell656; longer Studio output remains unaccepted. Accounting is **52/119**.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -161,7 +163,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 9 open + 12 current DONE; legacy records: 53 retired +
+Current scoped records: 10 open + 12 current DONE; legacy records: 53 retired +
 97 historical DONE (109 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered

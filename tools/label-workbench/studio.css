@@ -392,6 +392,7 @@ main {
   margin-top:1.3rem
 }
 
+.duration-controls { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; max-width: 30rem; }
 .duration-control {
   display:flex;
   flex-direction:column;

@@ -44,6 +44,7 @@ type
     Right: Double;
   end;
   TBusFrames = array of TStereoFrame;
+  TBusSampleBlocks = array of TAudioSamples;
   TBusClips = array of TAudioClip;
   TBusSettings = record
     Gain: Double;
@@ -73,6 +74,8 @@ type
     FSends: array of TSend;
     FBusy: Boolean;
     FFailed: Boolean;
+    FHasOutput: Boolean;
+    FLastOutputs: array[0..MaximumBuses - 1] of TStereoFrame;
     procedure RequireReady;
     procedure CheckBus(const ABus: Integer);
     function GetBusCount: Integer;
@@ -88,6 +91,10 @@ type
     procedure Reset;
     procedure Process(const AInputs: array of TStereoFrame;
       out AOutputLeft, AOutputRight: Double);
+    { Detached post-effect/post-fader output of a completed Process call. Does
+      not advance effects or clocks. Unavailable before Process/after Reset,
+      during processing or after a failed graph. }
+    function LastOutput(const ABus: Integer): TStereoFrame;
     property SampleRate: Integer read FSampleRate;
     property BusCount: Integer read GetBusCount;
     property FrameCost: Integer read GetFrameCost;
@@ -265,6 +272,7 @@ begin
     raise EAudio.Create('Cannot reset an active bus graph');
   end;
   FFailed := True;
+  FHasOutput := False;
   FBusy := True;
   try
     for LIndex := 0 to High(FBuses) do
@@ -286,6 +294,7 @@ procedure TBusGraph.Process(const AInputs: array of TStereoFrame;
   out AOutputLeft, AOutputRight: Double);
 var
   LFrames: array[0..MaximumBuses - 1] of TStereoFrame;
+  LPosts: array[0..MaximumBuses - 1] of TStereoFrame;
   LBus: Integer;
   LSend: Integer;
   LDestination: Integer;
@@ -321,6 +330,8 @@ begin
         LPostRight := LPreRight * LGain;
         CheckMagnitude(LPostLeft);
         CheckMagnitude(LPostRight);
+        LPosts[LBus].Left := LPostLeft;
+        LPosts[LBus].Right := LPostRight;
         for LSend := 0 to High(FSends) do
         begin
           if FSends[LSend].Source <> LBus then
@@ -347,6 +358,12 @@ begin
       end;
       AOutputLeft := LPostLeft;
       AOutputRight := LPostRight;
+      for LBus := 0 to High(FBuses) do
+      begin
+        FLastOutputs[LBus].Left := LPosts[LBus].Left;
+        FLastOutputs[LBus].Right := LPosts[LBus].Right;
+      end;
+      FHasOutput := True;
     except
       FFailed := True;
       raise;
@@ -354,6 +371,15 @@ begin
   finally
     FBusy := False;
   end;
+end;
+
+function TBusGraph.LastOutput(const ABus: Integer): TStereoFrame;
+begin
+  RequireReady;
+  CheckBus(ABus);
+  if not FHasOutput then raise EAudio.Create('Bus graph has no completed output frame');
+  Result.Left := FLastOutputs[ABus].Left;
+  Result.Right := FLastOutputs[ABus].Right;
 end;
 
 function RenderBusClips(const AClips: array of TAudioClip; const AGraph: TBusGraph;

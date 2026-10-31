@@ -47,7 +47,18 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current accepted WFC pin: `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`, on separate
+Current candidate WFC pin: `7b3c0a5f7ed4b42c4199631449ebe5a7d68976e1`, on separate
+branch `codex/pythian-sequence-continuation`, unmerged. Generic segment boundary
+version2 requires structural support for following cells without inventing edges
+or allocating the whole requested duration. Native/actual pas2js checks reproduce
+the original terminal exit at cell656, then validate14400cells with the same
+provider/seed. The actual native hour render completes. CI60/61 retain diagnostic
+label and versioned-consumer failures; CI61's full browser gate passes. Replacement
+[CI62](https://github.com/mr-highball/wfc/actions/runs/41189435399) and downstream
+browser/integration checks remain pending, so this candidate is not yet accepted.
+Audio, musical policy and remaining-duration selection stay in Pythian.
+
+Previous accepted WFC pin: `b04a9e4e26130c5e00ae0c7100dfc34be99576c4`, on separate
 branch `codex/pythian-accepted-assignments`, which remains unmerged. All five
 [upstream CI59 jobs](https://github.com/mr-highball/wfc/actions/runs/41144571400)
 pass. It retains the previous pin and adds bounded non-solving assignment

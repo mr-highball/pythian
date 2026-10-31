@@ -34,7 +34,35 @@ uses
   wfc_model,
   wfc_sequence,
   wfc_sequence_learn,
+  wfc_sequence_text,
+  wfc_music_arrangement,
   wfc_sequence_graph;
+
+{ Big Boss: exact context provider from the synthetic Studio hour request
+  music-1793435527277-762351. It contains no recording bytes or operator data. }
+const
+  RetainedContextModel =
+    'wfcs=1'#10 +
+    'order=2'#10 +
+    'samples=5'#10 +
+    's=0,120'#10 + 's=1,120'#10 + 's=2,60'#10 + 's=3,120'#10 + 's=4,120'#10 +
+    'tokens=10'#10 +
+    't=0,ctx2%3A2%3Awme1%3A3%3Aa%3A1%3A45%3A112%3Aa%3A1%3A69%3A112%3Aa%3A1%3A57%3A112'#10 +
+    't=1,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A45%3A112%3Ah%3A1%3A69%3A112%3Ah%3A1%3A57%3A112'#10 +
+    't=2,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A45%3A112%3Ah%3A1%3A69%3A112%3Aa%3A1%3A81%3A112'#10 +
+    't=3,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A45%3A112%3Ah%3A1%3A69%3A112%3Ah%3A1%3A81%3A112'#10 +
+    't=4,ctx2%3A2%3Awme1%3A3%3Aa%3A1%3A45%3A112%3Aa%3A1%3A69%3A112%3Aa%3A1%3A81%3A112'#10 +
+    't=5,ctx2%3A2%3Awme1%3A3%3Aa%3A1%3A41%3A112%3Aa%3A2%3A63%3A112%3A65%3A112%3Aa%3A1%3A64%3A112'#10 +
+    't=6,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A41%3A112%3Ah%3A2%3A63%3A112%3A65%3A112%3Ah%3A1%3A64%3A112'#10 +
+    't=7,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A41%3A112%3Ah%3A2%3A63%3A112%3A65%3A112%3Aa%3A1%3A77%3A112'#10 +
+    't=8,ctx2%3A2%3Awme1%3A3%3Ah%3A1%3A41%3A112%3Ah%3A2%3A63%3A112%3A65%3A112%3Ah%3A1%3A77%3A112'#10 +
+    't=9,ctx2%3A2%3Awme1%3A3%3Aa%3A1%3A41%3A112%3Aa%3A2%3A63%3A112%3A65%3A112%3Aa%3A1%3A77%3A112'#10 +
+    'states=14'#10 +
+    'q=0,3,3,0,B,E0'#10 + 'q=1,3,0,0,T0,E1'#10 + 'q=2,90,0,0,T1,E1'#10 +
+    'q=3,3,0,0,T1,E2'#10 + 'q=4,3,0,0,T2,E3'#10 + 'q=5,195,0,0,T3,E3'#10 +
+    'q=6,3,0,3,T3,E4'#10 + 'q=7,2,2,0,B,E5'#10 + 'q=8,2,0,0,T5,E6'#10 +
+    'q=9,60,0,0,T6,E6'#10 + 'q=10,2,0,0,T6,E7'#10 + 'q=11,2,0,0,T7,E8'#10 +
+    'q=12,170,0,0,T8,E8'#10 + 'q=13,2,0,2,T8,E9'#10 + 'end'#10;
 
 procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
@@ -194,9 +222,70 @@ begin
   end;
 end;
 
+procedure CheckRetainedContextContinuation;
+var
+  LModel: TWfcSequenceModel;
+  LStream: TLearnedSequenceStream;
+  LOptions: TSequenceChunkOptions;
+  LChunk: TWfcGeneratedSequenceSegment;
+  LReport: TGraphSolveReport;
+  LStates: TWfcSequenceStateIndices;
+  LValidation: TWfcSequenceGraphValidationReport;
+  LSegment: Integer;
+  I: Integer;
+begin
+  LModel := DecodeWfcSequenceText(RetainedContextModel);
+  LStream := nil;
+  try
+    LStream := TLearnedSequenceStream.Create(LModel);
+    LOptions := DefaultSequenceChunkOptions;
+    LOptions.CellCount := 16;
+    for LSegment := 0 to 41 do
+    begin
+      LOptions.Seed := WfcMusicArrangementSectionSeed(2066483829, LSegment);
+      if LSegment < 41 then
+        Check(LStream.TryNext(LOptions, nil, LChunk, LReport), 'Retained original prefix')
+      else
+      begin
+        Check(not LStream.TryNext(LOptions, nil, LChunk, LReport) and
+          (LReport.Status = gssContradiction) and (LStream.CellCount = 656),
+          'Exact original seed reproduces terminal-exit failure at656 without exit support');
+      end;
+    end;
+    LStream.Reset;
+    SetLength(LStates, 14400);
+    for LSegment := 0 to 899 do
+    begin
+      LOptions.Seed := WfcMusicArrangementSectionSeed(2066483829, LSegment);
+      LOptions.MinimumFollowingCells := 14400 - (LSegment + 1) * 16;
+      Check(LStream.TryNext(LOptions, nil, LChunk, LReport),
+        'Retained provider and exact seed plan the requested hour with supported exits');
+      for I := 0 to High(LChunk.StateIndices) do
+        LStates[LSegment * 16 + I] := LChunk.StateIndices[I];
+    end;
+    Check((LStream.CellCount = 14400) and
+      ValidateSequenceStatePath(LModel, LStates, wsePrefix, LValidation),
+      'Whole retained hour path independently validates every learned transition');
+    LChunk.Tokens[0] := 'preserved';
+    LOptions.MinimumFollowingCells := -1;
+    try
+      LStream.TryNext(LOptions, nil, LChunk, LReport);
+      Check(False, 'Negative continuation requirement must reject');
+    except
+      on E: EAudio do
+        Check((LStream.CellCount = 14400) and (LChunk.Tokens[0] = 'preserved'),
+          'Bad continuation request preserves the accepted cursor and output');
+    end;
+  finally
+    LStream.Free;
+    LModel.Free;
+  end;
+end;
+
 begin
   CheckHistoryAndFailure;
   CheckLongSequence;
-  WriteLn('Learned streaming history, retry preservation, reset and 1601-cell path passed');
+  CheckRetainedContextContinuation;
+  WriteLn('Learned stream history, retry,1601-cell path and retained14400-cell continuation passed');
 end.
 

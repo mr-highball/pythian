@@ -2,7 +2,62 @@
 
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
-## Latest handoff: canonical audio accepted; long Studio consumer next — 2026-10-31
+## Current batch: long Studio consumer and learned continuation — 2026-10-31
+
+Big Boss SOLO has connected one persistent instrumental performance to mix and
+six stems. Actual browser playlist generation produced120seconds plus a1second
+tail, survived closing/reopening the page, played and sought correctly, and
+downloaded the exact canonical bytes. The next one-hour request failed at context
+cell656. Preserve `music-1793435527277-762351`, its original seed2066483829,
+models, event history and partial staging in `studio-long-20261031-boss` under E.
+Diagnose continuing support before another seed or deployment. The linked
+[context continuation prerequisite](TODO/NS-4_context-continuation_01.md) owns
+the distinct six-unit gap; a generic WFC change requires its separate repository.
+No task is accepted for this discovery. Accounting is52/119 (43.70%), ten open,
+twelve current DONE,67 open units. CI518 for c351cb5 is terminal SUCCESS.
+
+Stable Studio keeps its2–30second limit while the wider controls remain in QA.
+The native/actual pas2js multi-output checks, finite seven-file hash equivalence,
+120second browser proof and the failed hour request remain evidence together.
+The full jobs fixture initially failed its independent-writer readiness timeout;
+its separate focused rerun passes after a test handshake allowance repair. Do not
+report the original full invocation as passing. Also close the final durable
+saving counters atomically with success; the actual completed job retained4/8.
+No more operator labeling is needed. Stop before form/style changes and do not
+declare the long consumer complete until its concrete continuation blocker passes.
+
+The retained hour retry `continuation-retained-hour-01` now completes with the
+original model hash and seed:14400cells,900 bounded windows,86424000frames
+including the1second tail, five peak voices, six stems plus mix. Each referenced
+WAV is345696044bytes; requested output estimate2419872308bytes for seven outputs.
+Runtime is version2 with explicit remaining-length structural support. Final
+durable workflow closes8/8 atomically with success. The new upstream branch is
+`codex/pythian-sequence-continuation`, candidate7b3c0a5; WFC CI62 is pending.
+CI60/61 failures exposed a missing diagnostic label and old versioned segment
+goldens in real demo/MIDI consumers; PCM/MIDI content expectations remain intact.
+
+Current native/pas2js evidence: retained14400cell path,352656 publication checks
+with273 original abort/retries, and4043522 instrumental stream checks pass.
+Native lazy playlist100 and complete lifecycle113 checks pass with clean heaps.
+Preserve the first playlist fixture failure: its default cache destination grew
+to275characters beneath the verbose test root. The repaired orchestration uses
+a short explicit E-drive learning-cache root; product inference did not change.
+The fresh-origin browser save timed out but its preserved retry returned the
+same saved draft. UI now displays retry work, clears stale success errors, and
+shows blocked-switch messages inside the playlist picker. Browser checks and
+deployment remain in progress; all52/119 accepted units stay unchanged so far.
+
+## Previous handoff: canonical audio accepted; long Studio consumer next — 2026-10-31
+
+Current resumed batch, Big Boss SOLO: previous turn made progress by accepting
+and deploying canonical audio. Criterion: one instrumental performance feeds
+mix and six stems, and the ordinary playlist job uses bounded WFC lookahead for
+long output. Deliver primary post-bus taps/shared pulls and their real native
+Studio consumer, duration/resource admission and simple controls. Check multiple
+outputs/FX partition replay, bad pulls and failed-block publication on native
+and actual pas2js, then multi-minute browser Generate/reconnect/Stop. Stop before
+form/style changes. Do not raise the app limit before its actual consumer passes.
+Counter starts zero. Current packet: `studio-long-20261031-boss` under E.
 
 Big Boss SOLO completes the concrete storage prerequisite discovered in the long
 consumer. [Artifact task](TODO/DONE/NS-6_instrumental-artifacts_01.md) is accepted:

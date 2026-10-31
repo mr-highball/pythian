@@ -4,8 +4,9 @@
 [Stream task](TODO/NS-6_instrumental-streams_01.md) · [Studio](OPERATOR-STUDIO.md)
 
 The library now has a bounded WFC-to-instruments stream and a native caller that
-saves sustained instrumental audio. **Studio still exposes finite 2–30-second
-previews.** Its long-job, playback and output-resource integration remains open.
+saves sustained instrumental audio. **The deployed stable Studio still exposes
+finite2–30second previews.** The candidate native Studio consumer now completes
+an actual learned hour request; browser/CI acceptance and deployment remain open.
 The new caller's example material is explicitly authored; it is not evidence of
 recording-derived style quality.
 
@@ -42,6 +43,13 @@ the selected role while other roles remain free. Those freer frontiers can reach
 incompatible continuations; small-window failures are retained evidence, not
 hidden by restarting notes or looping audio. Neither mode promises arbitrary
 future solvability. Finite context behavior retains its selected-role contract.
+
+Version2 adds explicit structural support for the requested remainder to context
+and percussion segment exits. The generic capacity/endpoint contract lives in
+the separate WFC repository; musical clock/binding policy stays here. This avoids
+an unsupported terminal branch when a continuing alternative exists. It does not
+predict future caller masks or make a finite source cyclic. Actual source model,
+seed, policy, instrument settings and requested/completed receipts remain saved.
 
 The portable `TInstrumentMusicStream` in `pythian.music.stream` has no WFC, browser,
 file or playback-device dependency. It admits native rest/attack/hold frames into

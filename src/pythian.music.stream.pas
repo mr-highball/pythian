@@ -101,6 +101,14 @@ type
       The final input automatically releases held notes before TailFrames. }
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
+    { One performance supplies master plus detached selected bus taps. Each
+      output has the same bounded frame extent. Failure publishes neither.
+      Copy work also counts toward the pull budget. }
+    function ReadOutputs(const AMaximumFrames: Integer; const AOutputBuses: array of Integer;
+      out ASamples: TAudioSamples; out AOutputs: TBusSampleBlocks;
+      const AProgress: TWorkProgressCallback = nil): Boolean;
+    { Non-mutating extent/bus preflight for adapters before musical admission. }
+    procedure ValidatePull(const AMaximumFrames: Integer; const AOutputBuses: array of Integer);
     procedure Pause;
     procedure Resume;
     procedure Stop;
@@ -319,20 +327,45 @@ end;
 function TInstrumentMusicStream.ReadSamples(const AMaximumFrames: Integer;
   out ASamples: TAudioSamples; const AProgress: TWorkProgressCallback): Boolean;
 var
+  LOutputs: TBusSampleBlocks;
+begin
+  Result := ReadOutputs(AMaximumFrames, [], ASamples, LOutputs, AProgress);
+end;
+
+procedure TInstrumentMusicStream.ValidatePull(const AMaximumFrames: Integer;
+  const AOutputBuses: array of Integer);
+var
+  I: Integer;
+begin
+  RequireIdle;
+  if (AMaximumFrames < 1) or (AMaximumFrames > 65536) then
+    raise EAudio.Create('Instrument pull must request1..65536 frames');
+  if Length(AOutputBuses) > MaximumBuses then
+    raise EAudio.Create('Instrument output taps exceed the bus bound');
+  for I := 0 to High(AOutputBuses) do
+    if (AOutputBuses[I] < 0) or (AOutputBuses[I] >= FGraph.BusCount) then
+      raise EAudio.Create('Instrument output tap is outside the graph');
+end;
+
+function TInstrumentMusicStream.ReadOutputs(const AMaximumFrames: Integer;
+  const AOutputBuses: array of Integer; out ASamples: TAudioSamples;
+  out AOutputs: TBusSampleBlocks; const AProgress: TWorkProgressCallback): Boolean;
+var
   LCount: Integer;
   LIndex: Integer;
   LLimit: Integer;
   LLeft: Double;
   LRight: Double;
   LSamples: TAudioSamples;
+  LOutputs: TBusSampleBlocks;
+  LTap: Integer;
+  LFrame: TStereoFrame;
 begin
   RequireIdle;
   ASamples := nil;
+  AOutputs := nil;
   Result := False;
-  if (AMaximumFrames < 1) or (AMaximumFrames > 65536) then
-  begin
-    raise EAudio.Create('Instrument pull must request 1..65536 frames');
-  end;
+  ValidatePull(AMaximumFrames, AOutputBuses);
   if FState = issFailed then
   begin
     raise EAudio.Create('Instrument stream processing previously failed');
@@ -344,19 +377,27 @@ begin
     try
       if not FEnded and (FRemainingFrames = 0) then EndMusic(AProgress);
       LLimit := MaximumRenderVisits div Max(Int64(1),
-        Int64(FSynth.ReservedWork) + FGraph.FrameCost);
+        Int64(FSynth.ReservedWork) + FGraph.FrameCost + 2 * Length(AOutputBuses));
       if LLimit < 1 then
         raise EAudio.Create('Instrument and effect work exceeds the per-pull budget');
       LCount := Min(AMaximumFrames, Min(InstrumentStreamBlockFrames, LLimit));
       LCount := Min(Int64(LCount), FFrameCount - FPosition);
       if not FEnded then LCount := Min(Int64(LCount), FRemainingFrames);
       SetLength(LSamples, LCount * 2);
+      SetLength(LOutputs, Length(AOutputBuses));
+      for LTap := 0 to High(LOutputs) do SetLength(LOutputs[LTap], LCount * 2);
       ReportWork(AProgress, 'instrument_stream_render', wuFrames, FPosition, FFrameCount);
       for LIndex := 0 to LCount - 1 do
       begin
         FSynth.Process(LLeft, LRight);
         LSamples[LIndex * 2] := LLeft;
         LSamples[LIndex * 2 + 1] := LRight;
+        for LTap := 0 to High(LOutputs) do
+        begin
+          LFrame := FGraph.LastOutput(AOutputBuses[LTap]);
+          LOutputs[LTap][LIndex * 2] := LFrame.Left;
+          LOutputs[LTap][LIndex * 2 + 1] := LFrame.Right;
+        end;
         if ((LIndex + 1) mod 256 = 0) then
         begin
           ReportWork(AProgress, 'instrument_stream_render', wuFrames,
@@ -369,6 +410,7 @@ begin
       if not FEnded then Dec(FRemainingFrames, LCount);
       if FPosition = FFrameCount then FState := issCompleted;
       ASamples := LSamples;
+      AOutputs := LOutputs;
       Result := LCount > 0;
     except
       FState := issFailed;
