@@ -72,8 +72,10 @@ var
   Generated: TWfcMusicVoicesGenerated;
   Boundaries: TWfcMusicVoicesBoundaries;
   Graph: TGraph;
+  Domains: TGraphPreparedDomains;
+  Preparation: TGraphDomainPreparationReport;
   Probe: TProbe;
-  I, J, Mode, Role: Integer;
+  I, J, K, Mode, Role, Prepared: Integer;
   Rejected: Boolean;
 begin
   Base := Default(TWfcMusicVoicesGraphConfig);
@@ -108,6 +110,7 @@ begin
       Context := Model(ContextTokens[0], ContextTokens[1]);
       try
         for Mode := 0 to 1 do
+        for Prepared := 0 to 1 do
         begin
           Composed := ComposeMusicalContextGraph(Base, Context, Mode = 1);
           Check((Length(Base.Auxiliary) = 0) and (Length(Base.Projections) = 0),
@@ -120,6 +123,7 @@ begin
           Config := DefaultWfcMusicVoicesStreamConfig(Composed, 1, 8, 731);
           Config.SegmentCellCount := 2;
           Config.LookaheadCellCount := 4;
+          Config.PrepareProjectedDomains := Prepared = 1;
           Stream := TWfcMusicVoicesStream.Create(Config);
           try
             Stream.IntersectAllowedTokens(3, 0, [ContextTokens[0]]);
@@ -147,6 +151,13 @@ begin
           for J := 0 to High(Boundaries) do Boundaries[J] := MakeWfcSequenceInitialSegmentBoundary(False);
           Graph := BuildWfcMusicVoicesSegmentGraph(Composed, 4, 731, Boundaries);
           try
+            if Config.PrepareProjectedDomains then
+            begin
+              Check(Graph.PrepareProjectedDomains(Domains, Preparation),
+                'actual ctx2 consumer prepares known domains before source choices');
+              for J := 0 to High(Domains) do for K := 0 to High(Domains[J].Cells) do
+                Graph.PassGraph[J].SetAllowedValues(K, 0, 0, Domains[J].Cells[K]);
+            end;
             Check(Graph.TrySolveNegotiated(DefaultGraphNegotiationOptions, Report), 'finite musical composition solves');
             Check(CaptureSolvedWfcMusicVoices(Composed, Graph, Boundaries, Generated, Proof),
               'primary proof validates actual ctx2 source codec projection');

@@ -24,11 +24,14 @@ their criteria, including the discovered live-cancellation prerequisite.
 
 **Current snapshot: 124 / 175 effort units accepted (70.86%); eight open, twenty-seven current-goal DONE.**
 The six-unit [projected-domain prerequisite](TODO/NS-4_projected-domains_01.md)
-follows the actual shared candidate's remaining64cell search failure. A pure
+addresses the retained shared candidate's64cell search failure. A pure
 WFC64cell proof shows that a known target restriction is not used before source
 assignment: sixteen retries fail, while the unchanged explicit witness proves
 with zero. Reuse primary propagation in the notified separate WFC branch; keep
-the failed musical candidate for repair. Those six units remain open.
+the failed musical candidate for repair. Candidate d0c04d2 now passes all five
+upstream CI67 jobs and188 native/actual pas2js checks. The original192cell musical
+candidate completes on both targets with identical free-note digest. Downstream/
+extracted qualification and runtime/Studio integration remain; six units stay open.
 The six-unit [context composition — DONE](TODO/DONE/NS-4_context-composition_01.md)
 closes after all upstream CI66/downstream CI543 and native/actual pas2js/extracted
 gates pass. Explicit source layout/projection proof, shared prefix ownership and

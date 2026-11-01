@@ -47,7 +47,20 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current accepted WFC pin: `80772b648e183dd1201696954dd427529942700e`, on separate
+Candidate WFC pin: `d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2`, on separate
+unmerged branch `codex/pythian-projected-domains`. It adds opt-in known-domain
+preparation through shared primary graph compilation, temporal propagation and
+binary arc support. All five [upstream CI67 jobs](https://github.com/mr-highball/wfc/actions/runs/41284525161)
+pass. The original64cell case now solves/proves with zero retries at the same
+seed/limits, with188 native/actual pas2js checks. The typed Pythian consumer
+covers original/prepared paths with96 checks. Complete downstream CI/extracted
+qualification is pending; the [six-unit prerequisite](docs/TODO/NS-4_projected-domains_01.md)
+remains open. The actual192cell musical candidate passes115 native/actual pas2js
+checks with identical free-note digest, but its broader runtime/Studio integration
+remains unpublished work in progress. No service or upstream branch is changed
+by candidate pinning, and no dependency source was edited here.
+
+Current accepted predecessor: `80772b648e183dd1201696954dd427529942700e`, on separate
 unmerged branch `codex/pythian-context-composition`. It adds caller-declared
 symbolic sequence passes and projections to the primary independent-voice graph
 and stream, with one negotiated transaction and shared prefix frontier. Generic

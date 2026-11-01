@@ -44,6 +44,21 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Dev Notes:**
 
+- Big Boss, known-domain repair batch: the preserved candidate01 is reapplied
+  without another model variant. Its only planning selection is the new primary
+  projected-domain preparation on the full joint graph. Actual pas2js now passes
+  the original192cell/seed1704297163/256-lookahead/256:16-limit fixture: guided
+  digest remains b6796894ad28666fb455d48a8c9224bc00cb284db6abc077cc9a07bd84750ece;
+  free music differs in actual performed notes, retains the returning lead,
+  sounds all six parts and repeats its decisions under another audio pull size.
+ 115 checks pass; free digest
+  e26778c7f9e87d242d3fd50944638dfa0418898ecbc45f823bf99469cc149fbe.
+  Native115 checks now match the free/guided digests with a clean heap. Actual
+  Studio and the broader form regression remain pending. The callback uses the existing WFC
+  progress bridge for the changed preparation/search path. Source is currently
+  unpublished WIP, not deployed; no acceptance is inferred from a JavaScript-only
+  musical success. The original failure/candidate packet remains unchanged.
+
 - Shared candidate01 reaches the declared stop condition: native and actual
   pas2js agree on the completed guided witness, then the free request exhausts
   its unchanged16-retry allowance at64/lead pass4. Preserve both full failures.

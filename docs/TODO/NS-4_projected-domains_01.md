@@ -46,6 +46,27 @@ search preparation, rather than replacing its graph, proof or stream engine.
 
 **Dev Notes:**
 
+- Big Boss, subsequent batch: separate upstream source d0c04d2 is published on
+  `codex/pythian-projected-domains`; all five CI67/run41284525161 jobs pass. Primary
+  graph-to-reference compilation is shared, and projected closure reuses the
+  primary binary arc-support test plus existing temporal propagation. Opt-in
+  preparation handles same-cell single-term any/merged/count clauses; unsupported
+  mapped/offset/multi-term/previous-union/transform forms raise explicitly.
+  Native/actual pas2js188 checks now solve/prove the original64cell case with
+  zero retries and the same seed/256/16 limits. Full-window streaming, future
+  masks, original alternatives, contradiction/ownership and cancellation pass.
+  Relevant legacy native consumers pass with clean heaps and original solve
+  traces/no-composition signatures. A duplicate compiler allocation was caught
+  and repaired; failed evidence is retained in the E packet. The original
+  192cell musical fixture now passes115 actual pas2js checks: all six parts,
+  retained lead return, performed free-note variation and pull-size replay;
+  digest e26778c7f9e87d242d3fd50944638dfa0418898ecbc45f823bf99469cc149fbe.
+  The original musical native115 checks now match the pas2js digest exactly,
+  with a clean heap. The typed Pythian component consumer expands to96 checks
+  covering prepared/original paths. Complete downstream CI/extracted consumers
+  remain pending. The runtime candidate and broader form tests remain separate
+  unpublished work. No task effort is accepted yet.
+
 - First implementation step in the separate branch reuses the primary numeric
   kernel: PropagateReferenceModel shares its new PrepareDomains initializer and
   original Propagate operation with full search, without decisions or random

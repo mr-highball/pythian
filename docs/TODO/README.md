@@ -6,11 +6,13 @@
 **8 open tasks · 175 total effort units · 27 current-goal DONE · 124 / 175 accepted (70.86%).**
 
 [Known projected domains](NS-4_projected-domains_01.md) adds six required units:
-the actual shared musical candidate still reaches its search limit at64 on both
-targets. An upstream-only64cell probe proves that known target support is not
-propagated back before source assignment; the unchanged explicit witness solves
-with zero retries. The candidate is preserved and removed from source. No more
-local model filters or hidden guide/seed/budget changes are selected.
+the retained shared musical candidate reached its search limit at64 on both
+targets. The new upstream preparation now solves/proves its64cell reproduction
+with zero retries and passes all five CI67 jobs. The repaired192cell musical
+candidate passes115 native/actual pas2js checks at the original seed/limits;
+typed component qualification, broader runtime and Studio integration are not
+yet accepted. The original failure remains preserved. No local model filters,
+hidden guide/seed changes or raised budgets are selected.
 
 [Context composition — DONE](DONE/NS-4_context-composition_01.md) closes six units
 after upstream CI66, downstream CI543 and native/actual pas2js/extracted consumers

@@ -3,7 +3,43 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: known-domain prerequisite after retained joint failure — 2026-11-01
+## Current handoff: original free form passes pas2js; native and integration pending — 2026-11-01
+
+Big Boss SOLO. Separate WFC `codex/pythian-projected-domains` now publishes
+d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2; all five upstream CI67/run41284525161 jobs pass.
+Native/actual pas2js188 checks prepare and independently prove the original
+64cell case with zero retries, same models/seed/256:16 limits. Primary graph
+compilation, numeric arc support and temporal propagation are shared; only the
+explicit same-cell overlay scope is selected, with unsupported forms rejected.
+The original unprepared failure remains in the maintained fixture. Existing
+native graph187/projection29/stream1834/negotiation132/composition144/progress
+consumers pass; heaps are clean after a caught/repaired compiler allocation leak.
+
+The preserved Pythian joint candidate01 is reapplied, with new primary
+preparation selected and existing solve-progress bridge reused. Actual pas2js
+now completes the original192cell form with all six sounding parts and retained
+lead, actual free-note variation and different-pull replay:115 checks; free
+digest e26778c7f9e87d242d3fd50944638dfa0418898ecbc45f823bf99469cc149fbe.
+The native115 consumer now matches both digests exactly with a clean heap.
+The guided digest remains b6796894ad28666fb455d48a8c9224bc00cb284db6abc077cc9a07bd84750ece.
+The broader native stream passes4043524 checks, including interior preparation/
+search cancellation. Complete downstream CI, extracted consumers and actual
+Studio integration are pending. The expanded actual ctx2 consumer passes96
+native checks with a clean heap, covering selected/original stream paths.
+Runtime source/test edits are unpublished WIP; only the generic candidate pin
+d0c04d2 and typed consumer are selected for the next component qualification.
+The accepted predecessor is80772b6. Broader form assertions assumed the removed
+separate64cell context commit; the joint prefix correctly commits16 and retains
+only provisional lookahead. The fresh adjacent form now completes rather than
+reproducing an earlier chosen impossible Hat cycle; retain that exact old motif
+as a separate negative fixture. One fresh part is silent, so inspect its actual
+decisions before changing audible assertions or accepting the runtime.
+No musical or prerequisite task is accepted yet: accounting124/175, counter0.
+Original source/candidate/failure packets, saved operator answers and deployed
+service remain intact. Resume exact running commands; never rerun on an
+observation timeout.
+
+## Previous handoff: known-domain prerequisite after retained joint failure — 2026-11-01
 
 Big Boss SOLO. The joint instrumental candidate reaches its stop condition:
 native and actual pas2js both complete the guided48second/six-part control
