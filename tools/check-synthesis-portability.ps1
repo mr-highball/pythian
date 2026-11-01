@@ -57,7 +57,8 @@ if ($IncludeWfc) { $fixtures += @('pythian.tests.instrumental.stream',
   'pythian.tests.instrumental.edit.stream',
   'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density',
   'pythian.tests.instrumental.unguided',
-  'pythian.tests.semantic.style', 'pythian.tests.semantic.blend') }
+  'pythian.tests.semantic.style', 'pythian.tests.semantic.blend',
+  'pythian.tests.instrumental.style') }
 foreach ($program in $fixtures) {
   $source = Join-Path $repository "tests/$program.lpr"
   $fixtureArguments = @()
@@ -65,7 +66,8 @@ foreach ($program in $fixtures) {
       'pythian.tests.instrumental.passage', 'pythian.tests.instrumental.edit.stream',
       'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density',
       'pythian.tests.instrumental.unguided',
-      'pythian.tests.semantic.style', 'pythian.tests.semantic.blend')) {
+      'pythian.tests.semantic.style', 'pythian.tests.semantic.blend',
+      'pythian.tests.instrumental.style')) {
     $fixtureArguments = @("-Fu$(Join-Path $repository 'adapters/wfc')",
       "-Fu$(Join-Path $repository 'vendor/wfc/src')")
   }

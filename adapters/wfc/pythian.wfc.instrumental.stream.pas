@@ -85,6 +85,8 @@ type
     FForm: TMusicFormCursor;
     FHasExpression: Boolean;
     FHasDensity: Boolean;
+    FProviderPreferences: TVoicePreferences;
+    FExpression: TMusicalExpressions;
     FDensityProfiles: array of TObject;
     FVoiceProgress: TWorkProgressCallback;
     FDrumModelIndices: array of Integer;
@@ -124,7 +126,14 @@ type
       const AContext: TWfcSequenceModel = nil;
       const ADecisionSink: TMusicDecisionSink = nil;
       const AForm: TMusicForm = nil;
-      const ADomainProvider: TInstrumentalDomainProvider = nil);
+      const ADomainProvider: TInstrumentalDomainProvider = nil;
+      { Detached global controls in actual composed model order: H/R/roles,
+        optional context, then drums/other auxiliaries. Empty vectors mean none.
+        Expression follows performed part order. Gate editing remains unsupported
+        here and rejects rather than silently changing the held-note clock. }
+      const AMasks: TVoiceMasks = nil;
+      const APreferences: TVoicePreferences = nil;
+      const AExpression: TMusicalExpressions = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -273,7 +282,9 @@ constructor TInstrumentalMusicStream.Create(const AConfig: TWfcMusicVoicesGraphC
   const ARoles: TInstrumentalRoles; const APercussion: TPercussionDefinitions;
   const AGraph: TBusGraph; const AOptions: TInstrumentalStreamOptions;
   const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink;
-  const AForm: TMusicForm; const ADomainProvider: TInstrumentalDomainProvider);
+  const AForm: TMusicForm; const ADomainProvider: TInstrumentalDomainProvider;
+  const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
+  const AExpression: TMusicalExpressions);
 var
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
@@ -284,6 +295,7 @@ var
   LStates: Int64;
   LConstraint: TWfcSequenceTokenConstraint;
   LFormKeys: TMusicDecisionTokens;
+  LProvider: Integer;
 begin
   inherited Create;
   if (AGraph = nil) or (Length(ARoles) < 1) or (Length(ARoles) > 6) or
@@ -320,6 +332,33 @@ begin
   for LIndex := 0 to High(FDefinitions) do
     FDrumModelIndices[LIndex] := WfcMusicVoicesModelCount(FConfig) + LIndex;
   FConfig := ComposePercussionGraph(FConfig, FDefinitions);
+  if ((Length(AMasks) > 0) and
+    (Length(AMasks) <> WfcMusicVoicesModelCount(FConfig))) or
+    ((Length(APreferences) > 0) and
+    (Length(APreferences) <> WfcMusicVoicesModelCount(FConfig))) then
+  begin
+    raise EAudio.Create('Stream controls must match every actual provider including context and drums');
+  end;
+  SetLength(FProviderPreferences, WfcMusicVoicesModelCount(FConfig));
+  for LProvider := 0 to High(APreferences) do
+  begin
+    FProviderPreferences[LProvider] := Copy(APreferences[LProvider]);
+  end;
+  if (Length(AExpression) > 0) and
+    (Length(AExpression) <> Length(ARoles) + Length(APercussion)) then
+  begin
+    raise EAudio.Create('Stream expression must match every performed part');
+  end;
+  FExpression := Copy(AExpression);
+  for LIndex := 0 to High(FExpression) do
+  begin
+    ValidateMusicalExpression(FExpression[LIndex]);
+    if FExpression[LIndex].GatePercent <> 100 then
+    begin
+      raise EAudio.Create('Stream articulation currently requires a 100 percent gate');
+    end;
+    FHasExpression := FHasExpression or (FExpression[LIndex].VelocityPercent <> 100);
+  end;
   FClock := TIncrementalTempoClock.Create(AOptions.TicksPerQuarter, AGraph.SampleRate);
   if FClock.Advance(AOptions.StepTicks, AOptions.TempoMicroseconds) < 1 then
     raise EAudio.Create('Musical stream cells must span at least one sample frame');
@@ -378,6 +417,16 @@ begin
   LStreamConfig.Search.SolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
   LStreamConfig.Search.MaxPassBacktracks := AOptions.MaxPassBacktracks;
   FVoices := TInstrumentalFormVoices.Create(LStreamConfig, Self);
+  for LProvider := 0 to High(AMasks) do
+  begin
+    ValidateSequenceTokenConstraints(WfcMusicVoicesModelAt(FConfig, LProvider),
+      FTotalCells, AMasks[LProvider]);
+    for LConstraint in AMasks[LProvider] do
+    begin
+      FVoices.IntersectAllowedTokens(LProvider, LConstraint.Position,
+        LConstraint.AllowedTokens);
+    end;
+  end;
   if FHasDensity then
   begin
     SetLength(FDensityProfiles, 2 + Length(APercussion));
@@ -481,31 +530,55 @@ procedure TInstrumentalMusicStream.ConfigureVoiceDensity(const AStartTick: Int64
 var
   LRows: TLayerPositionPreferences;
   LIndex: Integer;
+  LPreferences: TLayerTokenPreferences;
+  LDrumPreferences: TLayerTokenPreferences;
+  LToken: Integer;
+  LOther: Integer;
+  LProvider: Integer;
+  LFound: Boolean;
 begin
-  if FHasDensity then
-  begin
-    if FContextIndex >= 0 then
-    begin
-      LRows := DensityRows(0, AStartTick div FOptions.StepTicks, ACellCount, FVoiceProgress);
-      ApplySequencePositionPreferences(WfcMusicVoicesModelAt(FConfig, FContextIndex),
-        AGraph.PassGraph[FContextIndex], LRows, nil, FVoiceProgress);
-    end
-    else
-    begin
-      LRows := DensityRows(1, AStartTick div FOptions.StepTicks, ACellCount, FVoiceProgress);
-      ApplySequencePositionPreferences(FConfig.RhythmModel, AGraph.PassGraph[1],
-        LRows, nil, FVoiceProgress);
-    end;
-  end;
-  for LIndex := 0 to High(FDefinitions) do
+  { Big Boss: one application per provider combines saved global controls with
+    positioned form controls. Reapplying weights would overwrite the first set. }
+  for LIndex := 0 to WfcMusicVoicesModelCount(FConfig) - 1 do
   begin
     LRows := nil;
-    if FHasDensity then
-      LRows := DensityRows(LIndex + 2, AStartTick div FOptions.StepTicks,
-        ACellCount, FVoiceProgress);
-    ApplySequencePositionPreferences(FDefinitions[LIndex].Model,
-      AGraph.PassGraph[FDrumModelIndices[LIndex]], LRows,
-      PercussionPreferences(FDefinitions[LIndex]), FVoiceProgress);
+    if FHasDensity and (LIndex = FContextIndex) then
+      LRows := DensityRows(0, AStartTick div FOptions.StepTicks, ACellCount, FVoiceProgress)
+    else if FHasDensity and (FContextIndex < 0) and (LIndex = 1) then
+      LRows := DensityRows(1, AStartTick div FOptions.StepTicks, ACellCount, FVoiceProgress);
+    LPreferences := Copy(FProviderPreferences[LIndex]);
+    for LOther := 0 to High(FDefinitions) do
+    begin
+      if LIndex <> FDrumModelIndices[LOther] then Continue;
+      if FHasDensity then
+        LRows := DensityRows(LOther + 2, AStartTick div FOptions.StepTicks,
+          ACellCount, FVoiceProgress);
+      LDrumPreferences := PercussionPreferences(FDefinitions[LOther]);
+      for LToken := 0 to High(LDrumPreferences) do
+      begin
+        LFound := False;
+        for LProvider := 0 to High(LPreferences) do
+        begin
+          if LPreferences[LProvider].Token <> LDrumPreferences[LToken].Token then Continue;
+          if LPreferences[LProvider].Multiplier > MaximumLayerPreferenceMultiplier div
+            LDrumPreferences[LToken].Multiplier then
+            raise EAudio.Create('Saved drum preference and hit weight exceed the combined weight budget');
+          LPreferences[LProvider].Multiplier := LPreferences[LProvider].Multiplier *
+            LDrumPreferences[LToken].Multiplier;
+          LFound := True;
+        end;
+        if not LFound then
+        begin
+          SetLength(LPreferences, Length(LPreferences) + 1);
+          LPreferences[High(LPreferences)] := LDrumPreferences[LToken];
+        end;
+      end;
+    end;
+    if (Length(LRows) > 0) or (Length(LPreferences) > 0) then
+    begin
+      ApplySequencePositionPreferences(WfcMusicVoicesModelAt(FConfig, LIndex),
+        AGraph.PassGraph[LIndex], LRows, LPreferences, FVoiceProgress);
+    end;
   end;
 end;
 
@@ -668,8 +741,17 @@ begin
         for I := 0 to High(LFrame) do
         begin
           LDecisions.Cells[LCell].Expression[I] := DefaultMusicalExpression;
-          LDecisions.Cells[LCell].Expression[I].VelocityPercent :=
-            MapMusicalAffect(50 + FForm.EnergyOffsetAt(FCells + LCell), 50, 50).VelocityPercent;
+          if Length(FExpression) > 0 then
+          begin
+            LDecisions.Cells[LCell].Expression[I] := FExpression[I];
+          end;
+          if FForm <> nil then
+          begin
+            LDecisions.Cells[LCell].Expression[I].VelocityPercent :=
+              Min(200, (LDecisions.Cells[LCell].Expression[I].VelocityPercent *
+              MapMusicalAffect(50 + FForm.EnergyOffsetAt(FCells + LCell),
+                50, 50).VelocityPercent + 50) div 100);
+          end;
         end;
       end;
       Inc(LFrameAt, LFrameCount);

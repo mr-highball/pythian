@@ -40,7 +40,7 @@ uses
 type
   TStyleProviderVocabulary = (spvKey, spvTempo, spvOnsets, spvIntensity,
     spvPitch, spvPitchRhythm, spvPerformance, spvHarmony, spvRhythm, spvVoice, spvCaller,
-    spvMusicalContext);
+    spvMusicalContext, spvPercussion);
   TStyleChoiceDimension = (scdKey, scdTempo, scdOnset, scdIntensity,
     scdPitch, scdDuration, scdHarmony, scdRhythm, scdVoice);
   TStyleChoiceDimensions = set of TStyleChoiceDimension;
@@ -132,6 +132,7 @@ uses
   pythian.wfc.context,
   pythian.wfc.pitch,
   pythian.wfc.style,
+  pythian.wfc.percussion,
   wfc_music;
 
 function EncodeMusicalContextToken(const ACell: TMusicalContextCell): String;
@@ -246,6 +247,12 @@ begin
     begin
       LChoice.Dimensions := [scdRhythm];
       LChoice.Rhythm := DecodeWfcMusicRhythmFrame(AToken);
+    end;
+    spvPercussion:
+    begin
+      LChoice.Intensity := PercussionVelocity(AToken);
+      LChoice.Onset := LChoice.Intensity > 0;
+      LChoice.Dimensions := [scdOnset, scdIntensity];
     end;
     spvMusicalContext:
     begin

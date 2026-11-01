@@ -132,6 +132,9 @@ or legacy-reader tier. In this example the semantic style contract advances to
 [caller-provider guide](CALLER-PROVIDERS.md#persistence-compatibility-and-evidence)
 describes the new codec binding and admission requirements. New source may
 require caller changes or regeneration even when a unit filename is unchanged.
+The current semantic format has since advanced to
+[`pythian.semantic.style.v3`](SEMANTIC-STYLES.md), including complete instrumental
+snapshots; v1/v2 development artifacts must be regenerated.
 
 Build the candidate with the declared compiler/target and matching RTL/FCL in
 fresh unit/executable directories. Probe `fpc -iV`, `fpc -iTP` and `fpc -iTO`,

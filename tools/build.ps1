@@ -973,6 +973,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style checks failed' }
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.instrumental.style.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Complete instrumental style compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.style$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Complete instrumental style checks failed' }
     Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.semantic.blend.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic blend compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.blend$executableSuffix") (Join-Path $buildRoot 'semantic-blend')

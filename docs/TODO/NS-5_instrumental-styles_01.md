@@ -29,6 +29,28 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: AC1 now has an actual complete instrumental consumer.
+  The v3 semantic archive retains nine corpus providers, clock/role schema,
+  source and proposal origins, independent learning weights, preferences/locks,
+  primary instrument/envelope/modulation and six-part/master effect recipes,
+  expression, form and bounded stream settings. Capture uses the actual learner's
+  admitted samples, not re-tokenized guesses or source PCM. Its observed-clock
+  origin/rounding preserves fractional source phase across selected gaps.
+  The owned replay uses the existing instrumental stream; it is not a second
+  renderer. Native and actual pas2js full six-stem/model/decision replays pass
+  after input/style destruction. Invalid clocks/buses/preferences, unsupported
+  gate shortening, corruption and construction cancellation reject. Full local
+  native/pas2js qualification passes; exact published CI must finish before
+  closing AC1/count.
+  No task effort is accepted. Explicit external sampler resolution, larger
+  semantic evidence budgets, ordinary Studio saving, selective instrumental
+  sound/expression parents and useful blends/reblends are not claimed by this
+  component. Instrumental CreateBlend rejects explicitly until AC2 is connected.
+  Evidence: E/tests/styles-binding-native03, styles-binding-js03 and
+  E/runs/instrumental-styles-20261101-boss. Earlier missing output-directory,
+  missing fixture import and PowerShell path-escape failures remain in the
+  packet; no product workaround was inferred from those harness errors.
+
 - 2026-11-01, Big Boss: bounded archive component passes native style/blend
   replay,23 unchanged original archive/sound artifacts,41,896 progress/
   cancellation checks with clean heaps, and both complete actual pas2js style/

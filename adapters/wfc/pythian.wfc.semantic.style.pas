@@ -32,11 +32,15 @@ uses
   pythian.audio, pythian.time, pythian.progress, pythian.wfc.layers, pythian.wfc.provider.contracts,
   pythian.wfc.provider.codecs,
   pythian.wfc.voices, pythian.wfc.instrument, wfc_model, wfc_sequence,
-  wfc_music_voices_graph, wfc_music_ensemble_graph;
+  wfc_music_voices_graph, wfc_music_ensemble_graph,
+  pythian.instrument.recipe, pythian.mix.recipe, pythian.bus,
+  pythian.music.form, pythian.music.controls,
+  pythian.wfc.percussion, pythian.wfc.instrumental.stream;
 
 const
   MaximumSemanticStyleBytes = 32 * 1024 * 1024;
   MaximumSemanticStyleRuns = 256;
+  MaximumSemanticStyleProviders = 15;
 
 type
   TSemanticSplit = (ssUnassigned, ssTraining, ssValidation, ssTest);
@@ -74,12 +78,18 @@ type
   TSemanticRun = record
     SourceIndex: Integer;
     Identity: String;
+    ProposalPolicy: String;
+    RoleOrigins: TLayerNames;
     StartFrame: Integer;
     EndFrame: Integer;
     { Exactly the uncovered frames since this source's preceding run, or zero
       for its first run. Runs never concatenate across a gap or source. }
     GapBeforeFrames: Integer;
     TicksPerQuarter: Integer;
+    { Preserve the original quantizer's fractional sample phase at a cropped
+      contribution. Token grids remain relative to this observed run. }
+    ClockStartTick: Integer;
+    ClockRounding: TFrameRounding;
     TempoChanges: TTempoChanges;
     TimeGrids: TLayerTimeGrids;
     Tokens: array of TWfcModelTokens;
@@ -97,6 +107,18 @@ type
     MinimumPitch: Integer;
     MaximumPitch: Integer;
   end;
+  TSemanticInstrumentalRecipe = record
+    Enabled: Boolean;
+    LabelText: String;
+    Origin: String;
+    SampleRate: Integer;
+    Options: TInstrumentalStreamOptions;
+    Instruments: TInstrumentRecipes;
+    Mix: TStemMixRecipe;
+    Percussion: TPercussionDefinitions;
+    Expression: TMusicalExpressions;
+    Form: TMusicForm;
+  end;
   TSemanticStyleDefinition = record
     Providers: TSemanticProviders;
     Sources: TSemanticSources;
@@ -107,6 +129,9 @@ type
     VoiceRanges: array of TSemanticVoiceRange;
     VoicePairs: TWfcMusicVoicePairConstraints;
     Sounds: TSemanticSounds;
+    { Actual provider order: harmony, rhythm, pitched roles, joint context,
+      percussion. Models stay in Providers; this contains no borrowed objects. }
+    Instrumental: TSemanticInstrumentalRecipe;
   end;
   TSemanticRepeatPolicy = (srpMaximum, srpAddExplicit);
   TSemanticSoundRepeatPolicy = (ssrpReject, ssrpAddExact);
@@ -127,6 +152,22 @@ type
     Providers: array of TSemanticBlendProvider;
     Sounds: array of TSemanticBlendSound;
     RepeatPolicy: TSemanticRepeatPolicy;
+  end;
+
+  { Owns every model, instrument bank, bus and the ordinary instrumental stream.
+    The source style/caller records may be freed immediately. Stream is borrowed;
+    keep this owner alive until the last pull and never free Stream separately. }
+  TSemanticInstrumentalStream = class
+  private
+    FLayers: TLearnedLayers;
+    FBanks: array of TRecipeInstrument;
+    FGraph: TBusGraph;
+    FStream: TInstrumentalMusicStream;
+    constructor Create(const ADefinition: TSemanticStyleDefinition;
+      const AProgress: TWorkProgressCallback);
+  public
+    destructor Destroy; override;
+    property Stream: TInstrumentalMusicStream read FStream;
   end;
 
   { Immutable, self-contained models/evidence. ExternalRequirement identifies
@@ -177,6 +218,8 @@ type
       const AProgress: TWorkProgressCallback = nil): TNamedVoiceSession;
     function CreateInstrument(const ARoleId: String; const AZones: TStyleInstrumentZones;
       const ASampleRate: Integer): TStyleInstrument;
+    function CreateInstrumentalStream(
+      const AProgress: TWorkProgressCallback = nil): TSemanticInstrumentalStream;
     property Identity: String read FIdentity;
     property Depth: Integer read FDepth;
     property NodeCount: Integer read FNodeCount;
@@ -196,9 +239,11 @@ implementation
 
 uses
   Classes, SysUtils, pythian.hash, pythian.binary, pythian.stream.bytes,
+  pythian.sound.recipe.codec, pythian.percussion, pythian.wfc.instrumental,
   pythian.text, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
-  pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text;
+  pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text,
+  wfc_music_ensemble, wfc_music_sequence;
 
 type
   TOriginPosition = record
@@ -219,6 +264,7 @@ type
     destructor Destroy; override;
     function N(const AValue: Integer = 0): Integer;
     function Q(const AValue: Int64 = 0): Int64;
+    function R(const AValue: Double): Double;
     function Count(const AValue, AMaximum: Integer): Integer;
     function Text(const AValue: String = ''): String;
     function Blob(const AValue: TAudioBytes;
@@ -318,6 +364,22 @@ begin
   begin
     raise EAudio.Create('Semantic count or enum exceeds contract');
   end;
+end;
+
+function TStyleIO.R(const AValue: Double): Double;
+begin
+  Result := AValue;
+  if FReading then
+  begin
+    ReadStreamBytesExact(FStream, FNumberBytes, 0, 8);
+    Result := ReadFloat64LE(FNumberBytes, 0);
+  end
+  else
+  begin
+    WriteFloat64LE(FNumberBytes, 0, AValue);
+    WriteStreamBytesExact(FStream, FNumberBytes, 0, 8);
+  end;
+  RequireFinite(Result, 'Semantic instrumental recipe');
 end;
 
 function TStyleIO.Blob(const AValue: TAudioBytes; const AMaximum: Integer): TAudioBytes;
@@ -493,6 +555,102 @@ begin
   end;
 end;
 
+procedure InstrumentalIO(const AIO: TStyleIO; var ARecipe: TSemanticInstrumentalRecipe);
+var
+  I: Integer;
+  J: Integer;
+  K: Integer;
+  LBytes: TAudioBytes;
+begin
+  ARecipe.Enabled := AIO.Count(Ord(ARecipe.Enabled), 1) <> 0;
+  if not ARecipe.Enabled then Exit;
+  ARecipe.LabelText := AIO.Text(ARecipe.LabelText);
+  ARecipe.Origin := AIO.Text(ARecipe.Origin);
+  ARecipe.SampleRate := AIO.N(ARecipe.SampleRate);
+  with ARecipe.Options do
+  begin
+    MusicFrames := AIO.Q(MusicFrames);
+    TailFrames := AIO.Q(TailFrames);
+    TicksPerQuarter := AIO.N(TicksPerQuarter);
+    StepTicks := AIO.N(StepTicks);
+    TempoMicroseconds := AIO.N(TempoMicroseconds);
+    SegmentCells := AIO.N(SegmentCells);
+    Seed := AIO.N(Seed);
+    MaxBacktracks := AIO.N(MaxBacktracks);
+    MaxPassBacktracks := AIO.N(MaxPassBacktracks);
+    VoiceLimit := AIO.N(VoiceLimit);
+    WorkLimit := AIO.N(WorkLimit);
+    ContextBinding := TInstrumentalContextBinding(AIO.Count(Ord(ContextBinding),
+      Ord(High(TInstrumentalContextBinding))));
+  end;
+  SetLength(ARecipe.Instruments, AIO.Count(Length(ARecipe.Instruments), 6));
+  for I := 0 to High(ARecipe.Instruments) do
+  begin
+    LBytes := nil;
+    if not AIO.FReading then LBytes := EncodeInstrumentRecipe(ARecipe.Instruments[I], AIO.FProgress);
+    LBytes := AIO.Blob(LBytes, MaximumSoundRecipeBytes);
+    if AIO.FReading then ARecipe.Instruments[I] := DecodeInstrumentRecipe(LBytes, AIO.FProgress);
+  end;
+  LBytes := nil;
+  if not AIO.FReading then LBytes := EncodeStemMixRecipe(ARecipe.Mix,
+    ARecipe.SampleRate, AIO.FProgress);
+  LBytes := AIO.Blob(LBytes, MaximumSoundRecipeBytes);
+  if AIO.FReading then ARecipe.Mix := DecodeStemMixRecipe(LBytes,
+    ARecipe.SampleRate, AIO.FProgress);
+  SetLength(ARecipe.Percussion, AIO.Count(Length(ARecipe.Percussion), 6));
+  for I := 0 to High(ARecipe.Percussion) do
+  begin
+    with ARecipe.Percussion[I] do
+    begin
+      if not AIO.FReading and (Model <> nil) then
+        raise EAudio.Create('Saved drum recipe borrows a model; models belong in Providers');
+      Name := AIO.Text(Name);
+      Origin := AIO.Text(Origin);
+      Settings.Kind := TPercussionKind(AIO.Count(Ord(Settings.Kind), Ord(High(TPercussionKind))));
+      Settings.Gain := AIO.R(Settings.Gain);
+      Settings.Pan := AIO.R(Settings.Pan);
+      Settings.GateSeconds := AIO.R(Settings.GateSeconds);
+      Settings.ReleaseSeconds := AIO.R(Settings.ReleaseSeconds);
+      Settings.ToneHz := AIO.R(Settings.ToneHz);
+      Settings.CutoffHz := AIO.R(Settings.CutoffHz);
+      OutputBus := AIO.N(OutputBus);
+      Enabled := AIO.Count(Ord(Enabled), 1) <> 0;
+      HitWeight := AIO.N(HitWeight);
+      SetLength(AllowedHitRhythms, AIO.Count(Length(AllowedHitRhythms), 4096));
+      for J := 0 to High(AllowedHitRhythms) do
+        AllowedHitRhythms[J] := AIO.Text(AllowedHitRhythms[J]);
+      SetLength(Constraints, AIO.Count(Length(Constraints), 1024));
+      for J := 0 to High(Constraints) do
+      begin
+        Constraints[J].Position := AIO.N(Constraints[J].Position);
+        SetLength(Constraints[J].AllowedTokens,
+          AIO.Count(Length(Constraints[J].AllowedTokens), 4096));
+        for K := 0 to High(Constraints[J].AllowedTokens) do
+          Constraints[J].AllowedTokens[K] := AIO.Text(Constraints[J].AllowedTokens[K]);
+      end;
+    end;
+  end;
+  SetLength(ARecipe.Expression, AIO.Count(Length(ARecipe.Expression), 12));
+  for I := 0 to High(ARecipe.Expression) do
+  begin
+    ARecipe.Expression[I].VelocityPercent := AIO.N(ARecipe.Expression[I].VelocityPercent);
+    ARecipe.Expression[I].GatePercent := AIO.N(ARecipe.Expression[I].GatePercent);
+  end;
+  SetLength(ARecipe.Form, AIO.Count(Length(ARecipe.Form), MaximumMusicFormPhrases));
+  for I := 0 to High(ARecipe.Form) do
+  begin
+    ARecipe.Form[I].Section := AIO.Text(String(ARecipe.Form[I].Section));
+    ARecipe.Form[I].Name := AIO.Text(String(ARecipe.Form[I].Name));
+    ARecipe.Form[I].Cells := AIO.N(ARecipe.Form[I].Cells);
+    ARecipe.Form[I].RepeatFrom := AIO.N(ARecipe.Form[I].RepeatFrom);
+    ARecipe.Form[I].EnergyOffset := AIO.N(ARecipe.Form[I].EnergyOffset);
+    ARecipe.Form[I].DensityOffset := AIO.N(ARecipe.Form[I].DensityOffset);
+    SetLength(ARecipe.Form[I].Keep, AIO.Count(Length(ARecipe.Form[I].Keep), 15));
+    for J := 0 to High(ARecipe.Form[I].Keep) do
+      ARecipe.Form[I].Keep[J] := AIO.Text(String(ARecipe.Form[I].Keep[J]));
+  end;
+end;
+
 procedure DefinitionIO(const AIO: TStyleIO; var ADefinition: TSemanticStyleDefinition);
 var
   LIndex: Integer;
@@ -501,7 +659,7 @@ var
   LExposure: TSemanticExposure;
   LFlags: Integer;
 begin
-  SetLength(ADefinition.Providers, AIO.Count(Length(ADefinition.Providers), 8));
+  SetLength(ADefinition.Providers, AIO.Count(Length(ADefinition.Providers), MaximumSemanticStyleProviders));
   for LIndex := 0 to High(ADefinition.Providers) do
   begin
     ContractIO(AIO, ADefinition.Providers[LIndex].Contract);
@@ -562,17 +720,25 @@ begin
   begin
     ADefinition.Runs[LIndex].SourceIndex := AIO.N(ADefinition.Runs[LIndex].SourceIndex);
     ADefinition.Runs[LIndex].Identity := AIO.Text(ADefinition.Runs[LIndex].Identity);
+    ADefinition.Runs[LIndex].ProposalPolicy := AIO.Text(ADefinition.Runs[LIndex].ProposalPolicy);
+    SetLength(ADefinition.Runs[LIndex].RoleOrigins,
+      AIO.Count(Length(ADefinition.Runs[LIndex].RoleOrigins), 6));
+    for LItem := 0 to High(ADefinition.Runs[LIndex].RoleOrigins) do
+      ADefinition.Runs[LIndex].RoleOrigins[LItem] := AIO.Text(ADefinition.Runs[LIndex].RoleOrigins[LItem]);
     ADefinition.Runs[LIndex].StartFrame := AIO.N(ADefinition.Runs[LIndex].StartFrame);
     ADefinition.Runs[LIndex].EndFrame := AIO.N(ADefinition.Runs[LIndex].EndFrame);
     ADefinition.Runs[LIndex].GapBeforeFrames := AIO.N(ADefinition.Runs[LIndex].GapBeforeFrames);
     ADefinition.Runs[LIndex].TicksPerQuarter := AIO.N(ADefinition.Runs[LIndex].TicksPerQuarter);
+    ADefinition.Runs[LIndex].ClockStartTick := AIO.N(ADefinition.Runs[LIndex].ClockStartTick);
+    ADefinition.Runs[LIndex].ClockRounding := TFrameRounding(AIO.Count(
+      Ord(ADefinition.Runs[LIndex].ClockRounding), Ord(High(TFrameRounding))));
     SetLength(ADefinition.Runs[LIndex].TempoChanges, AIO.Count(Length(ADefinition.Runs[LIndex].TempoChanges), 4096));
     for LItem := 0 to High(ADefinition.Runs[LIndex].TempoChanges) do
     begin
       ADefinition.Runs[LIndex].TempoChanges[LItem].Tick := AIO.N(ADefinition.Runs[LIndex].TempoChanges[LItem].Tick);
       ADefinition.Runs[LIndex].TempoChanges[LItem].MicrosecondsPerQuarter := AIO.N(ADefinition.Runs[LIndex].TempoChanges[LItem].MicrosecondsPerQuarter);
     end;
-    SetLength(ADefinition.Runs[LIndex].TimeGrids, AIO.Count(Length(ADefinition.Runs[LIndex].TimeGrids), 8));
+    SetLength(ADefinition.Runs[LIndex].TimeGrids, AIO.Count(Length(ADefinition.Runs[LIndex].TimeGrids), MaximumSemanticStyleProviders));
     for LItem := 0 to High(ADefinition.Runs[LIndex].TimeGrids) do
     begin
       ADefinition.Runs[LIndex].TimeGrids[LItem].OriginTick := AIO.N(ADefinition.Runs[LIndex].TimeGrids[LItem].OriginTick);
@@ -583,10 +749,10 @@ begin
         ADefinition.Runs[LIndex].TimeGrids[LItem].Boundaries[LCell] := AIO.N(ADefinition.Runs[LIndex].TimeGrids[LItem].Boundaries[LCell]);
       end;
     end;
-    SetLength(ADefinition.Runs[LIndex].Tokens, AIO.Count(Length(ADefinition.Runs[LIndex].Tokens), 8));
-    SetLength(ADefinition.Runs[LIndex].Weights, AIO.Count(Length(ADefinition.Runs[LIndex].Weights), 8));
+    SetLength(ADefinition.Runs[LIndex].Tokens, AIO.Count(Length(ADefinition.Runs[LIndex].Tokens), MaximumSemanticStyleProviders));
+    SetLength(ADefinition.Runs[LIndex].Weights, AIO.Count(Length(ADefinition.Runs[LIndex].Weights), MaximumSemanticStyleProviders));
     SetLength(ADefinition.Runs[LIndex].ProviderEvidence,
-      AIO.Count(Length(ADefinition.Runs[LIndex].ProviderEvidence), 8));
+      AIO.Count(Length(ADefinition.Runs[LIndex].ProviderEvidence), MaximumSemanticStyleProviders));
     for LItem := 0 to High(ADefinition.Runs[LIndex].ProviderEvidence) do
     begin
       ADefinition.Runs[LIndex].ProviderEvidence[LItem] :=
@@ -646,6 +812,7 @@ begin
     ADefinition.Sounds[LIndex].Timbre := AIO.Blob(ADefinition.Sounds[LIndex].Timbre);
     ADefinition.Sounds[LIndex].Envelope := AIO.Blob(ADefinition.Sounds[LIndex].Envelope);
   end;
+  InstrumentalIO(AIO, ADefinition.Instrumental);
 end;
 
 function DefinitionBytes(const ADefinition: TSemanticStyleDefinition;
@@ -684,7 +851,7 @@ var
   LIndex: Integer;
 begin
   ARecipe.RepeatPolicy := TSemanticRepeatPolicy(AIO.Count(Ord(ARecipe.RepeatPolicy), 1));
-  SetLength(ARecipe.Providers, AIO.Count(Length(ARecipe.Providers), 8));
+  SetLength(ARecipe.Providers, AIO.Count(Length(ARecipe.Providers), MaximumSemanticStyleProviders));
   for LIndex := 0 to High(ARecipe.Providers) do
   begin
     ARecipe.Providers[LIndex].LeftWeight := AIO.Count(ARecipe.Providers[LIndex].LeftWeight, 64);
@@ -958,7 +1125,18 @@ var
 begin
   Result := Default(TWfcMusicVoicesGraphConfig);
   Require(ADefinition.NamedVoices and (Length(ALayers) >= 3) and
-    (Length(ADefinition.VoiceRanges) = Length(ALayers) - 2), 'Semantic named voice layout is incomplete');
+    (Length(ADefinition.VoiceRanges) >= 1), 'Semantic named voice layout is incomplete');
+  if ADefinition.Instrumental.Enabled then
+  begin
+    Require(Length(ALayers) = 3 + Length(ADefinition.VoiceRanges) +
+      Length(ADefinition.Instrumental.Percussion),
+      'Instrumental style requires harmony/rhythm/roles/context/drums in that order');
+  end
+  else
+  begin
+    Require(Length(ADefinition.VoiceRanges) = Length(ALayers) - 2,
+      'Semantic named voice layout is incomplete');
+  end;
   Require(Length(ADefinition.Projections) = 0, 'Named voice dependencies are defined by its actual config');
   Require((ADefinition.Providers[0].Contract.Vocabulary = spvHarmony) and
     (ADefinition.Providers[1].Contract.Vocabulary = spvRhythm),
@@ -968,7 +1146,7 @@ begin
   Result.HarmonyModel := ALayers[0].Model;
   Result.RhythmModel := ALayers[1].Model;
   Result.PairConstraints := Copy(ADefinition.VoicePairs);
-  SetLength(Result.Voices, Length(ALayers) - 2);
+  SetLength(Result.Voices, Length(ADefinition.VoiceRanges));
   for LIndex := 0 to High(Result.Voices) do
   begin
     Require(ADefinition.Providers[LIndex + 2].Contract.Vocabulary = spvVoice,
@@ -977,6 +1155,98 @@ begin
     Result.Voices[LIndex].MinPitch := ADefinition.VoiceRanges[LIndex].MinimumPitch;
     Result.Voices[LIndex].MaxPitch := ADefinition.VoiceRanges[LIndex].MaximumPitch;
   end;
+end;
+
+constructor TSemanticInstrumentalStream.Create(const ADefinition: TSemanticStyleDefinition;
+  const AProgress: TWorkProgressCallback);
+var
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LRecipe: TSemanticInstrumentalRecipe;
+  LRoles: TInstrumentalRoles;
+  LDrums: TPercussionDefinitions;
+  LMasks: TVoiceMasks;
+  LPreferences: TVoicePreferences;
+  LContextIndex: Integer;
+  I: Integer;
+begin
+  inherited Create;
+  Require(ADefinition.Instrumental.Enabled, 'Style has no instrumental binding');
+  LRecipe := ADefinition.Instrumental;
+  Require((Length(LRecipe.LabelText) > 0) and (Length(LRecipe.LabelText) <= 1024) and
+    (Length(LRecipe.Origin) > 0), 'Instrumental style requires a caller label and actual material origin');
+  FLayers := LoadLayers(ADefinition, AProgress);
+  LConfig := VoiceConfig(ADefinition, FLayers);
+  LContextIndex := 2 + Length(LConfig.Voices);
+  Require(ADefinition.Providers[LContextIndex].Contract.Vocabulary = spvMusicalContext,
+    'Instrumental context slot requires the musical-context codec');
+  Require(Length(LRecipe.Instruments) = Length(LConfig.Voices),
+    'Instrumental recipes must match the actual pitched role count');
+  Require(Length(LRecipe.Mix.Parts) = Length(LConfig.Voices) + Length(LRecipe.Percussion),
+    'Instrumental mix must include every pitched and drum part');
+  Require(LRecipe.Options.TailFrames >= SampleFramesFromSeconds(LRecipe.Mix.TailSeconds,
+    LRecipe.SampleRate, frCeiling), 'Instrumental stream tail is shorter than its saved mix tail');
+  Require((LRecipe.Options.TicksPerQuarter = ADefinition.Providers[0].Contract.TicksPerQuarter) and
+    (LRecipe.Options.StepTicks = ADefinition.Providers[0].Contract.TimeGrid.TicksPerCell),
+    'Instrumental performance clock differs from the provider schema');
+  FGraph := CreateStemMixGraph(LRecipe.Mix, LRecipe.SampleRate);
+  SetLength(FBanks, Length(LRecipe.Instruments));
+  SetLength(LRoles, Length(FBanks));
+  for I := 0 to High(FBanks) do
+  begin
+    Require((Length(ADefinition.Providers[1].Contract.RoleOrder) = Length(FBanks)) and
+      (Length(ADefinition.Providers[LContextIndex].Contract.RoleOrder) = Length(FBanks)) and
+      (ADefinition.Providers[1].Contract.RoleOrder[I] =
+        ADefinition.Providers[I + 2].Contract.RoleId) and
+      (ADefinition.Providers[LContextIndex].Contract.RoleOrder[I] =
+        ADefinition.Providers[I + 2].Contract.RoleId),
+      'Instrumental rhythm/context role order differs from the pitched bindings');
+    ReportWork(AProgress, 'semantic_instrumental_parts', wuItems, I, Length(FBanks));
+    FBanks[I] := TRecipeInstrument.Create(LRecipe.Instruments[I], LRecipe.SampleRate);
+    LRoles[I].Name := ADefinition.Providers[I + 2].Contract.RoleId;
+    LRoles[I].InstrumentId := String(LRecipe.Instruments[I].Id);
+    LRoles[I].Instrument := FBanks[I].Instrument;
+    LRoles[I].OutputBus := I;
+  end;
+  LDrums := CopyPercussionDefinitions(LRecipe.Percussion);
+  for I := 0 to High(LDrums) do
+  begin
+    Require(ADefinition.Providers[LContextIndex + 1 + I].Contract.Vocabulary = spvPercussion,
+      'Instrumental drum slot requires the percussion codec');
+    Require((LDrums[I].OutputBus = Length(LRoles) + I) and
+      (LDrums[I].Name = ADefinition.Providers[LContextIndex + 1 + I].Contract.Name),
+      'Instrumental drum name or output bus differs from its provider/part order');
+    LDrums[I].Model := FLayers[LContextIndex + 1 + I].Model;
+  end;
+  SetLength(LMasks, Length(FLayers));
+  SetLength(LPreferences, Length(FLayers));
+  for I := 0 to High(FLayers) do
+  begin
+    LMasks[I] := FLayers[I].Constraints;
+    LPreferences[I] := FLayers[I].Preferences;
+  end;
+  FStream := TInstrumentalMusicStream.Create(LConfig, LRoles, LDrums, FGraph,
+    LRecipe.Options, FLayers[LContextIndex].Model, nil, LRecipe.Form, nil,
+    LMasks, LPreferences, LRecipe.Expression);
+  ReportWork(AProgress, 'semantic_instrumental_ready', wuItems, 1, 1);
+end;
+
+destructor TSemanticInstrumentalStream.Destroy;
+var I: Integer;
+begin
+  FStream.Free;
+  FGraph.Free;
+  for I := 0 to High(FBanks) do
+  begin
+    FBanks[I].Free;
+  end;
+  FreeLayers(FLayers);
+  inherited Destroy;
+end;
+
+function TSemanticStyle.CreateInstrumentalStream(
+  const AProgress: TWorkProgressCallback): TSemanticInstrumentalStream;
+begin
+  Result := TSemanticInstrumentalStream.Create(FDefinition, AProgress);
 end;
 
 function TSemanticStyle.CreateSession(const ASeed: Integer;
@@ -1016,6 +1286,8 @@ var
   LIndex: Integer;
   LSession: TNamedVoiceSession;
 begin
+  Require(not FDefinition.Instrumental.Enabled,
+    'Complete instrumental style requires CreateInstrumentalStream');
   ReportWork(AProgress, 'semantic_prepare_voice_session', wuItems, 0, 2);
   LLayers := LoadLayers(FDefinition, AProgress);
   try
@@ -1113,9 +1385,14 @@ begin
       LMaximum := RunBoundary(ARun, LProvider, Length(ARun.Tokens[LProvider]));
     end;
   end;
-  LClock := TTempoMap.Create(ARun.TicksPerQuarter, LMaximum, ARun.TempoChanges);
+  Require((ARun.ClockStartTick >= 0) and
+    (ARun.ClockStartTick <= High(Integer) - LMaximum), 'Observed clock origin exceeds the tick budget');
+  LClock := TTempoMap.Create(ARun.TicksPerQuarter,
+    ARun.ClockStartTick + LMaximum, ARun.TempoChanges);
   try
-    Require(LClock.FrameAtTick(LMaximum, ASource.SampleRate) = ARun.EndFrame - ARun.StartFrame,
+    Require(LClock.FrameAtTick(ARun.ClockStartTick + LMaximum, ASource.SampleRate,
+      ARun.ClockRounding) - LClock.FrameAtTick(ARun.ClockStartTick, ASource.SampleRate,
+      ARun.ClockRounding) = ARun.EndFrame - ARun.StartFrame,
       'Observed PPQ/tempo clock does not reproduce its original source-frame extent');
   finally
     LClock.Free;
@@ -1385,6 +1662,8 @@ begin
     LIO.Text(ADefinition.Providers[AProvider].VocabularySha256);
     LIO.N(LSource.SampleRate);
     LIO.N(LRun.TicksPerQuarter);
+    LIO.N(LRun.ClockStartTick);
+    LIO.N(Ord(LRun.ClockRounding));
     LIO.N(Length(LRun.TempoChanges));
     for LCell := 0 to High(LRun.TempoChanges) do
     begin
@@ -1409,11 +1688,13 @@ begin
         LMaximum := RunBoundary(LRun, LCell, Length(LRun.Tokens[LCell]));
       end;
     end;
-    LClock := TTempoMap.Create(LRun.TicksPerQuarter, LMaximum, LRun.TempoChanges);
+    LClock := TTempoMap.Create(LRun.TicksPerQuarter,
+      LRun.ClockStartTick + LMaximum, LRun.TempoChanges);
     for LCell := 0 to Length(LRun.Tokens[AProvider]) do
     begin
-      LFrame := Int64(LRun.StartFrame) + LClock.FrameAtTick(
-        RunBoundary(LRun, AProvider, LCell), LSource.SampleRate);
+      LFrame := Int64(LRun.StartFrame) + LClock.FrameAtTick(LRun.ClockStartTick +
+        RunBoundary(LRun, AProvider, LCell), LSource.SampleRate, LRun.ClockRounding) -
+        LClock.FrameAtTick(LRun.ClockStartTick, LSource.SampleRate, LRun.ClockRounding);
       Require((LFrame >= LRun.StartFrame) and (LFrame <= LRun.EndFrame),
         'Provider evidence boundary exceeds original run');
       WriteOriginPosition(LIO, MapOriginPosition(LSource, Integer(LFrame)));
@@ -1426,6 +1707,86 @@ begin
   finally
     LClock.Free;
     LIO.Free;
+  end;
+end;
+
+procedure ValidateInstrumentalDefinition(const ADefinition: TSemanticStyleDefinition;
+  const ALayers: TLearnedLayers; const AProgress: TWorkProgressCallback);
+var
+  LOwner: TSemanticInstrumentalStream;
+  LContext: TMusicalContextCell;
+  LSingle: TWfcMusicEnsembleFrame;
+  LRows: TLayerPositionPreferences;
+  LRun: TSemanticRun;
+  LContextIndex: Integer;
+  LProvider: Integer;
+  LCell: Integer;
+  LRole: Integer;
+  LCount: Integer;
+begin
+  Require(Length(ADefinition.Sounds) = 0,
+    'Instrumental styles use primary recipes rather than legacy measured-sound slots');
+  LContextIndex := 2 + Length(ADefinition.VoiceRanges);
+  for LProvider := 0 to High(ALayers) do
+  begin
+    Require((ADefinition.Providers[LProvider].Contract.TicksPerQuarter =
+      ADefinition.Instrumental.Options.TicksPerQuarter) and
+      (ADefinition.Providers[LProvider].Contract.TimeGrid.TicksPerCell =
+      ADefinition.Instrumental.Options.StepTicks) and
+      (ADefinition.Providers[LProvider].Contract.TimeGrid.OriginTick = 0) and
+      (Length(ADefinition.Providers[LProvider].Contract.TimeGrid.Boundaries) = 0),
+      'Instrumental providers require the same explicit uniform cell clock');
+    if Length(ALayers[LProvider].Preferences) > 0 then
+    begin
+      SetLength(LRows, 1);
+      LRows[0] := MakeLayerPositionPreference(0, ALayers[LProvider].Preferences);
+      ValidateSequencePositionPreferences(ALayers[LProvider].Model, 1, LRows, AProgress);
+    end;
+  end;
+  LOwner := TSemanticInstrumentalStream.Create(ADefinition, AProgress);
+  LOwner.Free;
+  { Original rows are declared observations, including Experimental proposals.
+    Verify their actual context/voice/drum relationships without a benchmark gate
+    or rendering source PCM during persistence. }
+  for LRun in ADefinition.Runs do
+  begin
+    LCount := Length(LRun.Tokens[0]);
+    Require(LCount > 0, 'Instrumental observed run requires complete joint rows');
+    for LProvider := 0 to High(ALayers) do
+    begin
+      Require((Length(LRun.Tokens[LProvider]) = LCount) and
+        (LRun.Weights[LProvider] = LRun.Weights[0]),
+        'Instrumental source observation loses joint rows or training weight');
+      for LCell := 0 to LCount do
+      begin
+        Require(RunBoundary(LRun, LProvider, LCell) = RunBoundary(LRun, 0, LCell),
+          'Instrumental observed provider rows have different timing');
+      end;
+    end;
+    for LCell := 0 to LCount - 1 do
+    begin
+      ReportWork(AProgress, 'semantic_instrumental_observations', wuItems, LCell, LCount);
+      LContext := DecodeMusicalContextToken(LRun.Tokens[LContextIndex][LCell]);
+      Require(EncodeWfcMusicPitchClassSet(ProjectWfcMusicEnsembleFrameToPitchClassSet(
+        LContext.Frame, 12)) = LRun.Tokens[0][LCell],
+        'Observed musical context differs from its harmony row');
+      Require(EncodeWfcMusicRhythmFrame(ProjectWfcMusicEnsembleFrameToRhythm(
+        LContext.Frame)) = LRun.Tokens[1][LCell],
+        'Observed musical context differs from its rhythm row');
+      Require(Length(LContext.Frame.Voices) = Length(ADefinition.VoiceRanges),
+        'Observed musical context has the wrong role count');
+      SetLength(LSingle.Voices, 1);
+      for LRole := 0 to High(ADefinition.VoiceRanges) do
+      begin
+        LSingle.Voices[0] := LContext.Frame.Voices[LRole];
+        Require(EncodeWfcMusicEnsembleFrame(LSingle) = LRun.Tokens[LRole + 2][LCell],
+          'Observed musical context differs from its pitched role row');
+      end;
+      for LProvider := LContextIndex + 1 to High(ALayers) do
+      begin
+        PercussionVelocity(LRun.Tokens[LProvider][LCell]);
+      end;
+    end;
   end;
 end;
 
@@ -1685,7 +2046,11 @@ begin
       end;
     end;
     ReportWork(AProgress, 'semantic_validate_providers', wuItems, Length(LLayers), Length(LLayers));
-    if LDefinition.NamedVoices then
+    if LDefinition.Instrumental.Enabled then
+    begin
+      ValidateInstrumentalDefinition(LDefinition, LLayers, AProgress);
+    end
+    else if LDefinition.NamedVoices then
     begin
       LVoices := AStyle.CreateVoiceSession(731, AProgress);
       LVoices.Free;
@@ -1706,7 +2071,7 @@ begin
           LOptions.RequireObservedEnd := True;
           LVoices := TNamedVoiceSession.Create(LConfig, LNames, LOptions);
           try
-            for LProvider := 0 to High(LLayers) do
+            for LProvider := 0 to Length(LConfig.Voices) + 1 do
             begin
               Require(Length(LDefinition.Runs[LRun].Tokens[LProvider]) = LCount,
                 'Named observed joint rows cannot be reconstructed from marginal runs');
@@ -1844,7 +2209,7 @@ begin
     FParent := Copy(AParent);
     LIO := TStyleIO.Create(nil, False, AProgress);
     try
-      LIO.Text('pythian.semantic.style.v2');
+      LIO.Text('pythian.semantic.style.v3');
       LIO.N(FKind);
       LIO.Blob(AParent);
       LIO.Blob(FOtherParent);
@@ -2271,6 +2636,8 @@ var
 begin
   inherited Create;
   Require((ALeft <> nil) and (ARight <> nil), 'Semantic blend requires two complete parents');
+  Require(not ALeft.FDefinition.Instrumental.Enabled and not ARight.FDefinition.Instrumental.Enabled,
+    'Instrumental blend requires explicit musical, expression and sound parent selection');
   FNodeCount := ALeft.NodeCount + ARight.NodeCount + 1;
   Require(FNodeCount <= 8, 'Semantic blend exceeds eight retained ancestry nodes');
   FDepth := ALeft.Depth;
@@ -2491,7 +2858,7 @@ begin
   LRecipe := Default(TSemanticBlendRecipe);
   LResult := nil;
   try
-    Require(LIO.Text = 'pythian.semantic.style.v2', 'Unsupported semantic format; regenerate development artifact');
+    Require(LIO.Text = 'pythian.semantic.style.v3', 'Unsupported semantic format; regenerate development artifact');
     LKind := LIO.Count(0, 2);
     LParentBytes := LIO.Blob(nil);
     LOtherBytes := LIO.Blob(nil);

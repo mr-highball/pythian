@@ -173,12 +173,19 @@ exact unrelated controls, not only lineage labels.
 
 ## Current encoding, bounds and verification
 
-The current `pythian.semantic.style.v2` encoding records source,
+The current `pythian.semantic.style.v3` encoding records source,
 control-derived and binary-blend kinds, parent bytes, blend recipe, contribution
 identities and full definition. There is no historical-variant reader; regenerate
 older development artifacts. Decode reconstructs rather than trusts a serialized
 blend definition. Corruption or disagreement with the actual recipe cannot
 publish a partial object.
+
+The complete instrumental source snapshot uses this same archive and retains
+nine actual providers and primary sound/form recipes. Its selective sound and
+expression parent controls are still being connected under
+[instrumental styles](TODO/NS-5_instrumental-styles_01.md); instrumental blending
+currently rejects explicitly. The generic/named blend checks described here do
+not qualify that missing ordinary Studio workflow.
 
 [Caller codecs](CALLER-PROVIDERS.md) retain their identity/version, canonical
 configuration, units and unknown/clock meaning in every root and nested parent.

@@ -251,6 +251,11 @@ downstream and extracted delivery gates pass. Density mapping is now qualified/d
 [Musical form](TODO/NS-5_musical-form_01.md) adds editable phrase/section continuity,
 variation and repetition. [Instrumental styles](TODO/NS-5_instrumental-styles_01.md)
 save real provider/control/sound recipes and exercise selective blends and reblends.
+Its complete nine-provider source/corpus snapshot now replays the ordinary
+instrumental stream on native and pas2js with primary sound/mix/form controls.
+This component still requires complete publication qualification; ordinary Studio
+style saving and selective instrumental blending/reblending remain open. No task
+effort is accepted by the persistence component alone.
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other
 parts vary. It uses real context/voice/drum domains and one continuous performance.

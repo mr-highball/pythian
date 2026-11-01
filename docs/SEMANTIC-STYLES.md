@@ -7,17 +7,18 @@
 [`pythian.wfc.semantic.style`](../adapters/wfc/pythian.wfc.semantic.style.pas)
 provides immutable `TSemanticStyle` definitions for actual reusable WFC provider
 graphs. It persists semantic models, source/run evidence and generation controls,
-then creates the existing mapped or named-voice consumer directly. A caller can
+then creates the existing mapped, named-voice or complete instrumental consumer directly. A caller can
 reload a graph without reconstructing its dependency configuration in a demo.
 
 This is a distinct artifact from PYS: PYS owns WAV measurement admission,
 weighted relearning and saved sound recipes; the semantic graph owns an explicit
 provider inventory and executable dependency configuration. Optional sound
 bindings embed current PYS bytes, including their existing ancestry and policies.
+The instrumental binding instead owns primary instrument and stem/mix recipes.
 Neither reader accepts historical development variants. The current semantic
-encoding is `pythian.semantic.style.v2`, conventionally stored as `.pysg`.
+encoding is `pythian.semantic.style.v3`, conventionally stored as `.pysg`.
 It persists caller codec identity/version, canonical configuration and declared
-meaning. No v1 reader remains; regenerate earlier development artifacts.
+meaning. Regenerate v1/v2 development artifacts; no compatibility reader remains.
 
 The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
 provider contributions and retained multi-parent evidence to this same current
@@ -28,8 +29,10 @@ separate from independently weighted blend contributions.
 
 The semantic archive now uses primary `pythian.stream.bytes`, little-endian
 fields and canonical `pythian.text` on native and actual pas2js consumers. Native
-archive/sound replay remains unchanged across the23 captured baseline artifacts;
-the existing style and blend/reblend fixtures run on pas2js. A mixed Unicode
+sound replay is retained. The preceding v2 portability component preserved all23
+captured archive/sound artifacts; v3 intentionally changes archive bytes to retain
+the complete instrumental recipe and observed-clock origin. The existing style
+and blend/reblend fixtures run on pas2js. A mixed Unicode
 recording group/domain archive has the same identity on both targets. Generated
 measurement profiles can still differ with target floating-point math; this is
 not a claim that independently measured sound profiles have identical bytes.
@@ -37,10 +40,47 @@ The32MiB bound, field/blob progress, cancellation, detached ownership and actual
 model-generation checks remain enforced. `check-synthesis-portability.ps1`
 includes both semantic fixtures under `-IncludeWfc`.
 
-This qualifies the existing generic/named archive, not complete ordinary Studio
-style saving. Its older eight-provider layout still needs the actual
-nine-provider context/percussion binding and complete primary instrument/mix
-recipes tracked in [instrumental styles](TODO/NS-5_instrumental-styles_01.md).
+## Complete instrumental snapshots
+
+Set `Instrumental.Enabled=True` and `NamedVoices=True`. Provider order is actual
+harmony, joint rhythm, pitched roles, musical context, then percussion. A normal
+bass/chords/lead plus kick/snare/hat style has nine models. Its recipe retains a
+caller-defined label, material origin, sample rate, clock/seed/search options,
+complete primary instrument definitions, six-part/master effect routing, drum
+settings and rhythm eligibility, expression and authored phrase/form controls.
+No genre enum, source PCM, borrowed model, factory or live instrument is stored.
+
+`CreateInstrumentalStream` returns a `TSemanticInstrumentalStream` owning models,
+instrument banks, buses and the existing `TInstrumentalMusicStream`. Pull mix and
+stems through its borrowed `Stream`; keep the owner alive through playback. The
+source style and input records may be freed immediately. Saved preferences and
+hard locks cover every actual provider, including context and drums. They remain
+separate from learned observation weights. Full instrumental styles reject the
+older voice-only consumer so context/drums cannot silently disappear.
+
+[`MusicalCorpusStyleDefinition`](../adapters/wfc/pythian.wfc.semantic.corpus.pas)
+captures actual corpus models and the learner's admitted independent samples,
+including boundary rearticulation, source influence, gaps and actual proposal/
+role origins. Supply the matching prepared/original source ledger and explicit
+sound recipe; it does not invent parent audio hashes or identify instruments.
+The original quantizer's tick origin and rounding retain fractional sample phase
+when a contribution starts inside a proposal window. Capture/reload never rereads
+the recording or runs WAV analysis. Model validation still replays the declared
+symbolic learner, with no operator feedback write or implicit learning update.
+
+Primary [`pythian.sound.recipe.codec`](../src/pythian.sound.recipe.codec.pas)
+persists detached oscillator/noise, additive, wavetable, FM/PM, layered, envelope,
+modulation and complete effect recipes on native and pas2js. Explicit sample
+descriptors are supported by this codec; the complete style's current admission
+requires realizable synthesis recipes and does not yet resolve external sampler
+bindings. Streamed gate percentages other than100 reject under the existing
+articulation limit. The saved stream tail must cover its declared mix tail.
+
+This is the library save/reload consumer. Ordinary Studio style saving, selective
+instrumental blends/reblends and their operator usefulness remain tracked in
+[instrumental styles](TODO/NS-5_instrumental-styles_01.md). Full instrumental
+`CreateBlend` currently rejects until explicit sound/expression parent selection
+is implemented; legacy generic/named blends remain available.
 
 ## Definition and actual consumers
 
@@ -54,7 +94,8 @@ role vector, pitch basis and optional original-clock conversion evidence.
 
 Built-in vocabularies cover the existing provider contract: key, tempo,
 onsets, intensity, pitch, joint pitch/rhythm, duration performance, harmony,
-ordered rhythm actions and independent singleton voice frames. The
+ordered rhythm actions, independent singleton voice frames, complete musical
+context and canonical percussion `rest` / `hit:1..127` choices. The
 [caller-provider contract](CALLER-PROVIDERS.md) additionally admits bounded
 `spvCaller` traits through explicit caller codecs and generic projections.
 Codec configuration belongs once per provider. Ordered tokens and declared
@@ -198,14 +239,27 @@ SHA256 trailer and checks complete canonical re-encoding after admission.
 Corruption, incompatible contracts or failed evidence replay cannot publish a
 partial style object.
 
-Bounds include 32 MiB per archive, eight providers, 32 source identities, 256 runs,
+Bounds include 32 MiB per archive, fifteen archived providers, 32 source identities, 256 runs,
 1024 observed cells per provider/run, 64 contribution weight, and eight ancestry
 nodes. Provider/model and graph bounds remain in force. Replay work and mapped
 co-observation each have explicit 16-million-operation estimates; excessive input
 rejects rather than discarding evidence. Collection lengths and payload sizes
 are bounded during decoding, with semantic checks before consumer publication.
+The complete instrumental layout admits up to six pitched and six drum parts
+(fifteen models including context). Existing generic/named session bounds remain
+eight providers; increasing archive capacity does not enlarge those consumers.
+Corpus capture rejects a larger ledger/run/work budget rather than dropping it.
 
 ## Verification scope
+
+The [complete instrumental fixture](../tests/pythian.tests.instrumental.style.lpr)
+exercises authored material and an actual weighted, cropped corpus with omitted
+gaps and a fractional source clock. Saved/reloaded models, graph decisions,
+expression, full mix and six synthesized stems match after input/style owners are
+freed. All14 effects and the portable eight-recipe catalog are exercised. Invalid
+provider controls, clock/bus mismatches, unsupported articulation, corruption and
+construction cancellation reject. This proves persistence/execution, not musical
+usefulness, inference accuracy or a deployed Studio style interface.
 
 The maintained [semantic-style fixture](../tests/pythian.tests.semantic.style.lpr)
 constructs source/derived graphs and compares actual generated tokens and latent

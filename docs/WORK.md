@@ -3,7 +3,56 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: portable semantic archive component; actual instrumental style binding next — 2026-11-01
+## Current handoff: complete instrumental style snapshots; publication gate pending — 2026-11-01
+
+Big Boss SOLO. Parent c6eea5445174e3a4dd39676b43707650f474791b now passes
+complete CI551/run41329313303. The current working component replaces the old
+eight-provider assumption with an explicit complete instrumental binding in the
+same semantic style/archive. Nine actual providers include context and all three
+drums. A primary portable sound codec retains instruments, envelopes, modulation,
+six-part/master effects and mix. The snapshot also saves actual role/clock/search
+settings, source/proposal origins, independent training influence, preferences,
+hard locks, expression and form. Owned replay uses the existing instrumental
+stream and survives caller/style destruction. No source PCM is performed.
+
+The actual musical corpus exposes detached admitted learning samples; capture
+uses these exact samples and models, with caller-supplied original/prepared source
+geometry. Cropped runs retain the source tick origin and rounding so a fractional
+sample phase is not lost. An authored weighted/cropped corpus with omitted gaps
+replays all six actual stems and decisions after save/reload. Its archive SHA is
+5001fd5ba918cc8829279b2ee69ac40dd774d9d92e70528955bd8fe46cbfd6ef on both
+native and actual JS; the authored full archive is
+2d201506a7b52568a6de5143c68fb43ef43f9cc687f9c23a190f71a560f8eb88.
+The new fixture passes2,016,899 checks, including invalid controls/clock/bus,
+unsupported streamed gate shortening, corruption and construction cancellation.
+Recipe codec/catalog133, existing style/blend, stream4,043,524 and density323
+pass on actual JS. Native counterparts and the actual WAV-derived corpus379
+pass with clean heaps. The final native progress fixture also passes41,937
+checks/41,831 callbacks with a clean heap.
+Only whitespace/readability changed after those behavior checks. Require its
+exact published complete CI before accepting AC1/count.
+
+Current archive format is v3; v1/v2 development artifacts regenerate. Historical
+bytes/failures remain. Ordinary Studio styles, selective instrumental sound/
+expression parent selection, blends/reblends and operator usefulness are still
+open. Instrumental CreateBlend rejects explicitly until those choices are wired;
+the existing generic/named blend consumers still pass. External sampled-style
+resolution is not claimed. The complete snapshot uses the existing explicit
+archive evidence/work limits and rejects oversized input without dropping it.
+
+Evidence: E/tests/styles-binding-native03 and styles-binding-js03;
+E/runs/instrumental-styles-20261101-boss. The earlier native harness lacked its
+optional output folder; the first JS fixture omitted an existing import; the
+first final harness used a PowerShell NUL path escape. Their evidence/repairs are
+retained in binding-failures.txt; no production workaround was inferred.
+No browser, service, source audio, feedback or operator store changed. The sound
+editor and saved clip library remain deployed. Current task remains In progress,
+146/188 (77.66%),32 DONE/seven open. No effort or musical usefulness is accepted.
+The current bounded batch continues through publication qualification; inherited
+consecutive nonclosing count is1 until an actual criterion closes. The broader
+goal remains active; no operator decision blocks this work.
+
+## Previous handoff: portable semantic archive component; actual instrumental style binding next — 2026-11-01
 
 Big Boss SOLO. The style task is In progress; current scope remains146/188
 (77.66%), seven open/32 DONE. The bounded first AC1 step replaces native-only
@@ -29,8 +78,10 @@ original native archive/audio bytes are verified separately.
 Evidence: E/runs/instrumental-styles-20261101-boss and E/tests/styles-before01,
 styles-native01, styles-js01, styles-unicode02/03. All those local sessions have
 finished. No review service, browser, operator data or playback changed in this
-batch; the checked sound editor remains live. Publish this source component and
-require its complete source CI; do not describe it as ordinary Studio styles.
+batch; the checked sound editor remains live. Sourcec6eea5445174e3a4dd39676b43707650f474791b
+is published on hello-pythian; exact CI551/run41329313303 is live. Require its
+terminal qualification and preserve that run; do not describe this component as
+ordinary Studio styles or cancel its gate with another source push.
 This closes no complete AC1 criterion: consecutive nonclosing count0→1. No
 effort is accepted. Next deliver actual instrumental style binding with all
 nine corpus providers, context/percussion semantics and complete primary sound/

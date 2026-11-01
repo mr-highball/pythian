@@ -30,7 +30,7 @@ unit pythian.wfc.musical.corpus;
 interface
 
 uses pythian.music.proposal, pythian.music.sound, pythian.progress, pythian.music.selection,
-  pythian.wfc.percussion, pythian.wfc.layers,
+  pythian.wfc.percussion, pythian.wfc.layers, pythian.wfc.learning,
   wfc_model, wfc_sequence, wfc_music_voices_graph;
 
 const
@@ -109,6 +109,7 @@ type
     TrainingWeight: Integer;
   end;
   TMusicalCorpusContributions = array of TMusicalCorpusContribution;
+  TMusicalProviderSamples = array of TWeightedSequenceSamples;
 
   { Big Boss: owns learned symbolic models and detached source/proposal evidence.
     It owns no source PCM or instrument. Every known run is a separate open
@@ -134,6 +135,7 @@ type
     FRoleNames: TMusicalProposalNames;
     FVocabularies: TMusicalProviderVocabularies;
     FContributions: TMusicalCorpusContributions;
+    FTrainingSamples: TMusicalProviderSamples;
     FRevisionIdentity: String;
     procedure CaptureVocabularies(const AProgress: TWorkProgressCallback);
   public
@@ -151,6 +153,10 @@ type
     function CopyProviderNames: TLayerModelTexts;
     function CopyVocabularies: TMusicalProviderVocabularies;
     function CopyContributions: TMusicalCorpusContributions;
+    { Exact admitted token samples used by the learner, indexed provider then
+      contribution. Includes rearticulated boundaries and independent weights.
+      Detached data for style persistence/reblending; never source PCM. }
+    function CopyTrainingSamples: TMusicalProviderSamples;
     { Resolve a stable meaning in this exact revision. -1 means absent, not
       a fallback to the same numeric position in a different vocabulary. }
     function ResolveToken(const AProviderKey, ATokenIdentity: String): Integer;
@@ -170,12 +176,12 @@ implementation
 
 uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash,
   pythian.music.pattern, pythian.percussion, pythian.wfc.music,
-  pythian.wfc.learning, pythian.wfc.providers,
+  pythian.wfc.providers,
   wfc_music, wfc_music_sequence, wfc_music_ensemble, wfc_music_ensemble_graph,
   wfc_sequence_text, pythian.text, pythian.binary;
 
 type
-  TProviderSamples = array of TWeightedSequenceSamples;
+  TProviderSamples = TMusicalProviderSamples;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -566,6 +572,7 @@ begin
         'Repeated musical source evidence cannot acquire duplicate ancestry');
     end;
   end;
+  FTrainingSamples := LSamples;
   for P := 0 to LProviderCount - 1 do
   begin
     ReportWork(AProgress, 'musical_corpus_learn', wuItems, P, LProviderCount);
@@ -751,6 +758,22 @@ end;
 function TMusicalCorpus.CopyContributions: TMusicalCorpusContributions;
 begin
   Result := Copy(FContributions);
+end;
+
+function TMusicalCorpus.CopyTrainingSamples: TMusicalProviderSamples;
+var
+  P: Integer;
+  R: Integer;
+begin
+  Result := Copy(FTrainingSamples);
+  for P := 0 to High(Result) do
+  begin
+    Result[P] := Copy(FTrainingSamples[P]);
+    for R := 0 to High(Result[P]) do
+    begin
+      Result[P][R].Tokens := Copy(FTrainingSamples[P][R].Tokens);
+    end;
+  end;
 end;
 
 function TMusicalCorpus.ResolveToken(const AProviderKey, ATokenIdentity: String): Integer;

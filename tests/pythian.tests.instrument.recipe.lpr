@@ -26,7 +26,8 @@ program pythian_tests_instrument_recipe;
 {$mode delphi}{$H+}
 
 uses SysUtils, Math, pythian.audio, pythian.synth, pythian.instrument.recipe,
-  pythian.instrument.catalog, pythian.automation, pythian.source.sample
+  pythian.instrument.catalog, pythian.automation, pythian.source.sample,
+  pythian.sound.recipe.codec, pythian.hash
   {$ifndef pas2js}, pythian.wave{$endif};
 
 const CRate = 24000;
@@ -94,6 +95,26 @@ begin
   for I := 0 to High(LCatalog) do
   begin
     LRecipe := FindInstrumentRecipe(LCatalog, LCatalog[I].Id);
+    LCopy := DecodeInstrumentRecipe(EncodeInstrumentRecipe(LRecipe));
+    Check(Sha256Bytes(EncodeInstrumentRecipe(LCopy)) =
+      Sha256Bytes(EncodeInstrumentRecipe(LRecipe)), 'Primary saved recipe is canonical');
+    LChanged := TRecipeInstrument.Create(LCopy, CRate);
+    LBank := nil;
+    try
+      LBank := TRecipeInstrument.Create(LRecipe, CRate);
+      LA := Audition(LBank);
+      LB := nil;
+      try
+        LB := Audition(LChanged);
+        Compare(LA, LB, 1);
+      finally
+        LB.Free;
+        LA.Free;
+      end;
+    finally
+      LBank.Free;
+      LChanged.Free;
+    end;
     LBank := TRecipeInstrument.Create(LRecipe, CRate);
     try
       LA := Audition(LBank);

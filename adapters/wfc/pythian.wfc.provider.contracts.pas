@@ -152,6 +152,7 @@ begin
     spvRhythm: Result := 'joint-rest-attack-hold-no-unknown';
     spvHarmony: Result := 'empty-pitch-set-no-unknown';
     spvMusicalContext: Result := 'joint-symbolic-voices-harmony-rhythm-no-unknown';
+    spvPercussion: Result := 'rest-or-hit-velocity-1..127';
     spvTempo, spvPitch, spvPitchRhythm: Result := 'no-unknown-token';
   else
     raise EAudio.Create('Unsupported provider vocabulary');
