@@ -131,6 +131,7 @@ if ($WithWfc) {
   $toolRoot = Join-Path $stage 'tools'
   New-Item -ItemType Directory -Path $toolRoot | Out-Null
   foreach ($toolName in @('pythian.learn.lpr', 'pythian.tools.files.pas',
+      'pythian.tools.path.pas',
       'pythian.tools.progress.pas',
       'pythian.tools.json.pas',
       'pythian.tools.features.pas', 'pythian.tools.journal.learning.pas',

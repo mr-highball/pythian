@@ -37,6 +37,23 @@ Primary attribution: NS-6. This distinct platform gap adds two effort units.
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: repaired actual ZIP consumers now pass on Win64 from
+  fresh E-drive roots. Core verifies123 units/137 content hashes; WFC verifies
+  186 units/316 hashes, including `unpacked/pythian/tools/pythian.tools.path.pas`.
+  All consumer examples complete. Logs and ZIPs are retained as
+  styles-ci555-package-{core,wfc}01; their manifest identifies the actual dirty
+  candidate, not only the base Git revision. Full replacement CI remains required.
+
+- 2026-11-01, Big Boss: exact CI555 at e88ac445 passes the maintained native
+  integration and core ZIP consumer, then fails the extracted WFC consumer:
+  `pythian.tools.path` was missing from the explicit packaged-tool list used by
+  `pythian.tools.files`. The package must include that shared unit. Preserve the
+  actual compiler log and before-script under E/runs/style-capacity-20261101-boss.
+  Downloaded log artifact SHA256 matches GitHub's retained digest
+  c91c5287e28186b83f7fc12cfd4523f2b05f703538881241f87f293c63cbe25f.
+  This is the existing AC3 integration failure, not additional task scope or
+  accepted effort. Test actual replacement ZIPs before the replacement push.
+
 - 2026-11-01, Big Boss: actual long-root consumers now pass: nine independent
   deep Unicode/atomic-budget checks, 2,016,325 playlist checks and 39 saved-clip
   checks, with clean heaps. Cold/warm caches, generated audio, saved candidates,

@@ -58,6 +58,12 @@ this distinct capacity outcome adds four units to current scope.
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: exact CI555 passes maintained integration but fails the
+  WFC extracted consumer because the new shared native-path unit was omitted
+  from the package manifest. The linked path prerequisite owns this repair.
+  Current tasks remain In progress; require complete replacement CI and actual
+  extracted consumers before accepting either task.
+
 - 2026-11-01, Big Boss: the repaired original long-root native consumer now
   passes 2,016,325 playlist and 39 saved-clip checks, with clean heaps. It verifies
   actual candidate models/mix/six stems, optional corrupt-artifact failure and

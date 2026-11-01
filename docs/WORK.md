@@ -3,6 +3,61 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Active continuation: CI555 package omission repair and shared performance binding - 2026-11-01
+
+Big Boss SOLO. The previous goal turn made progress: published e88ac445cf9f8558f4deb849848e5350459423ca
+matches the remote. Exact CI555/run41348029976 is now terminal failure: maintained
+integration passes in24m22s and the core extracted package passes, but the WFC
+ZIP consumer cannot find `pythian.tools.path`, omitted from the explicit tool
+inventory. The manifest now includes it; actual replacement core/WFC ZIP tests
+both pass under E/build/styles-ci555-package-{core,wfc}01. Core verifies123 units
+and137 content hashes; WFC verifies186 units and316 hashes after extraction,
+including compilation of the actual extracted path unit and all consumer
+examples. These are dirty-candidate snapshots whose checksum inventories identify
+the delivered bytes; source base e88ac445 alone does not. Preserve the
+authenticated job log, compiler failure and before-script in the E run packet.
+The downloaded log ZIP matches GitHub's SHA256
+c91c5287e28186b83f7fc12cfd4523f2b05f703538881241f87f293c63cbe25f.
+No effort is accepted from this failed overall gate.
+
+The reassessed prerequisite has a concrete local implementation and consumer
+result, but package qualification exposed the actual missing unit. The count is
+now3: the intervening shared-binding batch delivers a library component without
+closing the parent Studio criterion. Stop and reassess before another component.
+Changed next action: repair the existing path task's explicit package criterion,
+test actual ZIP consumers locally, then require a complete replacement CI.
+No new task/estimate or counter reset hides this packaging failure. During CI555,
+the work also prepared
+the existing parent style outcome through its primary binding: allow explicit
+per-performance duration/seed/options, a decision sink and a borrowed mixer,
+without mutating the saved evidence or duplicating model/instrument construction.
+This is the actual missing contract between the saved-style factory and the
+ordinary Studio runner. Do not expand into a new renderer or archive variant.
+
+Criterion: a saved style can supply the ordinary caller's requested performance
+and decision/output ownership. Deliverable: shared factory overload plus actual
+native/JS consumers. Evidence: default versus borrowed-mixer mix/stem parity,
+requested duration/seed/tempo, emitted decisions, unchanged saved identity and
+ownership after failure/cancellation. Stop at those relevant checks; next wire
+named styles and blends into existing Studio jobs/dialogs after the prerequisite
+gate passes. This preparation earns no parent-task acceptance by itself.
+
+The focused binding passes on native and actual pas2js:1,747,973 checks,
+clean native heap, exact default/borrowed mix and six stems, independent expected
+duration/tempo/unsigned-seed replay, complete emitted decisions, unchanged saved
+identity, detached ownership and callback/constructor cancellation. Wrong mixer
+sample rate/provider clock and incompatible retained form reject explicitly.
+Evidence is E/tests/styles-performance-{native,js}02. The complete new native
+and actual JS suites also pass7,799,668 instrumental checks, generic style/blend
+consumers and native385 progress checks. Archive identities remain unchanged,
+including the complete3,665,780-byte large corpus; native heaps are clean.
+Evidence is E/tests/styles-binding-full-{native,js}01. The source, guide and
+factory are ready for publication with the package repair. Require the replacement
+source's complete CI before closing the path/corpus tasks. Stop at
+this boundary before another Studio/storage component. Counts remain41 tasks,
+32 DONE/nine open,146/194 (75.26%); no deployment, operator write, browser/audio
+playback or dependency-source change occurred. The goal remains active.
+
 ## Current handoff: complete corpus/native candidates locally qualified; full CI required - 2026-11-01
 
 Big Boss SOLO. Prior turn made concrete progress: CI553's precision regression
