@@ -47,7 +47,7 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Candidate checkout pin: `80772b648e183dd1201696954dd427529942700e`, on separate
+Current accepted WFC pin: `80772b648e183dd1201696954dd427529942700e`, on separate
 unmerged branch `codex/pythian-context-composition`. It adds caller-declared
 symbolic sequence passes and projections to the primary independent-voice graph
 and stream, with one negotiated transaction and shared prefix frontier. Generic
@@ -55,13 +55,16 @@ native/actual pas2js144 checks pass on both targets. Source37c2755 passed all
 five [CI65 jobs](https://github.com/mr-highball/wfc/actions/runs/41277896792), but
 the first instrumental consumer exposed an untested frame-copy endpoint that
 mistook auxiliary tokens for pitched voices. The candidate repairs that endpoint.
-[Upstream CI66](https://github.com/mr-highball/wfc/actions/runs/41279626754) passes
-all five jobs at the repair. Updated downstream CI and extracted consumers remain acceptance gates for the
-[six-unit prerequisite](docs/TODO/NS-4_context-composition_01.md). Ordinary Studio
-free-form repair remains with its linked task. This candidate is not yet accepted
-or deployed, and no source was edited in this submodule checkout.
+[Upstream CI66](https://github.com/mr-highball/wfc/actions/runs/41279626754) and
+complete [Pythian CI543](https://github.com/mr-highball/pythian/actions/runs/41280934957)
+pass at the repair. The expanded typed consumer passes48 native/actual pas2js
+checks and both extracted targets; the clean Win64 archive verifies180 owned
+units/309 hashes. The [six-unit prerequisite — DONE](docs/TODO/DONE/NS-4_context-composition_01.md)
+is accepted. Ordinary Studio free-form repair still needs the separate
+[known-domain preparation](docs/TODO/NS-4_projected-domains_01.md). No service is
+redeployed or upstream branch merged, and no dependency source was edited here.
 
-Current accepted WFC pin: `448b2a3e25beded8503e94b5f4705b7156eca966`, on separate
+Previous accepted WFC pin: `448b2a3e25beded8503e94b5f4705b7156eca966`, on separate
 unmerged branch `codex/pythian-cell-priors`. It adds opt-in position-specific
 positive soft weights to the primary graph/numeric solver, including weighted
 entropy, restoration and negotiation. All five [upstream CI64 jobs](https://github.com/mr-highball/wfc/actions/runs/41257225759)

@@ -36,7 +36,7 @@ workbench owns interactive diagnostics; this task owns usable generation.
   candidate still exhausts the original limit; use known future restrictions
   before selecting upstream assignments rather than trying another model filter.
 
-- [Verified context composition](NS-4_context-composition_01.md) — context must
+- [Verified context composition — DONE](DONE/NS-4_context-composition_01.md) — context must
   negotiate with the actual free voice graph rather than commit independently.
 
 - [Positioned priors — DONE](DONE/NS-4_cell-priors_01.md)

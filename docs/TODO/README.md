@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**9 open tasks · 175 total effort units · 26 current-goal DONE · 118 / 175 accepted (67.43%).**
+**8 open tasks · 175 total effort units · 27 current-goal DONE · 124 / 175 accepted (70.86%).**
 
 [Known projected domains](NS-4_projected-domains_01.md) adds six required units:
 the actual shared musical candidate still reaches its search limit at64 on both
@@ -12,11 +12,11 @@ propagated back before source assignment; the unchanged explicit witness solves
 with zero retries. The candidate is preserved and removed from source. No more
 local model filters or hidden guide/seed/budget changes are selected.
 
-[Context composition](NS-4_context-composition_01.md) adds six required generic
-integration units after the exact free-form failure exposes separately committed
-context/voice frontiers. A standalone upstream-only probe confirms that solved
-caller-source composition is rejected by the primary closed-layout verifier.
-Use the notified new WFC branch; keep musical codecs here and preserve free parts.
+[Context composition — DONE](DONE/NS-4_context-composition_01.md) closes six units
+after upstream CI66, downstream CI543 and native/actual pas2js/extracted consumers
+pass at80772b6/96cba34. Declared sources, instruments and auxiliary sequences share
+one verified transaction/frontier; frame copies exclude auxiliary tokens. The
+further known-domain preparation and actual musical repair remain open.
 
 [Listening UTF-8 — DONE](DONE/NS-6_listening-utf8_01.md) accepts three units after
 complete CI541, native publication/response/replay, desktop/390px Save/reopen and
@@ -126,7 +126,7 @@ continuity experiments are selected.
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Awaiting operator feedback; actual guided form review is live, judgment remains |
 | [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Dependency-blocked; shared candidate still fails at64, projected-domain prerequisite selected |
-| [NS-4_context-composition_01](NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | In progress; demonstrated generic API gap, new separate WFC branch notified |
+| [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01](NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | In progress; bounded upstream-only proof, new separate WFC branch notified |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
@@ -141,8 +141,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 35 current-goal tasks (9 open, twenty-six DONE),
-totaling 175 units: 57 open and 118 accepted. Subtotals:
+The two tables together are all 35 current-goal tasks (8 open, twenty-seven DONE),
+totaling 175 units: 51 open and 124 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 71, NS-5 15, NS-6 62. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

@@ -28,7 +28,11 @@ The operator was notified of the new separate WFC branch
 codex/pythian-projected-domains from80772b6 before new upstream edits.
 Preserve both existing worktrees and the original expansion checkout.
 
-The [composition prerequisite](TODO/NS-4_context-composition_01.md) remains open.
+The [composition prerequisite — DONE](TODO/DONE/NS-4_context-composition_01.md) is now accepted
+at repaired80772b6/96cba34 after all five upstream CI66 jobs and complete CI543,
+including integration/extracted consumers. The local clean Win64 archive and
+both extracted48-check consumers also pass. The source37/0426149 successes below
+remain historical; its missed frame-copy endpoint is repaired by the accepted source.
 Its source37c2755 passed all five CI65 jobs and Pythian0426149 passes complete
 CI542. The clean Win64 archive verifies180 owned units and309 content hashes;
 SHA929e6f1d7417d5055846b13c30285a937e0d874e216a0dc96cea1111fca3052b.
@@ -38,21 +42,31 @@ endpoint: total model count was mistaken for pitched count. This is repaired in
 separate WFC source80772b6; native/actual pas2js144 and all five CI66 jobs pass.
 The initial source37 successes do not accept that defective endpoint.
 
-Pythian's local candidate pin is80772b6, and its maintained context consumer now
-also calls CopyFrames. Updated native/actual pas2js48 checks pass with a clean
-native heap. Extracted qualification and a new downstream source CI remain
-pending. Source is otherwise restored to published
-0426149. Do not stage or publish the preserved failed musical candidate. No
+Pythian96cba34 is pushed at80772b6. Its maintained context/frame consumer passes48
+native/actual pas2js checks and both extracted targets. The fresh clean Win64
+archive verifies180 owned units/309 hashes, SHA
+28a382fb06603a578808ad23dd6fc1067cdb6c199fef116959300b78ba30c7bf.
+Complete CI543 (run41280934957) passes at96cba34; retain its exact receipt.
+Local packaging and all native commands are finished/reaped. Source has no failed
+musical candidate edits. Do not stage or publish that preserved candidate. No
 branch is merged, no dependency source is edited here, no operator answer is
 invented and the stable cc45248 service/review are unchanged.
 
-Accounting118/175 (67.43%): nine open/26 current DONE,57 open units. The failed
-musical batch carries a conservative nonclosing count1; task/branch creation
-does not reset it. Stop and reassess before a third consecutive nonclosing
-batch if the next batch closes no criterion. Complete the actual frame-copy
-qualification before accepting composition. Then prepare bounded known-domain
-propagation in the new upstream branch; use the preserved musical candidate
+Accounting124/175 (70.86%): eight open/27 current DONE,51 open units. The real
+six-unit composition closure resets the conservative nonclosing count to0;
+task/branch creation did not reset it. Prepare bounded known-domain propagation
+in the new upstream branch; use the preserved musical candidate
 after that capability is available, not another local compatibility filter.
+
+The new projected-domains worktree is ready on its notified branch from80772b6.
+Its first locally committed kernel step exposes PropagateReferenceModel using
+the original initializer/propagator and no decisions/randomness. Native/actual
+pas2js18 checks pass; default741 and progress45371 native checks pass with clean
+heaps and58 original aborts. This branch is not published or pinned. The64cell
+free graph is not repaired yet. Reuse/factor the primary graph-to-reference
+compiler next, then sound projected-domain closure and shared-window application;
+do not copy codecs or propagation into Pythian. The open domain batch and
+nonclosing count0 carry. No local QA command or QA browser/audio is left running.
 
 ## Previous handoff: generic composition prerequisite selected — 2026-11-01
 
@@ -87,7 +101,7 @@ This confirms a generic composition API gap without an audio/Pythian dependency.
 The probe heap is clean. The earlier final pass0/kind9 was an excluded assignment
 after negotiation, not proof of an initially empty harmony domain.
 
-[Context composition](TODO/NS-4_context-composition_01.md) adds six units and is
+[Context composition](TODO/DONE/NS-4_context-composition_01.md) adds six units and is
 the genuine prerequisite for [unguided form](TODO/NS-4_unguided-form_01.md).
 Accounting118/169 (69.82%), eight open/26 current DONE. No additional acceptance
 follows from diagnosis. Counter0 follows the real listening-repair closure;

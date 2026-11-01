@@ -1,10 +1,10 @@
 # NS-4_context-composition_01 — Compose context and musical voices in one verified WFC transaction
 
-[Active tasks](README.md) · [Unguided form](NS-4_unguided-form_01.md) · [Work](../WORK.md)
+[Active tasks](../README.md) · [Unguided form](../NS-4_unguided-form_01.md) · [Work](../../WORK.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -16,6 +16,16 @@ choices before discovering whether the actual independent voice frontiers can
 continue. Pinning all voices to context examples is not the requested repair.
 Primary attribution: NS-4. Generic graph/source proof and lifecycle belong in the
 separate WFC repository; Pythian keeps musical token mappings and audio adaptation.
+
+Accepted 2026-11-01 by Big Boss SOLO at WFC80772b6 and Pythian96cba34. All five
+upstream CI66 jobs and complete downstream CI543 pass. The expanded native/actual
+pas2js144 generic and48 typed-context/frame consumers pass, including both
+extracted targets. The clean Win64 archive verifies180 owned units/309 hashes,
+SHA28a382fb06603a578808ad23dd6fc1067cdb6c199fef116959300b78ba30c7bf.
+The original bounded musical request still needs known-domain preparation;
+acceptance here is declared composition/proof/frontier capability, not unlimited
+search feasibility, Studio free-form repair or musical quality. The live service
+and saved operator responses are unchanged; no upstream branch is merged.
 
 **Acceptance Criteria:**
 
@@ -38,17 +48,35 @@ separate WFC repository; Pythian keeps musical token mappings and audio adaptati
 
 **Blockers**
 
-- [Positioned priors — DONE](DONE/NS-4_cell-priors_01.md)
-- [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
+- [Positioned priors — DONE](NS-4_cell-priors_01.md)
+- [Bounded future domains — DONE](NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- Final source96cba34 passes complete
+  [CI543](https://github.com/mr-highball/pythian/actions/runs/41280934957), including
+  maintained integration and extracted core/WFC consumers. All source80772b6
+  [upstream CI66 jobs](https://github.com/mr-highball/wfc/actions/runs/41279626754)
+  pass. The local clean Win64 archive and both extracted48-check consumers also
+  pass. Close AC1–4 and move this six-unit task to DONE with incoming links and
+  effort accounting. The separate projected-domain task remains open; no
+  musical preference or free-form generation criterion is accepted by this move.
+
+- Pythian's repaired source96cba34 is pushed. The fresh clean Win64 archive now
+  verifies180 owned units and309 content hashes at WFC80772b6; archive SHA
+  28a382fb06603a578808ad23dd6fc1067cdb6c199fef116959300b78ba30c7bf.
+  The expanded48-check consumer passes native/actual pas2js and both extracted
+  targets, with a clean native heap. Complete CI543 is running at96cba34 and
+  remains the final acceptance gate; preserve that exact run rather than
+  resubmitting on observation expiry. The separate projected-domain task has
+  only begun its reusable kernel work and does not repair the musical case yet.
 
 - The repaired80772b6 source now passes all five upstream CI66 jobs. The expanded
   Pythian typed-context/frame consumer passes48 checks on native and actual
   pas2js, with a clean native heap. The source37/0426149 archive and complete
   CI542 also pass, retained as exact historical evidence. Updated80772b6
   downstream CI/extraction remain the final gates. The separate
-  [known-domain preparation task](NS-4_projected-domains_01.md) owns the further
+  [known-domain preparation task](../NS-4_projected-domains_01.md) owns the further
   bounded-search capability exposed by the actual musical candidate; that
   failure does not disappear merely because composition's source/proof API
   works. Preserve both facts and keep this task open until repair gates finish.

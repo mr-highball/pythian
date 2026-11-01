@@ -1,6 +1,6 @@
 # NS-4_projected-domains_01 — Use known musical domains before choosing source passes
 
-[Active tasks](README.md) · [Composition](NS-4_context-composition_01.md) · [Unguided form](NS-4_unguided-form_01.md)
+[Active tasks](README.md) · [Composition — DONE](DONE/NS-4_context-composition_01.md) · [Unguided form](NS-4_unguided-form_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
@@ -41,10 +41,23 @@ search preparation, rather than replacing its graph, proof or stream engine.
 
 **Blockers**
 
-- [Verified shared composition](NS-4_context-composition_01.md) — repaired source
-  80772b6 passes upstream CI66; downstream pin/frame-consumer qualification remains.
+- [Verified shared composition — DONE](DONE/NS-4_context-composition_01.md) —
+  repaired80772b6/96cba34 passes upstream CI66/downstream CI543 and both extracted targets.
 
 **Dev Notes:**
+
+- First implementation step in the separate branch reuses the primary numeric
+  kernel: PropagateReferenceModel shares its new PrepareDomains initializer and
+  original Propagate operation with full search, without decisions or random
+  draws. It returns detached domain bytes and local-consistency diagnostics,
+  explicitly leaving complete-assignment exclusions/feasibility to search.
+  Native/actual pas2js18 checks pass, including hard masks, weights, quotas,
+  detached output, malformed-input preservation and observer cancellation. The
+  existing default741 and solve-progress45371 native checks pass with clean
+  heaps and58 original aborts. The step is locally committed but not published
+  or pinned. Graph-to-reference compilation reuse, projected-relation closure,
+  stream integration and the actual64cell free-case fix remain unfinished.
+  No task or musical effort is accepted from this kernel extraction alone.
 
 - 2026-11-01, Big Boss SOLO: the actual shared instrumental candidate passes its
   guided48-second/six-part control on native and actual pas2js, digest
