@@ -3,7 +3,55 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: complete instrumental style snapshots; publication gate pending — 2026-11-01
+## Current handoff: instrumental blends and unsigned seed repair ready to publish - 2026-11-01
+
+Big Boss SOLO. Previous turn was concrete progress: complete nine-provider
+instrumental/corpus snapshots were published at e130527. Exact CI552/
+run41332790195 now passes complete maintained integration and extracted packages
+on that exact commit. A later checked boundary fixture exposed its unsigned seed
+writer using signed N: seed$80000000 failed with ERangeError. Do not accept AC1
+from CI552 alone. The preserved failure is E/tests/styles-blend-seed-native03;
+the pre-repair source diff/fixture are in the evidence packet. The repair uses
+primary unsigned32 LE fields and shared unchanged field-visit progress. All four
+seed boundaries0/$7fffffff/$80000000/$ffffffff round-trip on native and actual
+JS. Existing source archive bytes are unchanged. Current inherited nonclosing
+count1 remains until complete repaired-source qualification closes a criterion;
+no estimate, task effort or operator usefulness changed.
+
+The next bounded AC2 consumer is implemented locally in the same style/archive,
+not a second renderer. Explicit per-provider source weights replay actual retained
+observations and build compatible musical vocabulary unions. Sound algorithms,
+part/master effects, expression, form and base clocks/seed are independently
+selected. Pitch range union and context binding changes are explicit choices;
+constraints remain authoritative. Full original models/vocabularies and all
+source/proposal evidence remain in both retained parents. Output tails cover the
+chosen parents. Instrumental kind3 extends only that blend's recipe; existing
+source and generic blend encodings remain unchanged.
+
+Native and actual pas2js complete instrumental checks pass4,033,775, with identical
+new blend9cf26cf8b66c91a968b33aaeb13a6edf2f3a5152c975a07713134720058c6b4f
+and further-blend10390a148ed2251de0f801945078045115dc5f30ed6a26186828b2e0365bbd76
+identities. Both generate actual mix plus six primary synthesized stems, reload
+and preserve all decisions/PCM. Musical selection, separate sound/effect/
+expression choice, register union, exact parent lineage, further/repeated ancestry,
+invalid selected controls/role schemas and cancellation are exercised. Native
+heaps are clean. Existing generic/named blend fixtures pass on both targets.
+Both complete source snapshot identities2d201506... and5001fd5b... are unchanged.
+Evidence: E/tests/styles-blend-native04 and styles-blend-js04, with orchestration
+in E/runs/instrumental-styles-20261101-boss/verify-blend04.ps1. Both include existing
+semantic persistence/blend consumers; native heaps are clean. Earlier full
+progress41,937/41,831 passes with clean heap in styles-blend-regressions-native03.
+All those local
+sessions finished. No service, browser, recording, feedback or private store changed.
+
+Remaining before publishing: inspect metadata/docs/staged scope, then publish
+this integrated component and require its own full CI, including the repaired
+archive progress boundary. Ordinary Studio style saving/blend controls and actual operator
+usefulness remain open. Current task stays In progress;146/188 (77.66%),32 DONE/
+seven open. No partial task effort is awarded. The broader goal remains active;
+no operator input blocks the next implementation.
+
+## Previous handoff: complete instrumental style snapshots; publication gate pending - 2026-11-01
 
 Big Boss SOLO. Parent c6eea5445174e3a4dd39676b43707650f474791b now passes
 complete CI551/run41329313303. The current working component replaces the old
@@ -29,8 +77,12 @@ Recipe codec/catalog133, existing style/blend, stream4,043,524 and density323
 pass on actual JS. Native counterparts and the actual WAV-derived corpus379
 pass with clean heaps. The final native progress fixture also passes41,937
 checks/41,831 callbacks with a clean heap.
-Only whitespace/readability changed after those behavior checks. Require its
-exact published complete CI before accepting AC1/count.
+Only whitespace/readability changed after those behavior checks. Source
+e130527e4d19cdd84dc28135fbcf9356d0fca683 is committed and published on
+hello-pythian with verified remote agreement. Exact CI552/run41332790195 is
+in progress. Preserve that gate; do not cancel it with another source push.
+Require its complete terminal success before accepting AC1/count. Both local
+verification sessions have finished with passed receipts.
 
 Current archive format is v3; v1/v2 development artifacts regenerate. Historical
 bytes/failures remain. Ordinary Studio styles, selective instrumental sound/

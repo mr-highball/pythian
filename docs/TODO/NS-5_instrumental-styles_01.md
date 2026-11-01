@@ -29,6 +29,30 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: AC2 library consumer now selects actual per-provider
+  musical weights, intact primary instruments, part/master effect routing,
+  expression, form and base performance policy independently. Canonical musical
+  vocabularies may differ; actual weighted source replay constructs their selected
+  union. Original model/vocabulary/clock/proposal origins remain in both parent
+  archives. Output scope follows the explicit base, while source observations
+  keep their independent clocks. Pitch-range union and context binding changes
+  require explicit recipe choices; no token lock is silently dropped. Native and
+  actual pas2js pass4,033,775 complete checks, including six-part generation,
+  save/reload, further blend, repeated ancestry, exact musical parent selection,
+  separate sound/effect/expression choices, invalid role/control rejection and
+  cancellation. New blend/reblend archive identities match across targets;
+  native heaps are clean. Generic/named semantic blends still pass. Both complete
+  source snapshot identities remain unchanged. Full publication qualification,
+  ordinary Studio saving/blending and actual operator usefulness remain required.
+  No task effort is accepted. Evidence: E/tests/styles-blend-native04,
+  styles-blend-js04. Exact parent snapshot CI552 now passes in full. A subsequent
+  signed/unsigned seed test exposed ERangeError at$80000000; preserve
+  styles-blend-seed-native03 and the pre-repair source/fixture. Primary unsigned
+  LE seed fields now pass0/$7fffffff/$80000000/$ffffffff on native and actual JS.
+  Existing source archive identities remain exact. Require the repaired integrated
+  source's full CI before accepting AC1/AC2 or resetting the count. No browser,
+  service or operator store changed.
+
 - 2026-11-01, Big Boss: AC1 now has an actual complete instrumental consumer.
   The v3 semantic archive retains nine corpus providers, clock/role schema,
   source and proposal origins, independent learning weights, preferences/locks,

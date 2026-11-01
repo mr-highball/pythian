@@ -49,6 +49,7 @@ caller-defined label, material origin, sample rate, clock/seed/search options,
 complete primary instrument definitions, six-part/master effect routing, drum
 settings and rhythm eligibility, expression and authored phrase/form controls.
 No genre enum, source PCM, borrowed model, factory or live instrument is stored.
+The seed retains the full unsigned32 graph-seed range on native and pas2js.
 
 `CreateInstrumentalStream` returns a `TSemanticInstrumentalStream` owning models,
 instrument banks, buses and the existing `TInstrumentalMusicStream`. Pull mix and
@@ -76,11 +77,12 @@ requires realizable synthesis recipes and does not yet resolve external sampler
 bindings. Streamed gate percentages other than100 reject under the existing
 articulation limit. The saved stream tail must cover its declared mix tail.
 
-This is the library save/reload consumer. Ordinary Studio style saving, selective
-instrumental blends/reblends and their operator usefulness remain tracked in
-[instrumental styles](TODO/NS-5_instrumental-styles_01.md). Full instrumental
-`CreateBlend` currently rejects until explicit sound/expression parent selection
-is implemented; legacy generic/named blends remain available.
+This is the library save/reload consumer. `CreateBlend` also admits explicit
+instrumental parent choices and actual weighted vocabulary unions, with saved
+lineage and further blends. See the [instrumental blend contract](SEMANTIC-BLENDS.md#instrumental-parent-choices).
+Ordinary Studio style saving/blending and operator usefulness remain tracked in
+[instrumental styles](TODO/NS-5_instrumental-styles_01.md); a library replay does
+not qualify that missing interface or musical preference.
 
 ## Definition and actual consumers
 

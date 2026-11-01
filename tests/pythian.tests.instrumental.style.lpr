@@ -421,9 +421,273 @@ begin
   end;
 end;
 
+procedure Relearn(var ADefinition: TSemanticStyleDefinition);
+var
+  LModel: TWfcSequenceModel;
+  LSamples: TWfcSequenceSamples;
+  P: Integer;
+begin
+  SetLength(LSamples, 1);
+  for P := 0 to High(ADefinition.Providers) do
+  begin
+    LSamples[0] := MakeWfcSequenceSample(ADefinition.Runs[0].Tokens[P]);
+    LModel := LearnSequenceModelCorpus(LSamples, 1);
+    try
+      ADefinition.Providers[P].ModelText := EncodeWfcSequenceText(LModel);
+      ADefinition.Providers[P].VocabularySha256 := SemanticVocabularyIdentity(
+        ADefinition.Providers[P].ModelText, ADefinition.Providers[P].Contract);
+    finally
+      LModel.Free;
+    end;
+  end;
+end;
+
+function OtherDefinition: TSemanticStyleDefinition;
+var
+  LContext: TMusicalContextCell;
+  LSingle: TWfcMusicEnsembleFrame;
+  LCatalog: TInstrumentRecipes;
+  C: Integer;
+  R: Integer;
+begin
+  Result := Definition;
+  Result.Sources[0].Sha256 := StringOfChar('b', 64);
+  Result.Sources[0].GroupId := 'second-independent-authored-example';
+  Result.Sources[0].OriginSha256 := Result.Sources[0].Sha256;
+  Result.Sources[0].PreparationSha256 := SemanticPreparationIdentity(Result.Sources[0]);
+  SetLength(LSingle.Voices, 1);
+  for C := 0 to 7 do
+  begin
+    LContext := DecodeMusicalContextToken(Result.Runs[0].Tokens[5][C]);
+    for R := 0 to 2 do
+    begin
+      Inc(LContext.Frame.Voices[R].Tones[0].Pitch, 12);
+      LSingle.Voices[0] := LContext.Frame.Voices[R];
+      Result.Runs[0].Tokens[R + 2][C] := EncodeWfcMusicEnsembleFrame(LSingle);
+    end;
+    Result.Runs[0].Tokens[5][C] := EncodeMusicalContextToken(LContext);
+    Result.Runs[0].Tokens[7][C] := PercussionToken(113 * Ord((C mod 2) = 1));
+    Result.Runs[0].Tokens[8][C] := PercussionToken(80);
+  end;
+  for R := 0 to 2 do
+  begin
+    Inc(Result.VoiceRanges[R].MinimumPitch, 12);
+    Inc(Result.VoiceRanges[R].MaximumPitch, 12);
+  end;
+  for R := 0 to 8 do
+  begin
+    Result.Providers[R].Preferences := nil;
+    Result.Providers[R].Constraints := nil;
+  end;
+  Result.Instrumental.LabelText := 'Another caller style';
+  LCatalog := BuiltInInstrumentRecipes;
+  Result.Instrumental.Instruments := [LCatalog[5], LCatalog[3], LCatalog[6]];
+  Result.Instrumental.Expression[0].VelocityPercent := 140;
+  Result.Instrumental.Mix.Parts[0].Gain := 0.4;
+  Result.Instrumental.Mix.Parts[0].Pan := 0.25;
+  Relearn(Result);
+end;
+
+procedure SameInstrumental(const ALeft, ARight: TSemanticStyle);
+var
+  LA: TSemanticInstrumentalStream;
+  LB: TSemanticInstrumentalStream;
+  LMasterA: TAudioSamples;
+  LMasterB: TAudioSamples;
+  LStemsA: TBusSampleBlocks;
+  LStemsB: TBusSampleBlocks;
+  I: Integer;
+  P: Integer;
+begin
+  LA := ALeft.CreateInstrumentalStream;
+  LB := nil;
+  try
+    LB := ARight.CreateInstrumentalStream;
+    while LA.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterA, LStemsA) do
+    begin
+      Check(LB.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterB, LStemsB),
+        'Instrumental blend replay ended early');
+      Check(Length(LMasterA) = Length(LMasterB), 'Instrumental blend replay clock differs');
+      for I := 0 to High(LMasterA) do
+      begin
+        Check(Abs(LMasterA[I] - LMasterB[I]) < 1E-12, 'Instrumental blend mix changed on reload');
+        for P := 0 to 5 do
+        begin
+          Check(Abs(LStemsA[P][I] - LStemsB[P][I]) < 1E-12,
+            'Instrumental blend stem changed on reload');
+        end;
+      end;
+      Check(Sha256Bytes(EncodeMusicDecisions(LA.Stream.CopyLastDecisions)) =
+        Sha256Bytes(EncodeMusicDecisions(LB.Stream.CopyLastDecisions)),
+        'Instrumental blend decisions or expression changed on reload');
+    end;
+    Check(LA.Stream.PercussionHits > 0, 'Instrumental blend has no actual drums');
+  finally
+    LB.Free;
+    LA.Free;
+  end;
+end;
+
+procedure Seeds;
+const
+  CSeeds: array[0..3] of Cardinal = (0, $7FFFFFFF, $80000000, $FFFFFFFF);
+var
+  LDefinition: TSemanticStyleDefinition;
+  LStyle: TSemanticStyle;
+  LLoaded: TSemanticStyle;
+  I: Integer;
+begin
+  for I := 0 to High(CSeeds) do
+  begin
+    LDefinition := Definition;
+    LDefinition.Instrumental.Options.Seed := CSeeds[I];
+    LStyle := TSemanticStyle.CreateSource(LDefinition);
+    LLoaded := nil;
+    try
+      LLoaded := DecodeSemanticStyle(LStyle.Encode);
+      Check(LLoaded.CopyDefinition.Instrumental.Options.Seed = CSeeds[I],
+        'Instrumental archive changes an unsigned graph seed');
+    finally
+      LLoaded.Free;
+      LStyle.Free;
+    end;
+  end;
+end;
+
+procedure Blends;
+var
+  LLeft: TSemanticStyle;
+  LRight: TSemanticStyle;
+  LBlend: TSemanticStyle;
+  LLoaded: TSemanticStyle;
+  LFurther: TSemanticStyle;
+  LParent: TSemanticStyle;
+  LRecipe: TSemanticBlendRecipe;
+  LCopy: TSemanticStyleDefinition;
+  LRightDefinition: TSemanticStyleDefinition;
+  LBefore: String;
+  LRejected: Boolean;
+  LBad: TSemanticStyle;
+  LCancel: TCancel;
+  I: Integer;
+begin
+  LLeft := TSemanticStyle.CreateSource(Definition);
+  LRight := nil;
+  LBlend := nil;
+  LLoaded := nil;
+  LFurther := nil;
+  LParent := nil;
+  LBad := nil;
+  LCancel := TCancel.Create;
+  try
+    LRightDefinition := OtherDefinition;
+    LRight := TSemanticStyle.CreateSource(LRightDefinition);
+    LBefore := LLeft.Identity;
+    LRecipe := Default(TSemanticBlendRecipe);
+    SetLength(LRecipe.Providers, 9);
+    for I := 0 to 8 do LRecipe.Providers[I].LeftWeight := 1;
+    for I in [2, 4, 5, 7] do
+    begin
+      LRecipe.Providers[I].LeftWeight := 0;
+      LRecipe.Providers[I].RightWeight := 1;
+      LRecipe.Providers[I].ControlParent := 1;
+    end;
+    LRecipe.Providers[3].RightWeight := 1;
+    LRecipe.Providers[8].LeftWeight := 2;
+    LRecipe.Providers[8].RightWeight := 1;
+    LRecipe.Instrumental.Enabled := True;
+    LRecipe.Instrumental.LabelText := 'Bass from B; harmony from both; independently selected sound';
+    LRecipe.Instrumental.UnionPitchRanges := True;
+    LRecipe.Instrumental.OverrideContextBinding := True;
+    LRecipe.Instrumental.ContextBinding := icbDrivenRole;
+    SetLength(LRecipe.Instrumental.Parts, 6);
+    LRecipe.Instrumental.Parts[0].ExpressionParent := 1;
+    LRecipe.Instrumental.Parts[0].EffectsParent := 1;
+    LRecipe.Instrumental.Parts[1].InstrumentParent := 1;
+    LBlend := TSemanticStyle.CreateBlend(LLeft, LRight, LRecipe);
+    Check(LLeft.Identity = LBefore, 'Blending changed its source');
+    Check(LBlend.NodeCount = 3, 'Instrumental blend lost a parent');
+    LCopy := LBlend.CopyDefinition;
+    Check((LCopy.Instrumental.Expression[0].VelocityPercent = 140) and
+      (LCopy.Instrumental.Mix.Parts[0].Gain = 0.4) and
+      (LCopy.Instrumental.Instruments[0].Id = Definition.Instrumental.Instruments[0].Id) and
+      (LCopy.Instrumental.Instruments[1].Id = LRightDefinition.Instrumental.Instruments[1].Id),
+      'Instrumental blend couples independent musical/sound/effect/expression selections');
+    Check((LCopy.VoiceRanges[1].MinimumPitch = 48) and
+      (LCopy.VoiceRanges[1].MaximumPitch = 67), 'Explicit union lost a selected register');
+    Check(Length(LCopy.Sources) = 2, 'Instrumental blend loses original sources');
+    Check((LCopy.Providers[2].ModelText = LRightDefinition.Providers[2].ModelText) and
+      (LCopy.Providers[6].ModelText = Definition.Providers[6].ModelText) and
+      (LCopy.Providers[3].VocabularySha256 <> Definition.Providers[3].VocabularySha256),
+      'Musical parent choice or actual weighted vocabulary union was not applied');
+    LRejected := False;
+    try
+      LBad := TSemanticStyle.CreateBlend(LLeft, LRight, LRecipe, nil, nil, LCancel.Observe);
+    except
+      on EAbort do LRejected := True;
+    end;
+    Check(LRejected and (LBad = nil) and (LLeft.Identity = LBefore),
+      'Canceled instrumental blend was published or changed its parent');
+    LRecipe.Providers[2].ControlParent := 0;
+    LRejected := False;
+    try
+      LBad := TSemanticStyle.CreateBlend(LLeft, LRight, LRecipe);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected and (LBad = nil) and (LLeft.Identity = LBefore),
+      'Absent selected control was silently dropped instead of rejecting');
+    LRecipe.Providers[2].ControlParent := 1;
+    LLoaded := DecodeSemanticStyle(LBlend.Encode);
+    Check(LLoaded.Identity = LBlend.Identity, 'Instrumental blend archive identity changed');
+    SameInstrumental(LBlend, LLoaded);
+    FreeAndNil(LLoaded);
+    LParent := LBlend.CopyParent(1);
+    Check(LParent.Identity = LRight.Identity, 'Instrumental parent was not retained exactly');
+    FreeAndNil(LParent);
+    for I := 0 to 8 do
+    begin
+      LRecipe.Providers[I].LeftWeight := 1;
+      LRecipe.Providers[I].RightWeight := 1;
+      LRecipe.Providers[I].ControlParent := 0;
+    end;
+    LRecipe.Instrumental.LabelText := 'Reusable further blend';
+    LFurther := TSemanticStyle.CreateBlend(LBlend, LLeft, LRecipe);
+    Check(LFurther.NodeCount = 5, 'Further instrumental blend loses repeated ancestry');
+    LLoaded := DecodeSemanticStyle(LFurther.Encode);
+    SameInstrumental(LFurther, LLoaded);
+    FreeAndNil(LLoaded);
+    LRightDefinition.Providers[4].Contract.Name := 'another-lead';
+    LRightDefinition.Providers[4].Contract.RoleId := 'another-lead';
+    LRightDefinition.Providers[1].Contract.RoleOrder[2] := 'another-lead';
+    LRightDefinition.Providers[5].Contract.RoleOrder[2] := 'another-lead';
+    LRightDefinition.Providers[5].Contract.RoleId := 'another-lead';
+    LParent := TSemanticStyle.CreateSource(LRightDefinition);
+    LRejected := False;
+    try
+      LBad := TSemanticStyle.CreateBlend(LLeft, LParent, LRecipe);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected and (LBad = nil), 'A different role schema was silently coerced into a blend');
+    WriteLn('Instrumental blend/reblend ', LBlend.Identity, ' ', LFurther.Identity);
+  finally
+    LBad.Free;
+    LCancel.Free;
+    LParent.Free;
+    LLoaded.Free;
+    LFurther.Free;
+    LBlend.Free;
+    LRight.Free;
+    LLeft.Free;
+  end;
+end;
+
 begin
   Replay(Definition);
   Replay(CorpusDefinition);
   Failures;
+  Blends;
+  Seeds;
   WriteLn('Complete instrumental style checks passed: ', GChecks);
 end.

@@ -148,10 +148,32 @@ type
     RightEnvelopeWeight: Integer;
     RepeatPolicy: TSemanticSoundRepeatPolicy;
   end;
+  TSemanticBlendPart = record
+    InstrumentParent: Integer;
+    EffectsParent: Integer;
+    ExpressionParent: Integer;
+  end;
+  TSemanticBlendInstrumental = record
+    Enabled: Boolean;
+    LabelText: String;
+    { Explicit parent choices: no averaging of oscillator algorithms or effects.
+      The base supplies clocks/search/pair policy; provider ControlParent supplies
+      pitch bounds and token locks/preferences. Form must fit the chosen clock. }
+    BaseParent: Integer;
+    MasterParent: Integer;
+    FormParent: Integer;
+    { Explicitly combine the register bounds of positive musical parents.
+      Token locks remain authoritative. False retains ControlParent's bounds. }
+    UnionPitchRanges: Boolean;
+    OverrideContextBinding: Boolean;
+    ContextBinding: TInstrumentalContextBinding;
+    Parts: array of TSemanticBlendPart;
+  end;
   TSemanticBlendRecipe = record
     Providers: array of TSemanticBlendProvider;
     Sounds: array of TSemanticBlendSound;
     RepeatPolicy: TSemanticRepeatPolicy;
+    Instrumental: TSemanticBlendInstrumental;
   end;
 
   { Owns every model, instrument bank, bus and the ordinary instrumental stream.
@@ -258,11 +280,13 @@ type
     FReading: Boolean;
     FProgress: TWorkProgressCallback;
     FFields: Int64;
+    procedure VisitField;
   public
     constructor Create(const ABytes: TAudioBytes; const AReading: Boolean;
       const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function N(const AValue: Integer = 0): Integer;
+    function U(const AValue: Cardinal): Cardinal;
     function Q(const AValue: Int64 = 0): Int64;
     function R(const AValue: Double): Double;
     function Count(const AValue, AMaximum: Integer): Integer;
@@ -314,13 +338,18 @@ begin
   inherited Destroy;
 end;
 
-function TStyleIO.N(const AValue: Integer): Integer;
+procedure TStyleIO.VisitField;
 begin
   Inc(FFields);
   if FFields mod 4096 = 0 then
   begin
     ReportWork(FProgress, 'semantic_archive_fields', wuItems, FFields, 0);
   end;
+end;
+
+function TStyleIO.N(const AValue: Integer): Integer;
+begin
+  VisitField;
   Result := AValue;
   if FReading then
   begin
@@ -334,6 +363,22 @@ begin
   else
   begin
     WriteInt32LE(FNumberBytes, 0, AValue);
+    WriteStreamBytesExact(FStream, FNumberBytes, 0, 4);
+  end;
+end;
+
+function TStyleIO.U(const AValue: Cardinal): Cardinal;
+begin
+  VisitField;
+  Result := AValue;
+  if FReading then
+  begin
+    ReadStreamBytesExact(FStream, FNumberBytes, 0, 4);
+    Result := ReadUInt32LE(FNumberBytes, 0);
+  end
+  else
+  begin
+    WriteUInt32LE(FNumberBytes, 0, AValue);
     WriteStreamBytesExact(FStream, FNumberBytes, 0, 4);
   end;
 end;
@@ -575,7 +620,7 @@ begin
     StepTicks := AIO.N(StepTicks);
     TempoMicroseconds := AIO.N(TempoMicroseconds);
     SegmentCells := AIO.N(SegmentCells);
-    Seed := AIO.N(Seed);
+    Seed := AIO.U(Seed);
     MaxBacktracks := AIO.N(MaxBacktracks);
     MaxPassBacktracks := AIO.N(MaxPassBacktracks);
     VoiceLimit := AIO.N(VoiceLimit);
@@ -846,7 +891,8 @@ begin
   end;
 end;
 
-procedure BlendRecipeIO(const AIO: TStyleIO; var ARecipe: TSemanticBlendRecipe);
+procedure BlendRecipeIO(const AIO: TStyleIO; var ARecipe: TSemanticBlendRecipe;
+  const AInstrumental: Boolean = False);
 var
   LIndex: Integer;
 begin
@@ -869,6 +915,31 @@ begin
     ARecipe.Sounds[LIndex].RepeatPolicy := TSemanticSoundRepeatPolicy(
       AIO.Count(Ord(ARecipe.Sounds[LIndex].RepeatPolicy), 1));
   end;
+  ARecipe.Instrumental.Enabled := AInstrumental;
+  if AInstrumental then
+  begin
+    ARecipe.Instrumental.LabelText := AIO.Text(ARecipe.Instrumental.LabelText);
+    ARecipe.Instrumental.BaseParent := AIO.Count(ARecipe.Instrumental.BaseParent, 1);
+    ARecipe.Instrumental.MasterParent := AIO.Count(ARecipe.Instrumental.MasterParent, 1);
+    ARecipe.Instrumental.FormParent := AIO.Count(ARecipe.Instrumental.FormParent, 1);
+    ARecipe.Instrumental.UnionPitchRanges :=
+      AIO.Count(Ord(ARecipe.Instrumental.UnionPitchRanges), 1) <> 0;
+    ARecipe.Instrumental.OverrideContextBinding :=
+      AIO.Count(Ord(ARecipe.Instrumental.OverrideContextBinding), 1) <> 0;
+    ARecipe.Instrumental.ContextBinding := TInstrumentalContextBinding(AIO.Count(
+      Ord(ARecipe.Instrumental.ContextBinding), Ord(High(TInstrumentalContextBinding))));
+    SetLength(ARecipe.Instrumental.Parts,
+      AIO.Count(Length(ARecipe.Instrumental.Parts), 12));
+    for LIndex := 0 to High(ARecipe.Instrumental.Parts) do
+    begin
+      ARecipe.Instrumental.Parts[LIndex].InstrumentParent :=
+        AIO.Count(ARecipe.Instrumental.Parts[LIndex].InstrumentParent, 1);
+      ARecipe.Instrumental.Parts[LIndex].EffectsParent :=
+        AIO.Count(ARecipe.Instrumental.Parts[LIndex].EffectsParent, 1);
+      ARecipe.Instrumental.Parts[LIndex].ExpressionParent :=
+        AIO.Count(ARecipe.Instrumental.Parts[LIndex].ExpressionParent, 1);
+    end;
+  end;
 end;
 
 function CloneRecipe(const ARecipe: TSemanticBlendRecipe): TSemanticBlendRecipe;
@@ -880,13 +951,14 @@ begin
   LInput := ARecipe;
   LInput.Providers := Copy(ARecipe.Providers);
   LInput.Sounds := Copy(ARecipe.Sounds);
+  LInput.Instrumental.Parts := Copy(ARecipe.Instrumental.Parts);
   LWrite := TStyleIO.Create(nil, False);
   try
-    BlendRecipeIO(LWrite, LInput);
+    BlendRecipeIO(LWrite, LInput, ARecipe.Instrumental.Enabled);
     LRead := TStyleIO.Create(LWrite.Bytes, True);
     try
       Result := Default(TSemanticBlendRecipe);
-      BlendRecipeIO(LRead, Result);
+      BlendRecipeIO(LRead, Result, ARecipe.Instrumental.Enabled);
     finally
       LRead.Free;
     end;
@@ -1711,7 +1783,8 @@ begin
 end;
 
 procedure ValidateInstrumentalDefinition(const ADefinition: TSemanticStyleDefinition;
-  const ALayers: TLearnedLayers; const AProgress: TWorkProgressCallback);
+  const ALayers: TLearnedLayers; const AInheritedJoints: Boolean;
+  const AProgress: TWorkProgressCallback);
 var
   LOwner: TSemanticInstrumentalStream;
   LContext: TMusicalContextCell;
@@ -1755,7 +1828,7 @@ begin
     for LProvider := 0 to High(ALayers) do
     begin
       Require((Length(LRun.Tokens[LProvider]) = LCount) and
-        (LRun.Weights[LProvider] = LRun.Weights[0]),
+        (AInheritedJoints or (LRun.Weights[LProvider] = LRun.Weights[0])),
         'Instrumental source observation loses joint rows or training weight');
       for LCell := 0 to LCount do
       begin
@@ -2048,7 +2121,7 @@ begin
     ReportWork(AProgress, 'semantic_validate_providers', wuItems, Length(LLayers), Length(LLayers));
     if LDefinition.Instrumental.Enabled then
     begin
-      ValidateInstrumentalDefinition(LDefinition, LLayers, AProgress);
+      ValidateInstrumentalDefinition(LDefinition, LLayers, AStyle.FInheritedJoints, AProgress);
     end
     else if LDefinition.NamedVoices then
     begin
@@ -2213,7 +2286,7 @@ begin
       LIO.N(FKind);
       LIO.Blob(AParent);
       LIO.Blob(FOtherParent);
-      BlendRecipeIO(LIO, FRecipe);
+      BlendRecipeIO(LIO, FRecipe, FKind = 3);
       LIO.Blob(DefinitionBytes(FDefinition, AProgress));
       LBody := LIO.Bytes;
       LIO.Text(Sha256Bytes(LBody, AProgress));
@@ -2302,6 +2375,15 @@ begin
   LPolicy.Sources := nil;
   LPolicy.Runs := nil;
   LPolicy.Sounds := nil;
+  if LPolicy.Instrumental.Enabled then
+  begin
+    { The blend explicitly selects the new performance/range/pair policy.
+      Actual provider codecs, ordered roles and clocks are checked separately. }
+    LPolicy.Instrumental := Default(TSemanticInstrumentalRecipe);
+    LPolicy.VoiceRanges := nil;
+    LPolicy.VoicePairs := nil;
+    LPolicy.HarmonyMode := wmehmExact;
+  end;
   Result := Sha256Bytes(DefinitionBytes(LPolicy));
 end;
 
@@ -2434,7 +2516,7 @@ begin
 end;
 
 procedure RelearnBlend(var ADefinition: TSemanticStyleDefinition;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const AUnionVocabulary: Boolean = False);
 var
   LProvider: Integer;
   LRun: Integer;
@@ -2463,10 +2545,22 @@ begin
       end;
       LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order, 4096, AProgress);
       ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
-      Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText,
-        ADefinition.Providers[LProvider].Contract, AProgress) =
-        ADefinition.Providers[LProvider].VocabularySha256,
-        'Blend changes frozen ordered vocabulary; rebuild vocabulary explicitly');
+      if AUnionVocabulary then
+      begin
+        ADefinition.Providers[LProvider].VocabularySha256 := SemanticVocabularyIdentity(
+          ADefinition.Providers[LProvider].ModelText,
+          ADefinition.Providers[LProvider].Contract, AProgress);
+        { Both complete parent archives retain the contributing vocabularies.
+          A union is not an unchanged frozen vocabulary from one parent. }
+        ADefinition.Providers[LProvider].VocabularyAncestor := '';
+      end
+      else
+      begin
+        Require(SemanticVocabularyIdentity(ADefinition.Providers[LProvider].ModelText,
+          ADefinition.Providers[LProvider].Contract, AProgress) =
+          ADefinition.Providers[LProvider].VocabularySha256,
+          'Blend changes frozen ordered vocabulary; rebuild vocabulary explicitly');
+      end;
     finally
       LModel.Free;
       LOriginal.Free;
@@ -2613,6 +2707,114 @@ begin
   end;
 end;
 
+procedure BindInstrumentalBlend(var ADefinition: TSemanticStyleDefinition;
+  const ALeft, ARight: TSemanticStyleDefinition; const ARecipe: TSemanticBlendRecipe);
+var
+  LParents: array[0..1] of TSemanticStyleDefinition;
+  LPitched: Integer;
+  LDrums: Integer;
+  LSide: Integer;
+  LControl: Integer;
+  LProvider: Integer;
+  I: Integer;
+  procedure IncludeTail(const AParent: Integer);
+  var
+    LFrames: Int64;
+  begin
+    LFrames := SampleFramesFromSeconds(
+      LParents[AParent].Instrumental.Options.TailFrames /
+      LParents[AParent].Instrumental.SampleRate,
+      ADefinition.Instrumental.SampleRate, frCeiling);
+    if LFrames > ADefinition.Instrumental.Options.TailFrames then
+    begin
+      ADefinition.Instrumental.Options.TailFrames := LFrames;
+    end;
+  end;
+begin
+  LParents[0] := ALeft;
+  LParents[1] := ARight;
+  LPitched := Length(ADefinition.VoiceRanges);
+  LDrums := Length(ADefinition.Instrumental.Percussion);
+  Require((Length(ARecipe.Instrumental.Parts) = LPitched + LDrums) and
+    (Length(ARecipe.Sounds) = 0),
+    'Instrumental blend needs one explicit sound/effect/expression choice per part');
+  ADefinition.Instrumental.LabelText := ARecipe.Instrumental.LabelText;
+  ADefinition.Instrumental.Origin :=
+    'Experimental selective instrumental blend; actual source and operator origins remain in both parents';
+  ADefinition.Instrumental.Mix := CopyStemMixRecipe(
+    LParents[ARecipe.Instrumental.MasterParent].Instrumental.Mix);
+  IncludeTail(ARecipe.Instrumental.MasterParent);
+  ADefinition.Instrumental.Form := CopyMusicForm(
+    LParents[ARecipe.Instrumental.FormParent].Instrumental.Form);
+  if ARecipe.Instrumental.OverrideContextBinding then
+  begin
+    ADefinition.Instrumental.Options.ContextBinding := ARecipe.Instrumental.ContextBinding;
+  end;
+  SetLength(ADefinition.Instrumental.Expression, LPitched + LDrums);
+  for I := 0 to LPitched + LDrums - 1 do
+  begin
+    LSide := ARecipe.Instrumental.Parts[I].InstrumentParent;
+    IncludeTail(LSide);
+    if I < LPitched then
+    begin
+      ADefinition.Instrumental.Instruments[I] := CopyInstrumentRecipe(
+        LParents[LSide].Instrumental.Instruments[I]);
+      LControl := ARecipe.Providers[I + 2].ControlParent;
+      ADefinition.VoiceRanges[I] := LParents[LControl].VoiceRanges[I];
+      if ARecipe.Instrumental.UnionPitchRanges then
+      begin
+        if ARecipe.Providers[I + 2].LeftWeight = 0 then
+        begin
+          ADefinition.VoiceRanges[I] := ARight.VoiceRanges[I];
+        end
+        else if ARecipe.Providers[I + 2].RightWeight = 0 then
+        begin
+          ADefinition.VoiceRanges[I] := ALeft.VoiceRanges[I];
+        end
+        else
+        begin
+          if ARight.VoiceRanges[I].MinimumPitch < ADefinition.VoiceRanges[I].MinimumPitch then
+          begin
+            ADefinition.VoiceRanges[I].MinimumPitch := ARight.VoiceRanges[I].MinimumPitch;
+          end;
+          if ALeft.VoiceRanges[I].MinimumPitch < ADefinition.VoiceRanges[I].MinimumPitch then
+          begin
+            ADefinition.VoiceRanges[I].MinimumPitch := ALeft.VoiceRanges[I].MinimumPitch;
+          end;
+          if ARight.VoiceRanges[I].MaximumPitch > ADefinition.VoiceRanges[I].MaximumPitch then
+          begin
+            ADefinition.VoiceRanges[I].MaximumPitch := ARight.VoiceRanges[I].MaximumPitch;
+          end;
+          if ALeft.VoiceRanges[I].MaximumPitch > ADefinition.VoiceRanges[I].MaximumPitch then
+          begin
+            ADefinition.VoiceRanges[I].MaximumPitch := ALeft.VoiceRanges[I].MaximumPitch;
+          end;
+        end;
+      end;
+    end
+    else
+    begin
+      LProvider := I + 3;
+      LControl := ARecipe.Providers[LProvider].ControlParent;
+      ADefinition.Instrumental.Percussion[I - LPitched] :=
+        LParents[LControl].Instrumental.Percussion[I - LPitched];
+      ADefinition.Instrumental.Percussion[I - LPitched].Settings :=
+        LParents[LSide].Instrumental.Percussion[I - LPitched].Settings;
+      ADefinition.Instrumental.Percussion[I - LPitched].Origin :=
+        LParents[LSide].Instrumental.Percussion[I - LPitched].Origin;
+    end;
+    LSide := ARecipe.Instrumental.Parts[I].EffectsParent;
+    ADefinition.Instrumental.Mix.Parts[I] := LParents[LSide].Instrumental.Mix.Parts[I];
+    IncludeTail(LSide);
+    LSide := ARecipe.Instrumental.Parts[I].ExpressionParent;
+    ADefinition.Instrumental.Expression[I] := DefaultMusicalExpression;
+    if Length(LParents[LSide].Instrumental.Expression) > 0 then
+    begin
+      ADefinition.Instrumental.Expression[I] := LParents[LSide].Instrumental.Expression[I];
+    end;
+  end;
+end;
+
 constructor TSemanticStyle.CreateBlend(const ALeft, ARight: TSemanticStyle;
   const ARecipe: TSemanticBlendRecipe;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
@@ -2633,11 +2835,19 @@ var
   LWeight: Integer;
   LWide: Int64;
   LSound: TSemanticSound;
+  LInstrumental: Boolean;
+  LContracts: array[0..1] of TProviderContract;
+  LBase: Integer;
 begin
   inherited Create;
   Require((ALeft <> nil) and (ARight <> nil), 'Semantic blend requires two complete parents');
-  Require(not ALeft.FDefinition.Instrumental.Enabled and not ARight.FDefinition.Instrumental.Enabled,
-    'Instrumental blend requires explicit musical, expression and sound parent selection');
+  LInstrumental := ALeft.FDefinition.Instrumental.Enabled or ARight.FDefinition.Instrumental.Enabled;
+  Require(not LInstrumental or (ALeft.FDefinition.Instrumental.Enabled and
+    ARight.FDefinition.Instrumental.Enabled and ARecipe.Instrumental.Enabled),
+    'Instrumental blend requires two complete instrumental parents and explicit sound/expression choices');
+  Require(LInstrumental or (not ARecipe.Instrumental.Enabled and
+    (Length(ARecipe.Instrumental.Parts) = 0) and (ARecipe.Instrumental.LabelText = '')),
+    'Instrumental sound choices require instrumental parents');
   FNodeCount := ALeft.NodeCount + ARight.NodeCount + 1;
   Require(FNodeCount <= 8, 'Semantic blend exceeds eight retained ancestry nodes');
   FDepth := ALeft.Depth;
@@ -2648,6 +2858,10 @@ begin
   Inc(FDepth);
   FRecipe := CloneRecipe(ARecipe);
   FKind := 2;
+  if LInstrumental then
+  begin
+    FKind := 3;
+  end;
   FInheritedJoints := True;
   LParents[0] := ALeft;
   LParents[1] := ARight;
@@ -2658,7 +2872,19 @@ begin
     'Blend needs compatible complete provider inventories and an explicit recipe per provider');
   Require(ActivePolicyIdentity(LDefinitions[0]) = ActivePolicyIdentity(LDefinitions[1]),
     'Active dependency policies differ; choose an explicitly rebuilt graph before blending');
-  LDefinition := ALeft.CopyDefinition(AProgress);
+  LBase := 0;
+  if LInstrumental then
+  begin
+    LBase := FRecipe.Instrumental.BaseParent;
+    Require((Length(LDefinitions[0].VoiceRanges) = Length(LDefinitions[1].VoiceRanges)) and
+      (Length(LDefinitions[0].Instrumental.Percussion) = Length(LDefinitions[1].Instrumental.Percussion)),
+      'Instrumental blend changes the pitched/drum role layout');
+  end;
+  LDefinition := LParents[LBase].CopyDefinition(AProgress);
+  if LInstrumental then
+  begin
+    BindInstrumentalBlend(LDefinition, LDefinitions[0], LDefinitions[1], FRecipe);
+  end;
   LDefinition.Sources := nil;
   LDefinition.Runs := nil;
   LDefinition.Sounds := nil;
@@ -2666,11 +2892,29 @@ begin
   for LProvider := 0 to High(LDefinition.Providers) do
   begin
     ReportWork(AProgress, 'semantic_blend_providers', wuItems, LProvider, Length(LDefinition.Providers));
-    RequireCompatibleProvider(LDefinitions[0].Providers[LProvider].Contract,
-      LDefinitions[1].Providers[LProvider].Contract);
-    Require(LDefinitions[0].Providers[LProvider].VocabularySha256 =
-      LDefinitions[1].Providers[LProvider].VocabularySha256,
-      'Blend requires identical frozen ordered provider vocabularies');
+    LContracts[0] := CopyProviderContract(LDefinitions[0].Providers[LProvider].Contract);
+    LContracts[1] := CopyProviderContract(LDefinitions[1].Providers[LProvider].Contract);
+    if LInstrumental then
+    begin
+      for LSide := 0 to 1 do
+      begin
+        Require(LContracts[LSide].Vocabulary in
+          [spvHarmony, spvRhythm, spvVoice, spvMusicalContext, spvPercussion],
+          'Instrumental blend requires canonical musical provider codecs');
+        { Source run scopes and descriptive provenance domains are not token
+          meaning. The explicit base selects output scope; parent ledgers keep
+          their complete original clocks, labels and observations. }
+        LContracts[LSide].Scope := LDefinitions[LBase].Providers[LProvider].Contract.Scope;
+        LContracts[LSide].MusicalDomain := 'pythian.instrumental.symbolic.v1';
+      end;
+    end;
+    RequireCompatibleProvider(LContracts[0], LContracts[1]);
+    if not LInstrumental then
+    begin
+      Require(LDefinitions[0].Providers[LProvider].VocabularySha256 =
+        LDefinitions[1].Providers[LProvider].VocabularySha256,
+        'Blend requires identical frozen ordered provider vocabularies');
+    end;
     Require(FRecipe.Providers[LProvider].LeftWeight + FRecipe.Providers[LProvider].RightWeight > 0,
       'Every semantic provider needs an explicit positive selected parent');
     LModels[0] := DecodeWfcSequenceText(LDefinitions[0].Providers[LProvider].ModelText);
@@ -2688,6 +2932,11 @@ begin
       LSide := 1;
     end;
     LDefinition.Providers[LProvider] := LDefinitions[LSide].Providers[LProvider];
+    if LInstrumental then
+    begin
+      LDefinition.Providers[LProvider].Contract.Scope := LContracts[LSide].Scope;
+      LDefinition.Providers[LProvider].Contract.MusicalDomain := LContracts[LSide].MusicalDomain;
+    end;
     LDefinition.Providers[LProvider].VocabularyAncestor := LParents[LSide].Identity;
     LSide := FRecipe.Providers[LProvider].ControlParent;
     LDefinition.Providers[LProvider].Preferences := LDefinitions[LSide].Providers[LProvider].Preferences;
@@ -2755,7 +3004,7 @@ begin
     ReportWork(AProgress, 'semantic_blend_runs', wuItems, Length(LDefinitions[LSide].Runs), Length(LDefinitions[LSide].Runs), LSide);
   end;
   CanonicalContributions(LDefinition, FRecipe.RepeatPolicy);
-  RelearnBlend(LDefinition, AProgress);
+  RelearnBlend(LDefinition, AProgress, LInstrumental);
   for LSource := 0 to High(FRecipe.Sounds) do
   begin
     LSound := Default(TSemanticSound);
@@ -2780,7 +3029,7 @@ end;
 
 function TSemanticStyle.CopyBlendRecipe: TSemanticBlendRecipe;
 begin
-  Require(FKind = 2, 'Only a semantic blend has a blend recipe');
+  Require(FKind in [2, 3], 'Only a semantic blend has a blend recipe');
   Result := CloneRecipe(FRecipe);
 end;
 
@@ -2859,10 +3108,10 @@ begin
   LResult := nil;
   try
     Require(LIO.Text = 'pythian.semantic.style.v3', 'Unsupported semantic format; regenerate development artifact');
-    LKind := LIO.Count(0, 2);
+    LKind := LIO.Count(0, 3);
     LParentBytes := LIO.Blob(nil);
     LOtherBytes := LIO.Blob(nil);
-    BlendRecipeIO(LIO, LRecipe);
+    BlendRecipeIO(LIO, LRecipe, LKind = 3);
     LDefinitionBytes := LIO.Blob(nil);
     LBodyLength := LIO.FStream.Position;
     LHash := LIO.Text;

@@ -253,8 +253,9 @@ variation and repetition. [Instrumental styles](TODO/NS-5_instrumental-styles_01
 save real provider/control/sound recipes and exercise selective blends and reblends.
 Its complete nine-provider source/corpus snapshot now replays the ordinary
 instrumental stream on native and pas2js with primary sound/mix/form controls.
-This component still requires complete publication qualification; ordinary Studio
-style saving and selective instrumental blending/reblending remain open. No task
+Selective musical-vocabulary and independent sound/expression blends/reblends
+also pass on both targets. The integrated component still requires complete
+publication qualification; ordinary Studio style saving/blending remains open. No task
 effort is accepted by the persistence component alone.
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other

@@ -180,12 +180,57 @@ older development artifacts. Decode reconstructs rather than trusts a serialized
 blend definition. Corruption or disagreement with the actual recipe cannot
 publish a partial object.
 
-The complete instrumental source snapshot uses this same archive and retains
-nine actual providers and primary sound/form recipes. Its selective sound and
-expression parent controls are still being connected under
-[instrumental styles](TODO/NS-5_instrumental-styles_01.md); instrumental blending
-currently rejects explicitly. The generic/named blend checks described here do
-not qualify that missing ordinary Studio workflow.
+The complete instrumental snapshot uses this same archive and retains nine
+actual providers and primary sound/form recipes. Instrumental blend kind3 adds
+its explicit recipe after the shared blend fields; source/control/generic-blend
+bytes and kinds remain unchanged. Earlier readers reject the new kind rather
+than treating an instrumental blend as a voice-only graph. Both complete parents
+and the exact recipe reconstruct the definition on reload.
+
+## Instrumental parent choices
+
+For two complete instrumental parents, set `Recipe.Instrumental.Enabled=True`.
+Every actual provider has independent left/right learning weights and a
+`ControlParent` choosing its preferences and hard token locks. Musical weights
+replay original token observations; they do not average serialized model bytes
+or manufacture cross-recording transitions. Compatible canonical musical codecs
+may have different ordered vocabularies. The learner builds their actual selected
+union and a new vocabulary identity, with both original inventories in ancestry.
+Numeric token indices from separate parents are never treated as shared meaning.
+Generic/caller-provider blends retain their existing frozen-vocabulary contract.
+
+`BaseParent` chooses duration/clock/seed/search settings, harmonic and voice-pair
+policy. Uniform clock units and ordered roles must agree. The explicit base also
+chooses the output scope; original observation scopes/clocks and descriptive
+domains remain in the parents. Canonical musical meaning is checked separately
+from those source descriptions. Renamed/permuted roles, tuning/pitch references,
+unknown semantics or incompatible clocks reject.
+
+Each pitched/drum part explicitly selects `InstrumentParent`, `EffectsParent`
+and `ExpressionParent`. Primary recipes remain intact; selecting an oscillator
+does not average its algorithm with another source. Drum sound settings/origin
+come from its instrument parent; rhythm eligibility, enabled/hit weight and
+constraints follow its musical control parent. `MasterParent` selects the master
+mix/effects; `FormParent` selects authored sections/repetition. The form must span
+the chosen clock. The output tail covers selected parents' saved sound/effect
+tails at the selected rate, so changing parts cannot silently shorten them.
+
+By default pitch bounds follow each provider's control parent. Explicit
+`UnionPitchRanges` combines register bounds from positive musical parents;
+existing token masks remain authoritative. Explicit `OverrideContextBinding`
+may choose all-role binding or the recorded driven-role binding. This makes it
+possible to mix independent bass/harmony choices while retaining contextual
+harmony/rhythm/lead. Neither flag silently relaxes an existing lock. Incompatible
+selected models/controls remain an actionable failure, not an automatic fallback.
+
+The maintained complete instrumental fixture selects music, sound, effects and
+expression independently, uses different note/drum vocabularies, generates six
+parts, reloads, then uses that blend as another parent. Native and actual pas2js
+archives and within-target mix/stem/decision replay match. Missing selected
+control tokens, different role schemas and cancellation reject while preserving
+parents. These checks qualify the library mechanism; the ordinary Studio
+save/blend interface and actual operator usefulness remain under
+[instrumental styles](TODO/NS-5_instrumental-styles_01.md).
 
 [Caller codecs](CALLER-PROVIDERS.md) retain their identity/version, canonical
 configuration, units and unknown/clock meaning in every root and nested parent.
