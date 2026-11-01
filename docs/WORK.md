@@ -5,6 +5,26 @@
 
 ## Current handoff: density library passes; native Studio consumer running — 2026-10-31
 
+Follow-up progress: native Studio03 now passes186 complete checks with a clean
+heap; session84460 is terminal0. Preserve failed native01/02 and CI538 at76ec662:
+the probes reordered JSON keys, while both project and completed result retained
+the correct density/energy values. The fixture now compares the canonical
+arrangement and explicitly checks saved values. Authenticated IAB job124723562218
+confirms CI538 failed at that same first raw-order assertion. Publish the fixture
+repair for a replacement complete CI run; do not rerun the failed source.
+
+Production96772 is terminal0. Matching service/worker plus twelve assets now
+occupy the fixed QA slot; the fourteen hashes are retained in
+`form-density-20261031-boss/release-manifest.json`. QA service75308 owns loopback
+18129 with isolated `tests/form-density-20261031-boss/qa` roots. Managed IAB45
+saved Sparse0/Busy100 with Energy50 for both, then submitted an actual native job
+and reloaded during completion. Finish desktop/phone/reopen/playback checks.
+IAB46 reads the authenticated CI failure; preserve existing tabs1/2 and close only
+created tabs afterward. The attempted empty manifest import rejected zero tracks;
+retain qa-import.log. The empty Studio fixture uses an empty catalog tracks
+directory and the actual service/API successfully creates its projects. No fake
+source or musical learning claim. Stable6872 remains unchanged.
+
 Big Boss SOLO continues the already selected section-density batch. Actual
 native Win64 and pas2js pass323 new checks with matching counts: pitched3/32
 sparse/busy without context and3/30 with context; drums5/31 and3/32. Hard Keep

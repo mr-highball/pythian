@@ -34,6 +34,19 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: retain native `studio-form01/02` and CI538 at76ec662.
+  Both raw-JSON assertions compared probe-mutated field ordering rather than
+  the canonical arrangement. Actual stored controls were correct. Compare the
+  canonical contract, explicitly assert independent density/energy values after
+  signed reopening, and compare completed settings semantically. Native03 now
+  passes186 complete save/generate/replay/note-edit checks with a clean heap.
+  This is a fixture repair, not a runtime relaxation. The authenticated GitHub
+  job124723562218 confirms CI538 stopped at the same first assertion; publish
+  the repaired fixture and require a replacement complete integration/package run.
+  Matching service/worker and twelve browser files are in the fixed QA slot.
+  Desktop UI saved actual sparse/busy values and submitted its native job;
+  phone/reopen qualification and final publication remain in progress.
+
 - 2026-10-31, Big Boss SOLO: the section-density candidate now uses the primary
   musical activity mapper and positioned public-token preferences across actual
   context/joint-rhythm and percussion windows. Neutral rows install nothing;

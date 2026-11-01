@@ -44,6 +44,13 @@ begin
     'repeat_from', -1, 'keep', TJSONArray.Create, 'energy', 50]);
 end;
 
+function CanonicalFormJSON(const AValue: TJSONData): String;
+var LRows: TJSONArray;
+begin
+  LRows := EncodeStudioForm(DecodeStudioForm(AValue));
+  try Result := LRows.AsJSON finally LRows.Free end;
+end;
+
 procedure InspectRepeat(const ARoot, AJobId: String);
 var
   LJob: TJSONObject;
@@ -388,7 +395,13 @@ begin
     LProject := SaveStudioProject(ARoot, LWrite);
     LRead := ReadStudioProject(ARoot, 'structure');
     try
-      Check(LRead.Objects['instrumental'].Arrays['form'].AsJSON = LRows.AsJSON,
+      LForm := DecodeStudioForm(LRead.Objects['instrumental'].Arrays['form']);
+      Check((LForm[0].DensityOffset = -50) and (LForm[1].DensityOffset = 50) and
+        (LForm[0].EnergyOffset = -50) and (LForm[1].EnergyOffset = 50),
+        'Signed save/reopen preserves the independent density and energy values');
+      { Invalid-input probes reorder keys and can change JSON number subtypes.
+        Compare the public canonical representation, not the mutable probe bytes. }
+      Check(LRead.Objects['instrumental'].Arrays['form'].AsJSON = CanonicalFormJSON(LRows),
         'Native save/reopen retains the actual arrangement');
     finally LRead.Free end;
     LRequest := TJSONObject.Create(['format', StudioJobWriteFormat,
@@ -405,7 +418,8 @@ begin
     Check(LJob.Objects['results'].Strings['runtime'] = 'bounded_instrumental_stream',
       'Structured job reuses the primary bounded performer and publication');
     Check(LJob.Objects['results'].Arrays['parts'].Count = 6, 'Actual output exposes all six parts');
-    Check(LJob.Objects['results'].Objects['settings'].Arrays['form'].AsJSON = LRows.AsJSON,
+    Check(CanonicalFormJSON(LJob.Objects['results'].Objects['settings'].Arrays['form']) =
+      CanonicalFormJSON(LRows),
       'Completed result binds the saved arrangement');
     Check((LJob.Objects['results'].Arrays['sections'].Objects[1].Int64s['start_frame'] = 48000) and
       (LJob.Objects['results'].Arrays['sections'].Objects[1].Int64s['end_frame'] = 144000),
