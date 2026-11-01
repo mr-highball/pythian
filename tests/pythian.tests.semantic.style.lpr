@@ -27,7 +27,7 @@ program pythian_tests_semantic_style;
 {$H+}
 
 uses
-  Classes, SysUtils, Math, pythian.audio, pythian.hash, pythian.progress,
+  Classes, SysUtils, Math, pythian.audio, pythian.hash, pythian.progress, pythian.text,
   pythian.analysis, pythian.onset, pythian.time,
   pythian.wave, pythian.synth, pythian.envelope, pythian.source.wavetable,
   pythian.music.context, pythian.tonal, pythian.wfc.context,
@@ -77,9 +77,13 @@ begin
 end;
 
 procedure SaveFixture(const ASuffix: String; const ABytes: TAudioBytes);
+{$ifndef pas2js}
 var
   LStream: TFileStream;
+{$endif}
 begin
+  WriteLn('Fixture ', ASuffix, ' ', Sha256Bytes(ABytes));
+  {$ifndef pas2js}
   if ParamCount = 0 then
   begin
     Exit;
@@ -93,6 +97,7 @@ begin
   finally
     LStream.Free;
   end;
+  {$endif}
 end;
 
 procedure LearnProviders(var ADefinition: TSemanticStyleDefinition);
@@ -233,7 +238,7 @@ begin
   SetLength(ASource.PreparationEvidence, Length(AEvidence));
   if Length(AEvidence) > 0 then
   begin
-    Move(AEvidence[1], ASource.PreparationEvidence[0], Length(AEvidence));
+    ASource.PreparationEvidence := EncodeUTF8Text(AEvidence, 1048576, True, True);
   end;
   ASource.PreparationSha256 := SemanticPreparationIdentity(ASource);
 end;
@@ -1067,11 +1072,53 @@ begin
   end;
 end;
 
+procedure UnicodeArchiveChecks;
+var
+  LDefinition: TSemanticStyleDefinition;
+  LCopy: TSemanticStyleDefinition;
+  LStyle: TSemanticStyle;
+  LLoaded: TSemanticStyle;
+  LBytes: TAudioBytes;
+  LLabel: TScalarText;
+  LIndex: Integer;
+begin
+  { Construct identical scalars without depending on the native source code page. }
+  LLabel := ScalarText($4F60) + ScalarText($1F3B5) + ScalarText($65) + ScalarText($301);
+  ValidateScalarText(LLabel, 255);
+  LDefinition := GridDefinition;
+  LDefinition.Sources[0].GroupId := String(LLabel);
+  LDefinition.Sources[0].ExternalRequirement := String(LLabel);
+  for LIndex := 0 to High(LDefinition.Providers) do
+  begin
+    LDefinition.Providers[LIndex].Contract.MusicalDomain := String(LLabel);
+  end;
+  LStyle := TSemanticStyle.CreateSource(LDefinition);
+  LLoaded := nil;
+  try
+    LBytes := LStyle.Encode;
+    LLoaded := DecodeSemanticStyle(LBytes);
+    Check(LLoaded.Identity = LStyle.Identity, 'Unicode archive changes its identity');
+    LCopy := LLoaded.CopyDefinition;
+    Check(CompareScalarText(LCopy.Sources[0].GroupId, LLabel, 255) = 0,
+      'Unicode recording group changed on reload');
+    Check(CompareScalarText(LCopy.Sources[0].ExternalRequirement, LLabel, 255) = 0,
+      'Unicode source declaration changed on reload');
+    Check(CompareScalarText(LCopy.Providers[0].Contract.MusicalDomain, LLabel, 255) = 0,
+      'Unicode musical domain changed on reload');
+    SameGrid(LStyle, LLoaded);
+    SaveFixture('-unicode.pysg', LBytes);
+  finally
+    LLoaded.Free;
+    LStyle.Free;
+  end;
+end;
+
 begin
   Check(ParamCount <= 1, 'Usage: pythian.tests.semantic.style [OUTPUT_PREFIX]');
   PreparationChecks;
   GridChecks;
   MappedChecks;
   VoiceAndSoundChecks;
+  UnicodeArchiveChecks;
   WriteLn('Semantic styles: independent evidence, joint replay, exposure/ancestry, owned consumers and sound round-trip pass');
 end.

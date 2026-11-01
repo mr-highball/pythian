@@ -45,9 +45,13 @@ begin
 end;
 
 procedure SaveFixture(const ASuffix: String; const ABytes: TAudioBytes);
+{$ifndef pas2js}
 var
   LStream: TFileStream;
+{$endif}
 begin
+  WriteLn('Fixture ', ASuffix, ' ', Sha256Bytes(ABytes));
+  {$ifndef pas2js}
   if ParamCount = 0 then
   begin
     Exit;
@@ -61,6 +65,7 @@ begin
   finally
     LStream.Free;
   end;
+  {$endif}
 end;
 
 procedure LearnProviders(var ADefinition: TSemanticStyleDefinition);

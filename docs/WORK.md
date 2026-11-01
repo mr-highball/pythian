@@ -3,7 +3,45 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: sound design accepted and deployed — 2026-11-01
+## Current handoff: portable semantic archive component; actual instrumental style binding next — 2026-11-01
+
+Big Boss SOLO. The style task is In progress; current scope remains146/188
+(77.66%), seven open/32 DONE. The bounded first AC1 step replaces native-only
+semantic archive pointer I/O with primary bounded byte streams, binary fields
+and scalar text. It retains the existing wire format, model validation and
+generation consumers. Current native style/blend tests pass with clean heaps;
+all23 original archive/sound artifacts exactly match the before-change baseline.
+The native progress fixture passes41,896 checks/41,790 callbacks with a clean
+heap, including cancellation/retry. Both complete existing style and blend/
+reblend fixtures now compile and run on actual pas2js; optional maintained
+synthesis portability includes them. The old native-only path is removed.
+
+New Unicode source-group/domain persistence passes on native and actual JS with
+the same archive SHA25694547ac3b2bbbe2e14e3a2a135adbdf602b498a6c9afbb648f39c077b29b1e65.
+The first unicode02 fixture failed because a scalar expression included a native
+literal and crossed the host code page. Its failed source/log remain; unicode03
+uses scalar operands throughout and passes. No speculative production text
+workaround was added. Native and JS independently measured sound-profile bytes
+can differ with floating-point math; don't infer cross-target identity from
+their within-target sound replay. Canonical Unicode/model persistence and all
+original native archive/audio bytes are verified separately.
+
+Evidence: E/runs/instrumental-styles-20261101-boss and E/tests/styles-before01,
+styles-native01, styles-js01, styles-unicode02/03. All those local sessions have
+finished. No review service, browser, operator data or playback changed in this
+batch; the checked sound editor remains live. Publish this source component and
+require its complete source CI; do not describe it as ordinary Studio styles.
+This closes no complete AC1 criterion: consecutive nonclosing count0→1. No
+effort is accepted. Next deliver actual instrumental style binding with all
+nine corpus providers, context/percussion semantics and complete primary sound/
+mix/control recipes, reusing the same archive/runtime. The older generic/named
+schema admits only eight providers; silently omitting drums/context is not an
+acceptable fallback. Blends, further blends, their Studio consumer and actual
+operator usefulness remain required. Reassess after a second nonclosing batch;
+do not repeat archive-only checks or create another parallel synthesis engine.
+The broader goal remains active; no operator decision is needed.
+
+## Previous handoff: sound design accepted and deployed — 2026-11-01
 
 Big Boss SOLO. Exact source538b0ad6991d542977b5b0798ae7f7836740fdac passes
 complete CI550/run41325451184, integration and both extracted packages. Its

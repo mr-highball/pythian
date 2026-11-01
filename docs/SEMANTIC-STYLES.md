@@ -26,6 +26,22 @@ encoding. Final checked Win32/Win64 QA accepts
 below continue to apply to source archives; inherited joint evidence is kept
 separate from independently weighted blend contributions.
 
+The semantic archive now uses primary `pythian.stream.bytes`, little-endian
+fields and canonical `pythian.text` on native and actual pas2js consumers. Native
+archive/sound replay remains unchanged across the23 captured baseline artifacts;
+the existing style and blend/reblend fixtures run on pas2js. A mixed Unicode
+recording group/domain archive has the same identity on both targets. Generated
+measurement profiles can still differ with target floating-point math; this is
+not a claim that independently measured sound profiles have identical bytes.
+The32MiB bound, field/blob progress, cancellation, detached ownership and actual
+model-generation checks remain enforced. `check-synthesis-portability.ps1`
+includes both semantic fixtures under `-IncludeWfc`.
+
+This qualifies the existing generic/named archive, not complete ordinary Studio
+style saving. Its older eight-provider layout still needs the actual
+nine-provider context/percussion binding and complete primary instrument/mix
+recipes tracked in [instrumental styles](TODO/NS-5_instrumental-styles_01.md).
+
 ## Definition and actual consumers
 
 `TSemanticStyleDefinition.Providers` retains each provider's canonical actual WFC

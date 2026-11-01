@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -28,6 +28,40 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: bounded archive component passes native style/blend
+  replay,23 unchanged original archive/sound artifacts,41,896 progress/
+  cancellation checks with clean heaps, and both complete actual pas2js style/
+  blend fixtures. The mixed Unicode source-group/domain archive has identical
+  native/JS SHA25694547ac3b2bbbe2e14e3a2a135adbdf602b498a6c9afbb648f39c077b29b1e65.
+  unicode02's failed fixture mixed scalar text with a native literal through the
+  host code page; unicode03 uses scalar operands throughout and passes. Its
+  failure/source snapshot remain. Native measurement-profile bytes and JS
+  measurement-profile bytes are not claimed identical; within-target saved
+  audio replay and all original native bytes pass. The primary byte stream now
+  owns transfer/storage, with retained archive progress and no native pointer
+  I/O. Maintained optional portability orchestration includes both fixtures.
+  This is a required AC1 component, not full AC1: actual nine-provider corpus
+  binding, complete instrument/mix/control recipes, style UI and blend/reblend
+  consumers remain. No effort is accepted. Consecutive nonclosing count is1;
+  next deliver the actual instrumental style binding or reassess after another
+  nonclosing batch. Full source CI remains required after publication; stable
+  sound-editor deployment is unchanged. Evidence: styles-before01,
+  styles-native01, styles-js01, styles-unicode02/03 under E/tests.
+
+- 2026-11-01, Big Boss: selected after sound-design acceptance; inherited
+  consecutive nonclosing count0. AC1 batch first removes the known native-only
+  semantic archive I/O through primary bounded byte streams and scalar text.
+  Preserve native archive/model/sound identities and cancellation/ownership;
+  exercise real saved-model generation on actual pas2js. The current corpus has
+  nine providers while the older semantic archive admits eight; its explicit
+  instrumental/context/percussion binding and full primary sound/control recipe
+  attachment are still required before complete AC1 or task acceptance. Reuse
+  the semantic contracts rather than introducing a parallel style renderer.
+  Stop this bounded archive step at actual cross-target persistence/generation
+  or a demonstrated next blocker. It earns no task effort by itself. Baseline
+  and changed evidence belong under E/tests/styles-* and
+  E/runs/instrumental-styles-20261101-boss; live Studio stays unchanged.
 
 - 2026-11-01, Big Boss: the sound-design prerequisite is accepted after actual
   Studio editing/replay, complete CI550 and checked deployment. All listed

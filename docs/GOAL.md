@@ -19,7 +19,9 @@ and optional exploration, not a gate in this basic flow. The
 before full-plan archival and deeper graph controls. A new visual shell alone is not
 completion. That flow and its coarse-learning prerequisite were accepted on
 2026-10-31 after actual native/pas2js and desktop/phone consumers passed. The
-remaining graph/sound, form, styles/blends and guided-review outcomes still
+optional [sound editor](TODO/DONE/NS-2_sound-design_01.md) is also accepted after
+actual saved-score editing/audition and checked deployment. The remaining graph,
+form, styles/blends and guided-review outcomes still
 define unfinished work; musical preference is not inferred from implementation
 acceptance.
 

@@ -10,7 +10,7 @@ CI550, native/actual pas2js and desktop/390px consumers, then checked fixed-slot
 deployment with all saved data preserved. Studio edits actual primary recipes,
 layers, envelopes, movement and14 shared effects, reuses saved notes and offers
 Before/After mix/part playback. Private sound setups save without learning or
-generation. Reusable musical styles/blends are now Ready; they remain separate
+generation. Reusable musical styles/blends are now in progress; they remain separate
 from these sound setups. No musical-quality or inference-accuracy credit follows.
 
 [Unguided form — DONE](DONE/NS-4_unguided-form_01.md),
@@ -147,7 +147,7 @@ continuity experiments are selected.
 | [NS-4_unguided-form_01 — DONE](DONE/NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Accepted; original request, native/pas2js, actual Studio/browser, complete CI547 and fixed-slot deployment |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
-| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Ready; style vocabulary, graph controls, sound design and instrumental Studio accepted |
+| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; portable semantic archive consumer passes, actual nine-provider/sound binding and Studio blends remain |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |

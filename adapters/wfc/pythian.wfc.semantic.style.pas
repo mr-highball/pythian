@@ -195,7 +195,8 @@ function DecodeSemanticStyle(const ABytes: TAudioBytes; const ARegistry: TProvid
 implementation
 
 uses
-  Classes, SysUtils, pythian.hash, pythian.binary, pythian.wfc.providers, wfc,
+  Classes, SysUtils, pythian.hash, pythian.binary, pythian.stream.bytes,
+  pythian.text, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
   pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text;
 
@@ -207,7 +208,8 @@ type
   end;
   TStyleIO = class
   private
-    FStream: TMemoryStream;
+    FStream: TAudioBytesStream;
+    FNumberBytes: TAudioBytes;
     FReading: Boolean;
     FProgress: TWorkProgressCallback;
     FFields: Int64;
@@ -232,7 +234,8 @@ var
   LBlock: Integer;
 begin
   inherited Create;
-  FStream := TMemoryStream.Create;
+  FStream := TAudioBytesStream.Create(MaximumSemanticStyleBytes);
+  SetLength(FNumberBytes, 8);
   FReading := AReading;
   FProgress := AProgress;
   ReportWork(FProgress, 'semantic_archive_fields', wuItems, 0, 0);
@@ -251,7 +254,7 @@ begin
       begin
         LBlock := 65536;
       end;
-      FStream.WriteBuffer(ABytes[LOffset], LBlock);
+      WriteStreamBytesExact(FStream, ABytes, LOffset, LBlock);
       Inc(LOffset, LBlock);
       ReportWork(FProgress, 'semantic_archive_input', wuBytes, LOffset, Length(ABytes));
     end;
@@ -266,8 +269,6 @@ begin
 end;
 
 function TStyleIO.N(const AValue: Integer): Integer;
-var
-  LBytes: array[0..3] of Byte;
 begin
   Inc(FFields);
   if FFields mod 4096 = 0 then
@@ -281,19 +282,17 @@ begin
     begin
       raise EAudio.Create('Truncated semantic number');
     end;
-    FStream.ReadBuffer(LBytes, 4);
-    Result := ReadInt32LE(LBytes, 0);
+    ReadStreamBytesExact(FStream, FNumberBytes, 0, 4);
+    Result := ReadInt32LE(FNumberBytes, 0);
   end
   else
   begin
-    WriteInt32LE(LBytes, 0, AValue);
-    FStream.WriteBuffer(LBytes, 4);
+    WriteInt32LE(FNumberBytes, 0, AValue);
+    WriteStreamBytesExact(FStream, FNumberBytes, 0, 4);
   end;
 end;
 
 function TStyleIO.Q(const AValue: Int64): Int64;
-var
-  LBytes: array[0..7] of Byte;
 begin
   Result := AValue;
   if FReading then
@@ -302,13 +301,13 @@ begin
     begin
       raise EAudio.Create('Truncated semantic wide number');
     end;
-    FStream.ReadBuffer(LBytes, 8);
-    Result := ReadInt64LE(LBytes, 0);
+    ReadStreamBytesExact(FStream, FNumberBytes, 0, 8);
+    Result := ReadInt64LE(FNumberBytes, 0);
   end
   else
   begin
-    WriteInt64LE(LBytes, 0, AValue);
-    FStream.WriteBuffer(LBytes, 8);
+    WriteInt64LE(FNumberBytes, 0, AValue);
+    WriteStreamBytesExact(FStream, FNumberBytes, 0, 8);
   end;
 end;
 
@@ -346,7 +345,7 @@ begin
       begin
         LBlock := 65536;
       end;
-      FStream.ReadBuffer(Result[LOffset], LBlock);
+      ReadStreamBytesExact(FStream, Result, LOffset, LBlock);
       Inc(LOffset, LBlock);
       if LCount >= 65536 then
         ReportWork(FProgress, 'semantic_archive_blob', wuBytes, LOffset, LCount);
@@ -363,7 +362,7 @@ begin
       begin
         LBlock := 65536;
       end;
-      FStream.WriteBuffer(AValue[LOffset], LBlock);
+      WriteStreamBytesExact(FStream, AValue, LOffset, LBlock);
       Inc(LOffset, LBlock);
       if LCount >= 65536 then
         ReportWork(FProgress, 'semantic_archive_blob', wuBytes, LOffset, LCount);
@@ -382,45 +381,42 @@ begin
   LBytes := nil;
   if not FReading then
   begin
-    SetLength(LBytes, Length(AValue));
-    if Length(AValue) > 0 then
-    begin
-      Move(AValue[1], LBytes[0], Length(AValue));
-    end;
+    LBytes := EncodeUTF8Text(TScalarText(AValue), 1024 * 1024, True, True);
   end;
   LBytes := Blob(LBytes);
-  if Length(LBytes) > 1024 * 1024 then
-  begin
-    raise EAudio.Create('Semantic text exceeds 1 MiB');
-  end;
-  SetLength(Result, Length(LBytes));
-  if Length(LBytes) > 0 then
-  begin
-    Move(LBytes[0], Result[1], Length(LBytes));
-  end;
+  Result := String(DecodeUTF8Text(LBytes, 1024 * 1024, True, True));
 end;
 
 function TStyleIO.Bytes: TAudioBytes;
 var
   LOffset: Integer;
   LBlock: Integer;
+  LPosition: Int64;
 begin
   Result := nil;
   SetLength(Result, FStream.Size);
   if FStream.Size >= 65536 then
     ReportWork(FProgress, 'semantic_archive_output', wuBytes, 0, FStream.Size);
-  LOffset := 0;
-  while LOffset < FStream.Size do
-  begin
-    LBlock := FStream.Size - LOffset;
-    if LBlock > 65536 then
+  LPosition := FStream.Position;
+  try
+    FStream.Position := 0;
+    LOffset := 0;
+    while LOffset < FStream.Size do
     begin
-      LBlock := 65536;
+      LBlock := FStream.Size - LOffset;
+      if LBlock > 65536 then
+      begin
+        LBlock := 65536;
+      end;
+      ReadStreamBytesExact(FStream, Result, LOffset, LBlock);
+      Inc(LOffset, LBlock);
+      if FStream.Size >= 65536 then
+      begin
+        ReportWork(FProgress, 'semantic_archive_output', wuBytes, LOffset, FStream.Size);
+      end;
     end;
-    Move((PByte(FStream.Memory) + LOffset)^, Result[LOffset], LBlock);
-    Inc(LOffset, LBlock);
-    if FStream.Size >= 65536 then
-      ReportWork(FProgress, 'semantic_archive_output', wuBytes, LOffset, FStream.Size);
+  finally
+    FStream.Position := LPosition;
   end;
 end;
 
@@ -2446,21 +2442,27 @@ function TSemanticStyle.Encode(const AProgress: TWorkProgressCallback): TAudioBy
 var
   LOffset: Integer;
   LBlock: Integer;
+  LStream: TAudioBytesReadStream;
 begin
   Result := nil;
   SetLength(Result, Length(FBytes));
   ReportWork(AProgress, 'semantic_archive_copy', wuBytes, 0, Length(FBytes));
-  LOffset := 0;
-  while LOffset < Length(FBytes) do
-  begin
-    LBlock := Length(FBytes) - LOffset;
-    if LBlock > 65536 then
+  LStream := TAudioBytesReadStream.Create(FBytes);
+  try
+    LOffset := 0;
+    while LOffset < Length(FBytes) do
     begin
-      LBlock := 65536;
+      LBlock := Length(FBytes) - LOffset;
+      if LBlock > 65536 then
+      begin
+        LBlock := 65536;
+      end;
+      ReadStreamBytesExact(LStream, Result, LOffset, LBlock);
+      Inc(LOffset, LBlock);
+      ReportWork(AProgress, 'semantic_archive_copy', wuBytes, LOffset, Length(FBytes));
     end;
-    Move(FBytes[LOffset], Result[LOffset], LBlock);
-    Inc(LOffset, LBlock);
-    ReportWork(AProgress, 'semantic_archive_copy', wuBytes, LOffset, Length(FBytes));
+  finally
+    LStream.Free;
   end;
 end;
 
