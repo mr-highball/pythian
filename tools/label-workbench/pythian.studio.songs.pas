@@ -102,7 +102,7 @@ begin
   FLoading := False;
 end;
 procedure TStudioSongs.Draw;
-var LFilter: TJSHTMLSelectElement; LChoice, LName, LId, LUrl: String;
+var LFilter: TJSHTMLSelectElement; LChoice, LName, LId, LUrl, LTitle: String;
   LNames: TJSArray; LRow: TJSObject; LCard, LControl, LBar: TJSElement; I: Integer;
 begin
   LFilter := TJSHTMLSelectElement(El('song-filter'));
@@ -130,15 +130,17 @@ begin
     LRow := TJSObject(FRows[I]);
     if (LFilter.value <> '') and (LFilter.value <> StudioText(LRow, 'playlist')) then Continue;
     LId := StudioText(LRow, 'job_id');
+    LTitle := 'Generated song ' + IntToStr(FRows.length - I);
+    if LRow['saved'] = True then LTitle := StudioText(LRow, 'title');
     LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(LId) + '&part=6';
     LCard := Add(El('songs-list'), 'article', ''); LCard.className := 'track';
-    Add(LCard, 'h3', StudioText(LRow, 'title'));
+    Add(LCard, 'h3', LTitle);
     LName := 'Recent generation · not added to a playlist';
     if LRow['saved'] = True then LName := 'Saved · ' + StudioText(LRow, 'playlist');
     Add(LCard, 'p', LName + ' · ' + StudioTime(StudioNumber(LRow, 'frame_count') / StudioNumber(LRow, 'sample_rate')));
     LControl := Add(LCard, 'audio', ''); LControl.setAttribute('controls', '');
     LControl.setAttribute('preload', 'none'); LControl.setAttribute('src', LUrl);
-    LControl.setAttribute('aria-label', 'Play ' + StudioText(LRow, 'title'));
+    LControl.setAttribute('aria-label', 'Play ' + LTitle);
     LBar := Add(LCard, 'div', ''); LBar.className := 'row-actions';
     LControl := Add(LBar, 'button', 'Open result');
     LControl.setAttribute('data-open-song', LId); LControl.addEventListener('click', @Click);
