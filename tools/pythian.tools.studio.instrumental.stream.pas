@@ -222,15 +222,16 @@ begin
     LMeta.Add('graph', LGraph);
     if AMaterial.Context <> nil then
       LGraph.Add(TJSONObject.Create(['name', 'Musical context', 'kind', 'sequence',
+        'transaction', 0,
         'maximum_width', LStream.ContextLookaheadCells, 'height', 1, 'depth', 1]));
     LGraph.Add(TJSONObject.Create(['name', 'Joint harmony, rhythm and pitched roles',
       'kind', 'joint_voices_graph_with_coverage', 'providers', 2 + Length(ARoles),
+      'transaction', 0,
       'maximum_width', LStream.VoiceLookaheadCells, 'height', 1, 'depth', 1]));
-    LDrumWidth := LOptions.SegmentCells;
-    if (Length(AMaterial.Form) > 0) and (AMaterial.Context <> nil) then
-      LDrumWidth := LStream.ContextLookaheadCells;
+    LDrumWidth := LStream.VoiceLookaheadCells;
     for I := 0 to High(ADrums) do
       LGraph.Add(TJSONObject.Create(['name', ADrums[I].Name, 'kind', 'rhythm_conditioned_sequence',
+        'transaction', 0,
         'maximum_width', LDrumWidth, 'height', 1, 'depth', 1]));
     WriteStudioJSONNew(LDirectory + PathDelim + 'instrumental-stream.json', LMeta);
     ReportWork(AProgress, 'instrumental_render', wuFrames, 0, LStream.FrameCount);

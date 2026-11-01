@@ -493,6 +493,11 @@ begin
     LMeta := ReadStudioJSON(StudioJobDirectory(ARoot, 'structure-run') + '/instrumental-stream-completed.json');
     Check((LMeta.Arrays['models'].Count = 8) and (LMeta.Strings['context_binding'] = 'none'),
       'Replay metadata records actual providers without inventing a learned context');
+    for LCells := 0 to LJob.Objects['results'].Arrays['graph'].Count - 1 do
+      Check((LJob.Objects['results'].Arrays['graph'].Objects[LCells].Integers['transaction'] = 0) and
+        (LJob.Objects['results'].Arrays['graph'].Objects[LCells].Integers['maximum_width'] =
+          LMeta.Integers['voice_lookahead_cells']),
+        'Each reported provider shares the actual instrumental planning window');
     LFile := OpenStudioDecisionJournal(ARoot, LJob.Objects['results'].Objects['decisions']);
     LReader := TMusicDecisionReader.Create(LFile);
     LCells := 0;
@@ -536,7 +541,10 @@ begin
     begin
       if ParamCount <> 1 then raise EAudio.Create('Usage: Studio form checks FRESH_ROOT');
       Run(ExpandFileName(ParamStr(1)));
-      CheckSongs(ExpandFileName(ParamStr(1)));
+      { The maintained build runs --songs-only in a fresh process. Windows
+        source guards intentionally retain read leases after generation; an
+        exclusive PCM lock cannot be acquired until those leases are released.
+        The separate consumer still proves song metadata never opens that PCM. }
       Followups(ExpandFileName(ParamStr(1)));
       InspectExpression(ExpandFileName(ParamStr(1)));
     end;

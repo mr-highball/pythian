@@ -52,6 +52,19 @@ viewport override reset, zero playing elements and no console warnings/errors.
 The exact fixed QA process has exited; only the existing stable service remains.
 Complete runtime CI and final checked stable deployment remain before acceptance.
 
+Runtime1c1cf1c is published on hello-pythian; CI545/run41291940579 is running.
+A final graph receipt check adds the shared transaction marker and reports the
+actual voice lookahead for drums even when a guide omits the context pass. The
+native form's metadata/clock/decision checks pass before its song-lock test.
+Windows then correctly refuses that test's exclusive open because the same
+process intentionally retains primary read guards. A fresh `--songs-only`
+consumer passes all10 checks and a clean heap, proving save/list performs no PCM
+read. Keep that exact exclusive-lock test, and run its existing mode in a fresh
+process from the maintained build rather than weakening source leases. The
+retained first failure is `studio-form06-run.log`; independent follow-up/expression
+consumers are running. This test-orchestration/metadata repair will get a new
+source-bound CI run, not acceptance based on the older revision.
+
 ## Previous handoff: projected domains accepted; current musical runtime qualification continues — 2026-11-01
 
 Big Boss SOLO. Separate WFC `codex/pythian-projected-domains` now publishes
