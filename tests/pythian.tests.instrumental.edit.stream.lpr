@@ -120,6 +120,7 @@ var
   LRoles: TInstrumentalRoles;
   LFrame: Int64;
   LSourceHash: String;
+  LNormalizedHash: String;
   LBeforeHash: String;
   LModelsBefore: String;
   LChanged: Integer;
@@ -174,8 +175,15 @@ begin
     while LSource.ReadOutputs(2048, [], LBlock, LOutputs) do begin end;
     Check(LSource.PlannedCells = 192, 'Actual original 48 second arrangement completes');
     LSourceHash := LWriter.Seal;
-    Check(LNormWriter.Seal = '11a4d055128d10559bde5cfc74d3e961b53218e650ec379cddcbd0a853f25220',
-      'Sample-clock-normalized original exactly matches the actual failed Studio source journal');
+    { Big Boss: version4's exact historical source hash was 11a4d055...53f25220,
+      preserved with its request and the accepted pre-consolidation source.
+      Version5 deliberately generates through one shared graph. This fixture
+      retains the request/seed and checks the current source without claiming
+      that fresh generation recreates a historical journal. }
+    LNormalizedHash := LNormWriter.Seal;
+    WriteLn('Normalized joint source digest: ', LNormalizedHash);
+    Check(LNormalizedHash = '4ad6aa2cbd2dd8d5554b66cc359c666bca7a4a899c94401ae29572e4c5eafa46',
+      'Current-runtime normalized source matches its cross-target regression digest');
     LModelsBefore := Models;
     LEdit := Default(TInstrumentalPassageEdit);
     LEdit.StartFrame := 8000 * 32;
@@ -229,7 +237,7 @@ begin
       end;
     end;
     Check((LEditor.State = ipesCompleted) and (LCount = 12) and (LEditor.Position = 192),
-      'Original failed request and seed complete after proving known future accompaniment');
+      'Retained request parameters and edit seed complete with current source and known future accompaniment');
     Check((LChanged > 0) and (LChanged = LReported), 'Report counts actual published changes only');
     Check((LEditor.MaximumWindowCells = 64) and (LEditor.WindowLimit = 64) and
       (LEditor.MaximumBufferedCells = 80) and (LEditor.MaximumBufferedCells < 192),

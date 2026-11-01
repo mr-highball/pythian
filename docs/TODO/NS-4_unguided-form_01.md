@@ -32,6 +32,7 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
+
 - [Projected known domains — DONE](DONE/NS-4_projected-domains_01.md) — accepted
   after upstream CI67/downstream CI544, original64cell proof and typed consumers.
   The original192cell candidate now passes on both targets; actual Studio and
@@ -44,6 +45,25 @@ workbench owns interactive diagnostics; this task owns usable generation.
 - [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- Current original-request repair closes AC1/AC2: indexed native120 completes with
+  unchanged free/guided digests and a clean heap. Ordinary Studio91 and proposed/
+  manual99 pass. The fixed QA worker completes the original192cell request and
+  actual390px browser playback, returned-section seek, Lead stem and reload pass.
+  QA media/tab/service are closed. Counter0 follows these concrete criteria after
+  the recorded reassessment. Exact-source port/complete CI and checked stable
+  update still gate AC3 and task acceptance; no musical preference is claimed.
+
+- Big Boss, Studio qualification reassessment: the original request still passes
+  both targets; a new actual pas2js120 adds canonical context/domain intersection.
+  The ordinary finite consumer exposed duplicate rows, repaired in primary
+  BindMusicalContextTokens with conflict/ownership tests. A broader consolidation
+  attempt hit the separate unknown-held-note articulation contract and was
+  stopped at counter2, with candidate/failures preserved. The linked
+  [consolidation](NS-6_generation-unification_01.md) and
+  [articulation](NS-2_stream-articulation_01.md) are future scope; they do not gate
+  the unchanged100%-gate free-form experiment. Current Studio qualification is
+  limited to the demonstrated mask collision and actual original request.
 
 - Big Boss, known-domain repair batch: the preserved candidate01 is reapplied
   without another model variant. Its only planning selection is the new primary

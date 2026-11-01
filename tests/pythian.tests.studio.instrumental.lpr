@@ -239,7 +239,9 @@ begin
         Check(LJob.Strings['status'] = 'completed', 'Worker terminal success');
         Check(LJob.Integers['event_revision'] < 200, 'Detailed WFC callbacks use bounded durable publication');
         Check(LJob.Objects['results'].Arrays['parts'].Count = 6, 'Six playable stems');
-        Check(LJob.Objects['results'].Arrays['graph'].Count = 16, 'Actual sixteen passes');
+        Check((LJob.Objects['results'].Arrays['graph'].Count = 17) and
+          (LJob.Objects['results'].Arrays['graph'].Objects[0].Strings['name'] = 'musical-context'),
+          'Finite authored jobs expose their real paired-context pass');
         Check(LJob.Objects['results'].Arrays['sources'].Count = 0, 'No used source audio invented');
         LHash := LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
         Check(LJob.Objects['results'].Arrays['outputs'].Objects[0].Get('storage', '') = 'listening',

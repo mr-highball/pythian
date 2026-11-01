@@ -15,37 +15,50 @@ example below uses explicitly authored material.
 
 ```mermaid
 flowchart LR
-  C[Context WFC] --> M[Joint harmony / rhythm / named-voice WFC]
-  M --> D[Independent rhythm-conditioned drum WFC streams]
-  M --> P[Persistent Pascal instruments / buses / effects]
-  D --> P
+  subgraph W[One bounded musical graph]
+    C[Context pass] --> H[Harmony / rhythm passes]
+    H --> V[Named pitched voices]
+    H --> D[Named percussion passes]
+    H --> Q
+    V --> Q[Harmonic coverage witnesses]
+  end
+  W --> P[Persistent Pascal instruments / buses / effects]
 ```
 
 Each musical window defaults to **16 time cells**, each half a quarter note.
-The context sequence is one bounded graph. Harmony, rhythm, ordered pitched
-roles and harmonic coverage proofs use the companion's joint voices graph.
+Version5 puts context, harmony, rhythm, ordered pitched roles, percussion and
+harmonic coverage proofs in the companion's primary joint voices graph.
 Each pass has the current window's `N × 1 × 1` shape; vocabulary sizes and
-coverage-pass counts come from the actual models. Percussion uses one sequence
-graph per drum constrained by the solved rhythm, with exact latent continuation
-and the declared hit preferences. There is no invented giant fixed grid, extra
-pinned-rhythm pass in those drum graphs, source-grain renderer or copied solver.
+coverage-pass counts come from the actual models. Each drum is a named auxiliary
+sequence pass constrained by the same rhythm and its declared hit preferences.
+Known full-window restrictions propagate backward and forward before upstream
+choices. Temporal propagation, graph compilation and binary arc support are
+owned by primary WFC. There is no source-grain renderer or copied solver.
 
 `TInstrumentalMusicStream` in `pythian.wfc.instrumental.stream` reuses the
-companion voices stream and Pythian's existing sequence stream. Models and pitched
+companion's composed voices stream. Models and pitched
 instruments are borrowed; the stream owns its percussion recipes. Only one
-musical window, model frontiers and explicit future constraints are retained.
-Sparse future edits cannot change already planned cells. A seed, segmentation,
-clock, context binding, models and recipes define replay.
+private planning window, one shared model frontier and explicit future constraints
+are retained. Only the returned prefix commits; all provisional suffix choices
+are discarded together. Sparse future edits cannot change committed cells.
+The runtime/schema version, seed, segmentation, clock, context binding, models
+and recipes define replay. Fresh choices can change across runtime versions;
+previous recordings, decision journals and their actual lineage remain preserved.
+
+The new integration passes the original192cell free-form request on native and
+actual pas2js with unchanged seed and search limits. Ordinary Studio qualification
+and checked deployment remain with [unguided form](TODO/NS-4_unguided-form_01.md).
 
 Context binding is explicit. `icbAllRoles`, the streaming default, retains the
 joint context's complete symbolic role choices while WFC chooses its path and
 the role graphs authenticate their own paths. `icbDrivenRole` constrains H/R and
-the selected role while other roles remain free. Those freer frontiers can reach
+the selected role while other roles remain free. An authored context with no
+selected motif has driven role−1 and binds H/R only in that mode. These frontiers can reach
 incompatible continuations; small-window failures are retained evidence, not
 hidden by restarting notes or looping audio. Neither mode promises arbitrary
 future solvability. Finite context behavior retains its selected-role contract.
 
-Version2 adds explicit structural support for the requested remainder to context
+Earlier version2 added explicit structural support for the requested remainder to context
 and percussion segment exits. The generic capacity/endpoint contract lives in
 the separate WFC repository; musical clock/binding policy stays here. This avoids
 an unsupported terminal branch when a continuing alternative exists. It does not

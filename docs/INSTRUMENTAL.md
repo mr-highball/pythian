@@ -9,9 +9,13 @@ The shared [instrumental adapter](../adapters/wfc/pythian.wfc.instrumental.pas)
 connects actual named musical WFC passes to the primary note projector, instrument
 planner, buses and scheduler. A successful plan has distinct parts, native notes
 and source-free or explicitly bound instrument tones. Optional
-[unpitched percussion](PERCUSSION.md) uses a separate rhythm-dependent graph group
+[unpitched percussion](PERCUSSION.md) in the finite planner uses a separate rhythm-dependent graph group
 and the same native performance. It never selects recorded
 training-mix grains or silently substitutes a different renderer.
+
+The [persistent performer](INSTRUMENTAL-STREAMS.md) version5 composes context,
+pitched voices and drums in one primary WFC graph/frontier, reusing the same
+percussion rhythm contract. Its ordinary Studio integration is under qualification.
 
 The [simple Studio](OPERATOR-STUDIO.md) uses **Library → Selection → Generate**.
 Whole tracks or clips and per-track learning influence feed Experimental musical

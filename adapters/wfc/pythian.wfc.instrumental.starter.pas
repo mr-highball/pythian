@@ -355,8 +355,10 @@ begin
     LZone[0].Voice.Envelope.ReleaseSeconds := 0.18 + LRole * 0.08;
     FRoles[LRole].Instrument := TInstrument.Create(LZone);
   end;
-  if Length(FPattern) > 0 then
   begin
+    { Big Boss: preserve authored H/R history even without a supplied motif.
+      Its example frame remains provenance; no pitched role is bound unless
+      the operator explicitly provided that motif or selected all-role binding. }
     SetLength(LContextSamples, Length(LSamples[0]));
     for LSampleIndex := 0 to High(LContextSamples) do
     begin
@@ -374,6 +376,7 @@ begin
         end;
         LContextCell.Frame := LFrame;
         LContextCell.DrivenRole := APatternRole;
+        if Length(FPattern) = 0 then LContextCell.DrivenRole := -1;
         LContextSamples[LSampleIndex].Tokens[LTokenIndex] := EncodeMusicalContextToken(LContextCell);
       end;
     end;

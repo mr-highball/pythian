@@ -26,6 +26,12 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- Big Boss, current form QA: native player Pause stops audio but the section
+  announcement can still say `Playing A return.` AC2 should synchronize that
+  short status with the actual player state. The retained phone screenshot and
+  DOM media clock are in the E-drive projected-domains packet. This cosmetic
+  follow-up does not block the completed original unguided musical job.
+
 - 2026-11-01, Big Boss: reuse the current form experiment and prepared-listening
   factory. Native Unicode review publication/response/replay is repaired under
   [listening UTF-8](DONE/NS-6_listening-utf8_01.md), not a new comparison framework.

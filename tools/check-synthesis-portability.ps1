@@ -54,13 +54,15 @@ $fixtures = @('pythian.tests.render.progress', 'pythian.tests.synthesis.portable
 if ($IncludeWfc) { $fixtures += @('pythian.tests.instrumental.stream',
   'pythian.tests.instrumental.decisions', 'pythian.tests.instrumental.passage',
   'pythian.tests.instrumental.edit.stream',
-  'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density') }
+  'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density',
+  'pythian.tests.instrumental.unguided') }
 foreach ($program in $fixtures) {
   $source = Join-Path $repository "tests/$program.lpr"
   $fixtureArguments = @()
   if ($program -in @('pythian.tests.instrumental.stream', 'pythian.tests.instrumental.decisions',
       'pythian.tests.instrumental.passage', 'pythian.tests.instrumental.edit.stream',
-      'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density')) {
+      'pythian.tests.instrumental.form', 'pythian.tests.instrumental.density',
+      'pythian.tests.instrumental.unguided')) {
     $fixtureArguments = @("-Fu$(Join-Path $repository 'adapters/wfc')",
       "-Fu$(Join-Path $repository 'vendor/wfc/src')")
   }

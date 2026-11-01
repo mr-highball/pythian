@@ -3,7 +3,56 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: projected domains accepted; current musical runtime qualification continues — 2026-11-01
+## Current handoff: musical qualification; consolidation stopped at note-gate contract — 2026-11-01
+
+Big Boss SOLO. The original192cell free arrangement now passes120 actual pas2js
+checks (including five canonical domain-intersection checks), with the unchanged
+free/guided digests below. Ordinary finite Studio exposed duplicate context-mask
+rows; primary BindMusicalContextTokens now intersects and canonicalizes them,
+rejecting conflicts without changing caller data. Its current native consumers
+pass in the projected-domains E packet. A paired-context pass now truthfully
+adds one finite metadata row; the stale sixteen-pass assertion is updated to17.
+
+Two nonclosing batches triggered reassessment. A real attempted consolidation
+of finite Studio into the primary stream completed four-second generation,
+replay, pitch bounds and strength, then correctly rejected the saved75%-gate
+experiment. Stream/journal v2 require100% gate because a held note's full duration
+is unknown; the journal stores velocity, not a release extent. The full failed
+candidate, patch, hashes and native/actual JS evidence are preserved in E under
+projected-domains/unification-candidate01. Its unaccepted changes were removed;
+existing finite articulation remains. [Stream articulation](TODO/NS-2_stream-articulation_01.md)
+adds four required effort units, blocking the three-unit
+[consolidation](TODO/NS-6_generation-unification_01.md). Do not silently reinterpret
+or remove the control to merge paths. These are independently scoped follow-ups,
+not blanket blockers for the current free-form experiment, whose default gates
+are100%. Continue its narrowly changed mask/Studio qualification after this
+recorded reassessment. The counter2 checkpoint remains historical; the concrete
+original-request repair below now closes AC1/AC2 and resets the current counter.
+
+Accounting is130/182 (71.43%), nine open/28 current DONE,52 open units. No current
+runtime is accepted or deployed; stable and all operator data remain intact.
+
+The ordinary native Studio91 and proposed/manual-material99 now pass with clean
+heaps. The fixed QA slot runs the checked worker, accepted unchanged server/UI
+and an empty isolated catalog. Its original free request (seed1704297163,
+192cells,256lookahead,256:16 limits) completes all1176000frames, mix and six stems.
+The actual390px browser opens the saved section controls, plays A return from32
+seconds (observed40.86456/49s, no media error), pauses, reconnects after reload
+and plays the actual Lead stem (observed33.442748s). Document/body widths both390;
+no competing audio. Screenshot saved in the E packet. The indexed binder avoids
+quadratic rescanning of prior vocabulary cells; exact-source native120 and
+actual pas2js120 qualification both pass before the runtime CI push. No musical
+quality judgment or task acceptance is inferred from host playback.
+
+The exact indexed native120 now completes with unchanged free/guided digests and
+zero leaked blocks. This closes unguided AC1/AC2 after the recorded reassessment;
+counter0 follows that concrete original-request repair, not a task rename.
+Studio91 and proposed/manual99 also have clean heaps. The owned QA tab is closed,
+viewport override reset, zero playing elements and no console warnings/errors.
+The exact fixed QA process has exited; only the existing stable service remains.
+Complete runtime CI and final checked stable deployment remain before acceptance.
+
+## Previous handoff: projected domains accepted; current musical runtime qualification continues — 2026-11-01
 
 Big Boss SOLO. Separate WFC `codex/pythian-projected-domains` now publishes
 d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2; all five upstream CI67/run41284525161 jobs pass.

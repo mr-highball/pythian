@@ -38,7 +38,8 @@ uses
   wfc,
   wfc_model,
   wfc_sequence,
-  wfc_sequence_graph;
+  wfc_sequence_graph,
+  wfc_music_voices_graph;
 
 type
   TPercussionDefinition = record
@@ -105,6 +106,12 @@ function AppendPercussionDecisions(const APitched: TChordFrame;
   const ATokens: TWfcModelTokens; const ADefinitions: TPercussionDefinitions): TChordFrame;
 function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;
   const ADefinition: TPercussionDefinition; const AToken: String): TWfcModelTokens;
+{ Big Boss: unpitched parts participate in the primary musical transaction.
+  Rhythm gating reuses AllowedPercussionRhythms; generic WFC owns negotiation,
+  projection proof and the shared frontier. Returned arrays are detached. }
+function ComposePercussionGraph(const AConfig: TWfcMusicVoicesGraphConfig;
+  const ADefinitions: TPercussionDefinitions;
+  const AProgress: TWorkProgressCallback = nil): TWfcMusicVoicesGraphConfig;
 { Big Boss: one actual dependent graph with an exactly pinned rhythm-input pass
   and one unpitched pass per drum. It does not alter/re-solve pitched providers.
   Generic WFC layers own learning/projections/solve. This adapter owns event and
@@ -251,6 +258,53 @@ begin
     for I := 0 to High(Result) do Result[I] := ARhythmModel.PublicTokenAt(I);
   end
   else Result := Copy(ADefinition.AllowedHitRhythms);
+end;
+
+function ComposePercussionGraph(const AConfig: TWfcMusicVoicesGraphConfig;
+  const ADefinitions: TPercussionDefinitions;
+  const AProgress: TWorkProgressCallback): TWfcMusicVoicesGraphConfig;
+var
+  LCandidate: TWfcMusicVoicesGraphConfig;
+  LRules: TWfcSequenceProjectionRules;
+  LAllowed: TWfcModelTokens;
+  LPart: Integer;
+  LToken: Integer;
+  LAt: Integer;
+  LModelIndex: Integer;
+  LText: String;
+begin
+  LCandidate := CopyWfcMusicVoicesGraphConfig(AConfig);
+  for LPart := 0 to High(ADefinitions) do
+  begin
+    ReportWork(AProgress, 'percussion_compose_parts', wuItems, LPart, Length(ADefinitions));
+    if ADefinitions[LPart].Model = nil then
+      raise EAudio.Create('Percussion composition needs an immutable model');
+    LModelIndex := WfcMusicVoicesModelCount(LCandidate);
+    LAt := Length(LCandidate.Auxiliary);
+    SetLength(LCandidate.Auxiliary, LAt + 1);
+    LCandidate.Auxiliary[LAt].Name := ADefinitions[LPart].Name;
+    LCandidate.Auxiliary[LAt].Model := ADefinitions[LPart].Model;
+    LRules := nil;
+    SetLength(LRules, ADefinitions[LPart].Model.PublicTokenCount);
+    for LToken := 0 to High(LRules) do
+    begin
+      if LToken mod 32 = 0 then
+        ReportWork(AProgress, 'percussion_compose_tokens', wuItems, LToken, Length(LRules));
+      LText := ADefinitions[LPart].Model.PublicTokenAt(LToken);
+      if not ADefinitions[LPart].Enabled and (PercussionVelocity(LText) > 0) then
+        LAllowed := nil
+      else LAllowed := AllowedPercussionRhythms(AConfig.RhythmModel, ADefinitions[LPart], LText);
+      LRules[LToken] := MakeWfcSequenceProjectionRule(LText, LAllowed);
+    end;
+    LAt := Length(LCandidate.Projections);
+    SetLength(LCandidate.Projections, LAt + 1);
+    LCandidate.Projections[LAt].SourceModelIndex := 1;
+    LCandidate.Projections[LAt].TargetModelIndex := LModelIndex;
+    LCandidate.Projections[LAt].Rules := LRules;
+  end;
+  ValidateWfcMusicVoicesGraphConfig(LCandidate);
+  ReportWork(AProgress, 'percussion_compose_parts', wuItems, Length(ADefinitions), Length(ADefinitions));
+  Result := LCandidate;
 end;
 
 constructor TPercussionPlan.Create;

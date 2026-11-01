@@ -88,10 +88,11 @@ prefix can therefore be checked against a24cell guided plan without publishing
 or retaining all24cells. Hard restrictions remain hard; the stream does not
 change seeds or raise search budgets to recover.
 
-Context/drum pending choices differ: they are already fixed until consumed.
-`ContextLookaheadCells` exposes the context limit; `PlannedCells` includes the
-actual fixed context/drum lookahead and returned voice prefix. Future edits
-cannot overwrite that extent, but may change a merely provisional voice suffix.
+Version5 shares the context, voice and drum frontier. `ContextLookaheadCells`
+and `VoiceLookaheadCells` expose the same bound; `LastVoicePlanningCells` reports
+the actual private window. `PlannedCells` includes only the committed prefix.
+Future edits cannot overwrite it, but may change any merely provisional suffix.
+No independently committed context/drum buffer survives alongside that prefix.
 
 The primary instrument scheduler, oscillator/filter/envelope state and effects
 continue across every phrase. A repeated musical motif need not have identical
@@ -199,12 +200,16 @@ accepted receipt and publishes only after the iterator completes. This is bounde
 conditional proof, not full-duration/global backtracking or a guarantee that
 every feasible request will be found. Conflicts remain visible and preserved.
 
-An arbitrary captured phrase is not necessarily a loop. The maintained fixture's
-adjacent A-return/A-variation request rejects because the captured Hat motif cannot
-close into itself. A separate primary cyclic graph confirms that contradiction.
-The same models/seed can generate the explicit five-section A/B/A-return/bridge/
-A-variation arrangement. Keep rejected material; do not silently change a seed,
-remove a retained part or invent a transition to claim success.
+An arbitrary captured phrase is not necessarily a loop. The original captured
+Hat motif still rejects in the independent cyclic graph and remains a maintained
+negative fixture. Fresh version5 joint planning can choose a different motif
+that supports the adjacent return; that motif passes its own cyclic proof.
+The positive five-section A/B/A-return/bridge/A-variation case still sounds all
+six parts. H/R guidance does not select drum notes: the authored percussion
+models explicitly permit silence. Score/audio checks distinguish deliberate
+rests from dropped notes, and section energy changes actual attacks without
+inventing audio for a resting part. Keep the original rejected material and its
+runtime version; never silently change a seed or invent a transition.
 
 Planning is bounded and conditional, with no cross-group/global backtracking
 guarantee. The retained no-context authored guide with8/16cell phrases exposed a

@@ -342,24 +342,52 @@ function BindMusicalContextTokens(const ATokens: TWfcModelTokens;
   const ARoleCount: Integer; const AMasks: TVoiceMasks;
   const AAllRoles: Boolean; const AProgress: TWorkProgressCallback): TVoiceMasks;
 var
-  LProvider, LMask, LCell, LCount: Integer;
-  LHarmony, LRhythm: String;
+  LProvider, LMask, LCell, LTargetProvider, LLastProvider, LAt: Integer;
+  LHarmony, LRhythm, LTargetToken: String;
   LChoice: TStyleProviderChoice;
-  LTargetProvider: Integer;
-  LLastProvider: Integer;
-  LTargetToken: String;
+  LRows: TVoiceMasks;
+  LPositions: array of array of Integer;
+  function IntersectRow(const AProvider, APosition: Integer;
+    const AAllowed: TWfcModelTokens): Integer;
+  var I, J, N: Integer; LKeep: TWfcModelTokens; LFound: Boolean;
+  begin
+    if (APosition < 0) or (APosition >= Length(ATokens)) then
+      raise EAudio.Create('Context input domain lies outside its musical cells');
+    Result := LPositions[AProvider][APosition] - 1;
+    if Result < 0 then
+    begin
+      Result := Length(LRows[AProvider]);
+      SetLength(LRows[AProvider], Result + 1);
+      LRows[AProvider][Result] := MakeWfcSequenceTokenConstraint(APosition, Copy(AAllowed));
+      LPositions[AProvider][APosition] := Result + 1;
+    end
+    else
+    begin
+      LKeep := nil;
+      for I := 0 to High(LRows[AProvider][Result].AllowedTokens) do
+      begin
+        LFound := False;
+        for J := 0 to High(AAllowed) do
+          LFound := LFound or (LRows[AProvider][Result].AllowedTokens[I] = AAllowed[J]);
+        if not LFound then Continue;
+        N := Length(LKeep);
+        SetLength(LKeep, N + 1);
+        LKeep[N] := LRows[AProvider][Result].AllowedTokens[I];
+      end;
+      LRows[AProvider][Result].AllowedTokens := LKeep;
+    end;
+  end;
 begin
   if (ARoleCount < 1) or (ARoleCount > 6) or (Length(ATokens) < 1) or
     ((Length(AMasks) <> 0) and (Length(AMasks) <> ARoleCount + 2)) then
     raise EAudio.Create('Context tokens require matching ordered musical domains');
-  Result := nil;
-  SetLength(Result, ARoleCount + 2);
+  SetLength(LRows, ARoleCount + 2);
+  SetLength(LPositions, ARoleCount + 2);
+  for LProvider := 0 to High(LRows) do SetLength(LPositions[LProvider], Length(ATokens));
   for LProvider := 0 to High(AMasks) do
-  begin
-    Result[LProvider] := Copy(AMasks[LProvider]);
-    for LMask := 0 to High(Result[LProvider]) do
-      Result[LProvider][LMask].AllowedTokens := Copy(AMasks[LProvider][LMask].AllowedTokens);
-  end;
+    for LMask := 0 to High(AMasks[LProvider]) do
+      IntersectRow(LProvider, AMasks[LProvider][LMask].Position,
+        AMasks[LProvider][LMask].AllowedTokens);
   for LCell := 0 to High(ATokens) do
   begin
     if LCell mod 32 = 0 then
@@ -387,14 +415,16 @@ begin
         if AAllRoles then LTargetToken := ContextVoiceToken(LChoice, LProvider - 2)
         else LTargetToken := DrivenVoiceToken(LChoice);
       end;
-      LCount := Length(Result[LTargetProvider]);
-      SetLength(Result[LTargetProvider], LCount + 1);
-      Result[LTargetProvider][LCount] := MakeWfcSequenceTokenConstraint(LCell, [LTargetToken]);
+      { Indexed positional intersections keep full guides canonical, retain AND
+        semantics and avoid rescanning all earlier cells of a large vocabulary. }
+      LAt := IntersectRow(LTargetProvider, LCell, [LTargetToken]);
+      if Length(LRows[LTargetProvider][LAt].AllowedTokens) = 0 then
+        raise EAudio.Create('Context conflicts with an existing musical domain');
     end;
   end;
   ReportWork(AProgress, 'context_project_tokens', wuItems, Length(ATokens), Length(ATokens));
+  Result := LRows;
 end;
-
 function ComposeMusicalContextGraph(const AConfig: TWfcMusicVoicesGraphConfig;
   const AContext: TWfcSequenceModel; const AAllRoles: Boolean;
   const AProgress: TWorkProgressCallback): TWfcMusicVoicesGraphConfig;

@@ -136,7 +136,8 @@ var
     AddModel('harmony', LGraphConfig.HarmonyModel);
     AddModel('rhythm', LGraphConfig.RhythmModel);
     for I := 0 to High(LRoles) do AddModel('voice:' + LRoles[I].Name, LGraphConfig.Voices[I].Model);
-    if LContextModel <> nil then AddModel(MusicalContextPassName, LContextModel);
+    if LStreamMaterial.Context <> nil then
+      AddModel(MusicalContextPassName, LStreamMaterial.Context);
     for I := 0 to High(LDrums) do AddModel('percussion:' + LDrums[I].Name, LDrums[I].Model);
   end;
 begin
@@ -293,7 +294,7 @@ begin
       LStreamMaterial := Default(TStudioStreamMaterial);
       LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
       LStreamMaterial.Context := LContextModel;
-      LStreamMaterial.ContextBinding := icbAllRoles;
+      LStreamMaterial.ContextBinding := icbDrivenRole;
       LStreamMaterial.Form := LForm;
       LStreamMaterial.TempoMicroseconds := Round(60000000 / LConfig.Integers['tempo_bpm']);
       LStreamMaterial.Origin := LOrigin + '; caller-authored section structure';
@@ -313,7 +314,11 @@ begin
         end;
       end;
       if (LConfig.Find('controls') = nil) or LConfig.Objects['controls'].Booleans['guide'] then
+      begin
         LStreamMaterial.DomainProvider := LStarter.GuideMasksRange;
+        LStreamMaterial.ContextBinding := icbAllRoles;
+        if Length(LPattern) = 0 then LStreamMaterial.Context := nil;
+      end;
       SetStreamModels;
       FreeAndNil(Result);
       Result := RunStudioInstrumentalStream(ACatalogRoot, AJobId, ARequest, LConfig,

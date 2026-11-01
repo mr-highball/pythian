@@ -32,6 +32,7 @@ uses SysUtils, Math, pythian.audio, pythian.progress, pythian.bus, pythian.echo,
 type
   TObserver = class
     Abort: Boolean;
+    AbortStage: String;
     procedure Observe(const AProgress: TWorkProgress);
   end;
 var GChecks: Integer;
@@ -42,9 +43,13 @@ begin
 end;
 procedure TObserver.Observe(const AProgress: TWorkProgress);
 begin
-  if Abort and (AProgress.Stage = 'instrumental_stream_plan') then
+  if Abort and (((AbortStage = '') and
+      (AProgress.Stage = 'instrumental_stream_plan')) or
+      ((AbortStage <> '') and (AProgress.Stage = AbortStage) and
+      (AProgress.Done > 0))) then
     raise EAudio.Create('Caller stopped planning');
 end;
+
 function MakeGraph(const ARate: Integer = 8000): TBusGraph;
 var
   LSettings: array[0..6] of TBusSettings;
@@ -213,6 +218,26 @@ begin
     Check(LRejected and (LStream.State = issFailed) and (LSamples = nil) and
       (LStream.Position = 0), 'Planning cancellation exposes no partial audio or resumable cursor');
     FreeAndNil(LStream);
+    LObserver.AbortStage := 'wfc_solve_prepare_visits';
+    LStream := TInstrumentalMusicStream.Create(LStarter.Config, LStarter.CopyRoles,
+      LStarter.CopyPercussion(8000), LGraph, LOptions, LStarter.ContextModel);
+    LRejected := False;
+    try LStream.ReadSamples(2048, LSamples, LObserver.Observe);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LStream.State = issFailed) and (LSamples = nil) and
+      (LStream.Position = 0) and (LStream.PlannedCells = 0),
+      'Interior joint-domain preparation forwards cancellation before audio or prefix publication');
+    FreeAndNil(LStream);
+    LObserver.AbortStage := 'wfc_solve_search_visits';
+    LStream := TInstrumentalMusicStream.Create(LStarter.Config, LStarter.CopyRoles,
+      LStarter.CopyPercussion(8000), LGraph, LOptions, LStarter.ContextModel);
+    LRejected := False;
+    try LStream.ReadSamples(2048, LSamples, LObserver.Observe);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LStream.State = issFailed) and (LSamples = nil) and
+      (LStream.Position = 0) and (LStream.PlannedCells = 0),
+      'Interior joint solve forwards cancellation without committing a partial frontier');
+    FreeAndNil(LStream);
     FreeAndNil(LGraph);
     LGraph := MakeGraph(384000);
     LOptions := DefaultInstrumentalStreamOptions(Int64(384000) * 86400);
@@ -230,6 +255,7 @@ begin
     LStarter.Free;
   end;
 end;
+
 begin
   try
     Replay;

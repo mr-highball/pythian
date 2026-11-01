@@ -124,6 +124,7 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.provider.extension.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.cell.preferences.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.musical.composition.lpr') -Destination $testRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.instrumental.unguided.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.instrumental.density.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/CALLER-PROVIDERS.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.events.lpr') -Destination $exampleRoot
@@ -290,6 +291,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Extracted context composition consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.musical.composition$executableSuffix") > 'musical-composition-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted context composition consumer failed' }
+    & $compilerPath @cellConsumerArgs '-O2' (Join-Path $stage 'tests/pythian.tests.instrumental.unguided.lpr') > 'instrumental-unguided-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted original unguided form compilation failed' }
+    & (Join-Path $binRoot "pythian.tests.instrumental.unguided$executableSuffix") > 'instrumental-unguided-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted original unguided form consumer failed' }
     & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.instrumental.density.lpr') > 'instrumental-density-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental density consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.instrumental.density$executableSuffix") > 'instrumental-density-run.log' 2>&1

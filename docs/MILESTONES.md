@@ -22,7 +22,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 130 / 175 effort units accepted (74.29%); seven open, twenty-eight current-goal DONE.**
+**Current snapshot: 130 / 182 effort units accepted (71.43%); nine open, twenty-eight current-goal DONE.**
 The six-unit [projected-domain prerequisite — DONE](TODO/DONE/NS-4_projected-domains_01.md)
 addresses the retained shared candidate's64cell search failure. A pure
 WFC64cell proof shows that a known target restriction is not used before source
@@ -33,6 +33,12 @@ upstream CI67 jobs and188 native/actual pas2js checks. The original192cell music
 candidate completes on both targets with identical free-note digest. Complete
 downstream CI544 and extracted consumers pass, closing six library units.
 Runtime/Studio integration remains separate and open.
+Ordinary integration exposed duplicate positional domains, now repaired in the
+primary context binder. A stopped consolidation additionally demonstrated the
+open-held-note gate limitation: [articulation](TODO/NS-2_stream-articulation_01.md)
+adds four units and blocks [one Studio stream](TODO/NS-6_generation-unification_01.md),
+three units. Existing finite note shortening remains until that contract passes;
+neither follow-up earns credit or blocks the default-gate free-form experiment.
 The six-unit [context composition — DONE](TODO/DONE/NS-4_context-composition_01.md)
 closes after all upstream CI66/downstream CI543 and native/actual pas2js/extracted
 gates pass. Explicit source layout/projection proof, shared prefix ownership and
@@ -107,12 +113,12 @@ per-task percentages or north-star weights apply.
 | North star | Required outcome in this goal | Open effort | Accepted effort | Derived progress |
 | --- | --- | ---: | ---: | ---: |
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
-| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
+| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 10 | 6 | 6 / 16 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 11 | 60 | 60 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 57 | 57 / 62 |
-| **Total** | **35 current-goal tasks** | **45** | **130** | **74.29%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 57 | 57 / 65 |
+| **Total** | **37 current-goal tasks** | **52** | **130** | **71.43%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

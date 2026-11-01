@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 175 total effort units · 28 current-goal DONE · 130 / 175 accepted (74.29%).**
+**9 open tasks · 182 total effort units · 28 current-goal DONE · 130 / 182 accepted (71.43%).**
 
 [Known projected domains — DONE](DONE/NS-4_projected-domains_01.md) accepts six units:
 the retained shared musical candidate reached its search limit at64 on both
@@ -142,10 +142,12 @@ continuity experiments are selected.
 | [NS-6_instrumental-artifacts_01 — DONE](DONE/NS-6_instrumental-artifacts_01.md) — one generated-audio store and responsive verified access | 5 | Accepted; actual native/browser jobs, shared review playback, ownership and legacy reads |
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
+| [NS-6_generation-unification_01](NS-6_generation-unification_01.md) — one Studio instrumental stream | 3 | Shared controls/streams/projected domains accepted; Blocked by explicit streamed note-gate contract; failed consolidation preserved |
+| [NS-2_stream-articulation_01](NS-2_stream-articulation_01.md) — explicit streamed note articulation | 4 | Open held notes need a supported bounded gate contract and replay |
 
-The two tables together are all 35 current-goal tasks (7 open, twenty-eight DONE),
-totaling 175 units: 45 open and 130 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 71, NS-5 15, NS-6 62. NS-1 remains a preserved core
+The two tables together are all 37 current-goal tasks (9 open, twenty-eight DONE),
+totaling 182 units: 52 open and 130 accepted. Subtotals:
+NS-2 16, NS-3 15, NS-4 71, NS-5 15, NS-6 65. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

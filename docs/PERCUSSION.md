@@ -35,10 +35,17 @@ editing, not claims about the instrument identity of a recording.
 ## Percussion graph
 
 The [Pythian adapter](../adapters/wfc/pythian.wfc.percussion.pas) uses the existing
-generic learned-layer session. Each unpitched model emits canonical rest or
+generic learned-layer session for finite plans. Each unpitched model emits canonical rest or
 hit:1..127 velocity tokens. Caller-declared projections say which accepted rhythm
 tokens permit a hit. No drum is routed through pitched harmony membership,
 register, voice-leading or coverage-witness rules.
+
+`ComposePercussionGraph` adds those models and their projections to the primary
+composed voices graph for persistent performance. It shares
+`AllowedPercussionRhythms` with the finite planner; no second token or rhythm
+interpretation is introduced. Context, voices and drums then negotiate and
+publish one prefix together. Silence is an explicit vocabulary alternative,
+not a failed hit or a minimum-activity guarantee.
 
 One actual graph group first generates harmony/rhythm/voices. A second actual
 group pins a cloned rhythm provider to the first group's accepted public tokens

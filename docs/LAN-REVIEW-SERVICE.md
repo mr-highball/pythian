@@ -1,7 +1,7 @@
 # Windows LAN review service
 
 The durable reviewed catalog lives outside `build/`. Checked native binaries
-and the twelve matching browser assets use fixed ignored `stable` and `qa` slots.
+and their matching browser assets use fixed ignored `stable` and `qa` slots.
 Studio jobs use the matching `pythian.studio.worker.exe` beside the service.
 Audition learning runs on the host, independently of a phone page. New audition
 jobs allow two hours; returning to the page reconnects status without resubmitting.

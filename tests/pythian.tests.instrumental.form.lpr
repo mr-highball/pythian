@@ -52,6 +52,33 @@ begin
   Inc(GChecks);
   if not AValue then raise EAudio.Create(AMessage);
 end;
+
+procedure CheckPerformedParts(const ASource: TResult; const ARequireAll: Boolean;
+  const AMinimumEnergy: Double);
+var Part, Chunk, Cell, Sample: Integer; HasNotes: Boolean;
+  Energy, DrumEnergy: Double;
+begin
+  { H/R guidance does not select drum notes. The authored percussion models
+    deliberately include silence. Check actual score-to-audio performance,
+    preserving the six-sounding-part positive control separately. }
+  DrumEnergy := 0;
+  for Part := 0 to 5 do
+  begin
+    HasNotes := False;
+    for Chunk := 0 to High(ASource.Chunks) do
+      for Cell := 0 to High(ASource.Chunks[Chunk].Cells) do
+        HasNotes := HasNotes or (Length(ASource.Chunks[Chunk].Cells[Cell].Parts[Part].Tones) > 0);
+    Energy := 0;
+    for Sample := 0 to High(ASource.Stems[Part]) do
+      Energy := Energy + Abs(ASource.Stems[Part][Sample]);
+    if ARequireAll or (Part < 3) then
+      Check(HasNotes, 'The positive form selects every required instrumental part');
+    if HasNotes then Check(Energy > AMinimumEnergy, 'Actually selected notes are performed')
+    else Check(Energy = 0, 'A rest-only musical part has no fabricated audio');
+    if Part >= 3 then DrumEnergy := DrumEnergy + Energy;
+  end;
+  Check(DrumEnergy > AMinimumEnergy, 'The form includes actual synthesized percussion');
+end;
 procedure TCapture.Keep(const AChunk: TMusicDecisionChunk);
 begin
   SetLength(Chunks, Length(Chunks) + 1);
@@ -125,7 +152,8 @@ var LStarter: TInstrumentalStarter; LGraph: TBusGraph;
   LStream: TInstrumentalMusicStream; LCapture: TCapture;
   LOptions: TInstrumentalStreamOptions;
   LBlock: TAudioSamples; LStems: TBusSampleBlocks;
-  LAt, I, J: Integer; LEnergy: Double; LStopped, LConflict, LRejectedEdit: Boolean;
+  LAt, I, J: Integer;
+  LStopped, LRejectedEdit: Boolean;
   LForm: TMusicForm;
 begin
   Result := Default(TResult);
@@ -143,18 +171,20 @@ begin
     SetLength(Result.Mix, LStream.FrameCount * 2);
     SetLength(Result.Stems, 6);
     for I := 0 to 5 do SetLength(Result.Stems[I], Length(Result.Mix));
-    LAt := 0; LStopped := False; LConflict := False;
+    LAt := 0; LStopped := False;
     try
       while LStream.ReadOutputs(APull, [0, 1, 2, 3, 4, 5], LBlock, LStems, LCapture.Observe) do
       begin
         if LAt = 0 then
         begin
-          Check((LStream.PlannedCells = 64) and (LStream.ContextLookaheadCells <= 256),
-            'Reported planning includes bounded known context/drum lookahead');
+          Check((LStream.PlannedCells = 16) and (LStream.LastVoicePlanningCells = 64) and
+            (LStream.ContextLookaheadCells = LStream.VoiceLookaheadCells) and
+            (LStream.VoiceLookaheadCells <= 256),
+            'Only the joint16cell prefix commits; context/drum lookahead is provisional');
           LRejectedEdit := False;
-          try LStream.IntersectFutureTokens(0, 32, ['unavailable'])
+          try LStream.IntersectFutureTokens(0, 0, [])
           except on E: EAudio do LRejectedEdit := True end;
-          Check(LRejectedEdit, 'Future edits cannot overwrite already planned context');
+          Check(LRejectedEdit, 'Future edits cannot overwrite a committed musical prefix');
         end;
         for I := 0 to High(LBlock) do
         begin
@@ -167,18 +197,10 @@ begin
       on E: EAudio do
       begin
         if E.Message = 'Operator stopped the form' then LStopped := True
-        else if AAdjacent and (Pos('Drum frontier cannot continue: hat', E.Message) = 1) then
-          LConflict := True
         else raise;
       end;
     end;
     Result.Chunks := LCapture.Chunks;
-    if AAdjacent then
-    begin
-      Check(LConflict and (LStream.State = issFailed), 'Incompatible adjacent motif return rejects honestly');
-      Check(Length(Result.Chunks) = 4, 'Rejected lookahead publishes none of the incompatible contrast/return');
-      Exit;
-    end;
     if AStopAt > 0 then
     begin
       Check(LStopped and (LStream.State = issFailed), 'Cancellation makes the producer terminal');
@@ -186,15 +208,10 @@ begin
       Exit;
     end;
     Check((LStream.State = issCompleted) and (LAt = Length(Result.Mix)) and
-      (LStream.TotalCells = 320), 'Musical form performs every declared phrase through one stream');
-    Check((Length(Result.Chunks) = 20) and (LStream.PlannedSegments = 20),
-      'Twenty solve windows implement five explicit eight-bar phrases');
-    for J := 0 to 5 do
-    begin
-      LEnergy := 0;
-      for I := 0 to High(Result.Stems[J]) do LEnergy := LEnergy + Abs(Result.Stems[J][I]);
-      Check(LEnergy > 1, 'Every pitched and synthesized drum part actually sounds');
-    end;
+      (LStream.TotalCells = 64 * Length(LForm)), 'Musical form performs every declared phrase through one stream');
+    Check((Length(Result.Chunks) = 4 * Length(LForm)) and
+      (LStream.PlannedSegments = 4 * Length(LForm)), 'Every declared phrase publishes four joint prefixes');
+    CheckPerformedParts(Result, not AAdjacent, 1);
   finally
     LStream.Free; LCapture.Free; LGraph.Free; LStarter.Free;
   end;
@@ -213,8 +230,7 @@ var
   LCapture: TCapture;
   LGuide: TVoiceMasks;
   LDomainProvider: TInstrumentalDomainProvider;
-  I, J, K, LAt: Integer;
-  LEnergy: Double;
+  I, J, LAt: Integer;
 begin
   Result := Default(TResult);
   LStarter := TInstrumentalStarter.Create;
@@ -270,12 +286,7 @@ begin
       (LAt = Length(Result.Mix)), 'Guided form performs unequal phrases without a context provider');
     for I := 0 to High(Result.Chunks) do
       Check(Length(Result.Chunks[I].Cells) = 8, 'Actual phrase boundaries set the common solve quantum');
-    for J := 0 to 5 do
-    begin
-      LEnergy := 0;
-      for K := 0 to High(Result.Stems[J]) do LEnergy := LEnergy + Abs(Result.Stems[J][K]);
-      Check(LEnergy > 0.1, 'Each pitched and synthesized drum part sounds in the retained guide');
-    end;
+    CheckPerformedParts(Result, False, 0.1);
   finally
     LStream.Free;
     LCapture.Free;
@@ -317,7 +328,7 @@ begin
   for I := 0 to High(A) do if A[I] <> B[I] then Exit(False);
 end;
 
-procedure VerifyRejectedCycle(const ASource: TResult);
+procedure VerifyHatCycle(const ATokens: TWfcModelTokens; const AExpected: Boolean);
 var LStarter: TInstrumentalStarter;
   LDrums: TPercussionDefinitions;
   LOptions: TAcousticGenerationOptions;
@@ -334,13 +345,36 @@ begin
     LOptions.Extent := wseWrap;
     SetLength(LConstraints, 64);
     for I := 0 to 63 do
-      LConstraints[I] := MakeWfcSequenceTokenConstraint(I,
-        [ASource.Chunks[I div 16].Providers[8].Tokens[I mod 16]]);
+      LConstraints[I] := MakeWfcSequenceTokenConstraint(I, [ATokens[I]]);
     LTokens := nil;
-    Check(not TryGenerateTokenSequence(LDrums[2].Model, LOptions, LConstraints, LTokens, LReport)
-      and (LReport.Status = gssContradiction),
-      'Independent primary cyclic graph proves the requested adjacent Hat motif cannot loop');
+    if AExpected then
+      Check(TryGenerateTokenSequence(LDrums[2].Model, LOptions, LConstraints, LTokens, LReport)
+        and (LReport.Status = gssSolved),
+        'Independent cyclic graph proves the newly selected adjacent Hat motif can loop')
+    else
+      Check(not TryGenerateTokenSequence(LDrums[2].Model, LOptions, LConstraints, LTokens, LReport)
+        and (LReport.Status = gssContradiction),
+        'Independent cyclic graph preserves rejection of the original captured Hat motif');
   finally LStarter.Free end;
+end;
+
+procedure VerifyOldRejectedCycle;
+const
+  { Big Boss: first64 Hat tokens decoded through TMusicDecisionReader from the
+    preserved form-frontier audio01 journal (original digest c4355af4...124a1130).
+    Fresh joint planning may choose a feasible motif; that must not erase this
+    actual historical impossible cycle or turn its contradiction into a limit. }
+  Vocabulary: array[0..3] of String = ('hit:100', 'hit:64', 'hit:80', 'rest');
+  Choices: array[0..63] of Byte = (
+    0,1,2,1,2,1,0,1,2,1,2,1,2,1,0,1,
+    0,1,2,1,2,1,2,1,2,1,2,1,2,1,3,0,
+    1,2,1,2,1,2,1,0,1,2,1,2,1,0,1,2,
+    1,2,1,2,1,2,1,2,1,2,1,2,1,0,1,0);
+var Tokens: TWfcModelTokens; I: Integer;
+begin
+  SetLength(Tokens, 64);
+  for I := 0 to 63 do Tokens[I] := Vocabulary[Choices[I]];
+  VerifyHatCycle(Tokens, False);
 end;
 
 function DecisionDigest(const ASource: TResult): String;
@@ -355,17 +389,23 @@ begin
 end;
 
 procedure Run;
-var LFirst, LSecond, LCancelled, LRejected, LShort, LShortReplay: TResult;
-  I, J, K: Integer; LDifferent: Boolean;
+var LFirst, LSecond, LCancelled, LAdjacent, LShort, LShortReplay: TResult;
+  I, J, K, LChangedParts: Integer; LDifferent, LHasAttack: Boolean;
   LDigest: String;
+  LHat: TWfcModelTokens;
 begin
-  LRejected := Render(2048, 0, icbAllRoles, True);
-  VerifyRejectedCycle(LRejected);
+  VerifyOldRejectedCycle;
+  LAdjacent := Render(2048, 0, icbAllRoles, True);
+  SetLength(LHat, 64);
+  for I := 0 to 63 do LHat[I] := LAdjacent.Chunks[I div 16].Providers[8].Tokens[I mod 16];
+  VerifyHatCycle(LHat, True);
   LFirst := Render(2048);
   LDigest := DecisionDigest(LFirst);
   WriteLn('Decision digest: ', LDigest);
-  Check(LDigest = 'c4355af44c11e9643dcd6bb220305d36b5663e5c4fe5083ed4bd8e0a124a1130',
-    'Fixed form/seed/models retain identical actual decisions on native and pas2js');
+  { Version5 selects shared context/drum negotiation and domain preparation.
+    The former c4355af4...124a1130 journal remains historical evidence above. }
+  Check(LDigest = '21131a9f6102818393c249c9a5bc273c7e0529b7943a361ed701a64a742bdd4f',
+    'Fixed joint form/seed/models retain identical actual decisions on native and pas2js');
   LSecond := Render(173);
   Check(SameAudio(LFirst.Mix, LSecond.Mix), 'Continuous mix/effects replay exactly across PCM pulls');
   for I := 0 to 5 do
@@ -413,16 +453,27 @@ begin
         Check((LFirst.Chunks[I].Providers[J].States[K] = LSecond.Chunks[I].Providers[J].States[K]) and
           (LFirst.Chunks[I].Providers[J].Tokens[K] = LSecond.Chunks[I].Providers[J].Tokens[K]),
           'Section energy preserves every real WFC choice, including the repeated motif');
+  LChangedParts := 0;
   for I := 0 to 5 do
   begin
     LDifferent := False;
+    LHasAttack := False;
+    for J := 8 to 11 do
+      for K := 0 to High(LFirst.Chunks[J].Cells) do
+        LHasAttack := LHasAttack or (LFirst.Chunks[J].Cells[K].Parts[I].Action = caAttack);
     for J := 0 to 32 * 8000 * 2 - 1 do
       Check(LFirst.Stems[I][J] = LSecond.Stems[I][J],
         'A future energy change never alters already performed music');
     for J := 32 * 8000 * 2 to 48 * 8000 * 2 - 1 do
       LDifferent := LDifferent or (LFirst.Stems[I][J] <> LSecond.Stems[I][J]);
-    Check(LDifferent, 'The stronger retained motif changes each actual instrument part');
+    if LHasAttack then
+    begin
+      Check(LDifferent, 'The stronger retained motif changes each attacking instrument part');
+      Inc(LChangedParts);
+    end
+    else Check(not LDifferent, 'Attack expression does not fabricate audio or restart a hold');
   end;
+  Check(LChangedParts > 0, 'Section energy changes actual performed music');
   {$ifndef pas2js}
   if ParamCount = 1 then
   begin
