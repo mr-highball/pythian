@@ -578,6 +578,47 @@ begin
   end;
 end;
 
+procedure CheckBalance(const ASource: String);
+var
+  LWrite: TJSONObject;
+  LResult: TJSONObject;
+  LStage: TJSONObject;
+  LStream: TFileStream;
+  LReader: TWaveFrameReader;
+  LSamples: TAudioSamples;
+  LHash: String;
+  LEnergy: Double;
+  I: Integer;
+begin
+  LWrite := Preview('stereo-balance', ASource, 0);
+  try
+    LWrite.Arrays['effects'].Clear;
+    LStage := CatalogStage(ceBalance);
+    LStage.Floats['pan'] := -1;
+    LWrite.Arrays['effects'].Add(LStage);
+    LResult := Execute(LWrite);
+    LResult.Free;
+    LStream := OpenStudioEffectPreview(GCatalog, 'stereo-balance', LHash);
+    LReader := nil;
+    try
+      LReader := TWaveFrameReader.Create(LStream);
+      LSamples := LReader.ReadFrames(512);
+      LEnergy := 0;
+      for I := 0 to Length(LSamples) div 2 - 1 do
+      begin
+        Check(LSamples[I * 2 + 1] = 0, 'Source balance did not mute the opposite channel');
+        LEnergy := LEnergy + Abs(LSamples[I * 2]);
+      end;
+      Check(LEnergy > 0.01, 'Source balance erased both channels');
+    finally
+      LReader.Free;
+      LStream.Free;
+    end;
+  finally
+    LWrite.Free;
+  end;
+end;
+
 procedure CheckTimeEffects(const ASource: String);
 var
   LKind: TCatalogEffect;
@@ -944,6 +985,7 @@ begin
   CheckDSPOrder(LSource);
   CheckFurtherDerivation(LSource, LFirstHash);
   CheckTimeEffects(LSource);
+  CheckBalance(LSource);
   LStream := OpenStudioEffectPreview(GCatalog, 'gain', LHash);
   try
     Check((LHash = LFirstHash) and (LStream.Size = 64044), 'Verified bounded preview playback');

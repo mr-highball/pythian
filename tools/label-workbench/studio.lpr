@@ -28,7 +28,7 @@ program PythianStudio;
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
-  pythian.studio.laboratory, pythian.studio.songs,
+  pythian.studio.laboratory, pythian.studio.songs, pythian.studio.sounds,
   pythian.wave.stream, pythian.music.selection;
 
 type
@@ -44,6 +44,7 @@ type
     FLibraryRefresh: TStudioLibraryRefresh;
     FLaboratory: TStudioLaboratory;
     FSongs: TStudioSongs;
+    FSounds: TStudioSounds;
     FResultProjectId: String;
     FToken, FProjectId, FName: String;
     FRevision, FChanges, FPendingVersion: Integer;
@@ -90,8 +91,7 @@ type
     procedure Generate; async;
     procedure SubmitGeneration; async;
     procedure OpenSoundChoices;
-    procedure DrawSoundChoices;
-    procedure ApplySoundChoices;
+    procedure ApplySoundDesign(ADesign: TJSObject);
     function CaptureFollowupParent: Boolean;
     function FollowupWrite(const AKind: String): TJSObject;
     procedure SubmitFollowup(const AWrite: TJSObject; const ADialog: String);
@@ -798,6 +798,7 @@ begin
   TJSHTMLButtonElement(El('stop-active-generation')).disabled := FCancelling;
   TJSHTMLButtonElement(El('exit-experiment')).disabled := LActive;
   if FLaboratory <> nil then FLaboratory.SetGenerationAvailable(not LActive);
+  if FSounds <> nil then FSounds.SetAvailable(FConnected and not LActive and not FSubmitting);
   El('previous-version').setAttribute('hidden', '');
   if not LActive and (Str(FJob, 'parent_job_id') <> '') then
     El('previous-version').removeAttribute('hidden');
@@ -1082,7 +1083,6 @@ begin
   FFollowupParent['project_revision'] := Num(LResult, 'project_revision');
   FFollowupParent['project_snapshot_sha256'] := Str(LResult, 'project_snapshot_sha256');
   FFollowupParent['music_frames'] := Num(Obj(LResult['decisions']), 'music_frames');
-  FFollowupParent['instruments'] := TJSJSON.parse(TJSJSON.stringify(Arr(Obj(LResult['settings']), 'instruments')));
   Result := True;
 end;
 
@@ -1112,46 +1112,18 @@ begin
 end;
 
 procedure TStudio.OpenSoundChoices;
-const
-  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
-var LNames: TJSArray; I: Integer;
 begin
   if not CaptureFollowupParent then Exit;
-  LNames := Arr(FFollowupParent, 'instruments');
-  if (LNames = nil) or (LNames.length <> 3) then Exit;
-  for I := 0 to 2 do
-  begin
-    TJSHTMLSelectElement(El(CIds[I])).value := String(LNames[I]);
-  end;
-  DrawSoundChoices;
-  TStudioDialog(El('sound-dialog')).showModal;
+  FSounds.Open(FJobId);
 end;
 
-procedure TStudio.DrawSoundChoices;
-const
-  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
-var LChanged: Boolean; I: Integer;
+procedure TStudio.ApplySoundDesign(ADesign: TJSObject);
+var
+  LWrite: TJSObject;
 begin
-  LChanged := False;
-  if FFollowupParent <> nil then
-    for I := 0 to 2 do
-      LChanged := LChanged or (TJSHTMLSelectElement(El(CIds[I])).value <>
-        String(TJSArray(FFollowupParent['instruments'])[I]));
-  TJSHTMLButtonElement(El('apply-sounds')).disabled :=
-    not LChanged or not FConnected or FSubmitting or (FJobWrite <> nil);
-end;
-
-procedure TStudio.ApplySoundChoices;
-const
-  CIds: array[0..2] of String = ('sound-bass', 'sound-harmony', 'sound-lead');
-var LWrite: TJSObject; LNames: TJSArray; I: Integer;
-begin
-  if (FFollowupParent = nil) or FSubmitting or (FJobWrite <> nil) or
-    TJSHTMLButtonElement(El('apply-sounds')).disabled then Exit;
+  if (FFollowupParent = nil) or not FConnected or FSubmitting or (FJobWrite <> nil) then Exit;
   LWrite := FollowupWrite('instrumental_reperform');
-  LNames := TJSArray.new;
-  for I := 0 to 2 do LNames.push(TJSHTMLSelectElement(El(CIds[I])).value);
-  LWrite['instruments'] := LNames;
+  LWrite['sound_design'] := ADesign;
   SubmitFollowup(LWrite, 'sound-dialog');
 end;
 
@@ -2220,7 +2192,6 @@ begin
     'save-clips': SaveClips;
     'cancel-clips': CancelClips;
     'change-sounds': OpenSoundChoices;
-    'apply-sounds': ApplySoundChoices;
     'change-notes': OpenNoteChoices;
     'play-section': HearSection(False);
     'play-full-track': HearSection(True);
@@ -2275,12 +2246,6 @@ begin
   if LControl.id = 'learning-label-choice' then
   begin
     PreviewLearningLabel;
-    Exit;
-  end;
-  if (LControl.id = 'sound-bass') or (LControl.id = 'sound-harmony') or
-    (LControl.id = 'sound-lead') then
-  begin
-    DrawSoundChoices;
     Exit;
   end;
   if LControl.id = 'playlist-name' then
@@ -2385,6 +2350,7 @@ begin
   FLaboratory := TStudioLaboratory.Create(document.body, @FetchApi,
     @LaboratorySaved, @LaboratoryGenerate, @LaboratoryOpened);
   FSongs := TStudioSongs.Create(@FetchApi, @OpenSavedGeneration);
+  FSounds := TStudioSounds.Create(document.body, @FetchApi, @ApplySoundDesign);
   LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
   El('track-search').addEventListener('input', @Edit);
@@ -2392,9 +2358,6 @@ begin
   El('output-duration').addEventListener('change', @Edit);
   El('output-duration').addEventListener('input', @Edit);
   El('output-duration-unit').addEventListener('change', @Edit);
-  El('sound-bass').addEventListener('change', @Edit);
-  El('sound-harmony').addEventListener('change', @Edit);
-  El('sound-lead').addEventListener('change', @Edit);
   El('note-dialog').addEventListener('input', @Edit);
   El('note-dialog').addEventListener('change', @Edit);
   El('result-part').addEventListener('change', @Edit);

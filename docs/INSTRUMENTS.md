@@ -46,9 +46,9 @@ used as a sampler.
 Native and actual pas2js recipe consumers render the same catalog, exercise
 release history, gain edits, repeatability, key/velocity layers, detached nested
 data and an explicit sampler after its original clip is freed. The library
-catalog is available independently of WFC. Studio recipe editing, saved patches
-and full effect routing remain [sound-design work](TODO/NS-2_sound-design_01.md);
-this catalog alone does not complete that operator workflow.
+catalog is available independently of WFC. The optional Studio sound editor
+uses these same definitions; its current release qualification is recorded in
+[sound design](TODO/NS-2_sound-design_01.md).
 
 ## Reusable stem and effect recipes
 
@@ -62,8 +62,11 @@ adapter implements a second filter, compressor, delay or reverb.
 `pythian.mix.recipe.CreateStemMixGraph` realizes an ordered per-part rack once,
 then sends each post-fader part to its isolated stem and the master. With N
 parts, inputs occupy buses0..N−1, stemsN..2N−1, and the master2N. User master
-effects precede independent output protection. Global, part and stage bypass
-preserve saved settings; dry comparison retains the same output protection.
+effects precede independent output protection. Each part has gain and stereo
+balance; zero balance is exact identity, while negative/positive values attenuate
+the opposite channel without mono folding or boost. Global, part and stage bypass
+preserve saved settings; dry comparison retains instruments, gain/balance and
+the same output protection.
 The caller owns the graph and must keep it alive throughout playback. Do not
 reset it at phrase or pull boundaries: delay, reverb and dynamics history belong
 to the continuous performance.
@@ -75,8 +78,25 @@ longest declared note release and the explicit effect tail. An effect tail is a
 finite saved duration, not a promise that arbitrary feedback has become silent.
 The private patch store saves immutable content-addressed setups without
 starting a job. A sampler needs explicit audio bindings; the Studio catalog
-reports that resolver as unconnected. The optional Studio editing/audition UI
-remains open in the linked task until its actual consumer is delivered.
+reports that resolver as unconnected.
+
+In Studio, open a generated track and choose **Sounds & effects**. Select a part,
+then use Instrument, Envelope, Motion or Effects. Kick, snare and hat retain
+their explicit percussion instruments and have independent effect racks; Full
+mix edits the master rack. **Create new version** performs the saved notes with
+the edited sound, then offers the existing Before/After mix and individual-part
+players. It does not repeat learning or WFC selection. The explicit dry switch
+bypasses user effect stacks; it does not replace the selected instrument recipe.
+
+**Saved sound setups** stores complete instrument/rack definitions in the local
+private catalog. Saving or loading a setup never starts a job; use Create new
+version to hear it. The editor offers the14 primary effects, ordered/bypassable
+stages, source-family controls, key/velocity layers, ADSR/custom envelopes and
+point/LFO automation. These are Experimental authored/operator settings, not
+automatic identification of source instruments. Native validation still admits
+the actual note/rate/workload; an editable number is not a promise that every
+combination can render. Current limits include three pitched recipes, six part
+racks, at most31 editable stages per rack and a0–30second explicit effect tail.
 
 ## Experimental observed sound controls
 

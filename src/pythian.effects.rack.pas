@@ -167,6 +167,8 @@ begin
   case ASettings.Kind of
     ceGain:
       Result := TGainEffect.Create(ASampleRate, Power(10, Value('gain_db') / 20), 0);
+    ceBalance:
+      Result := TStereoBalanceEffect.Create(ASampleRate, Value('pan'));
     ceCompressor:
       begin
         LCompressor := DefaultCompressorSettings;

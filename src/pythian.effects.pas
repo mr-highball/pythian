@@ -98,6 +98,20 @@ type
     function FrameCost: Integer; override;
   end;
 
+  { Stereo balance attenuates the opposite channel without folding stereo to
+    mono or boosting either side. Zero is exact identity; -1 is left only. }
+  TStereoBalanceEffect = class(TAudioEffect)
+  private
+    FLeft: Double;
+    FRight: Double;
+  public
+    constructor Create(const ASampleRate: Integer; const ABalance: Double);
+    procedure Reset; override;
+    procedure Process(const ALeft, ARight: Double;
+      out AOutputLeft, AOutputRight: Double); override;
+    function FrameCost: Integer; override;
+  end;
+
   { Owns effects after successful Add. Processing failure poisons the chain:
     earlier stages may have advanced, so Reset is required before reuse.
     Invalid input rejected before stages does not poison. Calls are not reentrant. }
@@ -268,6 +282,38 @@ begin
 end;
 
 function TGainEffect.FrameCost: Integer;
+begin
+  Result := 2;
+end;
+
+constructor TStereoBalanceEffect.Create(const ASampleRate: Integer;
+  const ABalance: Double);
+begin
+  inherited Create(ASampleRate);
+  RequireFinite(ABalance, 'Stereo balance');
+  if (ABalance < -1) or (ABalance > 1) then
+  begin
+    raise EAudio.Create('Stereo balance must be-1..1');
+  end;
+  FLeft := Min(1, 1 - ABalance);
+  FRight := Min(1, 1 + ABalance);
+end;
+
+procedure TStereoBalanceEffect.Reset;
+begin
+  { A constant balance has no signal history. }
+end;
+
+procedure TStereoBalanceEffect.Process(const ALeft, ARight: Double;
+  out AOutputLeft, AOutputRight: Double);
+begin
+  RequireFinite(ALeft, 'Balance input');
+  RequireFinite(ARight, 'Balance input');
+  AOutputLeft := ALeft * FLeft;
+  AOutputRight := ARight * FRight;
+end;
+
+function TStereoBalanceEffect.FrameCost: Integer;
 begin
   Result := 2;
 end;

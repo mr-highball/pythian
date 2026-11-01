@@ -34,7 +34,7 @@ uses pythian.studio.progress,
   SysUtils,
   Types,
   pythian.effects.catalog,
-  pythian.studio.sources;
+  pythian.studio.sources, pythian.studio.effect.controls;
 
 type
   TStudioEffectSelection = function: TJSObject of object;
@@ -44,8 +44,7 @@ type
     FFetch: TStudioFetch;
     FSelection: TStudioEffectSelection;
     FSaved: TStudioChange;
-    FRack: TJSArray;
-    FSerial: Integer;
+    FRack: TStudioEffectRackControls;
     FSelectionKey: String;
     FVersion: Integer;
     FPreviewVersion: Integer;
@@ -65,9 +64,7 @@ type
     function Add(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     procedure Button(AParent: TJSElement; const AText, AAction: String);
     procedure Layout;
-    procedure DrawRack;
-    procedure Parameter(AParent: TJSElement; ARow: TJSObject;
-      const AKey, ALabel: String);
+    procedure RackChanged;
     procedure Notice(const AText: String; const AError: Boolean = False);
     procedure Invalidate;
     procedure StopAudio;
@@ -215,86 +212,10 @@ begin
   LControl.id := 'effects-identity';
 end;
 
-procedure TStudioEffects.Parameter(AParent: TJSElement; ARow: TJSObject;
-  const AKey, ALabel: String);
-var
-  LLabel: TJSElement;
-  LInput: TJSElement;
+procedure TStudioEffects.RackChanged;
 begin
-  LLabel := Add(AParent, 'label', ALabel, '');
-  LInput := Add(LLabel, 'input', '', '');
-  LInput.setAttribute('type', 'text');
-  LInput.setAttribute('inputmode', 'decimal');
-  LInput.setAttribute('maxlength', '16');
-  LInput.setAttribute('data-row', StudioText(ARow, 'ui_id'));
-  LInput.setAttribute('data-key', AKey);
-  LInput.setAttribute('value', StudioText(ARow, AKey));
-  LInput.addEventListener('input', @Edit);
-end;
-
-procedure TStudioEffects.DrawRack;
-var
-  LRoot: TJSElement;
-  LCard: TJSElement;
-  LRow: TJSElement;
-  LLabel: TJSElement;
-  LCheck: TJSElement;
-  LDetails: TJSElement;
-  LParams: TJSElement;
-  LEffect: TJSObject;
-  LKind: String;
-  LId: String;
-  LIndex: Integer;
-  LDefinition: TEffectDefinition;
-  LSetting: TEffectParameter;
-  LParameter: Integer;
-begin
-  LRoot := El('effects-rack');
-  LRoot.innerHTML := '';
-  if FRack.length = 0 then
-  begin
-    Add(LRoot, 'p', 'No effects yet. Preview without effects or add a stage.', 'hint');
-  end;
-  for LIndex := 0 to FRack.length - 1 do
-  begin
-    LEffect := TJSObject(FRack[LIndex]);
-    LKind := StudioText(LEffect, 'kind');
-    if not FindEffectDefinition(LKind, LDefinition) then
-    begin
-      raise Exception.Create('Unsupported effect in rack.');
-    end;
-    LId := StudioText(LEffect, 'ui_id');
-    LCard := Add(LRoot, 'div', '', 'track');
-    Add(LCard, 'h3', IntToStr(LIndex + 1) + '. ' + LDefinition.Caption, '');
-    Add(LCard, 'p', LDefinition.Purpose, 'hint');
-    LRow := Add(LCard, 'div', '', 'source-toolbar');
-    LLabel := Add(LRow, 'label', '', '');
-    LCheck := Add(LLabel, 'input', '', '');
-    LCheck.setAttribute('type', 'checkbox');
-    LCheck.setAttribute('data-row', LId);
-    LCheck.setAttribute('data-key', 'bypass');
-    TJSHTMLInputElement(LCheck).checked := Boolean(LEffect['bypass']);
-    LCheck.addEventListener('change', @Edit);
-    Add(LLabel, 'span', 'Bypass', '');
-    Button(LRow, 'Move up', 'up:' + LId);
-    TJSHTMLButtonElement(LRow.lastElementChild).disabled := LIndex = 0;
-    Button(LRow, 'Move down', 'down:' + LId);
-    TJSHTMLButtonElement(LRow.lastElementChild).disabled := LIndex = FRack.length - 1;
-    Button(LRow, 'Remove', 'remove:' + LId);
-    LDetails := Add(LCard, 'details', '', 'advanced');
-    LDetails.setAttribute('open', '');
-    Add(LDetails, 'summary', 'Parameters', '');
-    LParams := Add(LDetails, 'div', '', 'range-fields');
-    for LParameter := 0 to High(LDefinition.Parameters) do
-    begin
-      LSetting := LDefinition.Parameters[LParameter];
-      Parameter(LParams, LEffect, LSetting.Key, LSetting.Caption);
-    end;
-    if LDefinition.IsBiquad and not (LDefinition.Kind in [ceLowShelf, ceHighShelf]) then
-    begin
-      Add(LDetails, 'p', 'Higher Q makes a narrower or more resonant shape.', 'hint');
-    end;
-  end;
+  Invalidate;
+  Notice('Rack changed. Preview again before saving.');
 end;
 
 procedure TStudioEffects.Notice(const AText: String; const AError: Boolean);
@@ -377,7 +298,7 @@ begin
     end
     else if LAction = 'add' then
     begin
-      LButton.disabled := FRack.length >= 8;
+      LButton.disabled := FRack.Count >= 8;
     end
     else if LAction = 'confirm' then
     begin
@@ -412,99 +333,14 @@ end;
 
 function TStudioEffects.Number(ARow: TJSObject; const AKey: String;
   AMinimum, AMaximum: Double): Double;
-var
-  LText: String;
-  LIndex: Integer;
-  LDots: Integer;
-  LDigits: Integer;
-  LSettings: TFormatSettings;
-
-  procedure Reject(const AMessage: String);
-  var
-    LInput: TJSElement;
-  begin
-    LInput := El('effects-rack').querySelector('input[data-row="' +
-      StudioText(ARow, 'ui_id') + '"][data-key="' + AKey + '"]');
-    if AKey = 'tail_seconds' then
-    begin
-      LInput := El('effects-tail');
-    end;
-    if LInput <> nil then
-    begin
-      LInput.setAttribute('aria-invalid', 'true');
-      if AKey <> 'tail_seconds' then
-      begin
-        LInput.parentElement.parentElement.parentElement.setAttribute('open', '');
-      end;
-      TJSHTMLInputElement(LInput).focus;
-    end;
-    raise Exception.Create(AMessage + StringReplace(AKey, '_', ' ', [rfReplaceAll]) + '.');
-  end;
-
 begin
-  LText := Trim(StudioText(ARow, AKey));
-  LDots := 0;
-  LDigits := 0;
-  for LIndex := 1 to Length(LText) do
-  begin
-    if LText[LIndex] in ['0'..'9'] then
-    begin
-      Inc(LDigits);
-    end
-    else if LText[LIndex] = '.' then
-    begin
-      Inc(LDots);
-    end
-    else if not ((LText[LIndex] in ['-', '+']) and (LIndex = 1)) then
-    begin
-      Reject('Use a decimal number for ');
-    end;
-  end;
-  LSettings := FormatSettings;
-  LSettings.DecimalSeparator := '.';
-  LSettings.ThousandSeparator := #0;
-  if (LDigits = 0) or (LDots > 1) or
-    not TryStrToFloat(LText, Result, LSettings) or
-    not ((Result >= AMinimum) and (Result <= AMaximum)) then
-  begin
-    Reject('Use ' + FloatToStr(AMinimum) + ' to ' + FloatToStr(AMaximum) + ' for ');
-  end;
+  Result := ReadStudioDecimal(StudioText(ARow, AKey),
+    StringReplace(AKey, '_', ' ', [rfReplaceAll]), AMinimum, AMaximum, El('effects-tail'));
 end;
 
 function TStudioEffects.RackRequest(ARate: Double): TJSArray;
-var
-  LStored: TJSObject;
-  LRow: TJSObject;
-  LKind: String;
-  LDefinition: TEffectDefinition;
-  LSettings: TCatalogEffectSettings;
-  LSetting: TEffectParameter;
-  LParameter: Integer;
-  LIndex: Integer;
 begin
-  Result := TJSArray.new;
-  for LIndex := 0 to FRack.length - 1 do
-  begin
-    LStored := TJSObject(FRack[LIndex]);
-    LKind := StudioText(LStored, 'kind');
-    LRow := TJSObject.new;
-    LRow['kind'] := LKind;
-    LRow['bypass'] := Boolean(LStored['bypass']);
-    if not FindEffectDefinition(LKind, LDefinition) then
-    begin
-      raise Exception.Create('Choose a supported effect.');
-    end;
-    LSettings := DefaultCatalogEffect(LDefinition.Kind);
-    for LParameter := 0 to High(LDefinition.Parameters) do
-    begin
-      LSetting := LDefinition.Parameters[LParameter];
-      LSettings.Values[LParameter] := Number(LStored, LSetting.Key, LSetting.Minimum,
-        EffectParameterMaximum(LSetting, Trunc(ARate)));
-      LRow[LSetting.Key] := LSettings.Values[LParameter];
-    end;
-    ValidateCatalogEffect(LSettings, Trunc(ARate));
-    Result.push(LRow);
-  end;
+  Result := FRack.Request(Trunc(ARate));
 end;
 
 function TStudioEffects.NewId: String;
@@ -952,138 +788,31 @@ begin
 end;
 
 function TStudioEffects.Edit(AEvent: TEventListenerEvent): Boolean;
-var
-  LInput: TJSHTMLInputElement;
-  LRow: TJSObject;
-  LIndex: Integer;
-  LKey: String;
 begin
   Result := False;
-  LInput := TJSHTMLInputElement(AEvent.currentTarget);
-  LInput.removeAttribute('aria-invalid');
-  if LInput.id = 'effects-tail' then
-  begin
-    Invalidate;
-    UpdateControls;
-    Notice('Tail changed. Preview again before saving.');
-    Exit;
-  end;
-  LKey := LInput.getAttribute('data-key');
-  for LIndex := 0 to FRack.length - 1 do
-  begin
-    LRow := TJSObject(FRack[LIndex]);
-    if StudioText(LRow, 'ui_id') = LInput.getAttribute('data-row') then
-    begin
-      if LKey = 'bypass' then
-      begin
-        LRow[LKey] := LInput.checked;
-      end
-      else
-      begin
-        LRow[LKey] := LInput.value;
-      end;
-      Invalidate;
-      Notice('Rack changed. Preview again before saving.');
-      Break;
-    end;
-  end;
+  Invalidate;
+  Notice('Tail changed. Preview again before saving.');
 end;
 
 function TStudioEffects.Click(AEvent: TJSMouseEvent): Boolean;
 var
   LAction: String;
-  LId: String;
-  LKind: String;
-  LRow: TJSObject;
-  LSwap: JSValue;
-  LIndex: Integer;
-  LDefinition: TEffectDefinition;
-  LSetting: TEffectParameter;
-  LParameter: Integer;
 begin
   Result := False;
   LAction := TJSElement(AEvent.currentTarget).getAttribute('data-effect-action');
-  if LAction = 'preview' then
+  if LAction = 'preview' then Preview
+  else if LAction = 'save' then SaveClip
+  else if LAction = 'refresh' then Poll
+  else if LAction = 'confirm' then Confirm
+  else if LAction = 'cancel' then Cancel
+  else if LAction = 'add' then
   begin
-    Preview;
-    Exit;
-  end
-  else if LAction = 'save' then
-  begin
-    SaveClip;
-    Exit;
-  end
-  else if LAction = 'refresh' then
-  begin
-    Poll;
-    Exit;
-  end
-  else if LAction = 'confirm' then
-  begin
-    Confirm;
-    Exit;
-  end
-  else if LAction = 'cancel' then
-  begin
-    Cancel;
-    Exit;
-  end;
-  if LAction = 'add' then
-  begin
-    if FRack.length >= 8 then
-    begin
-      Exit;
-    end;
-    Inc(FSerial);
-    LKind := TJSHTMLSelectElement(El('effects-kind')).value;
-    LRow := TJSObject.new;
-    LRow['ui_id'] := IntToStr(FSerial);
-    LRow['kind'] := LKind;
-    LRow['bypass'] := False;
-    if not FindEffectDefinition(LKind, LDefinition) then
-    begin
-      Notice('Choose a supported effect.', True);
-      Exit;
-    end;
-    for LParameter := 0 to High(LDefinition.Parameters) do
-    begin
-      LSetting := LDefinition.Parameters[LParameter];
-      LRow[LSetting.Key] := FloatToStr(LSetting.DefaultValue);
-    end;
-    FRack.push(LRow);
-  end
-  else
-  begin
-    LId := Copy(LAction, Pos(':', LAction) + 1, Length(LAction));
-    for LIndex := 0 to FRack.length - 1 do
-    begin
-      if StudioText(TJSObject(FRack[LIndex]), 'ui_id') = LId then
-      begin
-        if Pos('remove:', LAction) = 1 then
-        begin
-          FRack.splice(LIndex, 1);
-        end
-        else if (Pos('up:', LAction) = 1) and (LIndex > 0) then
-        begin
-          LSwap := FRack[LIndex - 1];
-          FRack[LIndex - 1] := FRack[LIndex];
-          FRack[LIndex] := LSwap;
-        end
-        else if (Pos('down:', LAction) = 1) and (LIndex < FRack.length - 1) then
-        begin
-          LSwap := FRack[LIndex + 1];
-          FRack[LIndex + 1] := FRack[LIndex];
-          FRack[LIndex] := LSwap;
-        end;
-        Break;
-      end;
+    try
+      FRack.AddEffect(TJSHTMLSelectElement(El('effects-kind')).value);
+    except
+      on E: Exception do Notice(E.Message, True);
     end;
   end;
-  Invalidate;
-  DrawRack;
-  UpdateControls;
-  TJSHTMLSelectElement(El('effects-kind')).focus;
-  Notice('Rack changed. Preview again before saving.');
 end;
 
 function TStudioEffects.Playing(AEvent: TEventListenerEvent): Boolean;
@@ -1139,9 +868,8 @@ begin
   FFetch := AFetch;
   FSelection := ASelection;
   FSaved := ASaved;
-  FRack := TJSArray.new;
   Layout;
-  DrawRack;
+  FRack := TStudioEffectRackControls.Create(El('effects-rack'), @RackChanged, 8);
   WatchSelection;
   UpdateControls;
   FWatchTimer := window.setInterval(
@@ -1162,6 +890,7 @@ begin
   window.removeEventListener('pagehide', @Leaving);
   window.removeEventListener('pageshow', @Returning);
   StopAudio;
+  FRack.Free;
   inherited Destroy;
 end;
 

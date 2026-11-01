@@ -690,8 +690,25 @@ code {
 .generation-phases .phase-complete { border-color: #b5f0cc; }
 .generation-phases [aria-current] { color: #b5f0cc; font-weight: 700; border-color: #b5f0cc; }
 .learning-progress small { display: block; margin: .5rem 0; }
-.sound-choices { display: grid; gap: 1rem; margin: 1rem 0; }
-.sound-choices select { display: block; width: 100%; margin-top: .35rem; }
+/* Big Boss: optional sound controls keep the current task in a compact modal. */
+#sound-dialog { width: min(50rem, calc(100% - 1rem)); }
+#sound-dialog[open] { display: flex; flex-direction: column; max-height: calc(100vh - 1rem); max-height: calc(100dvh - 1rem); overflow: hidden; }
+#sound-dialog > :not(.sound-editor-body) { flex-shrink: 0; }
+.sound-editor-body { overflow-y: auto; overflow-x: hidden; min-height: 0; margin: .6rem 0; padding-right: .25rem; }
+.sound-editor-body label, .sound-setup-toolbar label { display: block; min-width: 0; }
+.sound-editor input:not([type="checkbox"]), .sound-editor select { display: block; width: 100%; min-width: 0; margin-top: .3rem; }
+.sound-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin: .5rem 0; }
+.sound-tabs button { padding: .6rem .25rem; min-width: 0; font-size: .875rem; }
+.sound-tabs [aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.sound-setup-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: .5rem; padding: .5rem 0; }
+.sound-point-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: end; gap: .5rem; margin: .6rem 0; }
+.sound-editor .sound-check { display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.sound-check input[type="checkbox"] { width: 1.2rem; min-height: 1.2rem; height: 1.2rem; margin: 0; flex-shrink: 0; }
+#sound-editor-status { margin: .4rem 0; }
+@media (max-width: 520px) {
+  .sound-setup-toolbar, .sound-point-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sound-setup-toolbar > button { grid-column: 1 / -1; }
+}
 .version-comparison[data-compare] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 @media (max-width: 600px) { .version-comparison[data-compare] { grid-template-columns: 1fr; } }
 .note-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }

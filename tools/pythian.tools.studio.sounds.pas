@@ -500,7 +500,8 @@ begin
   Result.Add('parts', LParts);
   for I := 0 to High(AMix.Parts) do
   begin
-    LParts.Add(TJSONObject.Create(['bypass', AMix.Parts[I].BypassEffects,
+    LParts.Add(TJSONObject.Create(['gain', AMix.Parts[I].Gain,
+      'pan', AMix.Parts[I].Pan, 'bypass', AMix.Parts[I].BypassEffects,
       'effects', EncodeEffectRecipes(AMix.Parts[I].Effects)]));
   end;
 end;
@@ -521,7 +522,9 @@ begin
   LParts := ArrayValue(LObject.Find('parts'), 6, 6);
   for I := 0 to 5 do
   begin
-    LRow := ObjectValue(LParts[I], '|bypass|effects|', 2);
+    LRow := ObjectValue(LParts[I], '|gain|pan|bypass|effects|', 4);
+    Result.Parts[I].Gain := NumericValue(LRow.Find('gain'), 0, 1);
+    Result.Parts[I].Pan := NumericValue(LRow.Find('pan'), -1, 1);
     Result.Parts[I].BypassEffects := BooleanValue(LRow.Find('bypass'));
     Result.Parts[I].Effects := DecodeEffectRecipes(LRow.Find('effects'), MaximumEffects, ASampleRate);
   end;
@@ -564,7 +567,12 @@ var
 begin
   LRecipes := BuiltInInstrumentRecipes;
   Result := TJSONObject.Create(['format', 'pythian.studio.sound-catalog.v1',
-    'maximum_zones', StudioSoundMaximumZones, 'sampler_connected', False]);
+    'maximum_zones', StudioSoundMaximumZones, 'sampler_connected', False,
+    'maximum_partials', MaximumAdditivePartials,
+    'maximum_tables', MaximumWavetableTrajectoryRecipes,
+    'maximum_table_harmonics', MaximumTableHarmonics,
+    'maximum_curve_points', MaximumAutomationPoints]);
+  Result.Add('default_mix', EncodeStudioMixRecipe(DefaultStemMixRecipe(6)));
   LRows := TJSONArray.Create;
   Result.Add('instruments', LRows);
   try

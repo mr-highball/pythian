@@ -34,7 +34,7 @@ uses
 type
   TCatalogEffect = (ceGain, ceLowPass, ceHighPass, ceBandPass, ceNotch,
     ceAllPass, cePeak, ceLowShelf, ceHighShelf, ceCompressor, ceLimiter,
-    ceDelay, ceReverb);
+    ceDelay, ceReverb, ceBalance);
   TEffectParameter = record
     Key: String;
     Caption: String;
@@ -81,11 +81,11 @@ function EffectDefinition(const AKind: TCatalogEffect): TEffectDefinition;
 const
   CKeys: array[TCatalogEffect] of String = ('gain', 'lowpass', 'highpass',
     'bandpass', 'notch', 'allpass', 'peak', 'lowshelf', 'highshelf',
-    'compressor', 'limiter', 'delay', 'reverb');
+    'compressor', 'limiter', 'delay', 'reverb', 'balance');
   CCaptions: array[TCatalogEffect] of String = ('Gain', 'Low-pass filter',
     'High-pass filter', 'Band-pass filter', 'Notch filter', 'All-pass filter',
     'Peaking EQ', 'Low shelf', 'High shelf', 'Compressor', 'Limiter',
-    'Echo / modulated delay', 'Reverb');
+    'Echo / modulated delay', 'Reverb', 'Stereo balance');
   CPurposes: array[TCatalogEffect] of String = (
     'Make the passage louder or quieter.', 'Soften highs above the cutoff.',
     'Remove lows below the cutoff.', 'Keep a band around the chosen frequency.',
@@ -95,7 +95,8 @@ const
     'Boost or cut the highs.', 'Reduce the difference between loud and quiet moments.',
     'Keep peaks below a chosen ceiling.',
     'Add echoes. Modulation gently moves their timing; zero depth keeps it steady.',
-    'Add a diffuse room-like tail. Decay controls its feedback, not a measured room.');
+    'Add a diffuse room-like tail. Decay controls its feedback, not a measured room.',
+    'Balance existing stereo channels: -1 left, 0 unchanged, 1 right. No boost or mono fold.');
   CFilters: array[ceLowPass..ceHighShelf] of TBiquadKind = (bkLowPass,
     bkHighPass, bkBandPass, bkNotch, bkAllPass, bkPeak, bkLowShelf, bkHighShelf);
 var
@@ -157,6 +158,8 @@ begin
     case AKind of
       ceGain:
         Parameter('gain_db', 'Gain (−48 to +12 dB)', -48, 12, 0);
+      ceBalance:
+        Parameter('pan', 'Balance (-1 left to +1 right)', -1, 1, 0);
       ceCompressor:
         begin
           Parameter('threshold_db', 'Threshold (−60 to 0 dB)', -60, 0, -18);

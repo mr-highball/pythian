@@ -1460,6 +1460,8 @@ begin
       LReport := ListStudioSavedClips(ACatalogRoot)
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-catalog') then
       LReport := StudioSoundCatalog
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-design') then
+      LReport := ReadStudioJobSoundDesign(ACatalogRoot, QueryValue(ARequest.Query, 'job'))
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-patches') then
       LReport := ListStudioSoundPatches(ACatalogRoot)
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-patch') then

@@ -3,7 +3,7 @@
 [Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
-**Effort:** 6/10
+**Effort:** 8/10
 **Status:** In progress
 **Owner:** Big Boss (single agent)
 
@@ -26,6 +26,42 @@ Primary attribution: NS-2. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: local editor/audition qualification now passes. Native
+  mix57643, actual pas2js mix57643, native score worker66 and separately invoked
+  codec/store37 pass with clean native heaps. The fixed QA service completes two
+  browser-created sound follow-ups with unchanged decision/model identities and
+  only the edited stems changing. Mix/isolated playback, Unicode setup Save/
+  reload without jobs, layered additive/PM/custom gate, moving wavetable,
+  FM/vibrato/delay, master reverb and source-preview stereo balance are exercised.
+  Mobile390px has no horizontal overflow. Numeric JSON presentation, captured
+  preset selector and Add movement handler failures were repaired. Retain their
+  evidence with sd-ui04/05 and the earlier interrupted/cancellation packets.
+  This is solo qualification, not independent or operator musical approval.
+  Complete current-source CI and stable retained-score/clip/data checks remain
+  required before DONE; no partial effort is accepted. Packet:
+  E/runs/sound-design-20261101-boss and E/tests/sd-{ui,js,patches}06.
+
+- 2026-11-01, Big Boss: reestimated6→8 before acceptance. This is a substantial
+  cross-layer delivery: detached source/automation/gate definitions, native
+  persistence and retained-score realization, six part/master racks and a
+  touch-friendly editor covering layers, source families and movement. The
+  initial estimate understated that integration. Accepted work is unchanged;
+  current goal effort becomes188, accepted138 (73.40%),50 open units. No partial
+  sound-design effort is awarded. The batch still targets AC2/AC3, not new
+  inference, transcription or musical-quality claims.
+- 2026-11-01, Big Boss: backend b5e6905 is published and complete CI549/
+  run41317718388 passes, including the full maintained source-effect consumer
+  and new HTTP bindings. The interrupted Windows packet remains partial. The
+  optional editor batch is now in progress, not accepted/deployed. It shares
+  the source-preview rack controls and uses ordinary score follow-ups/players.
+  Native sd-ui04 rejected a mistaken gain-smoothing argument used as pan.
+  The repair adds primary stereo balance and exposes it in the shared catalog;
+  it attenuates channels without mono folding or boost. sd-ui05 then revealed
+  that the effect-difference assertion measured only the unchanged left side;
+  the test now measures both channels. Preserve both failed receipts. Current
+  sd-ui06 native and sd-js06 checks run against the repair. Consecutive nonclosing
+  batch count remains1 until this actual editor/audition criterion is resolved.
 
 - 2026-11-01, Big Boss: final shared-code native worker65 now passes in
   E/tests/sd-score03, including unchanged notes/models/unrelated stems, dry

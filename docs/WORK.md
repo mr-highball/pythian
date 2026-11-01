@@ -3,7 +3,57 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: sound-design backend qualification — 2026-11-01
+## Current handoff: optional sound editor qualified locally; release gate next — 2026-11-01
+
+Big Boss SOLO. Backend b5e6905 is published and complete CI549/run41317718388
+passes, including the maintained source-effect consumer and HTTP bindings. The
+new optional Sounds & effects editor now uses complete primary recipes for
+oscillator/noise, additive, moving wavetable, FM/PM, key/velocity layers, ADSR/
+custom envelopes and point/LFO movement. Six part/master racks share one editor
+with source previews and the primary14-effect catalog. Primary stereo balance
+attenuates existing channels without mono folding or boost. Saved setups are
+immutable private values; Save does not learn or generate. Simple Library →
+Selection → Generate remains the ordinary entry path.
+
+Native sd-ui06 mix57643 and actual pas2js sd-js06 mix57643 pass. The current
+native sound worker66 passes with clean heaps, including actual changed/dry/FM
+PCM, unchanged decisions/model/unselected stems and an eight-second release.
+The script's basic codec invocation ran25 checks; a separately invoked full
+codec/store run passes37 with a clean heap. Do not conflate those invocations.
+The earlier sd-ui04 mistaken gain-smoothing argument and sd-ui05 one-channel
+assertion failure remain. The repair is primary stereo balance and a two-channel
+effect comparison, not a silent weakened assertion.
+
+Actual isolated Browser QA in the fixed QA slot completed two normal native
+sound follow-ups: FM lead/vibrato/delay plus kick balance, then moving wavetable
+bass, layered additive/PM harmony/custom release and master reverb. Their saved
+decision/model identities match the parent; only the named changed stems differ.
+Before/After mix and isolated lead play to completion without player errors.
+Saving/reloading the Unicode-named setup creates no job. Invalid gain admission,
+effect add/move/remove and14 catalog choices were checked. The shared source
+preview also completes and plays the same primary stereo-balance processor.
+Mobile390px has no horizontal overflow; settings scroll inside the modal while
+part/tabs/action remain visible. Repaired browser failures are retained: numeric
+JSON fields previously displayed blank, the preset selector captured a reused
+variable, and an overbroad handler repair read a button as a select. Current
+code uses shared numeric presentation and the actual change-event target, with
+the Add movement button retaining its intended selected target.
+
+Evidence: E/runs/sound-design-20261101-boss, sd-ui06, sd-js06 and sd-patches06.
+The prior published backend batch was nonclosing count1; this current editor/
+audition batch remains underway through complete CI and fixed-slot release.
+Do not accept the task, award effort or call the new stable UI deployed yet.
+Stable was restored from its unchanged qualified bytes after it was found
+stopped; same fixed path, existing Private/TLS/LAN settings, no access expansion.
+Its ordinary authenticated API still has23 jobs/zero active and3 clips/zero errors.
+The previously missing lofi clip is saved and visible alongside the newer clip;
+the live Library count/modal evidence is retained. Preserve all operator stores.
+Current accounting138/188 (73.40%), eight open/31 DONE,50 open effort. No operator
+input is needed. Finish QA cleanup, publish current source, require complete
+maintained CI, then stage matching checked server/worker/UI into stable and
+verify old-score opening, clip/job/answer retention before accepting sound design.
+
+## Previous handoff: sound-design backend qualification — 2026-11-01
 
 Big Boss SOLO. Published source0cff683 and complete CI548/run41300076778 now
 pass; the portable recipe catalog is qualified, not the newer working backend.

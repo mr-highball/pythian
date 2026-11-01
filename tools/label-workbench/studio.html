@@ -28,7 +28,7 @@ SOFTWARE.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101719">
   <title>Pythian · Studio</title>
-  <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="studio.css?v=sounds-20261101">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to music</a>
@@ -104,7 +104,7 @@ SOFTWARE.
         <div class="library-actions"><button id="play-section" data-studio-action type="button">▶ Hear section</button><button id="change-section" data-studio-action type="button">Change this section</button><button id="play-full-track" data-studio-action type="button">▶ Hear whole track</button></div>
         <p id="result-section-status" class="hint" role="status"></p>
       </div>
-      <div class="library-actions"><button id="change-notes" data-studio-action type="button" hidden>Change notes</button><button id="change-sounds" data-studio-action type="button" hidden>Change sounds</button></div>
+      <div class="library-actions"><button id="change-notes" data-studio-action type="button" hidden>Change notes</button><button id="change-sounds" data-studio-action type="button" hidden>Sounds &amp; effects</button></div>
       <p id="sound-availability" class="hint"></p>
       <details id="part-comparison"><summary>Hear individual parts</summary>
         <label for="result-part">Part<select id="result-part"><option value="0">Bass</option><option value="1">Harmony</option><option value="2" selected>Lead</option><option value="3">Kick</option><option value="4">Snare</option><option value="5">Hat</option></select></label>
@@ -168,17 +168,6 @@ SOFTWARE.
   <p class="hint">A matching whole track takes priority over its clips. Other tracks and clips stay saved.</p>
   <button id="apply-learning-label" data-studio-action class="primary" type="button">Use matching music</button>
 </dialog>
-<dialog id="sound-dialog" aria-labelledby="sound-dialog-title">
-  <header class="dialog-heading"><h2 id="sound-dialog-title">Change instrument sounds</h2><button type="button" data-close="sound-dialog">Cancel</button></header>
-  <p>Keep the notes, drums and length. Try another sound.</p>
-  <div class="sound-choices">
-    <label for="sound-bass">Bass<select id="sound-bass"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
-    <label for="sound-harmony">Harmony<select id="sound-harmony"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
-    <label for="sound-lead">Lead<select id="sound-lead"><option value="sine">Smooth · sine</option><option value="triangle">Soft · triangle</option><option value="saw">Bright · saw</option><option value="square">Hollow · square</option></select></label>
-  </div>
-  <p class="hint">Your current version stays saved. No new learning.</p>
-  <button id="apply-sounds" data-studio-action class="primary" type="button" disabled>Create new version</button>
-</dialog>
 <dialog id="note-dialog" aria-labelledby="note-dialog-title">
   <header class="dialog-heading"><h2 id="note-dialog-title">Change a passage</h2><button type="button" data-close="note-dialog">Cancel</button></header>
   <p>Choose what to change. Keep the other parts and sounds.</p>
@@ -219,6 +208,6 @@ SOFTWARE.
   <p id="note-choice-status" class="hint" role="status"></p>
   <button id="apply-notes" data-studio-action class="primary" type="button" disabled>Create new version</button>
 </dialog>
-<script src="studio.js"></script><script>rtl.run();</script>
+<script src="studio.js?v=sounds-20261101"></script><script>rtl.run();</script>
 </body>
 </html>

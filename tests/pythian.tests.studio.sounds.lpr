@@ -303,6 +303,11 @@ begin
     FreeAndNil(LBase);
     Check(RunStudioWorker(ARoot, 'base', ARoot + '-absent-library'), 'Base sound score did not render');
     LBase := ReadStudioJob(ARoot, 'base');
+    LDesign := ReadStudioJobSoundDesign(ARoot, 'base');
+    Check(LDesign.Arrays['instruments'].AsJSON =
+      LBase.Objects['results'].Arrays['instrument_recipes'].AsJSON,
+      'Sound editor guessed or changed the saved instrument definitions');
+    FreeAndNil(LDesign);
     LMix := DefaultStemMixRecipe(6);
     SetLength(LMix.Parts[0].Effects, 1);
     LMix.Parts[0].Effects[0].Settings := DefaultCatalogEffect(ceGain);

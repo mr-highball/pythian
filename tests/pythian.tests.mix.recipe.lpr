@@ -78,6 +78,10 @@ begin
       else if LDefinition.Parameters[J].Key = 'ceiling_db' then
       begin
         LRecipe.Parts[0].Effects[0].Settings.Values[J] := -12;
+      end
+      else if LDefinition.Parameters[J].Key = 'pan' then
+      begin
+        LRecipe.Parts[0].Effects[0].Settings.Values[J] := -0.5;
       end;
     end;
     LWet := CreateStemMixGraph(LRecipe, 8000);
@@ -121,7 +125,8 @@ begin
         begin
           raise Exception.Create('Dry bypass changed the protected dry path');
         end;
-        LDifference := LDifference + Abs(LDryFrame.Left - LWetFrame.Left);
+        LDifference := LDifference + Abs(LDryFrame.Left - LWetFrame.Left) +
+          Abs(LDryFrame.Right - LWetFrame.Right);
       end;
       Check(LDifference > 0.000001, 'Selected effect had no actual output effect: ' + LDefinition.Key);
       Check(not LWet.Failed and not LDry.Failed and not LBypass.Failed, 'Mix graph failed');
@@ -130,6 +135,46 @@ begin
       LDry.Free;
       LBypass.Free;
     end;
+  end;
+end;
+
+procedure CheckPartPan;
+var
+  LRecipe: TStemMixRecipe;
+  LDry: TBusGraph;
+  LPanned: TBusGraph;
+  LInputs: TBusFrames;
+  LLeft: Double;
+  LRight: Double;
+  LStem: TStereoFrame;
+  LOther: TStereoFrame;
+  I: Integer;
+begin
+  LRecipe := DefaultStemMixRecipe(2);
+  LDry := CreateStemMixGraph(LRecipe, 8000);
+  LPanned := nil;
+  try
+    LRecipe.Parts[0].Pan := -1;
+    LPanned := CreateStemMixGraph(LRecipe, 8000);
+    SetLength(LInputs, 5);
+    LInputs[0].Left := 0.2;
+    LInputs[0].Right := 0.2;
+    LInputs[1].Left := 0.05;
+    LInputs[1].Right := 0.05;
+    for I := 0 to 127 do
+    begin
+      LDry.Process(LInputs, LLeft, LRight);
+      LPanned.Process(LInputs, LLeft, LRight);
+      LStem := LPanned.LastOutput(2);
+      Check((LStem.Left > 0) and (LStem.Right = 0), 'Part pan has no actual channel effect');
+      LStem := LPanned.LastOutput(3);
+      LOther := LDry.LastOutput(3);
+      Check((LStem.Left = LOther.Left) and (LStem.Right = LOther.Right),
+        'Part pan changed an unrelated stem');
+    end;
+  finally
+    LPanned.Free;
+    LDry.Free;
   end;
 end;
 
@@ -157,6 +202,7 @@ end;
 
 begin
   CheckEffects;
+  CheckPartPan;
   CheckFailure;
-  WriteLn('Mix recipe checks=', GChecks, '; all13 effects, isolated stems and dry bypass');
+  WriteLn('Mix recipe checks=', GChecks, '; all catalog effects, isolated stems, balance and dry bypass');
 end.

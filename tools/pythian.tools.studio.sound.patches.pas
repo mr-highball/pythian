@@ -34,12 +34,16 @@ uses fpjson;
 function ListStudioSoundPatches(const ACatalogRoot: String): TJSONObject;
 function ReadStudioSoundPatch(const ACatalogRoot, AId: String): TJSONObject;
 function SaveStudioSoundPatch(const ACatalogRoot: String; const AWrite: TJSONObject): TJSONObject;
+{ Read actual saved definitions, or realize the preceding oscillator settings
+  through the same primary builder. No audio read, learning, job or disk write. }
+function ReadStudioJobSoundDesign(const ACatalogRoot, AJobId: String): TJSONObject;
 
 implementation
 
 uses SysUtils, pythian.audio, pythian.text, pythian.tools.json,
   pythian.tools.studio.jobs, pythian.tools.studio.sounds,
-  pythian.tools.studio.instrumental.config;
+  pythian.tools.studio.instrumental.config, pythian.instrument.recipe,
+  pythian.music.sound;
 
 const
   CFormat = 'pythian.studio.sound-patch.v1';
@@ -50,6 +54,86 @@ begin
   if not ACondition then
   begin
     raise EAudio.Create(AMessage);
+  end;
+end;
+
+function ReadStudioJobSoundDesign(const ACatalogRoot, AJobId: String): TJSONObject;
+var
+  LJob: TJSONObject;
+  LRoot: TJSONObject;
+  LMeta: TJSONObject;
+  LResult: TJSONObject;
+  LSettings: TJSONObject;
+  LRows: TJSONArray;
+  LBank: TRecipeInstrument;
+  LSound: TMusicalSound;
+  LRootId: String;
+  LHasSound: Boolean;
+  I: Integer;
+begin
+  Result := nil;
+  LRoot := nil;
+  LMeta := nil;
+  LJob := ReadStudioJob(ACatalogRoot, AJobId);
+  try
+    try
+      LResult := LJob.Objects['results'];
+      Need((LJob.Strings['status'] = 'completed') and (LResult <> nil) and
+        (LResult.Find('decisions') <> nil), 'Choose a completed instrumental track');
+      LSettings := LResult.Objects['settings'];
+      Need(LSettings <> nil, 'Saved instrument settings are unavailable');
+      if LSettings.Find('sound_design') <> nil then
+        Exit(CanonicalStudioSoundDesign(LSettings.Find('sound_design'), StudioInstrumentalRate));
+      Result := TJSONObject.Create(['version', 1]);
+      Result.Add('mix', EncodeStudioMixRecipe(StudioSoundMix(LSettings, StudioInstrumentalRate)));
+      if LResult.Find('instrument_recipes') <> nil then
+      begin
+        Result.Add('instruments', LResult.Arrays['instrument_recipes'].Clone);
+      end
+      else
+      begin
+        { Older completed scores already store the precise source-sound controls.
+          Reuse the actual builder; never guess their sound in the browser. }
+        LRootId := LResult.Get('replay_source_job_id', AJobId);
+        LRoot := ReadStudioJob(ACatalogRoot, LRootId);
+        LMeta := ReadStudioJSON(StudioJobDirectory(ACatalogRoot, LRootId) +
+          PathDelim + 'instrumental-stream-completed.json');
+        Need(StudioTextHash(LMeta.AsJSON) = LRoot.Objects['results'].Strings['plan_sha256'],
+          'Saved musical plan differs from its completed track');
+        LHasSound := LMeta.Find('applied_sound') <> nil;
+        LSound := Default(TMusicalSound);
+        if LHasSound then
+        begin
+          LSound.CutoffHz := LMeta.Objects['applied_sound'].Integers['cutoff_hz'];
+          LSound.SustainPercent := LMeta.Objects['applied_sound'].Integers['sustain_percent'];
+        end;
+        LRows := TJSONArray.Create;
+        Result.Add('instruments', LRows);
+        for I := 0 to 2 do
+        begin
+          Need((Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
+            (Pos('structured-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1),
+            'Saved sound needs an explicit recipe');
+          LBank := CreateStudioRecipeInstrument(StudioPlaylistInstrumentZones,
+            LSettings.Arrays['instruments'].Strings[I], LSound,
+            LHasSound and ((LMeta.Objects['applied_sound'].Find('part') = nil) or
+              (LMeta.Objects['applied_sound'].Integers['part'] < 0) or
+              (LMeta.Objects['applied_sound'].Integers['part'] = I)), StudioInstrumentalRate);
+          try
+            LRows.Add(EncodeStudioInstrumentRecipe(LBank.CopyRecipe));
+          finally
+            LBank.Free;
+          end;
+        end;
+      end;
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    LMeta.Free;
+    LRoot.Free;
+    LJob.Free;
   end;
 end;
 

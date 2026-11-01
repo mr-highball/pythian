@@ -33,6 +33,7 @@ type
   TEffectRecipes = TCatalogEffectRecipes;
   TPartMixRecipe = record
     Gain: Double;
+    Pan: Double;
     BypassEffects: Boolean;
     Effects: TEffectRecipes;
   end;
@@ -156,10 +157,12 @@ begin
   for I := 0 to High(ARecipe.Parts) do
   begin
     RequireFinite(ARecipe.Parts[I].Gain, 'Part gain');
+    RequireFinite(ARecipe.Parts[I].Pan, 'Part pan');
     if (ARecipe.Parts[I].Gain < 0) or (ARecipe.Parts[I].Gain > 1) or
-      (Length(ARecipe.Parts[I].Effects) > MaximumEffects) then
+      (ARecipe.Parts[I].Pan < -1) or (ARecipe.Parts[I].Pan > 1) or
+      (Length(ARecipe.Parts[I].Effects) + Ord(ARecipe.Parts[I].Pan <> 0) > MaximumEffects) then
     begin
-      raise EAudio.Create('Part gain must be0..1 within the primary effect stage limit');
+      raise EAudio.Create('Part gain must be0..1, pan must be-1..1, within the primary effect stage limit');
     end;
     for J := 0 to High(ARecipe.Parts[I].Effects) do
     begin
@@ -220,6 +223,10 @@ begin
             AddOwned(I, CreateCatalogEffect(ASampleRate, ARecipe.Parts[I].Effects[J].Settings));
           end;
         end;
+      end;
+      if ARecipe.Parts[I].Pan <> 0 then
+      begin
+        AddOwned(I, TStereoBalanceEffect.Create(ASampleRate, ARecipe.Parts[I].Pan));
       end;
       LGraph.AddSend(I, I + LCount, stPostFader, 1, 0);
       LGraph.AddSend(I, LCount * 2, stPostFader, 1, 0);

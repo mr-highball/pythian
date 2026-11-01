@@ -3,7 +3,11 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 186 total effort units · 31 current-goal DONE · 138 / 186 accepted (74.19%).**
+**8 open tasks · 188 total effort units · 31 current-goal DONE · 138 / 188 accepted (73.40%).**
+
+Sound design is reestimated6→8 for its actual library/native/editor integration.
+No partial effort is accepted; the published backend passes complete CI549,
+while the optional sound editor and its actual audition consumer remain open.
 
 [Unguided form — DONE](DONE/NS-4_unguided-form_01.md),
 [native qualification — DONE](DONE/NS-6_native-reuse_01.md) and
@@ -124,7 +128,7 @@ continuity experiments are selected.
 | [NS-6_generation-activity_01 — DONE](DONE/NS-6_generation-activity_01.md) — visible activity within Generate | 2 | Accepted; native callback details, actual desktop/phone progress, reconnect and checked stable assets |
 | [NS-6_saved-clips_01 — DONE](DONE/NS-6_saved-clips_01.md) — independent clip files and source lineage | 5 | Accepted; shared lossless range I/O, durable native save, clip-only learning/reference and actual desktop/phone consumers |
 | [NS-6_optional-lab_01 — DONE](DONE/NS-6_optional-lab_01.md) — reachable optional musical experiments | 4 | Accepted; signed authored controls, paired native audio, desktop/phone recovery and unchanged main flow |
-| [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 6 | Runtime + instrumental Studio |
+| [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 8 | Runtime + instrumental Studio |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01 — DONE](DONE/NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Accepted; explicit controls/affect, retained role/passage edits, sound replay and paired output |
 | [NS-4_decision-replay_01 — DONE](DONE/NS-4_decision-replay_01.md) — retain/replay actual streamed music without solving | 5 | Accepted; actual native/pas2js decisions and native saved mix/stem replay |
@@ -157,8 +161,8 @@ continuity experiments are selected.
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
 The two tables together are all 39 current-goal tasks (8 open, thirty-one DONE),
-totaling 186 units: 48 open and 138 accepted. Subtotals:
-NS-2 16, NS-3 15, NS-4 71, NS-5 15, NS-6 69. NS-1 remains a preserved core
+totaling 188 units: 50 open and 138 accepted. Subtotals:
+NS-2 18, NS-3 15, NS-4 71, NS-5 15, NS-6 69. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

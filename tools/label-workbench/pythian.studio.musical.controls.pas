@@ -37,6 +37,8 @@ type
   TStudioMusicalControls = class
   private
     FSettings, FControlStatus: TJSElement;
+    FSoundStatus: TJSElement;
+    FSoundDesign: TJSObject;
     FPanels: array[0..3] of TJSElement;
     FTabs: array[0..3] of TJSElement;
     FStructure: TStudioStructure;
@@ -51,6 +53,7 @@ type
     function PartChanged(AEvent: TEventListenerEvent): Boolean;
     function StructureChanged(AEvent: TEventListenerEvent): Boolean;
     procedure SelectTab(const AIndex: Integer);
+    procedure SoundState;
   public
     constructor Create(AParent: TJSElement);
     destructor Destroy; override;
@@ -138,6 +141,9 @@ begin
   Add(LSelect, 'option', 'Natural minor').setAttribute('value', 'natural_minor');
   Add(FPanels[0], 'p', 'Four beats per bar. Up to 32 bars here; the main Generate step supports long tracks learned from recordings.').className := 'hint';
   Add(FPanels[0], 'p', 'Authored starter · WFC chooses musical events, then Pythian synthesizes all six parts. No recordings are learned in this experiment.').className := 'hint';
+  FSoundStatus := Add(FPanels[1], 'p', 'Custom sound recipes stay saved. Use Sounds & effects on the generated track to edit them.');
+  FSoundStatus.className := 'hint';
+  FSoundStatus.setAttribute('hidden', '');
   LSelect := Add(Add(FPanels[1], 'label', 'Part to adjust'), 'select', '');
   LSelect.id := 'lab-part';
   for I := 0 to 5 do
@@ -235,6 +241,8 @@ begin
     LLevels.push(Number('instrumental-level-' + IntToStr(I), 0, 100));
   end;
   Result['instruments'] := LShapes; Result['levels'] := LLevels;
+  if FSoundDesign <> nil then
+    Result['sound_design'] := TJSJSON.parse(TJSJSON.stringify(FSoundDesign));
   LControls := TJSObject.new;
   LControls['guide'] := TJSHTMLSelectElement(document.getElementById('instrumental-guide')).value = 'guide';
   LControls['tonic_bias'] := Number('instrumental-tonic-bias', -100, 100);
@@ -277,6 +285,9 @@ begin
     not isArray(AConfig['levels']) or (TJSArray(AConfig['instruments']).length <> 3) or
     (TJSArray(AConfig['levels']).length <> 6) then
     raise Exception.Create('The saved instrumental settings are incomplete.');
+  FSoundDesign := nil;
+  if isObject(AConfig['sound_design']) and not isArray(AConfig['sound_design']) then
+    FSoundDesign := TJSObject(TJSJSON.parse(TJSJSON.stringify(AConfig['sound_design'])));
   TJSHTMLInputElement(document.getElementById('instrumental-tempo')).value :=
     FloatToStr(StudioNumber(AConfig, 'tempo_bpm'));
   TJSHTMLInputElement(document.getElementById('instrumental-bars')).value :=
@@ -325,6 +336,7 @@ begin
   FControlStatus.textContent := '';
   FStructure.RestoreConfig(AConfig['form']);
   StructureChanged(nil);
+  SoundState;
   ReadConfig;
 end;
 
@@ -364,6 +376,18 @@ begin
   TJSHTMLButtonElement(document.getElementById('instrumental-apply-affect')).disabled := not AEnabled;
   FStructure.SetEnabled(AEnabled);
   StructureChanged(nil);
+  SoundState;
+end;
+
+procedure TStudioMusicalControls.SoundState;
+var
+  I: Integer;
+begin
+  if FSoundDesign = nil then FSoundStatus.setAttribute('hidden', '')
+  else FSoundStatus.removeAttribute('hidden');
+  for I := 0 to 2 do
+    TJSHTMLSelectElement(document.getElementById('instrumental-sound-' +
+      IntToStr(I))).disabled := not FEnabled or (FSoundDesign <> nil);
 end;
 
 
@@ -404,12 +428,16 @@ begin
     Result[LInput.id] := LInput.value;
   end;
   Result['structure'] := FStructure.ReadDraft;
+  if FSoundDesign <> nil then
+    Result['sound_design'] := TJSJSON.parse(TJSJSON.stringify(FSoundDesign));
 end;
 
 procedure TStudioMusicalControls.RestoreDraft(ADraft: TJSObject);
 var LNodes: TJSNodeList; I: Integer; LInput: TJSHTMLInputElement;
 begin
   if ADraft = nil then Exit;
+  if isObject(ADraft['sound_design']) and not isArray(ADraft['sound_design']) then
+    FSoundDesign := TJSObject(TJSJSON.parse(TJSJSON.stringify(ADraft['sound_design'])));
   if isObject(ADraft['structure']) then FStructure.RestoreDraft(TJSObject(ADraft['structure']));
   LNodes := FSettings.querySelectorAll('input:not([data-structure]),select:not([data-structure])');
   for I := 0 to LNodes.length - 1 do
@@ -419,5 +447,6 @@ begin
   end;
   PartChanged(nil);
   StructureChanged(nil);
+  SoundState;
 end;
 end.
