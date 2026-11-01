@@ -3,7 +3,48 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: blends/seed repair published; full-corpus prerequisite scoped - 2026-11-01
+## Current handoff: CI553 precision failure repaired; replacement full CI required - 2026-11-01
+
+Big Boss SOLO. Exact CI553/run41335302377 at aff2b3590f53945b07931d8e6e1913b8b93ce74a
+failed the new instrumental blend fixture; extracted consumers did not run.
+The authenticated job log is retained in E/runs/instrumental-styles-20261101-boss/
+ci553-job-authenticated.log. The in-app GitHub browser was signed out; normal
+existing Git credential authentication obtained the log without exposing or
+persisting credentials. The owned read-only GitHub tab is closed.
+
+The same fixture fails on checked Win32 before repair at the exact composite
+selection assertion. Its stored Double gain was compared to an untyped 0.4
+literal, which has greater precision on Extended targets. An isolated Pascal
+probe confirms literal comparison false and exact selected-parent comparison
+true. The fixture now separately checks expression, part effects and both sound
+selections against their actual chosen parents. No numerical tolerance, product
+behavior, wire format or dependency changed. Both failures and the old fixture
+are preserved in E/tests/styles-ci553-before-win32 and the evidence packet.
+Fresh checked Win32/Win64 and actual pas2js consumers each pass4,033,778 checks,
+including complete source snapshots, blend/reblend decisions and actual mix/six
+stem replay. Native heaps are clean. All four archive identities remain unchanged
+across the three targets. Evidence is E/tests/styles-ci553-after-{win32,win64,js};
+all local sessions finished. Publish the three-file repair, then require its
+exact replacement full CI, including extracted consumers. No acceptance or
+counter reset is claimed from local passes alone.
+
+The newly scoped capacity mismatch is also reproduced using the actual musical
+corpus producer:64 sources,1024 contributions,nine providers,65536 weighted cells
+and16384 model-used seconds (4.55 hours). Current style capture rejects the source
+ledger above32. The fixture uses authored symbolic observations, not WAV accuracy
+evidence; selected source hours are not all learned. Rejection completes with a
+clean heap. Preserve E/tests/style-capacity-before01 and E/runs/style-capacity-
+20261101-boss before the shared capacity repair.
+
+The existing live saved-clip API was checked read-only:3 clips,zero errors. Their
+accepted cross-playlist discovery/count/modal/parent-child behavior remains
+deployed. No source recording, saved answer, clip, service or audio playback
+changed. No new QA browser or audio was started. The consecutive nonclosing
+count remains2; the recorded reassessment and genuine corpus prerequisite still
+govern the next batch. Current accounting remains146/192 (76.04%),32 DONE/eight
+open. The goal is active; no operator input is required.
+
+## Previous handoff: blends/seed repair published; full-corpus prerequisite scoped - 2026-11-01
 
 Big Boss SOLO. Current sourceaff2b3590f53945b07931d8e6e1913b8b93ce74a is
 committed/pushed with exact remote agreement. Exact CI553/run41335302377 is

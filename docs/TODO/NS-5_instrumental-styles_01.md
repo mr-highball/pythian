@@ -30,6 +30,20 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: exact CI553 fails the new fixture's composite independent
+  selection assertion; packaging is skipped. Checked Win32 reproduces it.
+  A stored Double gain equals its chosen parent's stored value but differs from
+  an untyped0.4 literal on Extended targets. The fixture now compares actual
+  selected-parent fields separately, preserving exact equality and improving
+  failure attribution. No product/archive change or relaxed tolerance is used.
+  Raw CI, before-source/failure and isolated Pascal probe are retained under
+  E/runs/instrumental-styles-20261101-boss and E/tests/styles-ci553-before-win32.
+  Fresh checked Win32/Win64 and actual pas2js each pass4,033,778 complete checks;
+  native heaps are clean and source/blend/reblend identities remain unchanged
+  across all three targets. Evidence: E/tests/styles-ci553-after-{win32,win64,js}.
+  Replacement full CI remains required; no criterion, effort or nonclosing-
+  counter reset follows from local checks alone.
+
 - 2026-11-01, Big Boss: real-consumer assessment found that the inherited archive
   source/run/work ceilings are below the accepted ordinary corpus producer's
   capacities. Linked capacity work before expanding Studio scope. The new

@@ -608,11 +608,18 @@ begin
     Check(LLeft.Identity = LBefore, 'Blending changed its source');
     Check(LBlend.NodeCount = 3, 'Instrumental blend lost a parent');
     LCopy := LBlend.CopyDefinition;
-    Check((LCopy.Instrumental.Expression[0].VelocityPercent = 140) and
-      (LCopy.Instrumental.Mix.Parts[0].Gain = 0.4) and
-      (LCopy.Instrumental.Instruments[0].Id = Definition.Instrumental.Instruments[0].Id) and
-      (LCopy.Instrumental.Instruments[1].Id = LRightDefinition.Instrumental.Instruments[1].Id),
-      'Instrumental blend couples independent musical/sound/effect/expression selections');
+    Check(LCopy.Instrumental.Expression[0].VelocityPercent =
+      LRightDefinition.Instrumental.Expression[0].VelocityPercent,
+      'Instrumental blend loses the independently selected expression');
+    { Big Boss: compare the stored Double with its selected parent. An untyped
+      decimal literal can retain higher precision on Extended targets. }
+    Check(LCopy.Instrumental.Mix.Parts[0].Gain =
+      LRightDefinition.Instrumental.Mix.Parts[0].Gain,
+      'Instrumental blend loses the independently selected part effects');
+    Check(LCopy.Instrumental.Instruments[0].Id = Definition.Instrumental.Instruments[0].Id,
+      'Instrumental blend changes the independently selected bass instrument');
+    Check(LCopy.Instrumental.Instruments[1].Id = LRightDefinition.Instrumental.Instruments[1].Id,
+      'Instrumental blend loses the independently selected harmony instrument');
     Check((LCopy.VoiceRanges[1].MinimumPitch = 48) and
       (LCopy.VoiceRanges[1].MaximumPitch = 67), 'Explicit union lost a selected register');
     Check(Length(LCopy.Sources) = 2, 'Instrumental blend loses original sources');
