@@ -22,6 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Scoped style controls](NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy; sound-only variants can proceed
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
@@ -29,6 +30,30 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: actual sound-only edits now retain their performed
+  instruments/mix/options as primary immutable recipe variants. Models, source
+  observations, schema and provider controls remain frozen, with complete parent
+  ancestry. Native and actual JavaScript each pass 5,042,173 focused checks,
+  including six-stem/full-mix replay, cancellation, further variants and
+  six/eight-node selective blends/reblends. Actual native playlist consumers
+  pass 5,712,390 checks with clean heaps, saving/reusing the changed artifact
+  without new learning. Complete native/actual JavaScript suites each pass
+  12,841,841 instrumental checks, with original corpus/source/blend identities
+  retained and clean native heaps (E/tests/style-variants-full-{native,js}01).
+  Generic semantic style/blend consumers pass on both targets; native progress
+  passes 43,584 checks with 43,478 callbacks and a clean heap.
+  Actual 390px Studio changes Bass to FM bell, saves a
+  named style, generates from it and reopens that exact recipe; desktop style
+  selection passes too. QA/data are isolated and cleaned up. This does not close
+  AC1–AC3: passage-scoped policy and ordinary blend controls remain required.
+  Linked the distinct four-unit scoped-control consumer before expanding scope;
+  note-edited style saving stays explicitly unavailable rather than becoming
+  global or silently learned. Nonclosing count reaches 2; WORK records the
+  reassessment and selects that prerequisite before another batch. No effort is
+  accepted. Evidence: E/tests/style-variants-{native,js}02,
+  style-variants-studio-native01 and E/runs/style-variants-qa01. Exact publication
+  qualification remains pending; no generic WFC gap or dependency edit occurs.
 
 - 2026-11-01, Big Boss: the native named-style slice now passes3,024,357
   playlist checks with a clean heap, plus1,747,973 actual JavaScript performance

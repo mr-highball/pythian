@@ -22,7 +22,12 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 152 / 194 effort units accepted (78.35%); seven open, thirty-four current-goal DONE.**
+**Current snapshot: 152 / 198 effort units accepted (76.77%); eight open, thirty-four current-goal DONE.**
+
+The four-unit [scoped style-control consumer](TODO/NS-4_scoped-style-controls_01.md)
+is a required new note-style prerequisite: current archives cannot retain a
+passage-specific preference as such. Scope grows without accepting effort or
+resetting the nonclosing count. Sound-recipe variants remain independently usable.
 
 [Complete corpus persistence — DONE](TODO/DONE/NS-5_style-corpus-capacity_01.md)
 and [native cache paths — DONE](TODO/DONE/NS-6_native-cache-path_01.md) close six
@@ -138,10 +143,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 64 | 64 / 71 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 11 | 64 | 64 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 4 | 4 / 19 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 63 | 63 / 71 |
-| **Total** | **41 current-goal tasks** | **42** | **152** | **78.35%** |
+| **Total** | **42 current-goal tasks** | **46** | **152** | **76.77%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -316,7 +321,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 34 current DONE; legacy records: 53 retired +
+Current scoped records: 8 open + 34 current DONE; legacy records: 53 retired +
 97 historical DONE (131 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered

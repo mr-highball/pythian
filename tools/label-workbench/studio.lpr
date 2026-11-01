@@ -834,7 +834,8 @@ begin
     TJSHTMLSelectElement(El('output-duration-unit')).disabled := True;
   end;
   TJSHTMLButtonElement(El('generate-music')).disabled := not FConnected or FLoading or
-    ((FIncludedSeconds <= 0) and (FSelectedStyle = nil)) or LActive or FGenerateAfterSave;
+    ((FIncludedSeconds <= 0) and (FSelectedStyle = nil)) or LActive or FGenerateAfterSave or
+    (FJobPolling and (FJob = nil));
   El('generation-progress').innerHTML := '';
   if (FJob <> nil) and not FSubmitting and not FGenerateAfterSave then
     DrawStudioProgress(El('generation-progress'), FJob, True);
@@ -1481,7 +1482,7 @@ var
   LId: String;
   LEpoch: Integer;
 begin
-  if FSubmitting or FLoading or not FConnected then Exit;
+  if FSubmitting or FLoading or not FConnected or (FJobPolling and (FJob = nil)) then Exit;
   if FStopRequested then begin PollGeneration; Exit end;
   if FJobWrite <> nil then begin SubmitGeneration; Exit end;
   if (Str(FJob, 'status') = 'running') or (Str(FJob, 'status') = 'queued') then Exit;
@@ -1575,6 +1576,11 @@ var LJob: TJSObject; LEpoch: Integer;
 begin
   if FJobPolling or FSubmitting or (FJobId = '') or not FConnected then Exit;
   FJobPolling := True;
+  if FJob = nil then
+  begin
+    if FGenerationMessage = '' then FGenerationMessage := 'Reconnecting to your track…';
+    DrawGeneration;
+  end;
   LEpoch := FJobEpoch;
   window.clearTimeout(FJobTimer);
   try
@@ -1634,6 +1640,7 @@ begin
         end;
       end;
     end;
+    DrawGeneration;
     if FJobId = '' then
     begin
       LJobs := await(TJSObject, Json('/api/studio/jobs', 'GET', ''));

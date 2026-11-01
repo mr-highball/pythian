@@ -72,9 +72,12 @@ in Generate. Choose one, set the track length and generate without reading or
 analyzing the original recordings again. **Learn from my selection** switches
 back; changing the selected music also returns to playlist learning. Saving a
 style changes metadata only and never starts a job. Older tracks without a
-retained model explain that a new generation is needed. Edited-style saving and
-selective blending remain unfinished under the [style task](TODO/NS-5_instrumental-styles_01.md);
-an edited performance does not offer its unchanged parent recipe as its own style.
+retained model explain that a new generation is needed. Sound-only edits retain
+their actual changed recipe and complete frozen model parent, so they can be
+saved and reused too. Passage-control saving still needs the
+[scoped-control consumer](TODO/NS-4_scoped-style-controls_01.md); it does not offer
+an unchanged parent recipe as though it described the edited notes. Selective
+blend controls remain under the [style task](TODO/NS-5_instrumental-styles_01.md).
 These controls are being qualified in the isolated QA slot; WORK records the
 live deployment separately.
 

@@ -49,6 +49,7 @@ var GChecks: Integer;
 
 type
   TCancel = class
+    AtStage: String;
     procedure Observe(const AWork: TWorkProgress);
   end;
   TDecisionReceipt = class
@@ -61,7 +62,8 @@ type
 
 procedure TCancel.Observe(const AWork: TWorkProgress);
 begin
-  if AWork.Stage = 'semantic_instrumental_ready' then
+  if (AWork.Stage = 'semantic_instrumental_ready') or
+    ((AtStage <> '') and (AWork.Stage = AtStage)) then
     raise EAbort.Create('Requested construction cancellation');
 end;
 
@@ -693,6 +695,109 @@ begin
   end;
 end;
 
+procedure Variants;
+var
+  LSource, LVariant, LLoaded, LExpected, LFurther, LParent, LBlend, LBad: TSemanticStyle;
+  LDefinition, LCopy: TSemanticStyleDefinition;
+  LRecipe: TSemanticInstrumentalRecipe;
+  LCatalog: TInstrumentRecipes;
+  LBlendRecipe: TSemanticBlendRecipe;
+  LCancel: TCancel;
+  LRejected: Boolean;
+  LIdentity: String;
+  I: Integer;
+begin
+  LSource := nil; LVariant := nil; LLoaded := nil; LExpected := nil;
+  LFurther := nil; LParent := nil;
+  LBlend := nil; LBad := nil; LCancel := TCancel.Create;
+  try
+    LDefinition := Definition;
+    LSource := TSemanticStyle.CreateSource(LDefinition);
+    LIdentity := LSource.Identity;
+    LRecipe := LSource.CopyDefinition.Instrumental;
+    LRecipe.LabelText := 'Caller sound and expression variant';
+    LRecipe.Origin := 'Explicit operator recipe; frozen authored musical evidence';
+    LCatalog := BuiltInInstrumentRecipes;
+    LRecipe.Instruments[0] := LCatalog[6];
+    LRecipe.Mix.Parts[0].Gain := 0.36;
+    LRecipe.Mix.Parts[0].Pan := 0.47;
+    LRecipe.Expression[0].VelocityPercent := 70;
+    LCancel.AtStage := 'semantic_validate_runs';
+    LRejected := False;
+    try LBad := TSemanticStyle.CreateInstrumentalVariant(LSource, LRecipe, nil, nil, LCancel.Observe);
+    except on EAbort do LRejected := True end;
+    Check(LRejected and (LBad = nil) and (LSource.Identity = LIdentity),
+      'Cancelled variant changes or leaks its frozen parent');
+    LVariant := TSemanticStyle.CreateInstrumentalVariant(LSource, LRecipe);
+    LLoaded := DecodeSemanticStyle(LVariant.Encode);
+    Check((LLoaded.Identity = LVariant.Identity) and (LLoaded.Depth = 2) and
+      (LLoaded.NodeCount = 2) and (LSource.Identity = LIdentity),
+      'Instrumental variant loses its exact archive, parent or ancestry accounting');
+    LCopy := LLoaded.CopyDefinition;
+    for I := 0 to High(LDefinition.Providers) do
+      Check((LCopy.Providers[I].ModelText = LDefinition.Providers[I].ModelText) and
+        (LCopy.Providers[I].VocabularySha256 = LDefinition.Providers[I].VocabularySha256) and
+        (Length(LCopy.Providers[I].Preferences) = Length(LDefinition.Providers[I].Preferences)) and
+        (Length(LCopy.Providers[I].Constraints) = Length(LDefinition.Providers[I].Constraints)),
+        'A performed recipe changes frozen musical models, vocabulary or provider policy');
+    Check((LCopy.Sources[0].PreparationSha256 = LDefinition.Sources[0].PreparationSha256) and
+      (LCopy.Runs[0].Tokens[2][0] = LDefinition.Runs[0].Tokens[2][0]) and
+      (LCopy.Runs[0].Weights[2] = LDefinition.Runs[0].Weights[2]),
+      'Operator sound editing becomes invented source evidence');
+    Check((LCopy.Providers[2].Preferences[0].Token = LDefinition.Providers[2].Preferences[0].Token) and
+      (LCopy.Providers[2].Preferences[0].Multiplier = LDefinition.Providers[2].Preferences[0].Multiplier) and
+      (LCopy.Providers[5].Constraints[0].AllowedTokens[0] = LDefinition.Providers[5].Constraints[0].AllowedTokens[0]),
+      'A sound variant rewrites independent token preferences or hard locks');
+    LParent := LLoaded.CopyParent(0);
+    Check(LParent.Identity = LIdentity, 'Variant does not retain the exact original parent');
+    FreeAndNil(LParent);
+    LDefinition.Instrumental := LRecipe;
+    LExpected := TSemanticStyle.CreateSource(LDefinition);
+    FreeAndNil(LSource);
+    SameInstrumental(LVariant, LExpected);
+    SameInstrumental(LVariant, LLoaded);
+    LRecipe := LLoaded.CopyDefinition.Instrumental;
+    LRecipe.LabelText := 'Further sound variant';
+    LRecipe.Instruments[2] := LCatalog[3];
+    LFurther := TSemanticStyle.CreateInstrumentalVariant(LLoaded, LRecipe);
+    LParent := LFurther.CopyParent(0);
+    Check((LParent.Identity = LLoaded.Identity) and (LFurther.NodeCount = 3),
+      'A further variant flattens its actual instrumental parent');
+    FreeAndNil(LParent);
+    FreeAndNil(LLoaded);
+    LLoaded := DecodeSemanticStyle(LFurther.Encode);
+    SameInstrumental(LFurther, LLoaded);
+    Check(LFurther.Identity = LLoaded.Identity, 'Further variant is not canonical');
+    LBlendRecipe := Default(TSemanticBlendRecipe);
+    SetLength(LBlendRecipe.Providers, 9);
+    for I := 0 to 8 do LBlendRecipe.Providers[I].LeftWeight := 1;
+    LBlendRecipe.Instrumental.Enabled := True;
+    LBlendRecipe.Instrumental.LabelText := 'Blend with a sound variant';
+    SetLength(LBlendRecipe.Instrumental.Parts, 6);
+    LBlendRecipe.Instrumental.Parts[2].InstrumentParent := 1;
+    LBlend := TSemanticStyle.CreateBlend(LVariant, LFurther, LBlendRecipe);
+    FreeAndNil(LLoaded);
+    LLoaded := DecodeSemanticStyle(LBlend.Encode);
+    Check((LBlend.NodeCount = 6) and
+      (LLoaded.CopyDefinition.Instrumental.Instruments[2].Id = LRecipe.Instruments[2].Id),
+      'Selective blend loses the chosen variant instrument or actual parent ancestry');
+    SameInstrumental(LBlend, LLoaded);
+    FreeAndNil(LFurther);
+    LBlendRecipe.Instrumental.LabelText := 'Further blend of variant-backed music';
+    LBlendRecipe.Instrumental.Parts[2].InstrumentParent := 0;
+    LFurther := TSemanticStyle.CreateBlend(LBlend, LExpected, LBlendRecipe);
+    FreeAndNil(LLoaded);
+    LLoaded := DecodeSemanticStyle(LFurther.Encode);
+    Check((LLoaded.Identity = LFurther.Identity) and (LFurther.NodeCount = 8),
+      'A variant-backed blend cannot be reused as a further parent');
+    SameInstrumental(LFurther, LLoaded);
+    WriteLn('Instrumental variant ', LVariant.Identity, '; further ', LFurther.Identity);
+  finally
+    LCancel.Free; LBad.Free; LBlend.Free; LParent.Free; LFurther.Free; LExpected.Free; LLoaded.Free;
+    LVariant.Free; LSource.Free;
+  end;
+end;
+
 procedure Blends;
 var
   LLeft: TSemanticStyle;
@@ -1049,6 +1154,9 @@ begin
   end;
 end;
 begin
+  {$ifdef PYTHIAN_VARIANTS_ONLY}
+  Variants;
+  {$else}
   {$ifndef PYTHIAN_CAPACITY_ONLY}
   Performance;
   {$ifndef PYTHIAN_PERFORMANCE_ONLY}
@@ -1058,10 +1166,12 @@ begin
   Blends;
   Seeds;
   MetadataOrigin;
+  Variants;
   {$endif}
   {$endif}
   {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Capacity;
+  {$endif}
   {$endif}
   WriteLn('Complete instrumental style checks passed: ', GChecks);
 end.

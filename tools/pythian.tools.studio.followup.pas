@@ -41,7 +41,8 @@ uses Classes, SysUtils, pythian.audio, pythian.bus, pythian.time,
   pythian.music.stream, pythian.music.replay,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions, pythian.tools.studio.notes,
   pythian.tools.studio.instrumental.config, pythian.tools.studio.instrumental.output,
-  pythian.tools.studio.sounds, pythian.tools.json;
+  pythian.tools.studio.sounds, pythian.tools.json,
+  pythian.tools.studio.style.candidate;
 
 procedure Need(const AValue: Boolean; const AMessage: String);
 begin
@@ -58,6 +59,8 @@ var
   LResources: TJSONObject;
   LRecipeJSON: TJSONObject;
   LRecipeRows: TJSONArray;
+  LActualRecipes: TInstrumentRecipes;
+  LStyleCandidate: TJSONObject;
   LFile: TFileStream;
   LOutput: TStudioInstrumentalOutput;
   LReplay: TMusicDecisionReplay;
@@ -249,11 +252,25 @@ begin
     LResult := TJSONObject(LParentResult.Clone);
     if LResult.Find('style_candidate') <> nil then
     begin
-      { The parent archive is immutable; do not save its old recipe as this
-        edited performance. Style recipe variants are a remaining parent gate. }
-      LResult.Objects['style_candidate'].Strings['status'] := 'unavailable';
-      LResult.Objects['style_candidate'].Strings['reason'] :=
-        'Saving edited notes or sounds as a style is not available yet. The original style is kept.';
+      if LNoteEdit or (LRoot.Strings['kind'] = 'instrumental_regenerate') then
+      begin
+        { Time-scoped note controls require their own retained policy. Never
+          promote an audition to new learning or silently globalize its scope. }
+        LResult.Objects['style_candidate'].Strings['status'] := 'unavailable';
+        LResult.Objects['style_candidate'].Strings['reason'] :=
+          'Saving passage controls as a style is not ready. Original style kept.';
+      end
+      else
+      begin
+        SetLength(LActualRecipes, 3);
+        for I := 0 to 2 do LActualRecipes[I] := LInstruments[I].CopyRecipe;
+        LStyleCandidate := RetainStudioSoundStyle(ACatalogRoot, AJobId,
+          LParentResult.Objects['style_candidate'], LActualRecipes,
+          LOutput.CopyMixRecipe, LDecisions.Int64s['music_frames'],
+          LResources.Int64s['tail_frames'], LOptions.Seed, ACheck, AProgress);
+        LResult.Delete('style_candidate');
+        LResult.Add('style_candidate', LStyleCandidate);
+      end;
     end;
     for I := LResult.Count - 1 downto 0 do
       if Pos('|' + LResult.Names[I] + '|',

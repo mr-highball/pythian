@@ -15,10 +15,24 @@ weighted relearning and saved sound recipes; the semantic graph owns an explicit
 provider inventory and executable dependency configuration. Optional sound
 bindings embed current PYS bytes, including their existing ancestry and policies.
 The instrumental binding instead owns primary instrument and stem/mix recipes.
-Neither reader accepts historical development variants. The current semantic
-encoding is `pythian.semantic.style.v4`, conventionally stored as `.pysg`.
+Neither reader accepts historical development variants. Source/control/blend
+nodes use `pythian.semantic.style.v4`; recipe-only instrumental variants use
+`pythian.semantic.style.v5`, conventionally stored as `.pysg`. Both share the
+same primary bounded byte codec, definition validation and ancestry reader.
 It persists caller codec identity/version, canonical configuration and declared
 meaning. Regenerate v1/v2/v3 development artifacts; no compatibility reader remains.
+
+`TSemanticStyle.CreateInstrumentalVariant(Parent, Recipe)` replaces only the
+performed instrument, mix/effects, expression, form and performance options.
+It retains the exact complete parent, source/corpus evidence, model text,
+vocabulary, schema and provider preferences/locks. A changed audition is not
+new learned evidence. The resulting node can be reloaded, used for instrumental
+generation, derived again and selected as a blend/reblend parent. Cancellation,
+incompatible recipes/clocks and the existing ancestry/byte limits still reject
+without changing the parent. V5 cannot silently carry a different node kind or
+rewrite frozen definition fields. Passage-scoped preferences require the linked
+[style-control consumer](TODO/NS-4_scoped-style-controls_01.md); a global token
+preference does not represent a short excerpt's scope.
 
 The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
 provider contributions and retained multi-parent evidence to this same current

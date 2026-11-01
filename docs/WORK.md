@@ -3,7 +3,68 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: named Studio style reuse passes local consumers - 2026-11-01
+## Current handoff: edited sound styles; scoped note controls next - 2026-11-01
+
+Big Boss SOLO. This batch connects an actual edited sound recipe to named style
+reuse. A primary recipe variant retains its complete parent, frozen models,
+source observations, role/timing schema and provider preferences/locks. Only the
+performed instrument/mix/expression/form/options recipe changes. The existing
+bounded codec, validation, playback and ancestry reader are reused. V4 source,
+control and blend identities stay unchanged; the V5 recipe node can be reloaded,
+derived again and selected in blends/reblends. Saving is never learning.
+
+Focused native and actual JavaScript variant checks each pass 5,042,173 checks,
+including six stems/full mix, further derivation, six/eight-node blend ancestry,
+exact reload and cancellation. Actual native playlist consumers pass 5,712,390
+checks with a clean heap: edit a real sound, save its actual new artifact and
+generate from it with unchanged models and changed audio. Browser QA at 390px
+changes Bass to FM bell, performs it, names that style, generates from it and
+reopens its exact FM recipe. Desktop style selection also passes. All three
+actual jobs retain model 0899f0e0ab6d7953d27213de9da5d969409288d52a83794496181910ce86a1a5;
+the variant retains its parent and reuse performs no learning. This is synthetic
+isolated QA, not operator approval or a musical-usefulness claim.
+
+Complete native and actual JavaScript instrumental suites also pass 12,841,841
+checks each, retaining the original source/blend/reblend identities and complete
+3,665,780-byte corpus identity. Existing generic semantic styles/blends pass on
+both targets; native progress passes 43,584 checks/43,478 callbacks. Native heaps
+are clean. Evidence:
+E/tests/style-variants-full-{native,js}01. Focused recipe identities agree across
+targets: variant56bdc70b4d7c54278d45168d6dcafb65df1f5ed4165e6e43ad5b6b59536b3032,
+final reblend edf168fa6d65bd6fbd64ad227075c702f8f83072204b6710d634330e51c0d454.
+
+Reload QA also exposed a stale duration estimate and a Generate opportunity
+before the retained job state arrived. The view now redraws restored settings
+immediately and disables submission with explicit reconnect feedback until that
+state is known. All four browser entry points compile. QA jobs are terminal,
+all nine media elements were paused, its tab is closed, the viewport is restored
+and exact fixed-slot QA owner is stopped. The live operator service/data were
+not changed. Evidence: E/tests/style-variants-{native,js}02,
+style-variants-studio-native01, E/build/style-variants-{worker,web}01 and
+E/runs/style-variants-qa01 (job lineage receipts and mobile/desktop screenshots).
+
+Reassessment: this is the second consecutive batch without closing a full parent
+criterion. Count is 2; neither this narrower deliverable nor a new linked task
+resets it. Stop archive/UI expansion before another batch. The actual prerequisite
+is [scoped controls](TODO/NS-4_scoped-style-controls_01.md): a passage's preferences
+must retain their time scope, and the retained editor must consume complete saved
+provider policy. Globalizing that preference or learning the audition would change
+its meaning. Note-edited style saving remains explicitly unavailable, including
+sound edits descended from a note edit. Reuse existing positioned priors and
+primary stream/edit policy; no generic WFC gap is demonstrated.
+
+Current totals: 42 tasks, 34 DONE/eight open, 152/198 (76.77%), 46 open effort.
+No style criterion/task is accepted by this slice. The named-style source
+097028bd4595f9b8d2bd8d9f46c5be67f4753798 now passes complete
+[CI557](https://github.com/mr-highball/pythian/actions/runs/41359279311): maintained
+integration, both clean extracted packages and retained packages/logs. Its exact
+job125005953936 was observed to completion rather than cancelled/restarted.
+Downloaded logs/package artifacts match GitHub's digests; contained core/WFC
+source ZIPs match their checked log hashes (123/186 units, 137/316 content hashes).
+This new variant source still needs its own full publication qualification.
+Goal remains active and no operator input is needed.
+
+## Previous handoff: named Studio style reuse passes local consumers - 2026-11-01
 
 Big Boss SOLO. The previous operator clip recheck resolved the reported missing
 clip through the actual live catalog/390px consumer: three healthy independent

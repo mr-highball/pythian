@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 194 total effort units · 34 current-goal DONE · 152 / 194 accepted (78.35%).**
+**8 open tasks · 198 total effort units · 34 current-goal DONE · 152 / 198 accepted (76.77%).**
 
 [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md) and
 [native cache paths — DONE](DONE/NS-6_native-cache-path_01.md) close six units after
@@ -12,8 +12,9 @@ native/actual pas2js replay and ordinary native playlist/clip consumers. Actual
 models, coverage, original clocks and performed recipes survive saving/reload;
 long Unicode cache paths preserve atomic publication. Studio naming, reuse and
 selective blend controls remain in the parent style task. Its named save/use
-consumer now passes local native and actual browser QA; publication qualification,
-edited-style capture and selective blending remain pending. These are bounded
+consumer and actual edited sound-style capture now pass local native and browser
+QA. Publication qualification, [time-scoped note controls](NS-4_scoped-style-controls_01.md)
+and ordinary selective blending remain pending. These are bounded
 implementation outcomes, not musical-quality or WAV-accuracy claims.
 
 [Sound design — DONE](DONE/NS-2_sound-design_01.md) closes8 units after complete
@@ -147,6 +148,7 @@ continuity experiments are selected.
 | [NS-2_sound-design_01 — DONE](DONE/NS-2_sound-design_01.md) — reusable instrument/effects recipes | 8 | Accepted; primary recipes/racks, actual saved-score editing/audition, native/pas2js/browser, CI550 and deployment |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01 — DONE](DONE/NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Accepted; explicit controls/affect, retained role/passage edits, sound replay and paired output |
+| [NS-4_scoped-style-controls_01](NS-4_scoped-style-controls_01.md) — retain time-scoped style/editor controls | 4 | Accepted positioned priors, graph controls and streams; needed for faithful note-style derivation |
 | [NS-4_decision-replay_01 — DONE](DONE/NS-4_decision-replay_01.md) — retain/replay actual streamed music without solving | 5 | Accepted; actual native/pas2js decisions and native saved mix/stem replay |
 | [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve accepted assignment ownership across jobs | 3 | Accepted; actual named-voice/layer restored state, controls and authorized regeneration |
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
@@ -177,9 +179,9 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all 41 current-goal tasks (7 open, thirty-four DONE),
-totaling 194 units: 42 open and 152 accepted. Subtotals:
-NS-2 18, NS-3 15, NS-4 71, NS-5 19, NS-6 71. NS-1 remains a preserved core
+The two tables together are all 42 current-goal tasks (8 open, thirty-four DONE),
+totaling 198 units: 46 open and 152 accepted. Subtotals:
+NS-2 18, NS-3 15, NS-4 75, NS-5 19, NS-6 71. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

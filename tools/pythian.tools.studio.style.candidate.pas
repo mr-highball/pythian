@@ -27,7 +27,8 @@ unit pythian.tools.studio.style.candidate;
 
 interface
 
-uses fpjson, pythian.progress, pythian.wfc.musical.corpus,
+uses fpjson, pythian.progress, pythian.instrument.recipe, pythian.mix.recipe,
+  pythian.wfc.musical.corpus,
   pythian.wfc.semantic.style, pythian.tools.studio.instrumental.publication;
 
 { Native I/O only. Capture actual admitted corpus models/evidence and the exact
@@ -37,6 +38,14 @@ uses fpjson, pythian.progress, pythian.wfc.musical.corpus,
 function RetainStudioStyleCandidate(const ACatalogRoot: String;
   const ACorpus: TMusicalCorpus; const AAudioSources: TJSONArray;
   const ARecipe: TSemanticInstrumentalRecipe; const ACheck: TInstrumentalWorkCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
+
+{ Captures an actual sound-only performance as a recipe variant of its frozen
+  model. No score is promoted to training evidence or new token locks. }
+function RetainStudioSoundStyle(const ACatalogRoot, AJobId: String;
+  const AParent: TJSONObject; const AInstruments: TInstrumentRecipes;
+  const AMix: TStemMixRecipe; const AMusicFrames, ATailFrames: Int64;
+  const ASeed: Cardinal; const ACheck: TInstrumentalWorkCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
 
 implementation
@@ -204,6 +213,69 @@ begin
   finally
     LStyle.Free;
     LProgress.Free;
+  end;
+end;
+
+function RetainStudioSoundStyle(const ACatalogRoot, AJobId: String;
+  const AParent: TJSONObject; const AInstruments: TInstrumentRecipes;
+  const AMix: TStemMixRecipe; const AMusicFrames, ATailFrames: Int64;
+  const ASeed: Cardinal; const ACheck: TInstrumentalWorkCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
+var
+  LParent, LStyle: TSemanticStyle;
+  LDefinition: TSemanticStyleDefinition;
+  LRecipe: TSemanticInstrumentalRecipe;
+  LBytes: TAudioBytes;
+  LProgress: TCandidateProgress;
+begin
+  Result := TJSONObject.Create(['format', 'pythian.studio.style-candidate.v1',
+    'status', 'unavailable']);
+  LParent := nil; LStyle := nil; LProgress := nil;
+  try
+    try
+      try
+        Need((AParent <> nil) and (AParent.Get('status', '') = 'ready'),
+          'This version has no reusable musical model');
+        LProgress := TCandidateProgress.Create;
+        LProgress.Check := ACheck; LProgress.Callback := AProgress;
+        LParent := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+          AParent.Strings['sha256'], LProgress.Observe), nil, nil, LProgress.Observe);
+        LDefinition := LParent.CopyDefinition(LProgress.Observe);
+        LRecipe := LDefinition.Instrumental;
+        LRecipe.Instruments := AInstruments;
+        LRecipe.Mix := AMix;
+        LRecipe.Options.MusicFrames := AMusicFrames;
+        LRecipe.Options.TailFrames := ATailFrames;
+        LRecipe.Options.Seed := ASeed;
+        LRecipe.Origin := LRecipe.Origin + '; operator sound recipe from job ' + AJobId;
+        LStyle := TSemanticStyle.CreateInstrumentalVariant(LParent, LRecipe,
+          nil, nil, LProgress.Observe);
+        LBytes := LStyle.Encode(LProgress.Observe);
+        RetainStudioStyleBytes(ACatalogRoot, LStyle.Identity, LBytes, LProgress.Observe);
+        Result.Strings['status'] := 'ready';
+        Result.Add('sha256', LStyle.Identity);
+        Result.Add('bytes', Length(LBytes));
+        Result.Add('artifact', 'styles/' + LStyle.Identity + '.pysg');
+        Result.Add('corpus_revision', LDefinition.Corpus.RevisionIdentity);
+        Result.Add('provider_count', Length(LDefinition.Providers));
+        Result.Add('source_count', Length(LDefinition.Sources));
+        Result.Add('contribution_count', Length(LDefinition.Runs));
+        Result.Add('parent_sha256', LParent.Identity);
+        Result.Add('derivation', 'instrumental_recipe');
+      except
+        on E: Exception do
+        begin
+          if (LProgress <> nil) and LProgress.CallbackFailed then raise;
+          Result.Strings['status'] := 'unavailable';
+          Result.Add('reason', E.ClassName + ': ' + E.Message);
+        end;
+      end;
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    LStyle.Free; LParent.Free; LProgress.Free;
   end;
 end;
 

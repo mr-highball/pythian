@@ -246,6 +246,14 @@ type
       const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
       const AProgress: TWorkProgressCallback = nil);
+    { Changes only the performed instrument/mix/expression/form/options recipe.
+      Models, observations, schema and provider policy remain frozen. Retains
+      the complete parent; a score audition is never new training evidence. }
+    constructor CreateInstrumentalVariant(const AParent: TSemanticStyle;
+      const ARecipe: TSemanticInstrumentalRecipe;
+      const ARegistry: TProviderCodecRegistry = nil;
+      const AAdmission: TProviderCodecAdmission = nil;
+      const AProgress: TWorkProgressCallback = nil);
     constructor CreateBlend(const ALeft, ARight: TSemanticStyle;
       const ARecipe: TSemanticBlendRecipe;
       const ARegistry: TProviderCodecRegistry = nil;
@@ -2642,7 +2650,8 @@ begin
     FParent := Copy(AParent);
     LIO := TStyleIO.Create(nil, False, AProgress);
     try
-      LIO.Text('pythian.semantic.style.v4');
+      if FKind = 4 then LIO.Text('pythian.semantic.style.v5')
+      else LIO.Text('pythian.semantic.style.v4');
       LIO.N(FKind);
       LIO.Blob(AParent);
       LIO.Blob(FOtherParent);
@@ -2724,6 +2733,28 @@ begin
   FInheritedJoints := AParent.FInheritedJoints;
   FKind := 1;
   Finish(LCandidate, AParent.Encode(AProgress), ARegistry, AAdmission, AProgress);
+end;
+
+constructor TSemanticStyle.CreateInstrumentalVariant(const AParent: TSemanticStyle;
+  const ARecipe: TSemanticInstrumentalRecipe;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+  const AProgress: TWorkProgressCallback);
+var LDefinition: TSemanticStyleDefinition; I: Integer;
+begin
+  inherited Create;
+  Require((AParent <> nil) and (AParent.NodeCount < 8),
+    'Instrumental variant requires parent and fewer than eight ancestry nodes');
+  LDefinition := AParent.CopyDefinition(AProgress);
+  Require(LDefinition.Instrumental.Enabled and ARecipe.Enabled,
+    'Instrumental variant requires an existing instrumental style and enabled recipe');
+  LDefinition.Instrumental := ARecipe;
+  for I := 0 to High(LDefinition.Providers) do
+    LDefinition.Providers[I].VocabularyAncestor := AParent.Identity;
+  FDepth := AParent.Depth + 1;
+  FNodeCount := AParent.NodeCount + 1;
+  FInheritedJoints := AParent.FInheritedJoints;
+  FKind := 4;
+  Finish(LDefinition, AParent.Encode(AProgress), ARegistry, AAdmission, AProgress);
 end;
 
 function ActivePolicyIdentity(const ADefinition: TSemanticStyleDefinition): String;
@@ -3457,7 +3488,7 @@ var
   LParentBytes: TAudioBytes;
   LDefinitionBytes: TAudioBytes;
   LDefinition: TSemanticStyleDefinition;
-  LHash: String;
+  LHash, LFormat: String;
   LBodyLength: Integer;
   LParent: TSemanticStyle;
   LOtherParent: TSemanticStyle;
@@ -3474,8 +3505,13 @@ begin
   LRecipe := Default(TSemanticBlendRecipe);
   LResult := nil;
   try
-    Require(LIO.Text = 'pythian.semantic.style.v4', 'Unsupported semantic format; regenerate development artifact');
-    LKind := LIO.Count(0, 3);
+    LFormat := LIO.Text;
+    Require((LFormat = 'pythian.semantic.style.v4') or (LFormat = 'pythian.semantic.style.v5'),
+      'Unsupported semantic format; regenerate development artifact');
+    LKind := LIO.Count(0, 4);
+    Require(((LFormat = 'pythian.semantic.style.v5') and (LKind = 4)) or
+      ((LFormat = 'pythian.semantic.style.v4') and (LKind <> 4)),
+      'Semantic format differs from its declared recipe kind');
     LParentBytes := LIO.Blob(nil);
     LOtherBytes := LIO.Blob(nil);
     BlendRecipeIO(LIO, LRecipe, LKind = 3);
@@ -3493,10 +3529,19 @@ begin
     else
     begin
       LParent := DecodeAt(LParentBytes, ADepth + 1, ARegistry, AAdmission, AProgress);
-      if LKind = 1 then
+      if LKind in [1, 4] then
       begin
         Require(Length(LOtherBytes) = 0, 'Control derivation has one parent');
-        LResult := TSemanticStyle.CreateDerived(LParent, LDefinition, ARegistry, AAdmission, AProgress);
+        if LKind = 1 then
+          LResult := TSemanticStyle.CreateDerived(LParent, LDefinition, ARegistry, AAdmission, AProgress)
+        else
+        begin
+          LResult := TSemanticStyle.CreateInstrumentalVariant(LParent, LDefinition.Instrumental,
+            ARegistry, AAdmission, AProgress);
+          Require(Sha256Bytes(DefinitionBytes(LResult.FDefinition, AProgress), AProgress) =
+            Sha256Bytes(LDefinitionBytes, AProgress),
+            'Instrumental variant cannot rewrite frozen models, observations, schema or provider controls');
+        end;
       end
       else
       begin

@@ -401,7 +401,7 @@ procedure CheckNamedStyle(const ACatalog, ALibrary: String;
 var
   LWrite, LSaved, LAgain, LList, LJob, LStatus, LParent: TJSONObject;
   LModelGuard, LSourceA, LSourceB: TFileStream;
-  LId, LText, LArtifact: String;
+  LId, LText, LArtifact, LSoundStyleId: String;
   LAbort: TCandidateAbort;
   LBytes: TAudioBytes;
   LCancelled: Boolean;
@@ -485,11 +485,46 @@ begin
         'Saved-style result remains a valid source for retained sound/note editing');
       LStatus := ReadStudioJob(ACatalog, LJob.Strings['job_id']);
       Check((LStatus.Strings['status'] = 'completed') and
-        (LStatus.Objects['results'].Objects['style_source'].Strings['id'] = LId) and
-        (LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'unavailable'),
-        'Edited performance preserves lineage without offering its stale parent recipe for saving');
+        (LStatus.Objects['results'].Objects['style_source'].Strings['id'] = LId),
+        'Edited performance preserves its actual selected style origin');
+      if I = 0 then
+      begin
+        Check((LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'ready') and
+          (LStatus.Objects['results'].Objects['style_candidate'].Strings['parent_sha256'] = LSaved.Strings['sha256']) and
+          (LStatus.Objects['results'].Objects['style_candidate'].Strings['sha256'] <> LSaved.Strings['sha256']),
+          'Sound edit retains an actual new recipe with its complete frozen model parent');
+        CheckSavedStyle(ACatalog, LJob.Strings['job_id'], LStatus.Objects['results']);
+        LWrite.Strings['name'] := 'Sound style';
+        LWrite.Strings['job_id'] := LJob.Strings['job_id'];
+        LAgain := SaveStudioStyle(ACatalog, LWrite);
+        try
+          LSoundStyleId := LAgain.Strings['id'];
+          Check(LAgain.Strings['sha256'] = LStatus.Objects['results'].Objects['style_candidate'].Strings['sha256'],
+            'Saving a sound-edited song keeps its actual new style recipe');
+        finally LAgain.Free end;
+      end
+      else Check(LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'unavailable',
+        'A scoped note edit is not saved as an unchanged recipe or invented training');
       FreeAndNil(LStatus);
     end;
+    FreeAndNil(LJob);
+    LJob := TJSONObject.Create(['format', StudioJobWriteFormat,
+      'kind', 'instrumental_style', 'style_id', LSoundStyleId, 'job_id', 'reused-sound-style',
+      'project_id', AJob.Strings['project_id'], 'project_revision', AJob.Int64s['project_revision'],
+      'project_snapshot_sha256', AJob.Strings['project_snapshot_sha256'], 'duration_ms', 3000]);
+    LJob.Add('seeds', AJob.Arrays['seeds'].Clone);
+    LStatus := EnqueueStudioJob(ACatalog, LJob);
+    FreeAndNil(LStatus);
+    Check(RunStudioWorker(ACatalog, 'reused-sound-style', ALibrary),
+      'Actual native job reuses the named sound-edit variant');
+    LStatus := ReadStudioJob(ACatalog, 'reused-sound-style');
+    Check((LStatus.Strings['status'] = 'completed') and
+      not LStatus.Objects['results'].Booleans['learning_performed'] and
+      (LStatus.Objects['results'].Strings['model_sha256'] = LParent.Objects['results'].Strings['model_sha256']) and
+      (LStatus.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'] <>
+        LParent.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256']),
+      'Saved sound recipe changes actual audio while preserving learned models and source lineage');
+    CheckSavedStyle(ACatalog, 'reused-sound-style', LStatus.Objects['results']);
   finally
     LParent.Free;
     LStatus.Free;
