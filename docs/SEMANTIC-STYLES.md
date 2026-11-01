@@ -60,6 +60,28 @@ hard locks cover every actual provider, including context and drums. They remain
 separate from learned observation weights. Full instrumental styles reject the
 older voice-only consumer so context/drums cannot silently disappear.
 
+The overload taking `TInstrumentalStreamOptions` chooses a new performance
+without changing the saved style bytes, models or learning receipt. Duration,
+tempo, seed and lookahead remain explicit caller choices. PPQ/step must match the
+saved provider schema; a retained form must still cover the requested cell count.
+It can borrow a caller mixer and decision sink so native jobs use the same
+binding and apply their mix once. The mixer must have the saved sample rate.
+Keep the mixer and sink target alive until the owner is freed; construction or
+callback failure does not free the caller's mixer. With no mixer argument, the
+owner creates and frees the saved mix as before.
+
+```pascal
+Definition := Style.CopyDefinition;
+Options := Definition.Instrumental.Options;
+Options.Seed := 731;
+Owner := Style.CreateInstrumentalStream(Options, Recorder.Append, Mixer, Progress);
+try
+  { Pull Owner.Stream.ReadOutputs; the source Style may already be freed. }
+finally
+  Owner.Free;
+end;
+```
+
 [`MusicalCorpusStyleDefinition`](../adapters/wfc/pythian.wfc.semantic.corpus.pas)
 captures actual corpus models and the learner's admitted independent samples,
 including boundary rearticulation, source influence, gaps and actual proposal/

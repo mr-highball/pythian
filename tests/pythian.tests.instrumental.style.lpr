@@ -24,6 +24,9 @@ SOFTWARE.
 program instrumental_style_checks;
 
 {$mode delphi}{$H+}
+{$if defined(PYTHIAN_CAPACITY_ONLY) and defined(PYTHIAN_PERFORMANCE_ONLY)}
+  {$fatal Select only one focused instrumental fixture mode}
+{$endif}
 
 uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
   pythian.instrument.catalog, pythian.instrument.recipe, pythian.sound.recipe.codec,
@@ -48,6 +51,13 @@ type
   TCancel = class
     procedure Observe(const AWork: TWorkProgress);
   end;
+  TDecisionReceipt = class
+    Cells: Int64;
+    Frames: Int64;
+    Calls: Integer;
+    Cancel: Boolean;
+    procedure Append(const AChunk: TMusicDecisionChunk);
+  end;
 
 procedure TCancel.Observe(const AWork: TWorkProgress);
 begin
@@ -59,6 +69,18 @@ procedure Check(const ACondition: Boolean; const AMessage: String);
 begin
   Inc(GChecks);
   if not ACondition then raise Exception.Create(AMessage);
+end;
+
+procedure TDecisionReceipt.Append(const AChunk: TMusicDecisionChunk);
+var I: Integer;
+begin
+  if Cancel then raise EAbort.Create('Requested decision cancellation');
+  Check((AChunk.FirstCell = Cells) and (AChunk.StartFrame = Frames),
+    'Style decision sink receives a discontinuous score');
+  Check(Length(AChunk.Providers) = 9, 'Style decision sink omits an actual provider');
+  Inc(Calls);
+  Inc(Cells, Length(AChunk.Cells));
+  for I := 0 to High(AChunk.Cells) do Inc(Frames, AChunk.Cells[I].FrameCount);
 end;
 
 function Definition: TSemanticStyleDefinition;
@@ -488,10 +510,8 @@ begin
   Relearn(Result);
 end;
 
-procedure SameInstrumental(const ALeft, ARight: TSemanticStyle);
+procedure SameStreams(const LA, LB: TSemanticInstrumentalStream);
 var
-  LA: TSemanticInstrumentalStream;
-  LB: TSemanticInstrumentalStream;
   LMasterA: TAudioSamples;
   LMasterB: TAudioSamples;
   LStemsA: TBusSampleBlocks;
@@ -499,32 +519,151 @@ var
   I: Integer;
   P: Integer;
 begin
+  while LA.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterA, LStemsA) do
+  begin
+    Check(LB.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterB, LStemsB),
+      'Instrumental blend replay ended early');
+    Check(Length(LMasterA) = Length(LMasterB), 'Instrumental blend replay clock differs');
+    for I := 0 to High(LMasterA) do
+    begin
+      Check(Abs(LMasterA[I] - LMasterB[I]) < 1E-12, 'Instrumental blend mix changed on reload');
+      for P := 0 to 5 do
+      begin
+        Check(Abs(LStemsA[P][I] - LStemsB[P][I]) < 1E-12,
+          'Instrumental blend stem changed on reload');
+      end;
+    end;
+    Check(Sha256Bytes(EncodeMusicDecisions(LA.Stream.CopyLastDecisions)) =
+      Sha256Bytes(EncodeMusicDecisions(LB.Stream.CopyLastDecisions)),
+      'Instrumental blend decisions or expression changed on reload');
+  end;
+  Check(not LB.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterB, LStemsB),
+    'Instrumental replay has additional audio after its reference ended');
+  Check(LA.Stream.PercussionHits > 0, 'Instrumental blend has no actual drums');
+end;
+
+procedure SameInstrumental(const ALeft, ARight: TSemanticStyle);
+var LA, LB: TSemanticInstrumentalStream;
+begin
   LA := ALeft.CreateInstrumentalStream;
   LB := nil;
   try
     LB := ARight.CreateInstrumentalStream;
-    while LA.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterA, LStemsA) do
-    begin
-      Check(LB.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMasterB, LStemsB),
-        'Instrumental blend replay ended early');
-      Check(Length(LMasterA) = Length(LMasterB), 'Instrumental blend replay clock differs');
-      for I := 0 to High(LMasterA) do
-      begin
-        Check(Abs(LMasterA[I] - LMasterB[I]) < 1E-12, 'Instrumental blend mix changed on reload');
-        for P := 0 to 5 do
-        begin
-          Check(Abs(LStemsA[P][I] - LStemsB[P][I]) < 1E-12,
-            'Instrumental blend stem changed on reload');
-        end;
-      end;
-      Check(Sha256Bytes(EncodeMusicDecisions(LA.Stream.CopyLastDecisions)) =
-        Sha256Bytes(EncodeMusicDecisions(LB.Stream.CopyLastDecisions)),
-        'Instrumental blend decisions or expression changed on reload');
-    end;
-    Check(LA.Stream.PercussionHits > 0, 'Instrumental blend has no actual drums');
+    SameStreams(LA, LB);
   finally
     LB.Free;
     LA.Free;
+  end;
+end;
+
+procedure Performance;
+var
+  LDefinition: TSemanticStyleDefinition;
+  LStyle, LExpected, LFormStyle: TSemanticStyle;
+  LA, LB: TSemanticInstrumentalStream;
+  LGraph, LWrongRate: TBusGraph;
+  LOptions, LInvalid: TInstrumentalStreamOptions;
+  LReceipt: TDecisionReceipt;
+  LCancel: TCancel;
+  LIdentity: String;
+  LMaster: TAudioSamples;
+  LStems: TBusSampleBlocks;
+  LRejected: Boolean;
+begin
+  LStyle := nil;
+  LExpected := nil;
+  LFormStyle := nil;
+  LA := nil;
+  LB := nil;
+  LGraph := nil;
+  LWrongRate := nil;
+  LReceipt := TDecisionReceipt.Create;
+  LCancel := TCancel.Create;
+  try
+    LDefinition := Definition;
+    LDefinition.Instrumental.Form := nil;
+    LStyle := TSemanticStyle.CreateSource(LDefinition);
+    LIdentity := LStyle.Identity;
+    LOptions := LDefinition.Instrumental.Options;
+    LGraph := CreateStemMixGraph(LDefinition.Instrumental.Mix, CRate);
+    LA := LStyle.CreateInstrumentalStream;
+    LB := LStyle.CreateInstrumentalStream(LOptions, LReceipt.Append, LGraph);
+    SameStreams(LA, LB);
+    Check((LReceipt.Calls > 0) and (LReceipt.Frames = LOptions.MusicFrames) and
+      (LReceipt.Cells = LB.Stream.TotalCells), 'Style sink does not retain the performed score clock');
+    FreeAndNil(LA);
+    FreeAndNil(LB);
+    LGraph.Reset;
+    LWrongRate := CreateStemMixGraph(LDefinition.Instrumental.Mix, CRate * 2);
+    LRejected := False;
+    try LB := LStyle.CreateInstrumentalStream(LOptions, nil, LWrongRate);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LB = nil), 'Borrowed mixer changes the saved sample clock');
+    LWrongRate.Reset;
+    FreeAndNil(LWrongRate);
+    LInvalid := LOptions;
+    LInvalid.StepTicks := LOptions.StepTicks + 1;
+    LRejected := False;
+    try LB := LStyle.CreateInstrumentalStream(LInvalid, nil, LGraph);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LB = nil), 'A performance override rewrites the learned provider clock');
+    LGraph.Reset;
+    LRejected := False;
+    try LB := LStyle.CreateInstrumentalStream(LOptions, nil, LGraph, LCancel.Observe);
+    except on EAbort do LRejected := True end;
+    Check(LRejected and (LB = nil), 'Canceled borrowed-mixer construction publishes an owner');
+    LGraph.Reset;
+    LReceipt.Cancel := True;
+    LB := LStyle.CreateInstrumentalStream(LOptions, LReceipt.Append, LGraph);
+    LRejected := False;
+    try LB.Stream.ReadOutputs(511, [6, 7, 8, 9, 10, 11], LMaster, LStems);
+    except on EAbort do LRejected := True end;
+    Check(LRejected and (LMaster = nil) and (LStems = nil),
+      'Decision cancellation publishes partial audio or loses its exception');
+    FreeAndNil(LB);
+    LReceipt.Cancel := False;
+    LReceipt.Cells := 0;
+    LReceipt.Frames := 0;
+    LReceipt.Calls := 0;
+    LGraph.Reset;
+    LOptions.MusicFrames := CRate * 6 div 5;
+    LOptions.TempoMicroseconds := 400000;
+    LOptions.Seed := $8000001F;
+    LOptions.SegmentCells := 2;
+    LFormStyle := TSemanticStyle.CreateSource(Definition);
+    LRejected := False;
+    try LB := LFormStyle.CreateInstrumentalStream(LOptions, nil, LGraph);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LB = nil), 'Performance silently drops a saved form to change duration');
+    FreeAndNil(LFormStyle);
+    LGraph.Reset;
+    LDefinition.Instrumental.Options := LOptions;
+    LExpected := TSemanticStyle.CreateSource(LDefinition);
+    LA := LExpected.CreateInstrumentalStream;
+    LB := LStyle.CreateInstrumentalStream(LOptions, LReceipt.Append, LGraph);
+    Check(LB.Stream.FrameCount = LOptions.MusicFrames + LOptions.TailFrames,
+      'Style playback ignores the requested performance duration');
+    Check((LStyle.Identity = LIdentity) and (Sha256Bytes(LStyle.Encode) = LIdentity),
+      'Performance overrides mutate saved style bytes or identity');
+    FreeAndNil(LExpected);
+    FreeAndNil(LStyle);
+    LDefinition := Default(TSemanticStyleDefinition);
+    SameStreams(LA, LB);
+    Check((LReceipt.Cells = 6) and (LReceipt.Frames = LOptions.MusicFrames),
+      'Requested tempo/duration or detached decision sink ownership was lost');
+    FreeAndNil(LA);
+    FreeAndNil(LB);
+    LGraph.Reset;
+  finally
+    LB.Free;
+    LA.Free;
+    LGraph.Free;
+    LWrongRate.Free;
+    LFormStyle.Free;
+    LExpected.Free;
+    LStyle.Free;
+    LCancel.Free;
+    LReceipt.Free;
   end;
 end;
 
@@ -911,6 +1050,8 @@ begin
 end;
 begin
   {$ifndef PYTHIAN_CAPACITY_ONLY}
+  Performance;
+  {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Replay(Definition);
   Replay(CorpusDefinition);
   Failures;
@@ -918,6 +1059,9 @@ begin
   Seeds;
   MetadataOrigin;
   {$endif}
+  {$endif}
+  {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Capacity;
+  {$endif}
   WriteLn('Complete instrumental style checks passed: ', GChecks);
 end.

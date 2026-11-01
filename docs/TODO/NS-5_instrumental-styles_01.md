@@ -30,6 +30,40 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: complete new native/actual pas2js suites pass7,799,668
+  instrumental checks with unchanged archive identities, including the complete
+  large corpus. Generic styles/blends and native385 progress checks pass; heaps
+  are clean. Actual extracted core/WFC ZIP consumers also pass after the linked
+  native-path package omission is repaired:123/186 units and137/316 content
+  hashes verified. This qualifies the local binding component, not the missing
+  Studio interface or the replacement full CI. No task effort is accepted.
+
+- 2026-11-01, Big Boss: shared performance binding now passes focused native
+  and actual pas2js consumers (1,747,973 checks; native heap clean). An overload
+  accepts explicit playback options, the existing score-decision sink and a
+  borrowed mixer. Default versus borrowed mix/six stems and independent expected
+  duration/tempo/unsigned-seed playback agree. Saved bytes/models stay unchanged;
+  source/style owners can be freed before playback. Bad sample rate/provider
+  clocks or incompatible retained form reject, and constructor/sink cancellation
+  preserves caller ownership and publishes no partial audio. Evidence:
+  E/tests/styles-performance-{native,js}02. This is local preparation for the
+  ordinary native style job, not a delivered Studio save/blend interface or
+  musical acceptance. CI555's package failure is recorded in WORK; require the
+  repaired integrated source's replacement full CI.
+
+- 2026-11-01, Big Boss: next AC1–AC3 Studio slice is a named saved-style
+  reference from a completed song, generation from that style, then selective
+  blend/reblend through the same job/output path. Keep Library → Selection →
+  Generate simple; use contextual dialogs for style choices. List metadata only,
+  retain immutable artifact/job origins, and never silently learn on save.
+  Native candidate publication exists at e88ac445. The integration assessment
+  found that the primary semantic factory fixed the saved performance options and
+  owns a mix graph, while the ordinary Studio runner needs a requested duration,
+  seed and decision sink. Extend/reuse the primary binding for this integration;
+  do not duplicate model/instrument construction or apply the mix twice. Keep
+  learned evidence frozen and record actual performance overrides separately.
+  These are existing parent outcomes, not additional tasks or accepted effort.
+
 - 2026-11-01, Big Boss: exact CI553 fails the new fixture's composite independent
   selection assertion; packaging is skipped. Checked Win32 reproduces it.
   A stored Double gain equals its chosen parent's stored value but differs from

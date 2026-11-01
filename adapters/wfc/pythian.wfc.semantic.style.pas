@@ -34,7 +34,7 @@ uses
   pythian.wfc.voices, pythian.wfc.instrument, wfc_model, wfc_sequence,
   wfc_music_voices_graph, wfc_music_ensemble_graph,
   pythian.instrument.recipe, pythian.mix.recipe, pythian.bus,
-  pythian.music.form, pythian.music.controls,
+  pythian.music.form, pythian.music.controls, pythian.music.decisions,
   pythian.wfc.percussion, pythian.wfc.instrumental.stream,
   pythian.wfc.musical.corpus, pythian.music.selection;
 
@@ -196,16 +196,20 @@ type
     Instrumental: TSemanticBlendInstrumental;
   end;
 
-  { Owns every model, instrument bank, bus and the ordinary instrumental stream.
-    The source style/caller records may be freed immediately. Stream is borrowed;
-    keep this owner alive until the last pull and never free Stream separately. }
+  { Owns every model, instrument bank, the default mixer and the ordinary stream.
+    An explicitly supplied mixer remains borrowed. The source style/caller
+    records may be freed immediately. Stream is borrowed; keep this owner alive
+    until the last pull and never free Stream separately. }
   TSemanticInstrumentalStream = class
   private
     FLayers: TLearnedLayers;
     FBanks: array of TRecipeInstrument;
     FGraph: TBusGraph;
+    FOwnsGraph: Boolean;
     FStream: TInstrumentalMusicStream;
     constructor Create(const ADefinition: TSemanticStyleDefinition;
+      const AOptions: TInstrumentalStreamOptions;
+      const ADecisionSink: TMusicDecisionSink; const AGraph: TBusGraph;
       const AProgress: TWorkProgressCallback);
   public
     destructor Destroy; override;
@@ -261,7 +265,15 @@ type
     function CreateInstrument(const ARoleId: String; const AZones: TStyleInstrumentZones;
       const ASampleRate: Integer): TStyleInstrument;
     function CreateInstrumentalStream(
-      const AProgress: TWorkProgressCallback = nil): TSemanticInstrumentalStream;
+      const AProgress: TWorkProgressCallback = nil): TSemanticInstrumentalStream; overload;
+    { Performance controls do not change this immutable style or its learned
+      evidence. The provider clock/form constraints still apply. A supplied
+      mixer is borrowed until the returned owner is freed; nil creates the saved
+      mix. Keep the sink target alive through the last pull; callbacks are
+      synchronous and never serialized. }
+    function CreateInstrumentalStream(const AOptions: TInstrumentalStreamOptions;
+      const ADecisionSink: TMusicDecisionSink = nil; const AGraph: TBusGraph = nil;
+      const AProgress: TWorkProgressCallback = nil): TSemanticInstrumentalStream; overload;
     property Identity: String read FIdentity;
     property Depth: Integer read FDepth;
     property NodeCount: Integer read FNodeCount;
@@ -1430,6 +1442,8 @@ begin
 end;
 
 constructor TSemanticInstrumentalStream.Create(const ADefinition: TSemanticStyleDefinition;
+  const AOptions: TInstrumentalStreamOptions;
+  const ADecisionSink: TMusicDecisionSink; const AGraph: TBusGraph;
   const AProgress: TWorkProgressCallback);
 var
   LConfig: TWfcMusicVoicesGraphConfig;
@@ -1444,8 +1458,12 @@ begin
   inherited Create;
   Require(ADefinition.Instrumental.Enabled, 'Style has no instrumental binding');
   LRecipe := ADefinition.Instrumental;
+  LRecipe.Options := AOptions;
   Require((Length(LRecipe.LabelText) > 0) and (Length(LRecipe.LabelText) <= 1024) and
     (Length(LRecipe.Origin) > 0), 'Instrumental style requires a caller label and actual material origin');
+  if AGraph <> nil then
+    Require(AGraph.SampleRate = LRecipe.SampleRate,
+      'Caller mixer sample rate differs from the saved instrumental style');
   FLayers := LoadLayers(ADefinition, AProgress);
   LConfig := VoiceConfig(ADefinition, FLayers);
   LContextIndex := 2 + Length(LConfig.Voices);
@@ -1460,7 +1478,9 @@ begin
   Require((LRecipe.Options.TicksPerQuarter = ADefinition.Providers[0].Contract.TicksPerQuarter) and
     (LRecipe.Options.StepTicks = ADefinition.Providers[0].Contract.TimeGrid.TicksPerCell),
     'Instrumental performance clock differs from the provider schema');
-  FGraph := CreateStemMixGraph(LRecipe.Mix, LRecipe.SampleRate);
+  FOwnsGraph := AGraph = nil;
+  FGraph := AGraph;
+  if FOwnsGraph then FGraph := CreateStemMixGraph(LRecipe.Mix, LRecipe.SampleRate);
   SetLength(FBanks, Length(LRecipe.Instruments));
   SetLength(LRoles, Length(FBanks));
   for I := 0 to High(FBanks) do
@@ -1497,7 +1517,7 @@ begin
     LPreferences[I] := FLayers[I].Preferences;
   end;
   FStream := TInstrumentalMusicStream.Create(LConfig, LRoles, LDrums, FGraph,
-    LRecipe.Options, FLayers[LContextIndex].Model, nil, LRecipe.Form, nil,
+    LRecipe.Options, FLayers[LContextIndex].Model, ADecisionSink, LRecipe.Form, nil,
     LMasks, LPreferences, LRecipe.Expression);
   ReportWork(AProgress, 'semantic_instrumental_ready', wuItems, 1, 1);
 end;
@@ -1506,7 +1526,7 @@ destructor TSemanticInstrumentalStream.Destroy;
 var I: Integer;
 begin
   FStream.Free;
-  FGraph.Free;
+  if FOwnsGraph then FGraph.Free;
   for I := 0 to High(FBanks) do
   begin
     FBanks[I].Free;
@@ -1518,7 +1538,16 @@ end;
 function TSemanticStyle.CreateInstrumentalStream(
   const AProgress: TWorkProgressCallback): TSemanticInstrumentalStream;
 begin
-  Result := TSemanticInstrumentalStream.Create(FDefinition, AProgress);
+  Result := TSemanticInstrumentalStream.Create(FDefinition,
+    FDefinition.Instrumental.Options, nil, nil, AProgress);
+end;
+
+function TSemanticStyle.CreateInstrumentalStream(const AOptions: TInstrumentalStreamOptions;
+  const ADecisionSink: TMusicDecisionSink; const AGraph: TBusGraph;
+  const AProgress: TWorkProgressCallback): TSemanticInstrumentalStream;
+begin
+  Result := TSemanticInstrumentalStream.Create(FDefinition, AOptions,
+    ADecisionSink, AGraph, AProgress);
 end;
 
 function TSemanticStyle.CreateSession(const ASeed: Integer;
@@ -2025,7 +2054,8 @@ begin
       ValidateSequencePositionPreferences(ALayers[LProvider].Model, 1, LRows, AProgress);
     end;
   end;
-  LOwner := TSemanticInstrumentalStream.Create(ADefinition, AProgress);
+  LOwner := TSemanticInstrumentalStream.Create(ADefinition,
+    ADefinition.Instrumental.Options, nil, nil, AProgress);
   LOwner.Free;
   { Original rows are declared observations, including Experimental proposals.
     Verify their actual context/voice/drum relationships without a benchmark gate
