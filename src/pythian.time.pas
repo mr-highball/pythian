@@ -127,6 +127,12 @@ type
 
 function MakeTempoChange(const ATick, AMicrosecondsPerQuarter: Integer): TTempoChange;
 procedure RequireExactTimingCounter(const AValue: Int64; const AName: String);
+{ Exact nonnegative product/division without a duration-sized allocation or an
+  overflowing intermediate product. Outputs are published only on success. }
+procedure DivideTimingProduct(const ALeft, ARight, ADivisor: Int64;
+  out AQuotient, ARemainder: Int64);
+function CompareTimingFractions(const ALeft, ALeftDivisor,
+  ARight, ARightDivisor: Int64): Integer;
 function MusicTimeToFrame(const ATime: TMusicTime; const ASampleRate: Integer;
   const ARounding: TFrameRounding = frFloor): Int64;
 { Floating seconds use a binary64 sample product before explicit floor/ceiling.
@@ -159,48 +165,148 @@ begin
   end;
 end;
 
+procedure DivideTimingProduct(const ALeft, ARight, ADivisor: Int64;
+  out AQuotient, ARemainder: Int64);
+var
+  LBits: array[0..63] of Boolean;
+  LCount: Integer;
+  LValue: Int64;
+  LWhole: Int64;
+  LPart: Int64;
+  LQuotient: Int64;
+  LRemainder: Int64;
+  LCarry: Integer;
+begin
+  RequireExactTimingCounter(ALeft, 'Timing product left');
+  RequireExactTimingCounter(ARight, 'Timing product right');
+  RequireExactTimingCounter(ADivisor, 'Timing product divisor');
+  if ADivisor = 0 then raise EAudio.Create('Timing product divisor must be positive');
+  LWhole := ARight div ADivisor;
+  LPart := ARight mod ADivisor;
+  LValue := ALeft;
+  if (ALeft mod ADivisor) = 0 then
+  begin
+    LValue := ARight;
+    LWhole := ALeft div ADivisor;
+    LPart := 0;
+  end;
+  if LPart = 0 then
+  begin
+    if LWhole > 0 then
+    begin
+      if LValue > MaximumTimingInteger div LWhole then
+        raise EAudio.Create('Timing product quotient exceeds the target exact-integer range');
+    end;
+    AQuotient := LValue * LWhole;
+    ARemainder := 0;
+    Exit;
+  end;
+  LCount := 0;
+  while LValue > 0 do
+  begin
+    LBits[LCount] := (LValue mod 2) <> 0;
+    Inc(LCount);
+    LValue := LValue div 2;
+  end;
+  LQuotient := 0;
+  LRemainder := 0;
+  while LCount > 0 do
+  begin
+    Dec(LCount);
+    LCarry := 0;
+    { Big Boss: modular addition uses subtraction before doubling, so even a
+      divisor near the target's exact integer limit has no larger intermediate. }
+    if LRemainder >= ADivisor - LRemainder then
+    begin
+      LRemainder := LRemainder - (ADivisor - LRemainder);
+      Inc(LCarry);
+    end
+    else LRemainder := LRemainder * 2;
+    if LQuotient > (MaximumTimingInteger - LCarry) div 2 then
+      raise EAudio.Create('Timing product quotient exceeds the target exact-integer range');
+    LQuotient := LQuotient * 2 + LCarry;
+    if LBits[LCount] then
+    begin
+      LCarry := 0;
+      if LRemainder >= ADivisor - LPart then
+      begin
+        LRemainder := LRemainder - (ADivisor - LPart);
+        Inc(LCarry);
+      end
+      else Inc(LRemainder, LPart);
+      if LQuotient > MaximumTimingInteger - LWhole - LCarry then
+        raise EAudio.Create('Timing product quotient exceeds the target exact-integer range');
+      Inc(LQuotient, LWhole + LCarry);
+    end;
+  end;
+  AQuotient := LQuotient;
+  ARemainder := LRemainder;
+end;
+
+function CompareTimingFractions(const ALeft, ALeftDivisor,
+  ARight, ARightDivisor: Int64): Integer;
+var
+  LA: Int64;
+  LB: Int64;
+  LC: Int64;
+  LD: Int64;
+  LQLeft: Int64;
+  LQRight: Int64;
+  LRLeft: Int64;
+  LRRight: Int64;
+  LDirection: Integer;
+begin
+  RequireExactTimingCounter(ALeft, 'Left timing numerator');
+  RequireExactTimingCounter(ALeftDivisor, 'Left timing divisor');
+  RequireExactTimingCounter(ARight, 'Right timing numerator');
+  RequireExactTimingCounter(ARightDivisor, 'Right timing divisor');
+  if (ALeftDivisor = 0) or (ARightDivisor = 0) then
+    raise EAudio.Create('Timing fraction divisors must be positive');
+  LA := ALeft;
+  LB := ALeftDivisor;
+  LC := ARight;
+  LD := ARightDivisor;
+  LDirection := 1;
+  while True do
+  begin
+    LQLeft := LA div LB;
+    LQRight := LC div LD;
+    if LQLeft < LQRight then Exit(-LDirection);
+    if LQLeft > LQRight then Exit(LDirection);
+    LRLeft := LA mod LB;
+    LRRight := LC mod LD;
+    if (LRLeft = 0) or (LRRight = 0) then
+    begin
+      if LRLeft < LRRight then Exit(-LDirection);
+      if LRLeft > LRRight then Exit(LDirection);
+      Exit(0);
+    end;
+    LA := LB;
+    LB := LRLeft;
+    LC := LD;
+    LD := LRRight;
+    LDirection := -LDirection;
+  end;
+end;
+
 {$ifdef pas2js}
 procedure DivideTickProduct(const ATicks, ATempo, ACarry: Integer;
   const ADivisor: Int64; out AQuotient, ARemainder: Int64);
 var
-  LWords: array[0..3] of Integer;
-  LLow: Int64;
-  LHigh: Int64;
-  LBit: Integer;
-  LDigit: Integer;
+  LQuotient, LRemainder, LCarry: Int64;
 begin
-  { MIDI tempo times Integer ticks can exceed 2^53. Form base-2^16 limbs
-    with exact products below 2^41, then divide bitwise. The largest divisor
-    is PPQ * 1000000; doubled remainders stay below 2^52. This handles only
-    integer representation, retaining the primary PPQ carry algorithm. }
-  LLow := Int64(ATicks mod 65536) * ATempo + ACarry;
-  LHigh := Int64(ATicks div 65536) * ATempo + LLow div 65536;
-  LWords[0] := LLow mod 65536;
-  LWords[1] := LHigh mod 65536;
-  LHigh := LHigh div 65536;
-  LWords[2] := LHigh mod 65536;
-  LWords[3] := LHigh div 65536;
-  AQuotient := 0;
-  ARemainder := 0;
-  for LBit := 63 downto 0 do
+  DivideTimingProduct(ATicks, ATempo, ADivisor, LQuotient, LRemainder);
+  LCarry := ACarry div ADivisor;
+  if LRemainder >= ADivisor - (ACarry mod ADivisor) then
   begin
-    ARemainder := ARemainder * 2;
-    if (LWords[LBit div 16] and (1 shl (LBit mod 16))) <> 0 then
-    begin
-      Inc(ARemainder);
-    end;
-    LDigit := 0;
-    if ARemainder >= ADivisor then
-    begin
-      Dec(ARemainder, ADivisor);
-      LDigit := 1;
-    end;
-    if AQuotient > (MaximumTimingInteger - LDigit) div 2 then
-    begin
-      raise EAudio.Create('Musical time exceeds the target exact-integer range');
-    end;
-    AQuotient := AQuotient * 2 + LDigit;
-  end;
+    LRemainder := LRemainder - (ADivisor - (ACarry mod ADivisor));
+    Inc(LCarry);
+  end
+  else Inc(LRemainder, ACarry mod ADivisor);
+  if LQuotient > MaximumTimingInteger - LCarry then
+    raise EAudio.Create('Musical time exceeds the target exact-integer range');
+  AQuotient := LQuotient + LCarry;
+  ARemainder := LRemainder;
 end;
 {$endif}
 

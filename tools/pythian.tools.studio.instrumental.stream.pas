@@ -30,6 +30,7 @@ uses fpjson, pythian.progress, pythian.music.form, pythian.music.sound, pythian.
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.instrumental.stream,
   wfc_sequence, wfc_music_voices_graph,
   pythian.wfc.instrumental, pythian.wfc.percussion,
+  pythian.wfc.musical.corpus,
   pythian.tools.studio.instrumental.publication;
 
 type
@@ -48,6 +49,8 @@ type
     Sound: TMusicalSound;
     SoundPart: Integer;
     SoundRecipes: TInstrumentRecipes;
+    { Borrowed only for this synchronous job; native owner remains alive. }
+    Corpus: TMusicalCorpus;
   end;
 
 { Borrows explicit musical providers, instruments and percussion models. The ordinary
@@ -65,7 +68,8 @@ uses SysUtils, pythian.audio, pythian.bus,
   pythian.tools.studio.instrumental.output, pythian.tools.studio.instrumental.config,
   pythian.tools.studio.form,
   pythian.tools.studio.material.reference, pythian.tools.studio.decisions,
-  pythian.tools.studio.instrumental.settings, pythian.tools.studio.sounds;
+  pythian.tools.studio.instrumental.settings, pythian.tools.studio.sounds,
+  pythian.wfc.semantic.style, pythian.tools.studio.style.candidate;
 
 function RunStudioInstrumentalStream(const ACatalogRoot, AJobId: String;
   const ARequest, ASettings, ALearning: TJSONObject; const AMaterial: TStudioStreamMaterial;
@@ -73,6 +77,7 @@ function RunStudioInstrumentalStream(const ACatalogRoot, AJobId: String;
   const ACheck: TInstrumentalWorkCheck; const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LOptions: TInstrumentalStreamOptions;
+  LStyleRecipe: TSemanticInstrumentalRecipe;
   LStream: TInstrumentalMusicStream;
   LOutput: TStudioInstrumentalOutput;
   LDecisions: TStudioDecisionWriter;
@@ -260,6 +265,25 @@ begin
     LMeta.Add('planned_segments', LStream.PlannedSegments);
     LMeta.Add('peak_voices', LStream.PeakVoices);
     LMeta.Add('percussion_hits', LStream.PercussionHits);
+    if AMaterial.Corpus <> nil then
+    begin
+      LStyleRecipe := Default(TSemanticInstrumentalRecipe);
+      LStyleRecipe.Enabled := True;
+      LStyleRecipe.LabelText := 'Playlist style';
+      LStyleRecipe.Origin := AMaterial.Origin;
+      LStyleRecipe.SampleRate := StudioInstrumentalRate;
+      LStyleRecipe.Options := LOptions;
+      LStyleRecipe.Instruments := AMaterial.SoundRecipes;
+      LStyleRecipe.Mix := LOutput.CopyMixRecipe;
+      LStyleRecipe.Percussion := ADrums;
+      LStyleRecipe.Form := AMaterial.Form;
+      if Assigned(AMaterial.DomainProvider) then
+        LMeta.Add('style_candidate', TJSONObject.Create(['status', 'unavailable',
+          'reason', 'The caller-defined domain callback needs a serializable graph recipe']))
+      else
+        LMeta.Add('style_candidate', RetainStudioStyleCandidate(ACatalogRoot,
+          AMaterial.Corpus, ALearning.Arrays['audio_sources'], LStyleRecipe, ACheck, AProgress));
+    end;
     { Requested replay metadata is immutable; completion is a separate receipt. }
     WriteStudioJSONNew(LDirectory + PathDelim + 'instrumental-stream-completed.json', LMeta);
     if AMaterial.Reference <> nil then
@@ -285,6 +309,8 @@ begin
       end;
       if LMeta.Find('sections') <> nil then Result.Add('sections', LMeta.Arrays['sections'].Clone);
       if ALearning <> nil then Result.Add('playlist_learning', ALearning.Clone);
+      if LMeta.Find('style_candidate') <> nil then
+        Result.Add('style_candidate', LMeta.Objects['style_candidate'].Clone);
       Result.Add('decisions', LMeta.Objects['decisions'].Clone);
       Result.Add('output_resources', LEstimate.Clone);
       Result.Add('stream', TJSONObject.Create(['version', InstrumentalStreamVersion,

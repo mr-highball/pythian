@@ -52,7 +52,8 @@ type
   companion sample/state limits still apply. No partial model is published. }
 function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
   const AOrder: Integer; const AMaximumObservations: Integer = 65536;
-  const AProgress: TWorkProgressCallback = nil): TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback = nil;
+  const AMaximumWork: Int64 = 0): TWfcSequenceModel;
 
 { Each recording/excerpt remains a separate sample: no cross-file transition.
   All sequences must use one shared palette; the caller retains that palette. }
@@ -69,9 +70,59 @@ uses
   pythian.wfc.progress,
   wfc_sequence_learn;
 
+type
+  TWeightedLearningWork = class
+  private
+    FCallback: TWorkProgressCallback;
+    FMaximum: Int64;
+    FUsed: Int64;
+    FOrder: Integer;
+    FStage: String;
+    FDone: Int64;
+  public
+    constructor Create(const ACallback: TWorkProgressCallback;
+      const AMaximum: Int64; const AOrder: Integer);
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+constructor TWeightedLearningWork.Create(const ACallback: TWorkProgressCallback;
+  const AMaximum: Int64; const AOrder: Integer);
+begin
+  inherited Create;
+  FCallback := ACallback;
+  FMaximum := AMaximum;
+  FOrder := AOrder;
+end;
+
+procedure TWeightedLearningWork.Observe(const AWork: TWorkProgress);
+var
+  LDelta: Int64;
+  LCharge: Int64;
+begin
+  LDelta := AWork.Done;
+  if (FStage = AWork.Stage) and (AWork.Done >= FDone) then
+    LDelta := AWork.Done - FDone;
+  FStage := AWork.Stage;
+  FDone := AWork.Done;
+  LCharge := LDelta;
+  { Big Boss: companion search observers report each 256 scanned entries and
+    each 256 completed rows. Charge the unreported partial scan per row too.
+    This is a conservative comparison/history-work bound, not elapsed time or
+    an observation-squared guess. The original progress remains unchanged. }
+  if AWork.Stage = 'wfc_sequence_learn_token_rows' then
+    LCharge := (LDelta + 1) * 256
+  else if AWork.Stage = 'wfc_sequence_learn_state_rows' then
+    LCharge := (LDelta + 1) * 256 * (FOrder + 1);
+  if (FMaximum > 0) and (LCharge > FMaximum - FUsed) then
+    raise EAudio.Create('Weighted sequence learning exceeds its declared comparison/history-work budget');
+  if FMaximum > 0 then Inc(FUsed, LCharge);
+  if Assigned(FCallback) then FCallback(AWork);
+end;
+
 function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
   const AOrder, AMaximumObservations: Integer;
-  const AProgress: TWorkProgressCallback): TWfcSequenceModel;
+  const AProgress: TWorkProgressCallback;
+  const AMaximumWork: Int64): TWfcSequenceModel;
 var
   LExpanded: TWfcSequenceSamples;
   LCount: Integer;
@@ -80,10 +131,13 @@ var
   LAt: Integer;
   LTotal: Int64;
   LBridge: TWfcSolveProgressBridge;
+  LWork: TWeightedLearningWork;
 begin
   if (Length(ASamples) < 1) or (Length(ASamples) > WFC_SEQUENCE_MAX_SAMPLE_COUNT) or
     (AOrder < 1) or (AOrder > WFC_SEQUENCE_MAX_ORDER) or (AMaximumObservations < 1) or
-    (AMaximumObservations > 1048576) or (AOrder <> Trunc(AOrder)) or
+    (AMaximumObservations > 1048576) or (AMaximumWork < 0) or
+    (AMaximumWork > 9007199254740991) or (AMaximumWork <> Trunc(AMaximumWork)) or
+    (AOrder <> Trunc(AOrder)) or
     (AMaximumObservations <> Trunc(AMaximumObservations)) then
   begin
     raise EAudio.Create('Weighted learning requires bounded samples, observations and a supported integer order');
@@ -129,12 +183,20 @@ begin
       Inc(LAt);
     end;
   end;
-  LBridge := TWfcSolveProgressBridge.Create(AProgress);
+  LWork := nil;
+  LBridge := nil;
   try
+    if AMaximumWork > 0 then
+    begin
+      LWork := TWeightedLearningWork.Create(AProgress, AMaximumWork, AOrder);
+      LBridge := TWfcSolveProgressBridge.Create(LWork.Observe);
+    end
+    else LBridge := TWfcSolveProgressBridge.Create(AProgress);
     Result := LearnSequenceModelCorpus(LExpanded, AOrder, wmbOpen,
       LBridge.SequenceWorkObserver());
   finally
     LBridge.Free;
+    LWork.Free;
   end;
 end;
 

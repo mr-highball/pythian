@@ -45,6 +45,49 @@ procedure Emit(const ALabel: String; const AState: TTempoClockSnapshot);
 begin
   WriteLn(ALabel, ' ', AState.TickCount, ' ', AState.FrameCount, ' ', AState.FractionNumerator);
 end;
+procedure ProductChecks;
+var
+  LQ: Int64;
+  LR: Int64;
+  I: Integer;
+  J: Integer;
+  D: Integer;
+  LFailed: Boolean;
+begin
+  for I := 0 to 100 do
+    for J := 0 to 17 do
+      for D := 1 to 19 do
+      begin
+        DivideTimingProduct(I, J, D, LQ, LR);
+        Check((LQ = (I * J) div D) and (LR = (I * J) mod D),
+          'Exact timing product differs from bounded integer arithmetic');
+        Check(CompareTimingFractions(I, D, J, D) = Ord(I > J) - Ord(I < J),
+          'Timing fraction comparison differs from equal-denominator order');
+      end;
+  DivideTimingProduct(4294967297, 4294967299, 4294967296, LQ, LR);
+  Check((LQ = 4294967300) and (LR = 3), 'Timing product loses a large-product remainder');
+  DivideTimingProduct(9007199254740989, 9007199254740989, 9007199254740990, LQ, LR);
+  Check((LQ = 9007199254740988) and (LR = 1), 'Timing product exceeds exact target arithmetic');
+  Check(CompareTimingFractions(9007199254740989, 9007199254740990,
+    9007199254740988, 9007199254740989) > 0, 'Large timing fractions lose strict order');
+  Check(CompareTimingFractions(2, 6, 3, 9) = 0, 'Equivalent timing fractions differ');
+  LQ := 99;
+  LR := 98;
+  LFailed := False;
+  try
+    DivideTimingProduct(MaximumTimingInteger, 2, 1, LQ, LR);
+  except
+    on EAudio do LFailed := True;
+  end;
+  Check(LFailed and (LQ = 99) and (LR = 98), 'Overflow publishes partial timing results');
+  LFailed := False;
+  try
+    DivideTimingProduct(1, 1, 0, LQ, LR);
+  except
+    on EAudio do LFailed := True;
+  end;
+  Check(LFailed, 'Zero timing divisor was admitted');
+end;
 procedure Same(const A, B: TTempoClockSnapshot);
 begin
   Check((A.TicksPerQuarter = B.TicksPerQuarter) and (A.SampleRate = B.SampleRate) and
@@ -399,5 +442,6 @@ begin
     end;
   end;
   Check(Failed, 'Invalid rational denominator rejected');
+  ProductChecks;
   WriteLn('pass timing-portable');
 end.

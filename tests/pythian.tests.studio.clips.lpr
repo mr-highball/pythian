@@ -32,7 +32,7 @@ uses Classes, SysUtils, Math, fpjson, fphttpclient, pythian.tools.json,
   pythian.binary, pythian.tools.studio.clips,
   pythian.tools.studio.&library.discovery, pythian.tools.listen.assets,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
-  pythian.tools.studio.worker;
+  pythian.tools.studio.worker, pythian.wfc.semantic.style;
 
 type
   TProbe = class
@@ -143,6 +143,12 @@ procedure CheckJobs(const ACatalog, ALibrary, AOriginal: String; const AItem: TJ
 var
   LWrite, LPlaylist, LItem, LRange, LSaved, LState, LAgain, LJob, LStatus, LSources: TJSONObject;
   LId, LRetry, LClipId, LAudioPath: String;
+  LStyleFile: TFileStream;
+  LStyleBytes: TAudioBytes;
+  LStyle: TSemanticStyle;
+  LDefinition: TSemanticStyleDefinition;
+  LStart: Int64;
+  LEnd: Int64;
 begin
   LWrite := TJSONObject.Create(['format', StudioProjectWriteFormat,
     'project_id', 'independent-clips', 'expected_revision', 0,
@@ -200,6 +206,27 @@ begin
         (LStatus.Objects['results'].Objects['playlist_learning'].Objects['reference_source'].Strings['kind'] = 'saved_clip'),
         'Actual output binds the saved clip and its selected-audio comparison');
       Check(not DirectoryExists(ACatalog + '/sources'), 'Clip-only learning never creates a full-parent catalog copy');
+      Check(LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'ready',
+        'Independent clip produces a reusable style without its full parent: ' +
+        LStatus.Objects['results'].Objects['style_candidate'].Get('reason', ''));
+      LStyleFile := OpenStudioReadStream(ListeningAssetDirectory(ACatalog) + '/' +
+        LStatus.Objects['results'].Objects['style_candidate'].Strings['artifact']);
+      try
+        Check(LStyleFile.Size <= MaximumSemanticStyleBytes, 'Clip style is bounded');
+        SetLength(LStyleBytes, LStyleFile.Size);
+        LStyleFile.ReadBuffer(LStyleBytes[0], Length(LStyleBytes));
+      finally LStyleFile.Free end;
+      LStyle := DecodeSemanticStyle(LStyleBytes);
+      try
+        LDefinition := LStyle.CopyDefinition;
+        Check((LDefinition.Sources[0].OriginSha256 = '') and
+          (Length(LDefinition.Sources[0].OriginMetadataIdentity) = 64),
+          'Metadata-only clip parent must not acquire an invented content hash');
+        SemanticRunOriginRange(LDefinition.Sources[0], LDefinition.Runs[0], LStart, LEnd);
+        Check((LStart = LRange.Int64s['start_frame'] + LDefinition.Runs[0].StartFrame) and
+          (LEnd = LRange.Int64s['start_frame'] + LDefinition.Runs[0].EndFrame),
+          'Independent clip style loses its exact original-recording range');
+      finally LStyle.Free end;
       LAudioPath := ListeningAssetPath(ACatalog,
         LStatus.Objects['results'].Objects['playlist_learning'].Arrays['audio_sources'].Objects[0].Strings['source_sha256']);
       FreeAndNil(LStatus);

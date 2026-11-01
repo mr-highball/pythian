@@ -120,7 +120,7 @@ or noncanonical results are errors, not fallback to a built-in provider.
 
 ## Persistence, compatibility and evidence
 
-The current format is `pythian.semantic.style.v3` only. Regenerate earlier
+The current format is `pythian.semantic.style.v4` only. Regenerate earlier
 artifacts; no legacy reader is supplied. Explicit registration is needed for
 source and nested-parent reload. One admission context spans recursive parents,
 definition validation and internally created sessions, so nested work cannot

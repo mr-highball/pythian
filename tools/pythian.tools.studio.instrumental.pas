@@ -293,6 +293,7 @@ begin
       LBaseMasks := nil;
       FreeAndNil(Result);
       LStreamMaterial := Default(TStudioStreamMaterial);
+      LStreamMaterial.Corpus := LCorpus;
       LStreamMaterial.SoundRecipes := LSoundRecipes;
       LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
       LStreamMaterial.Context := LContextModel;

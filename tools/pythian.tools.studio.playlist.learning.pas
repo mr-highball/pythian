@@ -59,6 +59,7 @@ implementation
 
 uses Classes, SysUtils, Math, pythian.audio, pythian.time, pythian.wave.read,
   pythian.hash, pythian.stream.bytes, pythian.music.observations, pythian.music.selection,
+  pythian.tools.path,
   pythian.music.proposal, pythian.music.proposal.codec, pythian.music.pattern, pythian.wfc.layers,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
   pythian.tools.studio.clips,
@@ -214,7 +215,7 @@ begin
   LPath := IncludeTrailingPathDelimiter(ACacheDirectory) + LKey + '.pmp';
   LCacheValid := False;
   ReportWork(AProgress, 'playlist_analysis_cache', wuItems, AStats.Windows, 0);
-  if FileExists(LPath) then
+  if FileExists(NativeFilePath(LPath)) then
   begin
     LFile := OpenStudioReadStream(LPath);
     try
@@ -268,7 +269,7 @@ begin
       AFrames, LTempo, LBestChannel, AProgress);
   finally LClip.Free end;
   LBytes := EncodeMusicalProposal(LProposal, AProgress);
-  Need(ForceDirectories(ACacheDirectory), 'Cannot create the private musical analysis cache');
+  Need(ForceDirectories(NativeFilePath(ACacheDirectory)), 'Cannot create the private musical analysis cache');
   ReplaceStudioBinary(LPath, LBytes);
   Inc(AStats.MeasuredWindows);
   ReportWork(AProgress, 'playlist_measure_window', wuFrames, AFrames, AFrames);
@@ -533,6 +534,7 @@ begin
       if LItem.Find('clip_receipt') <> nil then
         LRow.Add('clip_receipt', LItem.Find('clip_receipt').Clone);
       LRow.Add('source_sha256', LHash);
+      LRow.Add('source_metadata', LSourceMetadata.Clone);
       LRow.Add('source_origin', LSources[I].OriginIdentity);
       LRow.Add('influence', LSources[I].TrainingWeight);
       LRow.Add('sample_rate', LSources[I].SampleRate);

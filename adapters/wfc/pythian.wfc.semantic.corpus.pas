@@ -68,7 +68,7 @@ var
   LNames: TMusicalProposalNames;
   LConfig: TWfcMusicVoicesGraphConfig;
   LContext: TMusicalContextCell;
-  LPrevious: array of Integer;
+  LPrevious: array of Int64;
   LContribution: TMusicalCorpusContribution;
   LRun: TSemanticRun;
   LGrid: TProposedMusicalGrid;
@@ -87,13 +87,21 @@ begin
   LNames := ACorpus.CopyRoleNames;
   LConfig := ACorpus.Config;
   LContextIndex := 2 + Length(LNames);
-  Need((Length(ASources) = Length(LSources)) and (Length(ASources) <= 32),
-    'Musical style capture needs the complete source ledger (maximum32)');
+  Need((Length(ASources) = Length(LSources)) and
+    (Length(ASources) <= MaximumMusicalCorpusSources),
+    'Musical style capture needs the complete supported corpus source ledger');
   Need(Length(LContributions) <= MaximumSemanticStyleRuns,
     'Musical style capture exceeds the retained contribution limit');
   Need(ARecipe.Enabled and (Length(ARecipe.Percussion) = 3),
     'Musical corpus style requires an enabled recipe with kick/snare/hat');
   Result := Default(TSemanticStyleDefinition);
+  Result.Corpus.RevisionIdentity := ACorpus.RevisionIdentity;
+  Result.Corpus.Sources := LSources;
+  Result.Corpus.Selections := ACorpus.CopySelections;
+  Result.Corpus.Coverage := ACorpus.CopyCoverage;
+  Result.Corpus.RoleNames := Copy(LNames);
+  Result.Corpus.ProviderNames := Copy(LProviderNames);
+  Result.Corpus.Contributions := Copy(LContributions);
   Result.NamedVoices := True;
   Result.HarmonyMode := LConfig.HarmonyMode;
   Result.VoicePairs := Copy(LConfig.PairConstraints);
@@ -144,8 +152,6 @@ begin
   begin
     ReportWork(AProgress, 'semantic_capture_contributions', wuItems, I, Length(LContributions));
     LContribution := LContributions[I];
-    Need((LContribution.StartFrame <= High(Integer)) and
-      (LContribution.EndFrame <= High(Integer)), 'Musical style run exceeds the prepared frame limit');
     LGrid := LRuns[LContribution.RunIndex].Grid;
     LRun := Default(TSemanticRun);
     LRun.SourceIndex := LContribution.SourceIndex;

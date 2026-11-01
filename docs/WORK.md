@@ -3,7 +3,97 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: CI553 precision failure repaired; replacement full CI required - 2026-11-01
+## Current handoff: complete corpus/native candidates locally qualified; full CI required - 2026-11-01
+
+Big Boss SOLO. Prior turn made concrete progress: CI553's precision regression
+was reproduced/repaired/published. Exact replacement CI554/run41338389222 at
+a0e64bb3e56bec1fb48cb491166e1de6254fa495 now succeeds in full: maintained build,
+both extracted consumers and retained packages/logs. The prior checked remote
+docs head is69cd7c0. Current capacity/path source below is locally qualified and
+prepared for its own full CI. No current-goal effort or counter reset is inferred
+from the parent CI or local passes alone.
+
+The selected four-unit capacity task now implements actual64-source/1024-run/
+65536-cell corpus persistence through the existing style/runtime. V4 uses
+encounter-order token dictionaries and64-bit coordinates, retaining the complete
+source/selection/coverage/contribution/revision receipt and primary sound/form.
+Shared weighted replay replaces the observation-squared rejection with an
+explicit observed comparison/history-work bound. Primary exact time arithmetic
+handles oversized intermediate products/fraction comparison; native/actual JS
+time fixtures pass, including unchanged clock snapshots and large counters.
+
+Native/actual JS capacity03 each pass6,051,692 checks, actual six-stem/mix replay,
+cancel/retry, metadata-only parent origin and the complete large corpus.
+The large archive is3,665,780 bytes, identity654f0172c845378ea1455ab2d47677181c8e59545cd59b1d68ec6f30bb15da6a
+on both targets; native heaps are clean. Generic styles/blends and native
+progress385 pass. Capacity04 has now completed on both targets after removing
+redundant UTF-8 decoding during writes; all three style/blend fixtures and native
+progress pass with the same identities. Native heaps are clean. Time02
+native/actual JS pass at the optimized arithmetic.
+
+Preserve initial capacity01/profile02 evidence. Excessive source-validation cost
+led to an intentional diagnostic stop of the exact native fixture only. The JS
+run completed just before the attempted stop and its full script succeeds.
+profile-stops.jsonl records only the actually stopped native process. Phase
+diagnostics isolate run evidence work. Repeated immediate evidence hashing and
+avoidable coordinate arithmetic were removed; no timing/quality credit follows.
+capacity03 still records substantial transient allocation under heap tracing;
+do not claim an unmeasured memory/time improvement. All artifacts remain on E.
+
+Ordinary native generation now retains a content-addressed style candidate in
+the configured asset store's styles directory. It uses the exact post-level
+performed mix recipe and actual corpus/sound/options; all source licenses and
+origins are retained. Clip parents without a full payload hash keep an explicit
+immutable metadata identity and exact original clock, never a fabricated digest.
+Optional snapshot failure reports unavailable while the song completes; callback
+exceptions/cancellation propagate. Studio save/blend controls remain the parent
+task's missing interface; nothing is deployed or presented as operator usefulness.
+
+The ordinary playlist consumer from the shorter fresh root E/tests/scj01 passes
+2,016,321 checks with a clean heap. It reloads the actual native candidate and
+reperforms mix and all six stems within PCM quantization tolerance; a corrupted
+existing style correctly leaves the new song completed with an unavailable reason.
+The two long-root consumers01/02 fail earlier during proposal-cache publication.
+The second executable identifies a261-character hashed .pmp target and OS error3;
+the192-character parent exists, while the shorter control passes. This is a
+distinct genuine platform gap, now linked as the two-unit
+[native cache path prerequisite](TODO/NS-6_native-cache-path_01.md). Preserve both
+failures. Follow this prerequisite rather than shortening the actual caller path.
+
+The shared native file helper now prepares Windows extended filesystem paths at
+OS boundaries; logical identities/paths and reparse checks remain intact. Atomic
+checkpoint/read/cached-window/style I/O reuse it. A maintained deep Unicode,
+nonreplace and explicit-byte-budget fixture is added to the ordinary build.
+Focused path01/02/03 failures remain under E/tests. A small RTL probe isolates
+two Unicode issues: fixture String construction substituted a question mark,
+and the helper's string comparison could select a false native-code-page fallback
+for valid UTF-8. Probe04 preserves the input but exposes the wrong actual filename;
+probe05 compares bytes explicitly and independently verifies the exact Unicode
+filename through Windows. The maintained fixture now constructs raw UTF-8 and
+checks an independent expected wide path, rather than checking the helper's own
+output. Original long-root native-consumers03 now passes in one fresh compile
+context:9 path/Unicode/atomic-budget checks,2,016,325 ordinary playlist checks and
+39 saved-clip checks. All native heaps are clean and its terminal receipt is
+passed. Actual jobs reload the retained candidate and reperform the mix and six
+stems within PCM quantization tolerance. Corrupt existing style content leaves
+the song completed with a useful unavailable reason. Callback/check cancellation
+propagates without changing the corpus. Clip-only learning/save/reload retains
+original coordinates and explicit metadata-only parent identity while the full
+parent is unavailable. A read-only authenticated live check still finds3 saved
+clips and zero errors; an unauthenticated request correctly required a token.
+No new service/browser/audio playback/system setting or
+operator-data write occurred; native tests use isolated fresh E roots only.
+
+Accounting is reconciled for the new required platform gap:41 tasks,32 DONE/nine
+open,146/194 (75.26%),48 open units; NS-6 open10/accepted61. Both new tasks remain
+In progress. The inherited consecutive nonclosing count remains2 under the
+recorded reassessment; no handoff, new prerequisite or local pass resets it.
+Publish the integrated source on hello-pythian, then require its own complete
+integration/extracted-consumer CI before task acceptance. No service deployment
+or browser usability claim follows from these backend checks.
+The goal remains active and requires no operator input.
+
+## Previous handoff: CI553 precision failure repaired; replacement full CI required - 2026-11-01
 
 Big Boss SOLO. Exact CI553/run41335302377 at aff2b3590f53945b07931d8e6e1913b8b93ce74a
 failed the new instrumental blend fixture; extracted consumers did not run.

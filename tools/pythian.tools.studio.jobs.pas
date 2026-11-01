@@ -105,7 +105,10 @@ function OpenStudioInstrumentalAudio(const ACatalogRoot, AJobId: String;
 procedure WriteStudioJSONNew(const APath: String; const AObject: TJSONObject);
 { Mutable bounded checkpoints only; immutable job/identity records use New. }
 procedure ReplaceStudioJSON(const APath: String; const AObject: TJSONObject);
-procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes);
+procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes;
+  const AMaximumBytes: Integer = 1048576);
+procedure WriteStudioBinaryNew(const APath: String; const ABytes: TAudioBytes;
+  const AMaximumBytes: Integer = 1048576);
 
 implementation
 
@@ -115,6 +118,7 @@ uses
   jsonparser,
   jsonscanner,
   pythian.hash,
+  pythian.tools.path,
   pythian.tools.studio.preparation,
   pythian.tools.studio.instrumental.config,
   pythian.tools.studio.instrumental.settings,
@@ -292,9 +296,9 @@ var
 begin
   LPath := ExcludeTrailingPathDelimiter(ExpandFileName(APath));
   repeat
-    if FileExists(LPath) or DirectoryExists(LPath) then
+    if FileExists(NativeFilePath(LPath)) or DirectoryExists(NativeFilePath(LPath)) then
     begin
-      LAttributes := FileGetAttr(LPath);
+      LAttributes := FileGetAttr(NativeFilePath(LPath));
       Need(LAttributes >= 0, 'Cannot inspect Studio storage');
       {$IFDEF MSWINDOWS}
       Need((LAttributes and FILE_ATTRIBUTE_REPARSE_POINT) = 0,
@@ -361,7 +365,7 @@ begin
   LStarted := GetTickCount64;
   repeat
     try
-      Exit(TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite));
+      Exit(TFileStream.Create(NativeFilePath(APath), fmOpenRead or fmShareDenyWrite));
     except
       on E: EFOpenError do
       begin
@@ -394,25 +398,28 @@ begin
 end;
 
 procedure WriteStudioData(const APath: String; const AText: RawByteString;
-  const AReplace: Boolean);
+  const AReplace: Boolean; const AMaximumBytes: Integer = 1048576);
 var
   LStage: String;
   LStream: TFileStream;
   LGuid: TGuid;
   LReplaced: Boolean;
+  LReplaceError: Integer;
   LStarted: QWord;
 begin
   CheckPath(APath);
-  Need((AReplace or not FileExists(APath)) and not DirectoryExists(APath),
+  Need((AReplace or not FileExists(NativeFilePath(APath))) and not DirectoryExists(NativeFilePath(APath)),
     'Studio record already exists');
-  Need(ForceDirectories(ExtractFileDir(APath)), 'Cannot create Studio record directory');
+  Need(ForceDirectories(NativeFilePath(ExtractFileDir(APath))), 'Cannot create Studio record directory');
   CreateGUID(LGuid);
   LStage := IncludeTrailingPathDelimiter(ExtractFileDir(APath)) +
     GUIDToString(LGuid) + '.stage';
-  Need(not FileExists(LStage) and not DirectoryExists(LStage), 'Studio record stage must be fresh');
-  Need((Length(AText) > 0) and (Length(AText) <= 1048576), 'Studio record exceeds byte bound');
+  Need(not FileExists(NativeFilePath(LStage)) and not DirectoryExists(NativeFilePath(LStage)),
+    'Studio record stage must be fresh');
+  Need((AMaximumBytes > 0) and (AMaximumBytes <= 64 * 1024 * 1024) and
+    (Length(AText) > 0) and (Length(AText) <= AMaximumBytes), 'Studio record exceeds byte bound');
   try
-    LStream := TFileStream.Create(LStage, fmCreate or fmShareExclusive);
+    LStream := TFileStream.Create(NativeFilePath(LStage), fmCreate or fmShareExclusive);
     try
       LStream.WriteBuffer(AText[1], Length(AText));
       Need(FileFlush(LStream.Handle), 'Cannot flush Studio record');
@@ -424,22 +431,25 @@ begin
       LStarted := GetTickCount64;
       repeat
         {$IFDEF MSWINDOWS}
-        LReplaced := MoveFileExW(PWideChar(UnicodeString(LStage)),
-          PWideChar(UnicodeString(APath)), MOVEFILE_REPLACE_EXISTING);
+        LReplaced := MoveFileExW(PWideChar(UnicodeString(NativeFilePath(LStage))),
+          PWideChar(UnicodeString(NativeFilePath(APath))), MOVEFILE_REPLACE_EXISTING);
         {$ELSE}
         LReplaced := RenameFile(LStage, APath);
         {$ENDIF}
         if LReplaced then Break;
+        LReplaceError := GetLastOSError;
         Sleep(5);
       until GetTickCount64 - LStarted >= 2000;
-      Need(LReplaced, 'Cannot replace Studio checkpoint');
+      Need(LReplaced, 'Cannot replace Studio checkpoint ' + ExtractFileName(APath) +
+        ' (OS error ' + IntToStr(LReplaceError) + ')');
     end
     else
-      Need(not FileExists(APath) and RenameFile(LStage, APath), 'Cannot publish Studio record');
+      Need(not FileExists(NativeFilePath(APath)) and
+        RenameFile(NativeFilePath(LStage), NativeFilePath(APath)), 'Cannot publish Studio record');
   finally
-    if FileExists(LStage) then
+    if FileExists(NativeFilePath(LStage)) then
     begin
-      SysUtils.DeleteFile(LStage);
+      SysUtils.DeleteFile(NativeFilePath(LStage));
     end;
   end;
 end;
@@ -454,14 +464,24 @@ begin
   WriteStudioData(APath, WriteNativeJSON(AObject, 1048576), True);
 end;
 
-procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes);
-var
-  LText: RawByteString;
+function StudioBinaryText(const ABytes: TAudioBytes; const AMaximumBytes: Integer): RawByteString;
 begin
-  Need((Length(ABytes) > 0) and (Length(ABytes) <= 1048576), 'Studio binary checkpoint exceeds byte bound');
-  SetLength(LText, Length(ABytes));
-  Move(ABytes[0], LText[1], Length(ABytes));
-  WriteStudioData(APath, LText, True);
+  Need((AMaximumBytes > 0) and (AMaximumBytes <= 64 * 1024 * 1024) and
+    (Length(ABytes) > 0) and (Length(ABytes) <= AMaximumBytes), 'Studio binary checkpoint exceeds byte bound');
+  SetLength(Result, Length(ABytes));
+  Move(ABytes[0], Result[1], Length(ABytes));
+end;
+
+procedure ReplaceStudioBinary(const APath: String; const ABytes: TAudioBytes;
+  const AMaximumBytes: Integer);
+begin
+  WriteStudioData(APath, StudioBinaryText(ABytes, AMaximumBytes), True, AMaximumBytes);
+end;
+
+procedure WriteStudioBinaryNew(const APath: String; const ABytes: TAudioBytes;
+  const AMaximumBytes: Integer);
+begin
+  WriteStudioData(APath, StudioBinaryText(ABytes, AMaximumBytes), False, AMaximumBytes);
 end;
 
 function Terminal(const AStatus: String): Boolean;

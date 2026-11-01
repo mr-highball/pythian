@@ -63,7 +63,7 @@ uses
   pythian.hash,
   pythian.wave,
   pythian.wave.read,
-  pythian.analysis.wave;
+  pythian.analysis.wave, pythian.tools.path;
 
 function AnalyzeWaveSource(const AFileName: String; const AOptions: TAnalysisOptions;
   out AInfo: TWaveAnalysisInfo): TAudioFeatures;
@@ -77,7 +77,7 @@ var
   LWork: Int64;
 begin
   AInfo := Default(TWaveAnalysisInfo);
-  LStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  LStream := TFileStream.Create(NativeFilePath(AFileName), fmOpenRead or fmShareDenyWrite);
   try
     LSize := LStream.Size;
     if (LSize < 12) or (LSize > MaximumWaveBytes) then
@@ -122,7 +122,7 @@ function ReadFileBytes(const AFileName: String; const AMaximumBytes: Integer): T
 var
   LStream: TFileStream;
 begin
-  LStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  LStream := TFileStream.Create(NativeFilePath(AFileName), fmOpenRead or fmShareDenyWrite);
   try
     if (AMaximumBytes < 0) or (LStream.Size > AMaximumBytes) then
     begin
@@ -143,7 +143,7 @@ procedure WriteFileBytes(const AFileName: String; const ABytes: TAudioBytes);
 var
   LStream: TFileStream;
 begin
-  LStream := TFileStream.Create(AFileName, fmCreate);
+  LStream := TFileStream.Create(NativeFilePath(AFileName), fmCreate);
   try
     if Length(ABytes) > 0 then
     begin
@@ -172,7 +172,7 @@ var
   LBytes: TAudioBytes;
   LHash: String;
 begin
-  LStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  LStream := TFileStream.Create(NativeFilePath(AFileName), fmOpenRead or fmShareDenyWrite);
   try
     if (LStream.Size < 12) or (LStream.Size > MaximumWaveBytes) then
     begin
@@ -192,7 +192,7 @@ procedure WriteTextFile(const AFileName: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin
-  LStream := TFileStream.Create(AFileName, fmCreate);
+  LStream := TFileStream.Create(NativeFilePath(AFileName), fmCreate);
   try
     if Length(AText) > 0 then
     begin

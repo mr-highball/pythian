@@ -35,11 +35,15 @@ uses
   wfc_music_voices_graph, wfc_music_ensemble_graph,
   pythian.instrument.recipe, pythian.mix.recipe, pythian.bus,
   pythian.music.form, pythian.music.controls,
-  pythian.wfc.percussion, pythian.wfc.instrumental.stream;
+  pythian.wfc.percussion, pythian.wfc.instrumental.stream,
+  pythian.wfc.musical.corpus, pythian.music.selection;
 
 const
   MaximumSemanticStyleBytes = 32 * 1024 * 1024;
-  MaximumSemanticStyleRuns = 256;
+  MaximumSemanticStyleSources = 128;
+  MaximumSemanticStyleRuns = 4096;
+  MaximumSemanticStyleObservations = 262144;
+  MaximumSemanticStyleLearningWork = 512 * 1024 * 1024;
   MaximumSemanticStyleProviders = 15;
 
 type
@@ -52,11 +56,15 @@ type
     Split: TSemanticSplit;
     Exposure: TSemanticExposures;
     SampleRate: Integer;
-    FrameCount: Integer;
+    FrameCount: Int64;
     ExternalRequirement: String;
     { Direct mapping of this prepared asset to a contiguous original interval.
       PreparationEvidence retains the caller's transformation/audit record. }
     OriginSha256: String;
+    { Actual immutable parent metadata identity when the full parent payload was
+      not hashed. It may also accompany a known content hash. Never substitute
+      this metadata identity into OriginSha256. Geometry remains original time. }
+    OriginMetadataIdentity: String;
     OriginSampleRate: Integer;
     OriginFrameCount: Int64;
     OriginStartFrame: Int64;
@@ -80,11 +88,11 @@ type
     Identity: String;
     ProposalPolicy: String;
     RoleOrigins: TLayerNames;
-    StartFrame: Integer;
-    EndFrame: Integer;
+    StartFrame: Int64;
+    EndFrame: Int64;
     { Exactly the uncovered frames since this source's preceding run, or zero
       for its first run. Runs never concatenate across a gap or source. }
-    GapBeforeFrames: Integer;
+    GapBeforeFrames: Int64;
     TicksPerQuarter: Integer;
     { Preserve the original quantizer's fractional sample phase at a cropped
       contribution. Token grids remain relative to this observed run. }
@@ -119,6 +127,17 @@ type
     Expression: TMusicalExpressions;
     Form: TMusicForm;
   end;
+  TSemanticCorpusEvidence = record
+    { Empty revision means no single-corpus claim. Blends retain complete actual
+      receipts in their parents rather than inventing a combined coverage. }
+    RevisionIdentity: String;
+    Sources: TMusicalCorpusSources;
+    Selections: TMusicalCorpusSelections;
+    Coverage: TMusicalCorpusCoverages;
+    RoleNames: TLayerNames;
+    ProviderNames: TLayerNames;
+    Contributions: TMusicalCorpusContributions;
+  end;
   TSemanticStyleDefinition = record
     Providers: TSemanticProviders;
     Sources: TSemanticSources;
@@ -132,6 +151,7 @@ type
     { Actual provider order: harmony, rhythm, pitched roles, joint context,
       percussion. Models stay in Providers; this contains no borrowed objects. }
     Instrumental: TSemanticInstrumentalRecipe;
+    Corpus: TSemanticCorpusEvidence;
   end;
   TSemanticRepeatPolicy = (srpMaximum, srpAddExplicit);
   TSemanticSoundRepeatPolicy = (ssrpReject, ssrpAddExact);
@@ -265,13 +285,18 @@ uses
   pythian.text, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
   pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text,
-  wfc_music_ensemble, wfc_music_sequence;
+  wfc_music_ensemble, wfc_music_sequence, pythian.music.pattern;
 
 type
   TOriginPosition = record
     Frame: Int64;
-    Fraction: Integer;
-    Divisor: Integer;
+    Fraction: Int64;
+    Divisor: Int64;
+  end;
+  TStyleTokenTable = record
+    Values: TWfcModelTokens;
+    Sorted: array of Integer;
+    ByteCount: Integer;
   end;
   TStyleIO = class
   private
@@ -290,7 +315,7 @@ type
     function Q(const AValue: Int64 = 0): Int64;
     function R(const AValue: Double): Double;
     function Count(const AValue, AMaximum: Integer): Integer;
-    function Text(const AValue: String = ''): String;
+    function Text(const AValue: String = ''; const AMaximum: Integer = 1048576): String;
     function Blob(const AValue: TAudioBytes;
       const AMaximum: Integer = MaximumSemanticStyleBytes): TAudioBytes;
     function Bytes: TAudioBytes;
@@ -481,17 +506,19 @@ begin
   end;
 end;
 
-function TStyleIO.Text(const AValue: String): String;
+function TStyleIO.Text(const AValue: String; const AMaximum: Integer): String;
 var
   LBytes: TAudioBytes;
 begin
   LBytes := nil;
   if not FReading then
   begin
-    LBytes := EncodeUTF8Text(TScalarText(AValue), 1024 * 1024, True, True);
+    LBytes := EncodeUTF8Text(TScalarText(AValue), AMaximum, True, True);
+    Blob(LBytes, AMaximum);
+    Exit(AValue);
   end;
-  LBytes := Blob(LBytes);
-  Result := String(DecodeUTF8Text(LBytes, 1024 * 1024, True, True));
+  LBytes := Blob(LBytes, AMaximum);
+  Result := String(DecodeUTF8Text(LBytes, AMaximum, True, True));
 end;
 
 function TStyleIO.Bytes: TAudioBytes;
@@ -696,6 +723,114 @@ begin
   end;
 end;
 
+function StyleTokenIndex(var ATable: TStyleTokenTable; const AToken: String;
+  const AInsert: Boolean): Integer;
+var
+  LLow: Integer;
+  LHigh: Integer;
+  LMiddle: Integer;
+  I: Integer;
+  LBytes: TAudioBytes;
+begin
+  LLow := 0;
+  LHigh := Length(ATable.Sorted);
+  while LLow < LHigh do
+  begin
+    LMiddle := LLow + (LHigh - LLow) div 2;
+    if ATable.Values[ATable.Sorted[LMiddle]] < AToken then LLow := LMiddle + 1
+    else LHigh := LMiddle;
+  end;
+  if (LLow < Length(ATable.Sorted)) and
+    (ATable.Values[ATable.Sorted[LLow]] = AToken) then Exit(ATable.Sorted[LLow]);
+  Result := -1;
+  if not AInsert then Exit;
+  if Length(ATable.Values) >= 8192 then
+    raise EAudio.Create('Retained semantic token dictionary exceeds 8192 meanings');
+  LBytes := EncodeUTF8Text(AToken, 1048576, False, True);
+  if ATable.ByteCount > MaximumSemanticStyleBytes - Length(LBytes) - 4 then
+    raise EAudio.Create('Retained semantic token dictionary exceeds the archive byte budget');
+  Inc(ATable.ByteCount, Length(LBytes) + 4);
+  Result := Length(ATable.Values);
+  SetLength(ATable.Values, Result + 1);
+  ATable.Values[Result] := AToken;
+  SetLength(ATable.Sorted, Result + 1);
+  for I := Result downto LLow + 1 do ATable.Sorted[I] := ATable.Sorted[I - 1];
+  ATable.Sorted[LLow] := Result;
+end;
+
+procedure CorpusEvidenceIO(const AIO: TStyleIO; var AEvidence: TSemanticCorpusEvidence);
+var
+  I: Integer;
+  procedure Labels(var ALabels: TMusicClassifications);
+  var
+    J: Integer;
+  begin
+    SetLength(ALabels, AIO.Count(Length(ALabels), MaximumMusicClassifications));
+    for J := 0 to High(ALabels) do
+    begin
+      ALabels[J] := AIO.Text(String(ALabels[J]), MaximumMusicClassificationBytes);
+      ValidateMusicClassification(ALabels[J]);
+    end;
+  end;
+begin
+  AEvidence.RevisionIdentity := AIO.Text(AEvidence.RevisionIdentity);
+  SetLength(AEvidence.Sources, AIO.Count(Length(AEvidence.Sources), MaximumMusicalCorpusSources));
+  for I := 0 to High(AEvidence.Sources) do
+    with AEvidence.Sources[I] do
+    begin
+      Sha256 := AIO.Text(Sha256);
+      OriginIdentity := AIO.Text(OriginIdentity);
+      GroupId := AIO.Text(GroupId);
+      SampleRate := AIO.N(SampleRate);
+      FrameCount := AIO.Q(FrameCount);
+      TrainingWeight := AIO.Count(TrainingWeight, 16);
+      Labels(Classifications);
+    end;
+  SetLength(AEvidence.Selections, AIO.Count(Length(AEvidence.Selections), MaximumMusicalCorpusSelections));
+  for I := 0 to High(AEvidence.Selections) do
+    with AEvidence.Selections[I] do
+    begin
+      SourceIndex := AIO.N(SourceIndex);
+      StartFrame := AIO.Q(StartFrame);
+      EndFrame := AIO.Q(EndFrame);
+      Labels(Classifications);
+    end;
+  SetLength(AEvidence.Coverage, AIO.Count(Length(AEvidence.Coverage), MaximumMusicalCorpusSources));
+  for I := 0 to High(AEvidence.Coverage) do
+    with AEvidence.Coverage[I] do
+    begin
+      IncludedFrames := AIO.Q(IncludedFrames);
+      ExcludedFrames := AIO.Q(ExcludedFrames);
+      ProcessedFrames := AIO.Q(ProcessedFrames);
+      ModelUsedFrames := AIO.Q(ModelUsedFrames);
+      ProposedFrames := AIO.Q(ProposedFrames);
+      BudgetOmittedFrames := AIO.Q(BudgetOmittedFrames);
+      UnmodeledFrames := AIO.Q(UnmodeledFrames);
+      ModelCells := AIO.N(ModelCells);
+      WeightedCells := AIO.N(WeightedCells);
+      Samples := AIO.N(Samples);
+      WeightedSamples := AIO.N(WeightedSamples);
+    end;
+  SetLength(AEvidence.RoleNames, AIO.Count(Length(AEvidence.RoleNames), 6));
+  for I := 0 to High(AEvidence.RoleNames) do AEvidence.RoleNames[I] := AIO.Text(AEvidence.RoleNames[I]);
+  SetLength(AEvidence.ProviderNames, AIO.Count(Length(AEvidence.ProviderNames), MaximumSemanticStyleProviders));
+  for I := 0 to High(AEvidence.ProviderNames) do AEvidence.ProviderNames[I] := AIO.Text(AEvidence.ProviderNames[I]);
+  SetLength(AEvidence.Contributions,
+    AIO.Count(Length(AEvidence.Contributions), MaximumSemanticStyleRuns));
+  for I := 0 to High(AEvidence.Contributions) do
+    with AEvidence.Contributions[I] do
+    begin
+      Identity := AIO.Text(Identity);
+      SourceIndex := AIO.N(SourceIndex);
+      RunIndex := AIO.N(RunIndex);
+      FirstCell := AIO.N(FirstCell);
+      CellCount := AIO.N(CellCount);
+      StartFrame := AIO.Q(StartFrame);
+      EndFrame := AIO.Q(EndFrame);
+      TrainingWeight := AIO.Count(TrainingWeight, 16);
+    end;
+end;
+
 procedure DefinitionIO(const AIO: TStyleIO; var ADefinition: TSemanticStyleDefinition);
 var
   LIndex: Integer;
@@ -703,12 +838,18 @@ var
   LCell: Integer;
   LExposure: TSemanticExposure;
   LFlags: Integer;
+  LTables: array of TStyleTokenTable;
+  LToken: String;
+  LTokenIndex: Integer;
+  LCount: Integer;
+  LVisited: Integer;
 begin
   SetLength(ADefinition.Providers, AIO.Count(Length(ADefinition.Providers), MaximumSemanticStyleProviders));
   for LIndex := 0 to High(ADefinition.Providers) do
   begin
     ContractIO(AIO, ADefinition.Providers[LIndex].Contract);
-    ADefinition.Providers[LIndex].ModelText := AIO.Text(ADefinition.Providers[LIndex].ModelText);
+    ADefinition.Providers[LIndex].ModelText := AIO.Text(ADefinition.Providers[LIndex].ModelText,
+      16 * 1024 * 1024);
     ADefinition.Providers[LIndex].ExtractionPolicy := AIO.Text(ADefinition.Providers[LIndex].ExtractionPolicy);
     ADefinition.Providers[LIndex].VocabularySha256 := AIO.Text(ADefinition.Providers[LIndex].VocabularySha256);
     ADefinition.Providers[LIndex].VocabularyAncestor := AIO.Text(ADefinition.Providers[LIndex].VocabularyAncestor);
@@ -729,7 +870,39 @@ begin
       end;
     end;
   end;
-  SetLength(ADefinition.Sources, AIO.Count(Length(ADefinition.Sources), 32));
+  { Big Boss: only encounter-order values are serialized. The host's lexical
+    ordering is an internal lookup index, so UTF-8/UTF-16 ordering differences
+    cannot alter the archive. Zero-weight parent observations remain retained. }
+  SetLength(LTables, Length(ADefinition.Providers));
+  LVisited := 0;
+  if not AIO.FReading then
+    for LIndex := 0 to High(ADefinition.Runs) do
+      for LItem := 0 to High(ADefinition.Runs[LIndex].Tokens) do
+      begin
+        if LItem >= Length(LTables) then raise EAudio.Create('Retained run has an absent provider');
+        Inc(LVisited, Length(ADefinition.Runs[LIndex].Tokens[LItem]));
+        if LVisited > MaximumSemanticStyleObservations * Length(LTables) then
+          raise EAudio.Create('Retained semantic observations exceed the archive capacity');
+        for LCell := 0 to High(ADefinition.Runs[LIndex].Tokens[LItem]) do
+        begin
+          if LCell mod 256 = 0 then
+            ReportWork(AIO.FProgress, 'semantic_archive_dictionary', wuItems, LVisited, 0);
+          StyleTokenIndex(LTables[LItem], ADefinition.Runs[LIndex].Tokens[LItem][LCell], True);
+        end;
+      end;
+  for LItem := 0 to High(LTables) do
+  begin
+    LCount := AIO.Count(Length(LTables[LItem].Values), 8192);
+    for LCell := 0 to LCount - 1 do
+    begin
+      LToken := '';
+      if not AIO.FReading then LToken := LTables[LItem].Values[LCell];
+      LToken := AIO.Text(LToken);
+      if AIO.FReading and (StyleTokenIndex(LTables[LItem], LToken, True) <> LCell) then
+        raise EAudio.Create('Semantic token dictionary repeats a meaning');
+    end;
+  end;
+  SetLength(ADefinition.Sources, AIO.Count(Length(ADefinition.Sources), MaximumSemanticStyleSources));
   for LIndex := 0 to High(ADefinition.Sources) do
   begin
     ADefinition.Sources[LIndex].Sha256 := AIO.Text(ADefinition.Sources[LIndex].Sha256);
@@ -750,9 +923,10 @@ begin
       end;
     end;
     ADefinition.Sources[LIndex].SampleRate := AIO.N(ADefinition.Sources[LIndex].SampleRate);
-    ADefinition.Sources[LIndex].FrameCount := AIO.N(ADefinition.Sources[LIndex].FrameCount);
+    ADefinition.Sources[LIndex].FrameCount := AIO.Q(ADefinition.Sources[LIndex].FrameCount);
     ADefinition.Sources[LIndex].ExternalRequirement := AIO.Text(ADefinition.Sources[LIndex].ExternalRequirement);
     ADefinition.Sources[LIndex].OriginSha256 := AIO.Text(ADefinition.Sources[LIndex].OriginSha256);
+    ADefinition.Sources[LIndex].OriginMetadataIdentity := AIO.Text(ADefinition.Sources[LIndex].OriginMetadataIdentity);
     ADefinition.Sources[LIndex].OriginSampleRate := AIO.N(ADefinition.Sources[LIndex].OriginSampleRate);
     ADefinition.Sources[LIndex].OriginFrameCount := AIO.Q(ADefinition.Sources[LIndex].OriginFrameCount);
     ADefinition.Sources[LIndex].OriginStartFrame := AIO.Q(ADefinition.Sources[LIndex].OriginStartFrame);
@@ -770,9 +944,9 @@ begin
       AIO.Count(Length(ADefinition.Runs[LIndex].RoleOrigins), 6));
     for LItem := 0 to High(ADefinition.Runs[LIndex].RoleOrigins) do
       ADefinition.Runs[LIndex].RoleOrigins[LItem] := AIO.Text(ADefinition.Runs[LIndex].RoleOrigins[LItem]);
-    ADefinition.Runs[LIndex].StartFrame := AIO.N(ADefinition.Runs[LIndex].StartFrame);
-    ADefinition.Runs[LIndex].EndFrame := AIO.N(ADefinition.Runs[LIndex].EndFrame);
-    ADefinition.Runs[LIndex].GapBeforeFrames := AIO.N(ADefinition.Runs[LIndex].GapBeforeFrames);
+    ADefinition.Runs[LIndex].StartFrame := AIO.Q(ADefinition.Runs[LIndex].StartFrame);
+    ADefinition.Runs[LIndex].EndFrame := AIO.Q(ADefinition.Runs[LIndex].EndFrame);
+    ADefinition.Runs[LIndex].GapBeforeFrames := AIO.Q(ADefinition.Runs[LIndex].GapBeforeFrames);
     ADefinition.Runs[LIndex].TicksPerQuarter := AIO.N(ADefinition.Runs[LIndex].TicksPerQuarter);
     ADefinition.Runs[LIndex].ClockStartTick := AIO.N(ADefinition.Runs[LIndex].ClockStartTick);
     ADefinition.Runs[LIndex].ClockRounding := TFrameRounding(AIO.Count(
@@ -809,10 +983,16 @@ begin
     end;
     for LItem := 0 to High(ADefinition.Runs[LIndex].Tokens) do
     begin
-      SetLength(ADefinition.Runs[LIndex].Tokens[LItem], AIO.Count(Length(ADefinition.Runs[LIndex].Tokens[LItem]), 1024));
+      SetLength(ADefinition.Runs[LIndex].Tokens[LItem], AIO.Count(
+        Length(ADefinition.Runs[LIndex].Tokens[LItem]), MaximumSemanticStyleObservations));
+      if LItem >= Length(LTables) then raise EAudio.Create('Observed run has an absent provider');
       for LCell := 0 to High(ADefinition.Runs[LIndex].Tokens[LItem]) do
       begin
-        ADefinition.Runs[LIndex].Tokens[LItem][LCell] := AIO.Text(ADefinition.Runs[LIndex].Tokens[LItem][LCell]);
+        LTokenIndex := 0;
+        if not AIO.FReading then
+          LTokenIndex := StyleTokenIndex(LTables[LItem], ADefinition.Runs[LIndex].Tokens[LItem][LCell], False);
+        LTokenIndex := AIO.Count(LTokenIndex, Length(LTables[LItem].Values) - 1);
+        ADefinition.Runs[LIndex].Tokens[LItem][LCell] := LTables[LItem].Values[LTokenIndex];
       end;
     end;
   end;
@@ -858,6 +1038,7 @@ begin
     ADefinition.Sounds[LIndex].Envelope := AIO.Blob(ADefinition.Sounds[LIndex].Envelope);
   end;
   InstrumentalIO(AIO, ADefinition.Instrumental);
+  CorpusEvidenceIO(AIO, ADefinition.Corpus);
 end;
 
 function DefinitionBytes(const ADefinition: TSemanticStyleDefinition;
@@ -1034,10 +1215,33 @@ begin
   end;
 end;
 
+function SameOrigin(const ALeft, ARight: TSemanticSource): Boolean;
+begin
+  if (ALeft.OriginSha256 <> '') and (ARight.OriginSha256 <> '') then
+    Result := ALeft.OriginSha256 = ARight.OriginSha256
+  else
+    Result := (ALeft.OriginMetadataIdentity <> '') and
+      (ALeft.OriginMetadataIdentity = ARight.OriginMetadataIdentity);
+end;
+
+function PossiblySameOrigin(const ALeft, ARight: TSemanticSource): Boolean;
+begin
+  Result := SameOrigin(ALeft, ARight) or
+    ((ALeft.GroupId = ARight.GroupId) and
+      ((ALeft.OriginSha256 = '') or (ARight.OriginSha256 = '')));
+end;
+
 procedure ValidateOriginGeometry(const ASource: TSemanticSource);
 begin
+  RequireExactTimingCounter(ASource.FrameCount, 'Semantic prepared frames');
+  RequireExactTimingCounter(ASource.OriginFrameCount, 'Semantic original frames');
+  RequireExactTimingCounter(ASource.OriginStartFrame, 'Semantic original start');
+  RequireExactTimingCounter(ASource.OriginEndFrame, 'Semantic original end');
   CheckIdentity(ASource.Sha256);
-  CheckIdentity(ASource.OriginSha256);
+  Require((ASource.OriginSha256 <> '') or (ASource.OriginMetadataIdentity <> ''),
+    'Semantic preparation needs actual parent content or immutable metadata identity');
+  if ASource.OriginSha256 <> '' then CheckIdentity(ASource.OriginSha256);
+  if ASource.OriginMetadataIdentity <> '' then CheckIdentity(ASource.OriginMetadataIdentity);
   ValidateAudioFormat(ASource.SampleRate, 1);
   ValidateAudioFormat(ASource.OriginSampleRate, 1);
   Require((ASource.FrameCount > 0) and (ASource.OriginFrameCount > 0) and
@@ -1066,11 +1270,12 @@ begin
   ValidateOriginGeometry(ASource);
   LIO := TStyleIO.Create(nil, False, AProgress);
   try
-    LIO.Text('pythian.semantic.preparation');
+    LIO.Text('pythian.semantic.preparation.v2');
     LIO.Text(ASource.Sha256);
     LIO.N(ASource.SampleRate);
-    LIO.N(ASource.FrameCount);
+    LIO.Q(ASource.FrameCount);
     LIO.Text(ASource.OriginSha256);
+    LIO.Text(ASource.OriginMetadataIdentity);
     LIO.N(ASource.OriginSampleRate);
     LIO.Q(ASource.OriginFrameCount);
     LIO.Q(ASource.OriginStartFrame);
@@ -1090,23 +1295,18 @@ begin
     'Semantic preparation evidence or mapped source binding differs');
 end;
 
-function MapOriginPosition(const ASource: TSemanticSource; const AFrame: Integer): TOriginPosition;
+function MapOriginPosition(const ASource: TSemanticSource; const AFrame: Int64): TOriginPosition;
 var
   LSpan: Int64;
-  LRemainderProduct: Int64;
+  LWhole: Int64;
 begin
   LSpan := ASource.OriginEndFrame - ASource.OriginStartFrame;
-  { Both products are bounded without multiplying a long original interval by
-    the complete prepared frame index. The remainder factors fit Integer. }
-  LRemainderProduct := (LSpan mod ASource.FrameCount) * AFrame;
-  Result.Frame := ASource.OriginStartFrame +
-    (LSpan div ASource.FrameCount) * AFrame +
-    LRemainderProduct div ASource.FrameCount;
-  Result.Fraction := LRemainderProduct mod ASource.FrameCount;
+  DivideTimingProduct(LSpan, AFrame, ASource.FrameCount, LWhole, Result.Fraction);
+  Result.Frame := ASource.OriginStartFrame + LWhole;
   Result.Divisor := ASource.FrameCount;
 end;
 
-function MapOriginFrame(const ASource: TSemanticSource; const AFrame: Integer;
+function MapOriginFrame(const ASource: TSemanticSource; const AFrame: Int64;
   const ARoundUp: Boolean): Int64;
 var
   LPosition: TOriginPosition;
@@ -1127,8 +1327,8 @@ begin
   end
   else
   begin
-    Result := Int64(ALeft.Fraction) * ARight.Divisor <
-      Int64(ARight.Fraction) * ALeft.Divisor;
+    Result := CompareTimingFractions(ALeft.Fraction, ALeft.Divisor,
+      ARight.Fraction, ARight.Divisor) < 0;
   end;
 end;
 
@@ -1680,11 +1880,11 @@ begin
   ReportWork(AProgress, 'semantic_embedded_sound_parents', wuItems, 2, 2, ADepth);
 end;
 
-function SemanticGcd(const ALeft, ARight: Integer): Integer;
+function SemanticGcd(const ALeft, ARight: Int64): Int64;
 var
-  LLeft: Integer;
-  LRight: Integer;
-  LRemainder: Integer;
+  LLeft: Int64;
+  LRight: Int64;
+  LRemainder: Int64;
 begin
   LLeft := ALeft;
   LRight := ARight;
@@ -1699,12 +1899,12 @@ end;
 
 procedure WriteOriginPosition(const AIO: TStyleIO; const APosition: TOriginPosition);
 var
-  LGcd: Integer;
+  LGcd: Int64;
 begin
   LGcd := SemanticGcd(APosition.Fraction, APosition.Divisor);
   AIO.Q(APosition.Frame);
-  AIO.N(APosition.Fraction div LGcd);
-  AIO.N(APosition.Divisor div LGcd);
+  AIO.Q(APosition.Fraction div LGcd);
+  AIO.Q(APosition.Divisor div LGcd);
 end;
 
 function RunEvidenceIdentity(const ADefinition: TSemanticStyleDefinition;
@@ -1728,8 +1928,17 @@ begin
   LIO := TStyleIO.Create(nil, False, AProgress);
   LClock := nil;
   try
-    LIO.Text('semantic.original.provider.evidence.v1');
-    LIO.Text(LSource.OriginSha256);
+    LIO.Text('semantic.original.provider.evidence.v2');
+    if LSource.OriginSha256 <> '' then
+    begin
+      LIO.Text('content-sha256');
+      LIO.Text(LSource.OriginSha256);
+    end
+    else
+    begin
+      LIO.Text('metadata-snapshot');
+      LIO.Text(LSource.OriginMetadataIdentity);
+    end;
     LIO.Text(ADefinition.Providers[AProvider].ExtractionPolicy);
     LIO.Text(ADefinition.Providers[AProvider].VocabularySha256);
     LIO.N(LSource.SampleRate);
@@ -1769,7 +1978,7 @@ begin
         LClock.FrameAtTick(LRun.ClockStartTick, LSource.SampleRate, LRun.ClockRounding);
       Require((LFrame >= LRun.StartFrame) and (LFrame <= LRun.EndFrame),
         'Provider evidence boundary exceeds original run');
-      WriteOriginPosition(LIO, MapOriginPosition(LSource, Integer(LFrame)));
+      WriteOriginPosition(LIO, MapOriginPosition(LSource, LFrame));
       if LCell < Length(LRun.Tokens[AProvider]) then
       begin
         LIO.Text(LRun.Tokens[AProvider][LCell]);
@@ -1863,6 +2072,115 @@ begin
   end;
 end;
 
+procedure ValidateCorpusEvidence(const ADefinition: TSemanticStyleDefinition;
+  const AInherited: Boolean; const AProgress: TWorkProgressCallback);
+var
+  LEvidence: TSemanticCorpusEvidence;
+  LUsed: TMusicalCorpusCoverages;
+  LVocabularies: TMusicalProviderVocabularies;
+  LContribution: TMusicalCorpusContribution;
+  LSource: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  LEvidence := ADefinition.Corpus;
+  if LEvidence.RevisionIdentity = '' then
+  begin
+    Require((Length(LEvidence.Sources) = 0) and (Length(LEvidence.Selections) = 0) and
+      (Length(LEvidence.Coverage) = 0) and (Length(LEvidence.Contributions) = 0) and
+      (Length(LEvidence.RoleNames) = 0) and (Length(LEvidence.ProviderNames) = 0),
+      'Corpus context requires its actual revision identity');
+    Exit;
+  end;
+  CheckIdentity(LEvidence.RevisionIdentity);
+  Require(ADefinition.Instrumental.Enabled and not AInherited and
+    (Length(LEvidence.Sources) = Length(ADefinition.Sources)) and
+    (Length(LEvidence.Coverage) = Length(LEvidence.Sources)) and
+    (Length(LEvidence.Contributions) = Length(ADefinition.Runs)) and
+    (Length(LEvidence.RoleNames) = Length(ADefinition.VoiceRanges)) and
+    (Length(LEvidence.ProviderNames) = Length(ADefinition.Providers)),
+    'Corpus context differs from its complete instrumental source snapshot');
+  SetLength(LUsed, Length(LEvidence.Sources));
+  for I := 0 to High(LEvidence.Sources) do
+    with LEvidence.Sources[I] do
+    begin
+      Require((Sha256 = ADefinition.Sources[I].Sha256) and
+        (GroupId = ADefinition.Sources[I].GroupId) and
+        (SampleRate = ADefinition.Sources[I].SampleRate) and
+        (FrameCount = ADefinition.Sources[I].FrameCount) and
+        (TrainingWeight >= 1) and (TrainingWeight <= 16),
+        'Corpus source context changes actual geometry or teaching influence');
+      if OriginIdentity <> '' then
+        Require(Pos(OriginIdentity, String(DecodeUTF8Text(
+          ADefinition.Sources[I].PreparationEvidence, 65536, True, True))) > 0,
+          'Corpus source context loses the independent excerpt origin');
+    end;
+  for I := 0 to High(LEvidence.RoleNames) do
+    Require(LEvidence.RoleNames[I] = ADefinition.Providers[I + 2].Contract.RoleId,
+      'Corpus context changes the actual ordered musical roles');
+  for I := 0 to High(LEvidence.Selections) do
+    with LEvidence.Selections[I] do
+    begin
+      Require((SourceIndex >= 0) and (SourceIndex < Length(LEvidence.Sources)),
+        'Corpus selection has an absent parent source');
+      Require((StartFrame >= 0) and (EndFrame > StartFrame) and
+        (EndFrame <= LEvidence.Sources[SourceIndex].FrameCount),
+        'Corpus selection is outside its actual source clock');
+      for J := 0 to I - 1 do
+        Require((LEvidence.Selections[J].SourceIndex <> SourceIndex) or
+          (LEvidence.Selections[J].StartFrame >= EndFrame) or
+          (StartFrame >= LEvidence.Selections[J].EndFrame),
+          'Corpus selected context overlaps its own teaching interval');
+      Inc(LUsed[SourceIndex].IncludedFrames, EndFrame - StartFrame);
+    end;
+  for I := 0 to High(LEvidence.Contributions) do
+  begin
+    ReportWork(AProgress, 'semantic_corpus_contributions', wuItems, I, Length(LEvidence.Contributions));
+    LContribution := LEvidence.Contributions[I];
+    LSource := LContribution.SourceIndex;
+    Require((LSource >= 0) and (LSource < Length(LEvidence.Sources)) and
+      (LContribution.RunIndex >= 0) and (LContribution.RunIndex < MaximumMusicalCorpusRuns) and
+      (LContribution.FirstCell >= 0), 'Corpus contribution has an absent source/proposal run');
+    Require((LContribution.Identity = ADefinition.Runs[I].Identity) and
+      (LSource = ADefinition.Runs[I].SourceIndex) and
+      (LContribution.StartFrame = ADefinition.Runs[I].StartFrame) and
+      (LContribution.EndFrame = ADefinition.Runs[I].EndFrame) and
+      (LContribution.CellCount = Length(ADefinition.Runs[I].Tokens[0])) and
+      (Int64(LContribution.FirstCell) * PitchPatternStepTicks = ADefinition.Runs[I].ClockStartTick) and
+      (LContribution.TrainingWeight = LEvidence.Sources[LSource].TrainingWeight) and
+      (LContribution.TrainingWeight = ADefinition.Runs[I].Weights[0]),
+      'Corpus contribution differs from its admitted sample/weight/clock');
+    Inc(LUsed[LSource].ModelUsedFrames, LContribution.EndFrame - LContribution.StartFrame);
+    Inc(LUsed[LSource].ModelCells, LContribution.CellCount);
+    Inc(LUsed[LSource].WeightedCells, LContribution.CellCount * LContribution.TrainingWeight);
+    Inc(LUsed[LSource].Samples);
+    Inc(LUsed[LSource].WeightedSamples, LContribution.TrainingWeight);
+  end;
+  for I := 0 to High(LEvidence.Coverage) do
+    with LEvidence.Coverage[I] do
+    begin
+      Require((IncludedFrames = LUsed[I].IncludedFrames) and
+        (ExcludedFrames = LEvidence.Sources[I].FrameCount - IncludedFrames) and
+        (ProcessedFrames <= IncludedFrames) and (ProcessedFrames >= ModelUsedFrames) and
+        (ProposedFrames <= ProcessedFrames) and (ProposedFrames >= ModelUsedFrames) and
+        (BudgetOmittedFrames = ProposedFrames - ModelUsedFrames) and
+        (UnmodeledFrames = ProcessedFrames - ModelUsedFrames) and
+        (ModelUsedFrames = LUsed[I].ModelUsedFrames) and
+        (ModelCells = LUsed[I].ModelCells) and (WeightedCells = LUsed[I].WeightedCells) and
+        (Samples = LUsed[I].Samples) and (WeightedSamples = LUsed[I].WeightedSamples),
+        'Corpus coverage contradicts selected, processed or actual model-used material');
+    end;
+  SetLength(LVocabularies, Length(ADefinition.Providers));
+  for I := 0 to High(LVocabularies) do
+  begin
+    LVocabularies[I].Key := LEvidence.ProviderNames[I];
+    LVocabularies[I].ModelSha256 := Sha256Bytes(EncodeUTF8Text(
+      ADefinition.Providers[I].ModelText, 16 * 1024 * 1024), AProgress);
+  end;
+  Require(MusicalCorpusRevisionIdentity(LVocabularies, LEvidence.Contributions) =
+    LEvidence.RevisionIdentity, 'Corpus revision differs from actual models and admitted observations');
+end;
+
 procedure ValidateDefinition(const AStyle: TSemanticStyle;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
   const AProgress: TWorkProgressCallback);
@@ -1870,12 +2188,11 @@ var
   LDefinition: TSemanticStyleDefinition;
   LLayers: TLearnedLayers;
   LModel: TWfcSequenceModel;
-  LSamples: TWfcSequenceSamples;
+  LSamples: TWeightedSequenceSamples;
   LSource: Integer;
   LRun: Integer;
   LProvider: Integer;
   LOther: Integer;
-  LWeight: Integer;
   LCount: Integer;
   LCell: Integer;
   LRule: Integer;
@@ -1883,7 +2200,8 @@ var
   LProjection: TLayerProjection;
   LFound: Boolean;
   LTotal: Int64;
-  LPreviousEnds: array of Integer;
+  LPreviousEnds: array of Int64;
+  LGap: Int64;
   LOriginStarts: array of TOriginPosition;
   LOriginEnds: array of TOriginPosition;
   LOtherSource: Integer;
@@ -1903,6 +2221,7 @@ var
   LVisited: Int64;
   LClockVisited: Int64;
   LConstraintVisited: Int64;
+  LRetainedEvidence: Boolean;
 begin
   LVisited := 0;
   LClockVisited := 0;
@@ -1931,13 +2250,22 @@ begin
       'Held-out source cannot contribute training or frozen vocabulary');
     for LOther := 0 to LSource - 1 do
     begin
-      Require(LDefinition.Sources[LOther].Sha256 <> LDefinition.Sources[LSource].Sha256,
-        'Duplicate semantic source identity');
+      Require((LDefinition.Sources[LOther].Sha256 <> LDefinition.Sources[LSource].Sha256) or
+        (LDefinition.Sources[LOther].PreparationSha256 <> LDefinition.Sources[LSource].PreparationSha256),
+        'Duplicate semantic prepared-source identity');
       Require((LDefinition.Sources[LOther].GroupId <> LDefinition.Sources[LSource].GroupId) or
         ((LDefinition.Sources[LOther].Split = LDefinition.Sources[LSource].Split) and
         (LDefinition.Sources[LOther].Exposure = LDefinition.Sources[LSource].Exposure)),
         'Recording group crosses declared split or hides exposure');
-      if LDefinition.Sources[LOther].OriginSha256 = LDefinition.Sources[LSource].OriginSha256 then
+      if (LDefinition.Sources[LSource].OriginMetadataIdentity <> '') and
+        (LDefinition.Sources[LSource].OriginMetadataIdentity =
+          LDefinition.Sources[LOther].OriginMetadataIdentity) and
+        (LDefinition.Sources[LSource].OriginSha256 <> '') and
+        (LDefinition.Sources[LOther].OriginSha256 <> '') then
+        Require(LDefinition.Sources[LSource].OriginSha256 =
+          LDefinition.Sources[LOther].OriginSha256,
+          'The same immutable parent metadata claims conflicting content hashes');
+      if SameOrigin(LDefinition.Sources[LOther], LDefinition.Sources[LSource]) then
       begin
         Require((LDefinition.Sources[LOther].GroupId = LDefinition.Sources[LSource].GroupId) and
           (LDefinition.Sources[LOther].OriginSampleRate = LDefinition.Sources[LSource].OriginSampleRate) and
@@ -1982,12 +2310,12 @@ begin
     end
     else if AStyle.FInheritedJoints then
     begin
-      LCount := LDefinition.Runs[LRun].StartFrame - LPreviousEnds[LSource];
-      if LCount < 0 then
+      LGap := LDefinition.Runs[LRun].StartFrame - LPreviousEnds[LSource];
+      if LGap < 0 then
       begin
-        LCount := 0;
+        LGap := 0;
       end;
-      Require(LDefinition.Runs[LRun].GapBeforeFrames = LCount,
+      Require(LDefinition.Runs[LRun].GapBeforeFrames = LGap,
         'Marginal run must retain its independent source-gap declaration');
     end
     else
@@ -2022,8 +2350,8 @@ begin
     end;
     ValidateRunClock(LDefinition.Runs[LRun], LDefinition.Sources[LSource],
       AProgress, LClockVisited);
-    if not AStyle.FInheritedJoints and
-      (Length(LDefinition.Runs[LRun].ProviderEvidence) = 0) then
+    LRetainedEvidence := Length(LDefinition.Runs[LRun].ProviderEvidence) > 0;
+    if not AStyle.FInheritedJoints and not LRetainedEvidence then
     begin
       SetLength(LDefinition.Runs[LRun].ProviderEvidence, Length(LDefinition.Providers));
       for LProvider := 0 to High(LDefinition.Providers) do
@@ -2036,7 +2364,7 @@ begin
       'Run requires retained provider evidence identities');
     for LProvider := 0 to High(LDefinition.Providers) do
     begin
-      if not AStyle.FInheritedJoints then
+      if not AStyle.FInheritedJoints and LRetainedEvidence then
       begin
         Require(LDefinition.Runs[LRun].ProviderEvidence[LProvider] =
           RunEvidenceIdentity(LDefinition, LRun, LProvider, AProgress),
@@ -2050,8 +2378,8 @@ begin
     for LOther := 0 to LRun - 1 do
     begin
       LOtherSource := LDefinition.Runs[LOther].SourceIndex;
-      if (LDefinition.Sources[LSource].OriginSha256 <>
-        LDefinition.Sources[LOtherSource].OriginSha256) or
+      if not PossiblySameOrigin(LDefinition.Sources[LSource],
+        LDefinition.Sources[LOtherSource]) or
         not OriginBefore(LOriginStarts[LRun], LOriginEnds[LOther]) or
         not OriginBefore(LOriginStarts[LOther], LOriginEnds[LRun]) then
       begin
@@ -2068,6 +2396,7 @@ begin
   ReportWork(AProgress, 'semantic_validate_runs', wuItems, Length(LDefinition.Runs), Length(LDefinition.Runs));
   ReportWork(AProgress, 'semantic_validate_clock_cells', wuItems,
     LClockVisited, LClockVisited);
+  ValidateCorpusEvidence(LDefinition, AStyle.FInheritedJoints, AProgress);
   LLayers := LoadLayers(LDefinition, AProgress);
   try
     ReportWork(AProgress, 'semantic_validate_providers', wuItems, 0, Length(LLayers));
@@ -2094,23 +2423,14 @@ begin
         end;
         Require(LFound, 'Provider source clock is not bound to the source ledger');
       end;
-      LSamples := nil;
-      LTotal := 0;
+      SetLength(LSamples, Length(LDefinition.Runs));
       for LRun := 0 to High(LDefinition.Runs) do
       begin
-        Inc(LTotal, Int64(Length(LDefinition.Runs[LRun].Tokens[LProvider])) * LDefinition.Runs[LRun].Weights[LProvider]);
-        Require((LTotal <= 4096) and
-          (LTotal * LTotal * (LLayers[LProvider].Model.Order + 1) <= 16777216),
-          'Semantic replay exceeds explicit learning-work budget');
-        for LWeight := 1 to LDefinition.Runs[LRun].Weights[LProvider] do
-        begin
-          LCount := Length(LSamples);
-          SetLength(LSamples, LCount + 1);
-          LSamples[LCount] := MakeWfcSequenceSample(LDefinition.Runs[LRun].Tokens[LProvider]);
-        end;
+        LSamples[LRun].Tokens := LDefinition.Runs[LRun].Tokens[LProvider];
+        LSamples[LRun].Weight := LDefinition.Runs[LRun].Weights[LProvider];
       end;
-      Require(Length(LSamples) > 0, 'Provider has no independently retained training runs');
-      LModel := LearnSequenceModelCorpus(LSamples, LLayers[LProvider].Model.Order);
+      LModel := LearnWeightedSequenceModel(LSamples, LLayers[LProvider].Model.Order,
+        MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork);
       try
         Require(EncodeWfcSequenceText(LModel) = LDefinition.Providers[LProvider].ModelText,
           'Saved model does not replay exact source/run contributions');
@@ -2282,7 +2602,7 @@ begin
     FParent := Copy(AParent);
     LIO := TStyleIO.Create(nil, False, AProgress);
     try
-      LIO.Text('pythian.semantic.style.v3');
+      LIO.Text('pythian.semantic.style.v4');
       LIO.N(FKind);
       LIO.Blob(AParent);
       LIO.Blob(FOtherParent);
@@ -2374,6 +2694,7 @@ begin
   LPolicy.Providers := nil;
   LPolicy.Sources := nil;
   LPolicy.Runs := nil;
+  LPolicy.Corpus := Default(TSemanticCorpusEvidence);
   LPolicy.Sounds := nil;
   if LPolicy.Instrumental.Enabled then
   begin
@@ -2414,7 +2735,7 @@ var
   LActive: Boolean;
   LStarts: array of TOriginPosition;
   LEnds: array of TOriginPosition;
-  LPrevious: array of Integer;
+  LPrevious: array of Int64;
   LSource: Integer;
   LOtherSource: Integer;
 begin
@@ -2439,12 +2760,14 @@ begin
       begin
         LOtherSource := ADefinition.Runs[LOther].SourceIndex;
         if (ADefinition.Runs[LOther].Weights[LProvider] = 0) or
-          (ADefinition.Sources[LSource].OriginSha256 <> ADefinition.Sources[LOtherSource].OriginSha256) or
+          not PossiblySameOrigin(ADefinition.Sources[LSource], ADefinition.Sources[LOtherSource]) or
           not OriginBefore(LStarts[LRun], LEnds[LOther]) or
           not OriginBefore(LStarts[LOther], LEnds[LRun]) then
         begin
           Continue;
         end;
+        Require(SameOrigin(ADefinition.Sources[LSource], ADefinition.Sources[LOtherSource]),
+          'Overlapping metadata-only parent origins remain unresolved; choose one contribution or supply the actual parent binding');
         Require(SameOriginPosition(LStarts[LRun], LStarts[LOther]) and
           SameOriginPosition(LEnds[LRun], LEnds[LOther]) and
           (ADefinition.Runs[LRun].ProviderEvidence[LProvider] =
@@ -2538,12 +2861,13 @@ begin
       begin
         Inc(LTotal, Int64(Length(ADefinition.Runs[LRun].Tokens[LProvider])) *
           ADefinition.Runs[LRun].Weights[LProvider]);
-        Require((LTotal <= 4096) and (LTotal * LTotal * (LOriginal.Order + 1) <= 16777216),
-          'Blend replay exceeds bounded actual learner work');
+        Require(LTotal <= MaximumSemanticStyleObservations,
+          'Blend replay exceeds its declared weighted-observation capacity');
         LSamples[LRun].Tokens := ADefinition.Runs[LRun].Tokens[LProvider];
         LSamples[LRun].Weight := ADefinition.Runs[LRun].Weights[LProvider];
       end;
-      LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order, 4096, AProgress);
+      LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order,
+        MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork);
       ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
       if AUnionVocabulary then
       begin
@@ -2672,7 +2996,7 @@ begin
           Continue;
         end;
         LOther := FindSoundSource(ASources, LRight.EvidenceAt(LSecond).Source.Sha256);
-        if (ASources[LSource].OriginSha256 = ASources[LOther].OriginSha256) and
+        if PossiblySameOrigin(ASources[LSource], ASources[LOther]) and
           (ASources[LSource].OriginStartFrame < ASources[LOther].OriginEndFrame) and
           (ASources[LOther].OriginStartFrame < ASources[LSource].OriginEndFrame) then
         begin
@@ -2888,6 +3212,7 @@ begin
   LDefinition.Sources := nil;
   LDefinition.Runs := nil;
   LDefinition.Sounds := nil;
+  LDefinition.Corpus := Default(TSemanticCorpusEvidence);
   ReportWork(AProgress, 'semantic_blend_providers', wuItems, 0, Length(LDefinition.Providers));
   for LProvider := 0 to High(LDefinition.Providers) do
   begin
@@ -2959,7 +3284,9 @@ begin
       LFound := -1;
       for LOther := 0 to High(LDefinition.Sources) do
       begin
-        if LDefinition.Sources[LOther].Sha256 = LDefinitions[LSide].Sources[LSource].Sha256 then
+        if (LDefinition.Sources[LOther].Sha256 = LDefinitions[LSide].Sources[LSource].Sha256) and
+          (LDefinition.Sources[LOther].PreparationSha256 =
+            LDefinitions[LSide].Sources[LSource].PreparationSha256) then
         begin
           Require(SourceIdentity(LDefinition.Sources[LOther]) =
             SourceIdentity(LDefinitions[LSide].Sources[LSource]), 'Shared source declarations conflict');
@@ -2970,7 +3297,7 @@ begin
       if LFound < 0 then
       begin
         LFound := Length(LDefinition.Sources);
-        Require(LFound < 32, 'Blend exceeds retained exposure ledger bound');
+        Require(LFound < MaximumSemanticStyleSources, 'Blend exceeds retained exposure ledger bound');
         SetLength(LDefinition.Sources, LFound + 1);
         LDefinition.Sources[LFound] := LDefinitions[LSide].Sources[LSource];
       end;
@@ -3107,7 +3434,7 @@ begin
   LRecipe := Default(TSemanticBlendRecipe);
   LResult := nil;
   try
-    Require(LIO.Text = 'pythian.semantic.style.v3', 'Unsupported semantic format; regenerate development artifact');
+    Require(LIO.Text = 'pythian.semantic.style.v4', 'Unsupported semantic format; regenerate development artifact');
     LKind := LIO.Count(0, 3);
     LParentBytes := LIO.Blob(nil);
     LOtherBytes := LIO.Blob(nil);

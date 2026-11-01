@@ -690,11 +690,234 @@ begin
   end;
 end;
 
+procedure MetadataOrigin;
+var
+  LDefinition: TSemanticStyleDefinition;
+  LStart: Int64;
+  LEnd: Int64;
 begin
+  LDefinition := Definition;
+  LDefinition.Sources[0].OriginSha256 := '';
+  LDefinition.Sources[0].OriginMetadataIdentity := StringOfChar('c', 64);
+  LDefinition.Sources[0].OriginFrameCount := 4000000000;
+  LDefinition.Sources[0].OriginStartFrame := 3000000000;
+  LDefinition.Sources[0].OriginEndFrame := Int64(3000000000) + LDefinition.Sources[0].FrameCount;
+  LDefinition.Sources[0].PreparationSha256 := SemanticPreparationIdentity(LDefinition.Sources[0]);
+  SemanticRunOriginRange(LDefinition.Sources[0], LDefinition.Runs[0], LStart, LEnd);
+  Check((LStart = Int64(3000000000) + LDefinition.Runs[0].StartFrame) and
+    (LEnd = Int64(3000000000) + LDefinition.Runs[0].EndFrame),
+    'Metadata-only parent loses original time or invents a content hash');
+  Replay(LDefinition);
+end;
+
+type
+  TCapacityObserver = class
+  public
+    CancelStage: String;
+    Calls: Integer;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TCapacityObserver.Observe(const AWork: TWorkProgress);
+begin
+  Inc(Calls);
+  if ((AWork.Stage = 'semantic_validate_runs') and (AWork.Done mod 128 = 0)) or
+    (AWork.Stage = 'semantic_validate_providers') or (Calls mod 1000000 = 0) then
+  begin
+    WriteLn('Corpus snapshot work ', AWork.Stage, ' ', AWork.Done, '/', AWork.Total);
+    {$ifndef pas2js}Flush(Output);{$endif}
+  end;
+  if AWork.Stage = CancelStage then raise EAbort.Create('Requested large-corpus cancellation');
+end;
+
+procedure Capacity;
+var
+  LBase: TSemanticStyleDefinition;
+  LSources: TMusicalCorpusSources;
+  LLedger: TSemanticSources;
+  LSelections: TMusicalCorpusSelections;
+  LRuns: TMusicalCorpusRuns;
+  LCorpus: TMusicalCorpus;
+  LStyle: TSemanticStyle;
+  LCaptured: TSemanticStyleDefinition;
+  LContext: TMusicalContextCell;
+  LCoverage: TMusicalCorpusCoverages;
+  LUsed: Int64;
+  LWeighted: Integer;
+  LRejected: Boolean;
+  LLoaded: TSemanticStyle;
+  LBytes: TAudioBytes;
+  LRevision: String;
+  LOriginalStart: Int64;
+  LOriginalEnd: Int64;
+  LObserver: TCapacityObserver;
+  LWeightedSamples: TWeightedSequenceSamples;
+  LModel: TWfcSequenceModel;
+  LActualContributions: TMusicalCorpusContributions;
+  LActualModels: TLayerModelTexts;
+  I: Integer;
+  R: Integer;
+  C: Integer;
+  P: Integer;
+begin
+  LBase := Definition;
+  SetLength(LSources, 64);
+  SetLength(LLedger, 64);
+  SetLength(LSelections, 64);
+  for I := 0 to 63 do
+  begin
+    LSources[I].Sha256 := LowerCase(IntToHex(I + 1, 64));
+    LSources[I].GroupId := 'authored-capacity-' + IntToStr(I);
+    LSources[I].SampleRate := 48000;
+    LSources[I].FrameCount := 4147200000;
+    LSources[I].TrainingWeight := 1;
+    LLedger[I] := Default(TSemanticSource);
+    LLedger[I].Sha256 := LSources[I].Sha256;
+    LLedger[I].GroupId := LSources[I].GroupId;
+    LLedger[I].Split := ssTraining;
+    LLedger[I].Exposure := [seTraining, seVocabulary];
+    LLedger[I].SampleRate := 48000;
+    LLedger[I].FrameCount := 4147200000;
+    LLedger[I].ExternalRequirement := 'Authored symbolic capacity geometry; no PCM or inference claim';
+    LLedger[I].OriginSha256 := LowerCase(IntToHex(I + 1001, 64));
+    LLedger[I].OriginSampleRate := 96000;
+    LLedger[I].OriginFrameCount := 8294400000;
+    LLedger[I].OriginEndFrame := 8294400000;
+    LLedger[I].PreparationEvidence := EncodeUTF8Text('Authored exact 2:1 original clock', 1024);
+    LLedger[I].PreparationSha256 := SemanticPreparationIdentity(LLedger[I]);
+    LSelections[I].SourceIndex := I;
+    LSelections[I].EndFrame := 4147200000;
+    LSources[I].Classifications := ['caller-style', 'long-recording'];
+    LSelections[I].Classifications := ['warm', 'selected'];
+  end;
+  SetLength(LRuns, 1024);
+  for R := 0 to 1023 do
+  begin
+    LRuns[R].SourceIndex := R div 16;
+    LRuns[R].StartFrame := Int64(3000000000) + (R mod 16) * 960000;
+    with LRuns[R].Grid do
+    begin
+      Version := MusicalProposalVersion;
+      Policy := 'Authored capacity observations; no WAV inference claim';
+      SampleRate := 48000;
+      SourceFrames := 768000;
+      TempoMicroseconds := 500000;
+      RoleNames := ['bass', 'chords', 'lead'];
+      RoleOrigins := ['Authored bass', 'Authored chords', 'Authored lead'];
+      SetLength(Frames, 64);
+      SetLength(Known, 64);
+      SetLength(PitchOrigins, 64);
+      SetLength(Drums, 64);
+      for C := 0 to 63 do
+      begin
+        LContext := DecodeMusicalContextToken(LBase.Runs[0].Tokens[5][C mod 8]);
+        Frames[C] := ProjectWfcChordFrame(LContext.Frame);
+        Known[C] := True;
+        PitchOrigins[C] := mppPeriodic;
+        for P := 0 to 2 do
+          Drums[C][P] := PercussionVelocity(LBase.Runs[0].Tokens[P + 6][C mod 8]);
+      end;
+    end;
+  end;
+  LCorpus := TMusicalCorpus.Create(LSources, LSelections, LRuns);
+  LStyle := nil;
+  LLoaded := nil;
+  LObserver := TCapacityObserver.Create;
+  LModel := nil;
+  try
+    LCoverage := LCorpus.CopyCoverage;
+    LUsed := 0;
+    LWeighted := 0;
+    for I := 0 to High(LCoverage) do
+    begin
+      Inc(LUsed, LCoverage[I].ModelUsedFrames);
+      Inc(LWeighted, LCoverage[I].WeightedCells);
+    end;
+    WriteLn('Actual producer: sources=', Length(LCorpus.CopySources),
+      '; contributions=', Length(LCorpus.CopyContributions),
+      '; providers=', Length(LCorpus.CopyModelTexts),
+      '; weighted_cells=', LWeighted, '; model_used_seconds=', LUsed div 48000);
+    LCaptured := MusicalCorpusStyleDefinition(LCorpus, LLedger, LBase.Instrumental, LObserver.Observe);
+    LActualContributions := LCorpus.CopyContributions;
+    LActualModels := LCorpus.CopyModelTexts;
+    LRevision := LCorpus.RevisionIdentity;
+    WriteLn('Corpus capture ready; validating source');
+    {$ifndef pas2js}Flush(Output);{$endif}
+    LStyle := TSemanticStyle.CreateSource(LCaptured, nil, nil, LObserver.Observe);
+    WriteLn('Corpus source validated; encoding');
+    {$ifndef pas2js}Flush(Output);{$endif}
+    LBytes := LStyle.Encode;
+    Check(Length(LBytes) < 8 * 1024 * 1024, 'Corpus archive expands repeated token strings');
+    LObserver.CancelStage := 'wfc_sequence_learn_state_rows';
+    LRejected := False;
+    try
+      LLoaded := DecodeSemanticStyle(LBytes, nil, nil, LObserver.Observe);
+    except
+      on EAbort do LRejected := True;
+    end;
+    Check(LRejected and (LLoaded = nil), 'Canceled corpus reload published a partial style');
+    LObserver.CancelStage := '';
+    WriteLn('Corpus cancellation preserved; retrying reload');
+    {$ifndef pas2js}Flush(Output);{$endif}
+    LLoaded := DecodeSemanticStyle(LBytes, nil, nil, LObserver.Observe);
+    Check(LLoaded.Identity = LStyle.Identity, 'Complete corpus archive changes on reload');
+    LCaptured := LLoaded.CopyDefinition;
+    Check((Length(LCaptured.Sources) = 64) and (Length(LCaptured.Runs) = 1024) and
+      (Length(LCaptured.Providers) = 9), 'Complete corpus snapshot loses admitted sources/runs/providers');
+    Check(LCaptured.Corpus.RevisionIdentity = LRevision, 'Actual corpus model revision changes');
+    Check((LCaptured.Corpus.Sources[0].Classifications[0] = 'caller-style') and
+      (LCaptured.Corpus.Selections[0].Classifications[0] = 'warm') and
+      (LCaptured.Corpus.Coverage[0].WeightedCells = 1024) and
+      (LCaptured.Sources[0].FrameCount = 4147200000), 'Corpus context or long prepared geometry changes');
+    SemanticRunOriginRange(LCaptured.Sources[0], LCaptured.Runs[0], LOriginalStart, LOriginalEnd);
+    Check((LOriginalStart = 6000000000) and (LOriginalEnd = 6001536000),
+      'Long original source coordinates are truncated or rounded');
+    for I := 0 to High(LCaptured.Runs) do
+      Check((LCaptured.Runs[I].Identity = LActualContributions[I].Identity) and
+        (LCaptured.Runs[I].Weights[0] = 1), 'Admitted corpus contribution or influence changes');
+    for P := 0 to 8 do
+      Check(LCaptured.Providers[P].ModelText = LActualModels[P],
+        'Large corpus snapshot changes an actual provider model');
+    LCaptured.Corpus.Sources[0].Classifications[0] := 'mutated copy';
+    LCaptured := Default(TSemanticStyleDefinition);
+    FreeAndNil(LCorpus);
+    LLedger := nil;
+    LSources := nil;
+    LSelections := nil;
+    LRuns := nil;
+    SameInstrumental(LStyle, LLoaded);
+    Check(LObserver.Calls > 100, 'Large corpus validation exposes no actual progress');
+    SetLength(LWeightedSamples, 1);
+    LWeightedSamples[0].Tokens := ['a', 'b', 'a'];
+    LWeightedSamples[0].Weight := 1;
+    LRejected := False;
+    try
+      LModel := LearnWeightedSequenceModel(LWeightedSamples, 1, 3, nil, 1);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected and (LModel = nil), 'Nil-callback learning bypasses its work budget');
+    LModel := LearnWeightedSequenceModel(LWeightedSamples, 1, 3, nil, MaximumSemanticStyleLearningWork);
+    Check(LModel <> nil, 'Work-limit rejection poisons a valid learning retry');
+    WriteLn('Complete large corpus archive ', LStyle.Identity, ' bytes=', Length(LBytes),
+      '; actual_progress_callbacks=', LObserver.Calls);
+  finally
+    LModel.Free;
+    LObserver.Free;
+    LLoaded.Free;
+    LStyle.Free;
+    LCorpus.Free;
+  end;
+end;
+begin
+  {$ifndef PYTHIAN_CAPACITY_ONLY}
   Replay(Definition);
   Replay(CorpusDefinition);
   Failures;
   Blends;
   Seeds;
+  MetadataOrigin;
+  {$endif}
+  Capacity;
   WriteLn('Complete instrumental style checks passed: ', GChecks);
 end.

@@ -49,6 +49,7 @@ type
     FFailed: Boolean;
     FFinished: Boolean;
     FSeed: Cardinal;
+    FRecipe: TStemMixRecipe;
   public
     constructor Create(const ACatalogRoot, AJobId: String; const ASampleRate: Integer;
       const AFrames: Int64; const ALevels: TJSONArray; const ASeed: Cardinal); overload;
@@ -58,6 +59,7 @@ type
     destructor Destroy; override;
     procedure Append(const AMaster: TAudioSamples; const AStems: TBusSampleBlocks);
     function Finish(const AProgress: TWorkProgressCallback = nil): TJSONObject;
+    function CopyMixRecipe: TStemMixRecipe;
     property Graph: TBusGraph read FGraph;
   end;
 
@@ -190,11 +192,17 @@ begin
     LRecipe.Parts[I].Gain := LRecipe.Parts[I].Gain * ALevels.Integers[I] / 100;
   end;
   FGraph := CreateStemMixGraph(LRecipe, ASampleRate);
+  FRecipe := CopyStemMixRecipe(LRecipe);
   for I := 0 to 6 do
   begin
     FAssets[I] := TListeningAssetWriter.Create(ACatalogRoot, AJobId + '-part-' + IntToStr(I));
     FWriters[I] := TWavePcm16Writer.Create(FAssets[I], ASampleRate, 2, AFrames);
   end;
+end;
+
+function TStudioInstrumentalOutput.CopyMixRecipe: TStemMixRecipe;
+begin
+  Result := CopyStemMixRecipe(FRecipe);
 end;
 
 destructor TStudioInstrumentalOutput.Destroy;

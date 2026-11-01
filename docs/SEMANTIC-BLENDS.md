@@ -173,7 +173,7 @@ exact unrelated controls, not only lineage labels.
 
 ## Current encoding, bounds and verification
 
-The current `pythian.semantic.style.v3` encoding records source,
+The current `pythian.semantic.style.v4` encoding records source,
 control-derived and binary-blend kinds, parent bytes, blend recipe, contribution
 identities and full definition. There is no historical-variant reader; regenerate
 older development artifacts. Decode reconstructs rather than trusts a serialized
@@ -251,10 +251,12 @@ maximum depth 8 remains supported because those trees are single chains.
 These are semantic artifact bounds, distinct from PYS's existing depth/node
 limits. No unimplemented DAG compaction is implied.
 
-Other existing limits remain:32 MiB per archive,8 providers,32 source identities,
-256 canonical runs,1024 observed cells per provider/run, bounded integer weights,
-16-million-operation learning/replay estimates, and native graph/search limits.
-The two-parent construction stages at most512 incoming run records before
+Limits remain explicit:32MiB per archive,15 archived providers,128 prepared sources,
+4096 canonical runs,262144 weighted observations per provider and bounded integer
+weights. Generic/named consumers still admit at most8 providers. Shared weighted
+learning uses an observed comparison/history-work bound; see
+[capacity and replay](SEMANTIC-STYLES.md#capacity-and-replay) for the actual limits.
+The two-parent construction stages at most8192 incoming run records before
 canonicalization. Multiplication and addition are checked before narrowing.
 Source, observation, control and graph incompatibilities reject before publication;
 parents remain immutable. Returned definitions, recipes and bytes are detached.

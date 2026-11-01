@@ -164,6 +164,10 @@ try {
   $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.projects$executableSuffix") $studioProjectRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio project persistence checks failed' }
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.paths.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Studio native path compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.studio.paths$executableSuffix") (Join-Path $buildRoot ('studio-paths-' + [Guid]::NewGuid().ToString('N')))
+  if ($LASTEXITCODE -ne 0) { throw 'Studio native path checks failed' }
   Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.material.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice storage compilation failed' }
   $studioMaterialRoot = Join-Path $buildRoot ('studio-material-' + [Guid]::NewGuid().ToString('N'))

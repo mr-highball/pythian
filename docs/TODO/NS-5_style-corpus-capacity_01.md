@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -51,11 +51,42 @@ this distinct capacity outcome adds four units to current scope.
 
 **Blockers**
 
+- [Native cache path boundary](NS-6_native-cache-path_01.md)
 - [Coarse corpus providers](DONE/NS-3_style-vocabulary_01.md)
 - [Primary sound recipes](DONE/NS-2_sound-design_01.md)
 - [Ordinary instrumental jobs](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: the repaired original long-root native consumer now
+  passes 2,016,325 playlist and 39 saved-clip checks, with clean heaps. It verifies
+  actual candidate models/mix/six stems, optional corrupt-artifact failure and
+  callback/check cancellation. Clip-only capture works with the parent absent,
+  preserving exact original coordinates without claiming a full-parent hash.
+  Native-consumers03 is complete; this integrated source's full CI and the path
+  prerequisite's acceptance still block closing this task.
+
+- 2026-11-01, Big Boss: exact CI554 succeeds in full at a0e64bb3. Current local
+  v4 capacity work passes native/actual pas2js: complete 64-source, 1024-run,
+  65536-cell snapshots retain all nine providers and their actual corpus receipt,
+  original 64-bit clocks, recipes and ownership. Archive identity
+  654f0172c845378ea1455ab2d47677181c8e59545cd59b1d68ec6f30bb15da6a
+  matches across targets (3,665,780 bytes). The model-used 16,384 seconds are
+  4.55 hours of authored symbolic evidence; selected source hours are not all
+  learned, and this is not WAV accuracy or musical-quality evidence. Mix/six-stem
+  replay, cancellation/retry, useful work bounds and generic blends pass; native
+  heaps are clean. Ordinary native candidate publication passes a short-root
+  control but exposes the linked Windows path prerequisite at the original root.
+  Finish that consumer and this source's full CI before acceptance. Studio
+  save/blend controls remain in the parent task.
+
+- 2026-11-01, Big Boss: actual64-source/1024-contribution/65536-cell producer
+  reproduces rejection at the old32-source ledger, with a clean heap. Follow the
+  recorded two-nonclosing-batch reassessment. CI553's unrelated fixture precision
+  defect is repaired and replacement CI554 remains live/untouched; prepare the
+  capacity work locally while that exact qualification runs. Reuse primary exact
+  clock arithmetic, shared weighted learning/observer and the existing semantic
+  archive/runtime. No acceptance or task effort follows from this status change.
 
 - 2026-11-01, Big Boss: discovered while preparing the real Studio consumer of
   the new nine-provider snapshots/blends. Evidence is the live constants in

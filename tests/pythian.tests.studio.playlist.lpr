@@ -31,9 +31,12 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.wfc.musical.corpus, pythian.wfc.layers, pythian.hash,
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.percussion, pythian.bus,
   pythian.time, pythian.music.sound, pythian.music.stream, pythian.music.replay,
+  pythian.wave.read, pythian.wfc.semantic.style,
   pythian.music.decisions,
   pythian.tools.studio.decisions, pythian.tools.studio.instrumental.output,
   pythian.tools.listen.assets,
+  pythian.tools.path,
+  pythian.tools.studio.style.candidate,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -42,6 +45,10 @@ type
     Total: Int64;
     Updates: Integer;
     procedure Observe(const AProgress: TWorkProgress);
+  end;
+  TCandidateAbort = class
+    procedure Observe(const AProgress: TWorkProgress);
+    procedure CheckWork;
   end;
 procedure Check(const AValue: Boolean; const AMessage: String);
 begin
@@ -58,6 +65,49 @@ begin
   Total := AProgress.Total;
   Done := AProgress.Done;
   Inc(Updates);
+end;
+procedure TCandidateAbort.CheckWork;
+begin
+  raise EAbort.Create('style-snapshot-test-cancel');
+end;
+procedure TCandidateAbort.Observe(const AProgress: TWorkProgress);
+begin
+  CheckWork;
+end;
+procedure CheckCandidateCancellation(const ACatalog: String; const ACorpus: TMusicalCorpus);
+var
+  LAbort: TCandidateAbort;
+  LResult: TJSONObject;
+  LRevision: String;
+  LCancelled: Boolean;
+  I: Integer;
+begin
+  LAbort := TCandidateAbort.Create;
+  LResult := nil;
+  LRevision := ACorpus.RevisionIdentity;
+  try
+    for I := 0 to 1 do
+    begin
+      LCancelled := False;
+      try
+        if I = 0 then
+          LResult := RetainStudioStyleCandidate(ACatalog, ACorpus, nil,
+            Default(TSemanticInstrumentalRecipe), nil, LAbort.Observe)
+        else
+          LResult := RetainStudioStyleCandidate(ACatalog, ACorpus, nil,
+            Default(TSemanticInstrumentalRecipe), LAbort.CheckWork, nil);
+      except
+        on E: EAbort do LCancelled := E.Message = 'style-snapshot-test-cancel';
+      end;
+      Check(LCancelled and (LResult = nil),
+        'Optional snapshot handling must propagate callback/check cancellation unchanged');
+      Check(ACorpus.RevisionIdentity = LRevision,
+        'Snapshot cancellation must preserve the actual learned corpus');
+    end;
+  finally
+    LResult.Free;
+    LAbort.Free;
+  end;
 end;
 procedure Audio(const APath: String; const AFrequency, ARate, ASeconds: Integer);
 var LSamples: TAudioSamples; LClip: TAudioClip; I: Integer;
@@ -95,6 +145,7 @@ begin
     SetCurrentDir(ARoot);
     LCold := LearnStudioPlaylist(ACatalog, ALibrary, ARoot + '/cache',
       'playlist-learning', APlaylist, LReceipt, LProgress.Observe);
+    CheckCandidateCancellation(ACatalog, LCold);
     Check((LProgress.Done = 135000) and (LProgress.Total = 135000),
       'Unequal75s/60s mixed-rate recordings aggregate to135s');
     try
@@ -264,6 +315,116 @@ begin
   end;
 end;
 
+procedure CheckSavedStyle(const ACatalog, AJobId: String; const AResults: TJSONObject);
+var
+  LReceipt: TJSONObject;
+  LFile: TFileStream;
+  LBytes: TAudioBytes;
+  LStyle: TSemanticStyle;
+  LStream: TSemanticInstrumentalStream;
+  LReader: TWaveFrameReader;
+  LExpected: array[0..6] of TAudioClip;
+  LMaster: TAudioSamples;
+  LStems: TBusSampleBlocks;
+  LHash: String;
+  LPosition: Integer;
+  I: Integer;
+  J: Integer;
+begin
+  Check(AResults.Find('style_candidate') <> nil, 'Ordinary playlist job retains a style candidate receipt');
+  LReceipt := AResults.Objects['style_candidate'];
+  Check(LReceipt.Strings['status'] = 'ready',
+    'Ordinary playlist style is available: ' + LReceipt.Get('reason', ''));
+  Check((LReceipt.Integers['provider_count'] = 9) and
+    (LReceipt.Strings['corpus_revision'] = AResults.Objects['playlist_learning'].Objects['vocabulary'].Strings['revision_sha256']),
+    'Native style candidate retains the actual nine-provider model revision');
+  LStyle := nil;
+  LStream := nil;
+  for I := 0 to 6 do LExpected[I] := nil;
+  try
+    LFile := OpenStudioReadStream(ListeningAssetDirectory(ACatalog) + '/' + LReceipt.Strings['artifact']);
+    try
+      Check((LFile.Size = LReceipt.Int64s['bytes']) and
+        (LFile.Size <= MaximumSemanticStyleBytes), 'Saved style artifact matches its declared size');
+      SetLength(LBytes, LFile.Size);
+      LFile.ReadBuffer(LBytes[0], Length(LBytes));
+    finally LFile.Free end;
+    LStyle := DecodeSemanticStyle(LBytes);
+    Check(LStyle.Identity = LReceipt.Strings['sha256'], 'Native style artifact retains its immutable identity');
+    LStream := LStyle.CreateInstrumentalStream;
+    for I := 0 to 6 do
+    begin
+      LFile := OpenStudioInstrumentalAudio(ACatalog, AJobId, I, LHash);
+      try
+        LReader := TWaveFrameReader.Create(LFile);
+        try
+          Check(LReader.FrameCount = LStream.Stream.FrameCount,
+            'Saved style and native output use the same performed clock');
+          LExpected[I] := LReader.ReadClip(0, LReader.FrameCount);
+        finally LReader.Free end;
+      finally LFile.Free end;
+    end;
+    LPosition := 0;
+    while LStream.Stream.ReadOutputs(2048, [6,7,8,9,10,11], LMaster, LStems) do
+    begin
+      for I := 0 to High(LMaster) do
+      begin
+        Check(Abs(LMaster[I] - LExpected[6].SampleAt(LPosition + I div 2, I mod 2)) <= 2 / 32768,
+          'Saved style does not perform the actual native mix recipe/notes');
+        for J := 0 to 5 do
+          Check(Abs(LStems[J][I] - LExpected[J].SampleAt(LPosition + I div 2, I mod 2)) <= 2 / 32768,
+            'Saved style changes an actual native instrumental stem');
+      end;
+      Inc(LPosition, Length(LMaster) div 2);
+    end;
+    Check(LPosition = LExpected[6].FrameCount, 'Saved style replay ends before the native output');
+  finally
+    for I := 0 to 6 do LExpected[I].Free;
+    LStream.Free;
+    LStyle.Free;
+  end;
+end;
+
+procedure CheckUnavailableStyle(const ACatalog, ALibrary: String;
+  const AJob, AResults: TJSONObject);
+var
+  LPath: String;
+  LJob: TJSONObject;
+  LStatus: TJSONObject;
+  LFile: TFileStream;
+  LByte: Byte;
+begin
+  LPath := ListeningAssetDirectory(ACatalog) + '/' + AResults.Objects['style_candidate'].Strings['artifact'];
+  Check(RenameFile(NativeFilePath(LPath), NativeFilePath(LPath + '.held')),
+    'Preserve the isolated accepted style for a corruption check');
+  LJob := nil;
+  LStatus := nil;
+  try
+    LByte := 0;
+    LFile := TFileStream.Create(NativeFilePath(LPath), fmCreate);
+    try LFile.WriteBuffer(LByte, 1) finally LFile.Free end;
+    LJob := TJSONObject(AJob.Clone);
+    LJob.Strings['job_id'] := 'style-unavailable-song';
+    LStatus := EnqueueStudioJob(ACatalog, LJob);
+    FreeAndNil(LStatus);
+    Check(RunStudioWorker(ACatalog, 'style-unavailable-song', ALibrary),
+      'Optional style failure must not fail an otherwise completed song');
+    LStatus := ReadStudioJob(ACatalog, 'style-unavailable-song');
+    Check((LStatus.Strings['status'] = 'completed') and
+      (LStatus.Objects['results'].Arrays['parts'].Count = 6) and
+      (LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'unavailable') and
+      (Pos('Existing style content differs',
+        LStatus.Objects['results'].Objects['style_candidate'].Strings['reason']) > 0),
+      'Completed native song explains unavailable style without replacing existing content');
+  finally
+    LStatus.Free;
+    LJob.Free;
+    Check(SysUtils.DeleteFile(NativeFilePath(LPath)), 'Remove only the isolated corrupt fixture payload');
+    Check(RenameFile(NativeFilePath(LPath + '.held'), NativeFilePath(LPath)),
+      'Restore the isolated accepted style');
+  end;
+end;
+
 procedure CheckClassifiedLearning(const ARoot, ACatalog, ALibrary: String;
   const APlaylist: TJSONObject);
 var
@@ -347,6 +508,8 @@ begin
       end;
       LStatus := ReadStudioJob(ACatalog, LId);
       Check(LStatus.Strings['status'] = 'completed', 'Classified instrumental generation completes');
+      CheckSavedStyle(ACatalog, LId, LStatus.Objects['results']);
+      if I = 0 then CheckUnavailableStyle(ACatalog, ALibrary, LJob, LStatus.Objects['results']);
       LReceipt := LStatus.Objects['results'].Objects['playlist_learning'];
       Check((LReceipt.Arrays['sources'].Count = 1) and
         (LReceipt.Arrays['excluded_sources'].Count = 1) and

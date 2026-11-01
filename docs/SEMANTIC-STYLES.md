@@ -16,9 +16,9 @@ provider inventory and executable dependency configuration. Optional sound
 bindings embed current PYS bytes, including their existing ancestry and policies.
 The instrumental binding instead owns primary instrument and stem/mix recipes.
 Neither reader accepts historical development variants. The current semantic
-encoding is `pythian.semantic.style.v3`, conventionally stored as `.pysg`.
+encoding is `pythian.semantic.style.v4`, conventionally stored as `.pysg`.
 It persists caller codec identity/version, canonical configuration and declared
-meaning. Regenerate v1/v2 development artifacts; no compatibility reader remains.
+meaning. Regenerate v1/v2/v3 development artifacts; no compatibility reader remains.
 
 The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
 provider contributions and retained multi-parent evidence to this same current
@@ -30,8 +30,9 @@ separate from independently weighted blend contributions.
 The semantic archive now uses primary `pythian.stream.bytes`, little-endian
 fields and canonical `pythian.text` on native and actual pas2js consumers. Native
 sound replay is retained. The preceding v2 portability component preserved all23
-captured archive/sound artifacts; v3 intentionally changes archive bytes to retain
-the complete instrumental recipe and observed-clock origin. The existing style
+captured archive/sound artifacts; v3 added the complete instrumental recipe and
+observed-clock origin. V4 adds compact encounter-order token dictionaries,
+64-bit prepared/run coordinates and the complete corpus receipt. The existing style
 and blend/reblend fixtures run on pas2js. A mixed Unicode
 recording group/domain archive has the same identity on both targets. Generated
 measurement profiles can still differ with target floating-point math; this is
@@ -69,6 +70,23 @@ when a contribution starts inside a proposal window. Capture/reload never reread
 the recording or runs WAV analysis. Model validation still replays the declared
 symbolic learner, with no operator feedback write or implicit learning update.
 
+`Corpus` retains actual source/selection classifications, source influence,
+coverage, original contribution identities, proposal-run indices, ordered roles
+and the actual corpus/model revision. Selected, processed, proposed, model-used,
+budget-omitted and unmodeled time remain distinct. The revision uses the same
+primary corpus identity function as the producer. A derived control variant
+retains this receipt unchanged. A blend retains each complete receipt in its
+parents and makes no invented single-corpus coverage claim at the blended root.
+
+Prepared and original frame coordinates are64-bit. Exact interval scaling and
+fraction comparison use primary `pythian.time`, including products too large for
+a direct intermediate. Native counters retain Int64; pas2js rejects values beyond
+its exact integer range. `OriginSha256` is an actual content digest. When a clip's
+full parent was not hashed, `OriginMetadataIdentity` records its immutable metadata
+binding instead; original range/clock and preparation evidence remain available.
+A metadata digest never substitutes for a parent content hash. Unresolved
+overlapping ancestry rejects rather than asserting independent evidence.
+
 Primary [`pythian.sound.recipe.codec`](../src/pythian.sound.recipe.codec.pas)
 persists detached oscillator/noise, additive, wavetable, FM/PM, layered, envelope,
 modulation and complete effect recipes on native and pas2js. Explicit sample
@@ -77,7 +95,15 @@ requires realizable synthesis recipes and does not yet resolve external sampler
 bindings. Streamed gate percentages other than100 reject under the existing
 articulation limit. The saved stream tail must cover its declared mix tail.
 
-This is the library save/reload consumer. `CreateBlend` also admits explicit
+The native playlist job now prepares a private style candidate from the actual
+corpus and performed instrument/mix recipe. Its receipt reports ready or a useful
+unavailable reason; optional snapshot failure cannot turn completed music into a
+failed song. Callback cancellation still propagates. The content-addressed `.pysg`
+lives in `styles/` under the configured generated-asset store, with the receipt in
+the ordinary job result. Capture does not reread the source or perform WAV analysis.
+The later Studio save/blend interface remains separate from this native artifact.
+
+`CreateBlend` also admits explicit
 instrumental parent choices and actual weighted vocabulary unions, with saved
 lineage and further blends. See the [instrumental blend contract](SEMANTIC-BLENDS.md#instrumental-parent-choices).
 Ordinary Studio style saving/blending and operator usefulness remain tracked in
@@ -241,16 +267,30 @@ SHA256 trailer and checks complete canonical re-encoding after admission.
 Corruption, incompatible contracts or failed evidence replay cannot publish a
 partial style object.
 
-Bounds include 32 MiB per archive, fifteen archived providers, 32 source identities, 256 runs,
-1024 observed cells per provider/run, 64 contribution weight, and eight ancestry
-nodes. Provider/model and graph bounds remain in force. Replay work and mapped
-co-observation each have explicit 16-million-operation estimates; excessive input
-rejects rather than discarding evidence. Collection lengths and payload sizes
+## Capacity and replay
+
+Bounds include32MiB per archive, fifteen archived providers,128 prepared sources,
+4096 retained runs,262144 weighted observations per provider,64 contribution
+weight and eight ancestry nodes. Compact token IDs retain every admitted row,
+including zero-weight inherited observations; dictionaries have at most8192
+retained meanings per provider. Model text is at most16MiB per provider. Actual
+companion sample/token/state/history and graph bounds still apply. A complete
+producer corpus may use64 sources,1024 proposal runs and65536 weighted observations;
+admitted gaps can create several independent samples within a proposal run.
+
+Replay/reblending uses the shared weighted learner. Its observer bounds a
+conservative comparison/history-work charge at536870912 per provider, including
+unreported partial searches. Repetitive material is not rejected through an
+observation-squared estimate. This is a work bound, not a time prediction or a
+claim that every complex vocabulary fits. Existing mapped co-observation keeps
+its separate16777216 work limit. Excessive input rejects without trimming models,
+sources or rows. Collection lengths and payload sizes
 are bounded during decoding, with semantic checks before consumer publication.
 The complete instrumental layout admits up to six pitched and six drum parts
 (fifteen models including context). Existing generic/named session bounds remain
 eight providers; increasing archive capacity does not enlarge those consumers.
-Corpus capture rejects a larger ledger/run/work budget rather than dropping it.
+Corpus capture/save retains the actual supported source/run/observation ledger;
+unsupported byte/work complexity remains an explicit failure, not partial saving.
 
 ## Verification scope
 

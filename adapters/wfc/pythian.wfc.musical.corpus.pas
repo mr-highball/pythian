@@ -172,6 +172,12 @@ type
     function ProposedSound(out ASound: TMusicalSound): Boolean;
   end;
 
+{ Canonical identity of actual provider revisions and admitted contributions.
+  Shared with style persistence; classifications/coverage remain retained
+  context and do not pretend to change the learned model identity. }
+function MusicalCorpusRevisionIdentity(const AVocabularies: TMusicalProviderVocabularies;
+  const AContributions: TMusicalCorpusContributions): String;
+
 implementation
 
 uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash,
@@ -241,6 +247,27 @@ begin
   finally
     LHash.Free;
   end;
+end;
+
+function MusicalCorpusRevisionIdentity(const AVocabularies: TMusicalProviderVocabularies;
+  const AContributions: TMusicalCorpusContributions): String;
+var
+  LFields: array of String;
+  I: Integer;
+begin
+  SetLength(LFields, 1 + Length(AVocabularies) * 2 + Length(AContributions) * 2);
+  LFields[0] := MusicalCorpusPolicy;
+  for I := 0 to High(AVocabularies) do
+  begin
+    LFields[1 + I * 2] := AVocabularies[I].Key;
+    LFields[2 + I * 2] := AVocabularies[I].ModelSha256;
+  end;
+  for I := 0 to High(AContributions) do
+  begin
+    LFields[1 + Length(AVocabularies) * 2 + I * 2] := AContributions[I].Identity;
+    LFields[2 + Length(AVocabularies) * 2 + I * 2] := IntToStr(AContributions[I].TrainingWeight);
+  end;
+  Result := HashFields('pythian.musical.corpus-revision.v1', LFields);
 end;
 
 constructor TMusicalCorpus.Create(const ASources: TMusicalCorpusSources;
@@ -681,7 +708,6 @@ end;
 procedure TMusicalCorpus.CaptureVocabularies(const AProgress: TWorkProgressCallback);
 var
   LNames: TLayerModelTexts;
-  LRevision: TLayerModelTexts;
   LCodec: String;
   LSchema: String;
   I: Integer;
@@ -689,8 +715,6 @@ var
 begin
   LNames := CopyProviderNames;
   SetLength(FVocabularies, Length(FModels));
-  SetLength(LRevision, 1 + Length(FModels) * 2 + Length(FContributions) * 2);
-  LRevision[0] := MusicalCorpusPolicy;
   for I := 0 to High(FModels) do
   begin
     if I = 0 then
@@ -732,16 +756,9 @@ begin
       FVocabularies[I].Tokens[J].Identity := HashFields('pythian.musical.token.v1',
         [LNames[I], LCodec, LSchema, FModels[I].PublicTokenAt(J)]);
     end;
-    LRevision[1 + I * 2] := LNames[I];
-    LRevision[2 + I * 2] := FVocabularies[I].ModelSha256;
-  end;
-  for I := 0 to High(FContributions) do
-  begin
-    LRevision[1 + Length(FModels) * 2 + I * 2] := FContributions[I].Identity;
-    LRevision[2 + Length(FModels) * 2 + I * 2] := IntToStr(FContributions[I].TrainingWeight);
   end;
   ReportWork(AProgress, 'musical_corpus_vocabulary_ready', wuItems, 0, 1);
-  FRevisionIdentity := HashFields('pythian.musical.corpus-revision.v1', LRevision);
+  FRevisionIdentity := MusicalCorpusRevisionIdentity(FVocabularies, FContributions);
 end;
 
 function TMusicalCorpus.CopyVocabularies: TMusicalProviderVocabularies;
