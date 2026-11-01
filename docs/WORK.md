@@ -24,9 +24,13 @@ Fresh checked Win32/Win64 and actual pas2js consumers each pass4,033,778 checks,
 including complete source snapshots, blend/reblend decisions and actual mix/six
 stem replay. Native heaps are clean. All four archive identities remain unchanged
 across the three targets. Evidence is E/tests/styles-ci553-after-{win32,win64,js};
-all local sessions finished. Publish the three-file repair, then require its
-exact replacement full CI, including extracted consumers. No acceptance or
-counter reset is claimed from local passes alone.
+all local sessions finished. The three-file repair is published at
+a0e64bb3e56bec1fb48cb491166e1de6254fa495 with exact remote agreement. Replacement
+CI554/run41338389222 is confirmed in progress at that exact source. Preserve it
+through the complete maintained build and extracted consumers; do not cancel it
+with a source push. No acceptance or counter reset is claimed from local passes
+alone. Audit its terminal outcome before accepting scope; then continue the
+linked capacity prerequisite under the existing reassessment.
 
 The newly scoped capacity mismatch is also reproduced using the actual musical
 corpus producer:64 sources,1024 contributions,nine providers,65536 weighted cells
