@@ -1,10 +1,10 @@
 # NS-4_unguided-form_01 — Make unconstrained authored form generation usable
 
-[Active tasks](README.md) · [Form](NS-5_musical-form_01.md) · [Work](../WORK.md)
+[Active tasks](../README.md) · [Form](../NS-5_musical-form_01.md) · [Work](../../WORK.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -32,23 +32,35 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
-- [Fresh native build reuse](NS-6_native-reuse_01.md) — CI546 passes maintained
-  integration, then the unchanged30-minute deadline interrupts package proof.
-  Complete the full gate before deployment/acceptance.
+- [Fresh native build reuse — DONE](NS-6_native-reuse_01.md) — complete CI547
+  passes integration and extracted packages within the unchanged30-minute limit.
 
 
-- [Projected known domains — DONE](DONE/NS-4_projected-domains_01.md) — accepted
+- [Projected known domains — DONE](NS-4_projected-domains_01.md) — accepted
   after upstream CI67/downstream CI544, original64cell proof and typed consumers.
-  The original192cell candidate now passes on both targets; actual Studio and
-  current-runtime consumer qualification remain owned here.
+  The original192cell candidate and actual Studio qualification now pass here.
 
-- [Verified context composition — DONE](DONE/NS-4_context-composition_01.md) — context must
+- [Verified context composition — DONE](NS-4_context-composition_01.md) — context must
   negotiate with the actual free voice graph rather than commit independently.
 
-- [Positioned priors — DONE](DONE/NS-4_cell-priors_01.md)
-- [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
+- [Positioned priors — DONE](NS-4_cell-priors_01.md)
+- [Bounded future domains — DONE](NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria/prerequisites pass. Complete [CI547](https://github.com/mr-highball/pythian/actions/runs/41297589893)
+  at0d1557d qualifies runtime75cdd0e and both extracted packages. The original
+  192cell request passes120 native/actual pas2js checks at its original seed,
+  lookahead and256:16 search limits; both original digests remain. Ordinary
+  Studio91, proposed/manual99, Windows form190 and separate locked-song10 pass
+  with clean heaps. The actual fixed-QA worker and390px browser exercise all
+  six parts, returned-section playback/seek, Lead stem and reload. The checked
+  d1fec689 worker is deployed to the existing stable slot; HTTPS200, all23 saved
+  jobs and all3 independent clips match after restart, with zero clip errors.
+  Server/UI/TLS and private data remain. QA media/tab/service are closed.
+  This accepts usable unconstrained generation, not musical preference or the
+  separate form-listening/style outcomes. Earlier pending/failure notes below
+  are retained history; the finite/stream gate follow-up remains separately open.
 
 - Current original-request repair closes AC1/AC2: indexed native120 completes with
   unchanged free/guided digests and a clean heap. Ordinary Studio91 and proposed/
@@ -64,8 +76,8 @@ workbench owns interactive diagnostics; this task owns usable generation.
   BindMusicalContextTokens with conflict/ownership tests. A broader consolidation
   attempt hit the separate unknown-held-note articulation contract and was
   stopped at counter2, with candidate/failures preserved. The linked
-  [consolidation](NS-6_generation-unification_01.md) and
-  [articulation](NS-2_stream-articulation_01.md) are future scope; they do not gate
+  [consolidation](../NS-6_generation-unification_01.md) and
+  [articulation](../NS-2_stream-articulation_01.md) are future scope; they do not gate
   the unchanged100%-gate free-form experiment. Current Studio qualification is
   limited to the demonstrated mask collision and actual original request.
 
@@ -150,5 +162,5 @@ workbench owns interactive diagnostics; this task owns usable generation.
   separately use the explicit starter guide with the same seed, disclosing
   limited density freedom; that is not acceptance here. Estimate4 reflects
   musical-model diagnosis/integration uncertainty, not a general solver audit.
-  [Graph workbench](NS-4_graph-workbench_01.md) retains the earlier distinct
+  [Graph workbench](../NS-4_graph-workbench_01.md) retains the earlier distinct
   seed731 control conflict for its pass/choice inspection criterion.

@@ -91,8 +91,10 @@ The maintained `pythian.tests.musical.composition` consumer proves that a contex
 example at C4 can coexist with independently generated C5 when only H/R is bound;
 explicit role binding rejects that conflicting choice. Finite capture and a
 bounded stream exercise the same actual typed provider. This API is the shared
-prerequisite; the ordinary Studio free-form planning path remains under
-[unguided-form integration](TODO/NS-4_unguided-form_01.md).
+prerequisite. The ordinary Studio free-form planning path now passes the original
+192cell request at unchanged seed/limits after
+[unguided-form integration](TODO/DONE/NS-4_unguided-form_01.md), complete CI547
+and checked fixed-slot deployment. Musical form judgment remains separate.
 
 ## Retain the score while changing sound
 

@@ -3,7 +3,16 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**11 open tasks · 186 total effort units · 28 current-goal DONE · 130 / 186 accepted (69.89%).**
+**8 open tasks · 186 total effort units · 31 current-goal DONE · 138 / 186 accepted (74.19%).**
+
+[Unguided form — DONE](DONE/NS-4_unguided-form_01.md),
+[native qualification — DONE](DONE/NS-6_native-reuse_01.md) and
+[Unicode fixtures — DONE](DONE/NS-6_scalar-fixture_01.md) close eight units.
+Complete CI547 passes integration and both extracted packages in25m56s within
+the unchanged30minute budget. The original192cell request passes native/actual
+pas2js at unchanged seed/limits, then actual Studio/browser checks and the fixed
+stable deployment pass. All23 saved jobs and3 clips match after restart. This
+accepts implementation scope, not musical quality or the separate form judgment.
 
 [Known projected domains — DONE](DONE/NS-4_projected-domains_01.md) accepts six units:
 the retained shared musical candidate reached its search limit at64 on both
@@ -11,23 +20,23 @@ targets. The new upstream preparation now solves/proves its64cell reproduction
 with zero retries and passes all five CI67 jobs. The repaired192cell musical
 candidate passes115 native/actual pas2js checks at the original seed/limits;
 complete downstream CI544 and extracted consumers qualify the typed component.
-Broader runtime and Studio integration remain open. The original failure remains preserved. No local model filters,
+Broader runtime and Studio integration now pass in unguided-form above. The original failure remains preserved. No local model filters,
 hidden guide/seed changes or raised budgets are selected.
 
 [Context composition — DONE](DONE/NS-4_context-composition_01.md) closes six units
 after upstream CI66, downstream CI543 and native/actual pas2js/extracted consumers
 pass at80772b6/96cba34. Declared sources, instruments and auxiliary sequences share
 one verified transaction/frontier; frame copies exclude auxiliary tokens. The
-further known-domain preparation and actual musical repair remain open.
+further known-domain preparation and actual musical repair now pass above.
 
 [Listening UTF-8 — DONE](DONE/NS-6_listening-utf8_01.md) accepts three units after
 complete CI541, native publication/response/replay, desktop/390px Save/reopen and
 checked fixed-slot deployment. All seven prior completed responses are preserved.
 
-The first real unguided form experiment fails before audio at its pass-backtrack
-limit. [Unguided form](NS-4_unguided-form_01.md) adds four required effort units
-for the exact request, without credit for changing seeds or silently enabling
-the guide. A separately disclosed guided listening experiment may still proceed.
+The first real unguided form experiment failed before audio at its pass-backtrack
+limit. Its [repair — DONE](DONE/NS-4_unguided-form_01.md) preserves that failure and
+solves the exact request without changing seeds or silently enabling the guide.
+Musical form listening and the existing guided review retain their separate task.
 
 [Songs](DONE/NS-6_song-library_01.md), [reusable clip discovery](DONE/NS-6_clip-library_01.md)
 and [responsive connection admission](DONE/NS-6_connection-admission_01.md) are accepted
@@ -127,7 +136,7 @@ continuity experiments are selected.
 | [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Awaiting operator feedback; actual guided form review is live, judgment remains |
-| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | In progress; original192cell native/pas2js request now passes; runtime/Studio qualification remains |
+| [NS-4_unguided-form_01 — DONE](DONE/NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Accepted; original request, native/pas2js, actual Studio/browser, complete CI547 and fixed-slot deployment |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
@@ -144,11 +153,11 @@ continuity experiments are selected.
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 | [NS-6_generation-unification_01](NS-6_generation-unification_01.md) — one Studio instrumental stream | 3 | Shared controls/streams/projected domains accepted; Blocked by explicit streamed note-gate contract; failed consolidation preserved |
 | [NS-2_stream-articulation_01](NS-2_stream-articulation_01.md) — explicit streamed note articulation | 4 | Open held notes need a supported bounded gate contract and replay |
-| [NS-6_native-reuse_01](NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | CI546 integration passes; extracted packages time out after redundant rebuilds |
-| [NS-6_scalar-fixture_01](NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Original forced rebuild confirms host-code-page conversion in the oracle; shared test-only repair |
+| [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
+| [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all 39 current-goal tasks (11 open, twenty-eight DONE),
-totaling 186 units: 56 open and 130 accepted. Subtotals:
+The two tables together are all 39 current-goal tasks (8 open, thirty-one DONE),
+totaling 186 units: 48 open and 138 accepted. Subtotals:
 NS-2 16, NS-3 15, NS-4 71, NS-5 15, NS-6 69. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

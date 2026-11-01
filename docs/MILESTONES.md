@@ -22,7 +22,14 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 130 / 186 effort units accepted (69.89%); eleven open, twenty-eight current-goal DONE.**
+**Current snapshot: 138 / 186 effort units accepted (74.19%); eight open, thirty-one current-goal DONE.**
+[Unguided form — DONE](TODO/DONE/NS-4_unguided-form_01.md) and its
+[native qualification](TODO/DONE/NS-6_native-reuse_01.md)/
+[scalar fixture](TODO/DONE/NS-6_scalar-fixture_01.md) prerequisites close eight units
+after complete CI547 and checked stable deployment. The original192cell free
+request keeps its seed/limits and passes native/actual pas2js, ordinary Studio
+and actual browser playback. All23 saved jobs and3 independent clips match after
+restart. This does not accept musical preference or the separate form judgment.
 The six-unit [projected-domain prerequisite — DONE](TODO/DONE/NS-4_projected-domains_01.md)
 addresses the retained shared candidate's64cell search failure. A pure
 WFC64cell proof shows that a known target restriction is not used before source
@@ -32,7 +39,7 @@ the failed musical candidate for repair. Candidate d0c04d2 now passes all five
 upstream CI67 jobs and188 native/actual pas2js checks. The original192cell musical
 candidate completes on both targets with identical free-note digest. Complete
 downstream CI544 and extracted consumers pass, closing six library units.
-Runtime/Studio integration remains separate and open.
+Runtime/Studio integration now passes in the linked unguided-form repair.
 Ordinary integration exposed duplicate positional domains, now repaired in the
 primary context binder. A stopped consolidation additionally demonstrated the
 open-held-note gate limitation: [articulation](TODO/NS-2_stream-articulation_01.md)
@@ -43,17 +50,17 @@ The six-unit [context composition — DONE](TODO/DONE/NS-4_context-composition_0
 closes after all upstream CI66/downstream CI543 and native/actual pas2js/extracted
 gates pass. Explicit source layout/projection proof, shared prefix ownership and
 pitched-only frame copies are delivered. This is library capability; the actual
-free-form musical request and known-domain preparation remain open.
+free-form musical request and known-domain preparation now pass separately above.
 The three-unit [listening writer repair — DONE](TODO/DONE/NS-6_listening-utf8_01.md)
 passes complete CI541, native Unicode response/export/replay, desktop/390px Save
 and reopening, checked fixed-slot deployment and trusted HTTP/HTTPS133. Recovery
 and publication preserve all seven prior completed responses. These are durable
 review/storage units; the actual form judgment remains open.
-The first real unguided A/B/A experiment exposes a four-unit
-[planning gap](TODO/NS-4_unguided-form_01.md): bounded pass negotiation fails
-at cell0. Preserve the original seed and evidence. Guided form listening can
-continue explicitly, without claiming unconstrained generation or accepting
-these new units.
+The first real unguided A/B/A experiment exposed a four-unit
+[planning gap — now repaired](TODO/DONE/NS-4_unguided-form_01.md): bounded pass
+negotiation failed at cell0. The original seed/failure remain; the repaired joint
+graph now completes that exact request. Guided form listening and musical
+judgment retain their separate outcome task.
 The six-unit [positioned-prior prerequisite — DONE](TODO/DONE/NS-4_cell-priors_01.md)
 adds actual per-position soft choices through primary WFC/sequence/named-voice
 adapters. All upstream CI64 and downstream CI537 integration/extracted gates
@@ -115,10 +122,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 10 | 6 | 6 / 16 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 11 | 60 | 60 / 71 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 64 | 64 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 12 | 57 | 57 / 69 |
-| **Total** | **39 current-goal tasks** | **56** | **130** | **69.89%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 61 | 61 / 69 |
+| **Total** | **39 current-goal tasks** | **48** | **138** | **74.19%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

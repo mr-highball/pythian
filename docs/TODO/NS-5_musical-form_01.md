@@ -49,7 +49,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
   judgment remains open, and all eight units remain unaccepted.
 
 - 2026-11-01, Big Boss: the first deliberately unguided A/B/A request fails
-  before audio at the pass-backtrack limit. Linked [unguided form](NS-4_unguided-form_01.md)
+  before audio at the pass-backtrack limit. Linked [unguided form](DONE/NS-4_unguided-form_01.md)
   retains exact seed/models/request and owns diagnosis; no seed sweep or
   proof of incompatibility is claimed. Continue AC3 preparation using an explicit
   starter guide and the same seed. Disclose narrower rhythmic freedom;

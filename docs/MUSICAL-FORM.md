@@ -170,8 +170,10 @@ its original playable parent remain preserved. No seed sweep or relaxed Keep is
 used. Full form acceptance remains open. The first deliberate unguided48second
 form review failed at cell0's pass-backtrack limit; the original request, models
 and seed remain preserved in the private job. This does not prove incompatibility.
-The linked [unguided-form task](TODO/NS-4_unguided-form_01.md) owns that actual
-generation gap. Explicit guided listening may proceed with the same seed,
+The linked [unguided-form repair — DONE](TODO/DONE/NS-4_unguided-form_01.md) now
+completes that original request on native/actual pas2js and ordinary Studio,
+with complete CI547 and checked deployment. The failure remains historical;
+form's musical judgment is still open. Explicit guided listening uses the same seed,
 disclosing that hard starter rhythm/chord domains constrain density preferences.
 
 The actual guided review now uses three64cell sections with only Lead retained

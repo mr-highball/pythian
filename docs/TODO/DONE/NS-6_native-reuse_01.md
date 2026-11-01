@@ -1,10 +1,10 @@
 # NS-6_native-reuse_01 — Complete native qualification within its existing budget
 
-[Tasks](README.md) · [Unguided form](NS-4_unguided-form_01.md)
+[Tasks](../README.md) · [Unguided form](NS-4_unguided-form_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 3/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -30,13 +30,23 @@ instrumental repair's deployment. Keep the budget and all consumer checks.
 
 **Blockers**
 
-- [Scalar fixture](NS-6_scalar-fixture_01.md) — the Windows full-build oracle
-  constructs invalid expected bytes even under the original forced rebuild.
+- [Scalar fixture — DONE](NS-6_scalar-fixture_01.md) — host-code-page fixture
+  conversion is repaired without changing production codecs or assertions.
 
 - The accepted upstream build-reuse procedure is precedent, not a new
   dependency-source change; this task owns Pythian's orchestration only.
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: AC1–AC3 and the scalar prerequisite pass. Complete
+  [CI547](https://github.com/mr-highball/pythian/actions/runs/41297589893) at0d1557d finishes successfully in25m56s, within the unchanged30minute limit.
+  Integration23m17s, extracted core/WFC packages2m13s, artifact/log uploads and
+  checkout cleanup all pass. Real option/source-context probes, both Windows
+  extracted packages and native/actual pas2js scalar fixtures retain their logs.
+  The excessive local Windows diagnostic path is recorded below; its exact
+  library executable passes588 checks at a short E root, with a clean heap.
+  No consumers/assertions were removed, and no cross-invocation cache is reused.
+  Earlier pending/timeout notes below are historical evidence, not current gates.
 
 - 2026-11-01, Big Boss: CI546/run41292465280 at75cdd0e is terminal cancelled,
   09:17:24–09:47:29 UTC. Integration passes09:17:40–09:45:05; package verification
@@ -56,3 +66,16 @@ instrumental repair's deployment. Keep the budget and all consumer checks.
   and20 package compile sites remain, plus their original target probes. Scripts
   parse. The extracted core package passes; full native/WFC checks and CI remain
   open. Evidence: E/native-reuse-20261101-boss. No completed effort is claimed.
+- 2026-11-01, Big Boss: published0d1557d starts CI547/run41297589893. Both Windows
+  extracted packages pass, including all original unguided/density/context and
+  caller consumers (core30.7s/WFC671.1s). Full-build03 stops at the existing
+  library fixture because this run's excessively long E output root makes its
+  double SHA pathname exceed Windows limits; it has a clean heap. Recheck that
+  exact executable with a shorter fresh E fixture root rather than changing
+  production paths, masking the error or removing its test. Complete CI remains
+  required; its normal short output root is unchanged. No task is accepted yet.
+- 2026-11-01, Big Boss: the same exact library executable now passes588 checks
+  with zero leaked blocks at the short fresh E/tests/nr-lib01 root. This repairs
+  the local test invocation; it is not a production-code or compiler-cache fix.
+  Preserve the partial full-script log and do not call it a complete Windows
+  integration pass. CI547 remains the complete maintained qualification gate.

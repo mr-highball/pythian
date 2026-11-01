@@ -7,6 +7,47 @@ voices. It adds reusable instrument selection through the existing frame rendere
 and exact PPQ note path. Sample zones can use different
 recordings/root frequencies; oscillator, FM and wavetable voices work as well.
 
+## Editable instrument recipes
+
+`pythian.instrument.recipe` holds detached definitions, while
+`pythian.instrument.catalog` provides eight authored starting points: sub bass,
+triangle lead with vibrato, noise hi-hat, additive keys, moving wavetable pad,
+FM bell, PM tine and a layered key/velocity pad. These are authored sounds,
+not identified or reconstructed source instruments. `BuiltInInstrumentRecipes`
+returns independent values. Append caller recipes or edit a detached value from
+`FindInstrumentRecipe`; unknown or duplicate identities reject.
+
+`TRecipeInstrument.Create(Recipe, Rate, Samples)` realizes those definitions
+through the existing primary factories, automation, gated envelopes and
+`TInstrument`. It owns the resulting resources and detached recipe. Its borrowed
+`Instrument` plans ordinary frame tones for the existing renderer or scheduler.
+Keep the recipe instrument alive until all plans and players using its factories
+finish. `CopyRecipe` returns a deep value copy; neither editing input arrays nor
+an exported copy changes the realized instrument or its saved definition.
+
+Zones retain inclusive key/velocity ranges and ordered layering. Voice numeric
+settings cover ADSR, gain, pan and the primary one-pole/biquad filter. Runtime
+factory/curve/envelope pointers must be nil: source definitions, point/LFO
+controls and optional gated envelopes belong in the detached recipe fields.
+Control times are note-relative seconds converted through the primary sample
+clock. Knots collapsing onto one frame reject. FM depth is Hz; PM depth is
+radians. Wavetable motion uses recipe indices. Declared key ranges, modulation
+bounds and cutoff must fit the actual sample rate; no silent clipping or
+retuning is applied.
+
+A sampler recipe explicitly names a registered `SampleId`, region/root frequency
+and playback/loop quality. Construction borrows the registered clip only while
+the primary sample factory copies that region. The caller may then free its
+clip. Missing or ambiguous bindings reject; no source recording is implicitly
+used as a sampler.
+
+Native and actual pas2js recipe consumers render the same catalog, exercise
+release history, gain edits, repeatability, key/velocity layers, detached nested
+data and an explicit sampler after its original clip is freed. The library
+catalog is available independently of WFC. Studio recipe editing, saved patches
+and full effect routing remain [sound-design work](TODO/NS-2_sound-design_01.md);
+this catalog alone does not complete that operator workflow.
+
 ## Experimental observed sound controls
 
 [pythian.music.sound](../src/pythian.music.sound.pas) shares a small editable

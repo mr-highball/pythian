@@ -46,8 +46,10 @@ and recipes define replay. Fresh choices can change across runtime versions;
 previous recordings, decision journals and their actual lineage remain preserved.
 
 The new integration passes the original192cell free-form request on native and
-actual pas2js with unchanged seed and search limits. Ordinary Studio qualification
-and checked deployment remain with [unguided form](TODO/NS-4_unguided-form_01.md).
+actual pas2js with unchanged seed and search limits. Ordinary Studio qualification,
+actual browser playback, complete CI547 and checked stable deployment now pass
+with [unguided form](TODO/DONE/NS-4_unguided-form_01.md). This is implementation
+acceptance; form listening retains its separate musical judgment.
 
 Context binding is explicit. `icbAllRoles`, the streaming default, retains the
 joint context's complete symbolic role choices while WFC chooses its path and

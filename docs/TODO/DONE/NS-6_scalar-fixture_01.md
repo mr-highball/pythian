@@ -1,10 +1,10 @@
 # NS-6_scalar-fixture_01 — Preserve Unicode bytes in the native JSON test oracle
 
-[Tasks](README.md) · [Native build reuse](NS-6_native-reuse_01.md)
+[Tasks](../README.md) · [Native build reuse](NS-6_native-reuse_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 1/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -28,6 +28,14 @@ fixture's own implicit string conversion.
 - None; production Unicode project/HTTP acceptance remains separately recorded.
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: AC1/AC2 pass. Both original forced-build failures and
+  the1252 diagnostic remain. Shared test-only byte composition retains every
+  assertion; final forced/cold/warm native reader5859/writer656 and actual
+  pas2js reader5642/writer174 pass, with clean native heaps. Complete
+  [CI547](https://github.com/mr-highball/pythian/actions/runs/41297589893) at0d1557d passes maintained integration and both extracted packages.
+  Production codecs and the host code page are unchanged. No musical claim is
+  attached to this one-unit test-oracle repair.
 
 - 2026-11-01, Big Boss: full Windows build stops at json.text CheckStrings229.
   Both reused and fresh forced `-B` builds fail identically at CompareScalarText's

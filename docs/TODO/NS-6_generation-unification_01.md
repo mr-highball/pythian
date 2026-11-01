@@ -1,6 +1,6 @@
 # NS-6_generation-unification_01 — One Studio instrumental generation path
 
-[Tasks](README.md) · [Unguided form](NS-4_unguided-form_01.md)
+[Tasks](README.md) · [Unguided form](DONE/NS-4_unguided-form_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 3/10

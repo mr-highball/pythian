@@ -1,6 +1,6 @@
 # NS-4_projected-domains_01 — Use known musical domains before choosing source passes
 
-[Active tasks](../README.md) · [Composition — DONE](NS-4_context-composition_01.md) · [Unguided form](../NS-4_unguided-form_01.md)
+[Active tasks](../README.md) · [Composition — DONE](NS-4_context-composition_01.md) · [Unguided form](NS-4_unguided-form_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10

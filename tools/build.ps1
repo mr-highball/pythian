@@ -274,6 +274,9 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Instrument compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.instrument$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument checks failed' }
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.instrument.recipe.lpr'
+  & (Join-Path $buildRoot "pythian.tests.instrument.recipe$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Instrument recipe/catalog checks failed' }
   Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.percussion.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.percussion.core$executableSuffix")

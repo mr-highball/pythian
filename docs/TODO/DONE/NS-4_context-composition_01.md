@@ -1,6 +1,6 @@
 # NS-4_context-composition_01 — Compose context and musical voices in one verified WFC transaction
 
-[Active tasks](../README.md) · [Unguided form](../NS-4_unguided-form_01.md) · [Work](../../WORK.md)
+[Active tasks](../README.md) · [Unguided form](NS-4_unguided-form_01.md) · [Work](../../WORK.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
@@ -76,7 +76,7 @@ and saved operator responses are unchanged; no upstream branch is merged.
   pas2js, with a clean native heap. The source37/0426149 archive and complete
   CI542 also pass, retained as exact historical evidence. Updated80772b6
   downstream CI/extraction remain the final gates. The separate
-  [known-domain preparation task](../NS-4_projected-domains_01.md) owns the further
+  [known-domain preparation task](NS-4_projected-domains_01.md) owns the further
   bounded-search capability exposed by the actual musical candidate; that
   failure does not disappear merely because composition's source/proof API
   works. Preserve both facts and keep this task open until repair gates finish.

@@ -3,7 +3,76 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: musical qualification; consolidation stopped at note-gate contract — 2026-11-01
+## Current handoff: unguided form deployed; sound-design integration next — 2026-11-01
+
+Big Boss SOLO. Complete CI547/run41297589893 at0d1557d passes every step:
+integration23m17s, both extracted packages2m13s, full job25m56s under the unchanged
+30minute limit. The original CI546 deadline and all earlier musical failures
+remain. Safe fresh compiler contexts and the test-only Unicode fixture repair
+are accepted with [unguided form](TODO/DONE/NS-4_unguided-form_01.md); all three
+tasks moved to DONE with links/accounting. Current progress is138/186 (74.19%),
+eight open/31 current DONE,48 open effort. This is delivered scope, not musical
+quality. The broader goal stays active; no operator decision blocks next work.
+
+The checked75cdd0e worker (SHA d1fec68945378edb5ca206bda7b4d1260b78d3af81ac0505c1785aae5fb8e72a)
+is deployed in the existing stable slot with the unchanged accepted server/UI/TLS.
+The first stager refused a still-exiting old process; its guard changed no files.
+After the owner exited, staging/startup succeeded. Stable PID68092 serves
+HTTPS200 at the same current LAN address. Authenticated ordinary APIs confirm
+all23 saved job records and all3 independent clip records match before/after,
+zero clip errors, worker available/no worker error. No recording, project,
+answer or history store was replaced. Packet: E/projected-domains-20261101-boss.
+The actual original-request worker/browser and fresh native/actual JS evidence
+are retained there. No QA browser/service/audio remains. The long Windows
+diagnostic-root failure is preserved; its exact library executable passes588
+checks with a clean heap at short E/tests/nr-lib01. Do not rerun the broad suite
+to replace that explicitly partial Windows log; complete CI already qualifies
+the maintained integration and extracted consumers.
+
+The next bounded source commit publishes sound-design AC1: portable
+`instrument.recipe`, `instrument.catalog`, their fixture, maintained build/
+portability entries and instrument documentation. Final native/O2 and actual
+pas2js107 pass; nested ownership, source families, zones, modulation, custom/
+immediate release, sampler lifetime, gain edits, replay and distinct PCM pass.
+Eight WAV auditions/source hashes and an AC1 source snapshot are under
+E/sound-design-20261101-boss. Its new source CI follows the completed runtime
+gate; no new worker is deployed for this library-only component. No task effort
+is accepted for this partial task. Next select its AC2/AC3 batch: connect these same editable recipes and the
+existing primary13-effect catalog/rack to per-part Studio controls, scoped
+audition/reperformance and saved patches. Preserve musical plans/lineage; keep
+simple Library→Selection→Generate intact. Do not duplicate DSP or publish the
+new catalog as completed Studio editing. The separate note-gate articulation
+prerequisite still blocks finite/stream consolidation; keep that failure intact.
+
+## Previous handoff: musical qualification; consolidation stopped at note-gate contract — 2026-11-01
+
+Current source0d1557d is published on hello-pythian. CI547/run41297589893 is
+running against exactly that source; do not cancel it with another source push.
+Both extracted Windows packages pass: core30.7s and WFC671.1s, all consumers and
+source/hash closure retained. The full Windows script passes its early consumers
+then stops at the library fixture: this diagnostic output root makes its double
+SHA path exceed the platform path limit. Preserve full-build03; the same exact
+executable passes all588 checks with a clean heap under short E/tests/nr-lib01.
+No production change
+or new task is inferred from the excessively long diagnostic root. Full CI is
+still the complete maintained integration/package gate.
+
+Separate unpublished sound-design AC1 work now passes native107 and actual
+pas2js107 with clean native heaps. Eight authored instrument recipes realize
+primary oscillator/noise, additive, wavetable and FM/PM sources, layered key/
+velocity ranges, ADSR/custom gates and modulation. Explicit sampler ownership,
+nested detached values, gain edits, replay and release are exercised. Eight WAV
+auditions and source/audio hashes are under E/sound-design-20261101-boss. This
+adds public portable recipe/catalog units and their maintained fixture, not
+Studio editing/effects completion. Keep these WIP files out of the frozen worker
+and CI547 deployment. Next sound-design batch owns AC2/AC3 Studio controls using
+the same recipes; no effort is accepted for the partial component.
+Final recipe04 native/O2 and actual pas2js107 compare distinct sounding PCM,
+rather than infer distinct timbre from energy alone. Source hashes are retained;
+the source units are the same as the eight saved recipe03 WAV auditions.
+All known local check sessions are complete; no QA browser/service/audio was
+started in this batch. Stable HTTPS200, three saved clips/zero errors and zero
+active jobs were reverified through the ordinary authenticated local API.
 
 Resume checkpoint: runtime source75cdd0e is pushed and all focused checks pass:
 indexed native/actual pas2js120, ordinary Studio91, proposed/manual99, fresh
@@ -11,17 +80,17 @@ Windows form190 plus separate locked-song10, all native heaps clean. Complete
 CI546/run41292465280 is terminal cancelled: integration passes in27m25s, then the
 job exceeds its unchanged30minute limit during extracted packages. The exact
 GitHub annotation confirms the deadline; no newer push superseded it. Preserve
-the failure. [Native reuse](TODO/NS-6_native-reuse_01.md), effort3, removes repeated
+the failure. [Native reuse](TODO/DONE/NS-6_native-reuse_01.md), effort3, removes repeated
 forced rebuilds through fresh per-invocation option/source contexts while keeping
 all consumers and the budget. Real compiler context probes pass, including warm
 reuse, defines/O2/search/automatic-source scopes, fresh invocation, errors and
-foreign PPU rejection. The complete local build is running in the isolated E
-qualification checkout; do not restart a live check on an observation timeout.
+foreign PPU rejection. The local attempt and its path limitation are recorded
+above; do not restart a live check on an observation timeout.
 
 The full Windows build also exposes existing JSON reader/writer fixture
 conversion through host code page1252. Original forced `-B` reproduces it:
 `'e' + ScalarText($301)` becomes invalid65B4, and quoted astral text becomes
-question marks. [Scalar fixture](TODO/NS-6_scalar-fixture_01.md), effort1, shares
+question marks. [Scalar fixture](TODO/DONE/NS-6_scalar-fixture_01.md), effort1, shares
 raw encoded fixture composition between both tests without changing production
 codecs or assertions. Native cold/warm checks5859/656 and actual pas2js5642/174
 pass; native heaps are clean. Full/CI acceptance remains open. Preserve the
@@ -253,7 +322,7 @@ The probe heap is clean. The earlier final pass0/kind9 was an excluded assignmen
 after negotiation, not proof of an initially empty harmony domain.
 
 [Context composition](TODO/DONE/NS-4_context-composition_01.md) adds six units and is
-the genuine prerequisite for [unguided form](TODO/NS-4_unguided-form_01.md).
+the genuine prerequisite for [unguided form](TODO/DONE/NS-4_unguided-form_01.md).
 Accounting118/169 (69.82%), eight open/26 current DONE. No additional acceptance
 follows from diagnosis. Counter0 follows the real listening-repair closure;
 moving tasks/branches does not reset it. All partial runtime edits and temporary
@@ -282,7 +351,7 @@ real three-unit closure resets the consecutive nonclosing counter to0. The prior
 goal turn was progress, not a status-only wait. Stable10284 remains the accepted
 cc45248 backend with browser3e42723; the operator's form review stays available.
 
-Current unpublished [unguided work](TODO/NS-4_unguided-form_01.md) reproduces the
+Current unpublished [unguided work](TODO/DONE/NS-4_unguided-form_01.md) reproduces the
 original exact192cell/seed1704297163 failure at cell0, pass2, with unchanged
 16cell segments,256voice lookahead and256/16 search limits. Its stricter guided
 feasible witness completes with decision digest
@@ -354,7 +423,7 @@ The authored origin and guide limits remain explicit. Save to Songs names it
 Lead return / guided A/B/A in Musical experiments, without learning or copying.
 
 The first unguided request fails before audio at its configured pass-negotiation
-limit; [unguided form](TODO/NS-4_unguided-form_01.md) owns the retained request.
+limit; [unguided form](TODO/DONE/NS-4_unguided-form_01.md) owns the retained request.
 Review publication then exposes a distinct Unicode writer defect. The guarded
 native rollback restores every prior request hash; eight pending/seven completed
 responses validate unchanged. New [listening UTF-8](TODO/DONE/NS-6_listening-utf8_01.md)
@@ -383,7 +452,7 @@ recover the queue and finish the usable review before unrelated implementation.
 
 Current experiment update: the first unguided A/B/A fails at cell0, negotiated
 pass-backtrack limit. Preserve job music-1793506844373-563263 and seed1704297163.
-[Unguided form](TODO/NS-4_unguided-form_01.md) adds four required units:
+[Unguided form](TODO/DONE/NS-4_unguided-form_01.md) adds four required units:
 115/160 (71.88%), seven open,25 current DONE. This is not evidence of impossible
 music and does not justify seed sweeps. Continue the deliberate form question
 with an explicit starter guide and the same seed; disclose reduced rhythmic

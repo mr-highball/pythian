@@ -50,7 +50,8 @@ $suffix = if ($targetOs -in @('win32','win64')) { '.exe' } else { '' }
 $units = Join-Path $output 'units'
 New-Item -ItemType Directory -Force -Path $units | Out-Null
 $fixtures = @('pythian.tests.render.progress', 'pythian.tests.synthesis.portable',
-  'pythian.tests.time.portable', 'pythian.tests.music.stream', 'pythian.tests.music.form')
+  'pythian.tests.time.portable', 'pythian.tests.music.stream', 'pythian.tests.music.form',
+  'pythian.tests.instrument.recipe')
 if ($IncludeWfc) { $fixtures += @('pythian.tests.instrumental.stream',
   'pythian.tests.instrumental.decisions', 'pythian.tests.instrumental.passage',
   'pythian.tests.instrumental.edit.stream',
