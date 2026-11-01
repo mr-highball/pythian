@@ -3,7 +3,36 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: positioned preferences published; CI537 running — 2026-10-31
+## Current batch: section density; positioned-prior prerequisite accepted — 2026-10-31
+
+The preceding goal turn is **progress**: sparse-position repair, final consumers
+and source publication changed authoritative state. Complete CI537 now passes
+all maintained integration/extracted core/WFC steps at72df5d3. The fresh Win64
+archive verifies180 owned units and306 content hashes; native and actual pas2js
+consumers built solely from its extracted sources pass479 checks. Native heap is
+clean. Packet/receipt: `section-density-20261031-boss`; archive3ad94c6f. Source
+fca71f8 differs only in two handoff documents. Package session57615 is terminal0.
+
+[Positioned priors — DONE](TODO/DONE/NS-4_cell-priors_01.md) closes AC1–AC4 and
+six units, with all upstream CI64 and downstream/actual consumers. Incoming links,
+task status, current accepted WFC pin and accounting change together:105/146
+(71.92%), six open,22 current DONE. Counter remains zero; this does not accept
+form's eight units or musical quality. Stable6872 still serves checked energy479e
+with the same private catalog, settings and approved executable paths.
+
+Select the actual next prerequisite-free NS-5 criterion: section density in AC1.
+Deliver explicit neutral-default density through primary form metadata, actual
+positioned context/joint-rhythm and percussion preferences, and existing optional
+Studio Structure. Preserve full future windows, hard Keep/guide restrictions,
+continuous clocks, note/effect state, deterministic replay and neutral decisions.
+Close with actual symbolic attack changes and PCM under unchanged sounds/energy,
+plus native/pas2js, save/reopen and desktop/phone use. Stop after this usable
+control and request the task's real listening judgment; do not substitute volume,
+shorter windows, source PCM assembly or test totals for the musical outcome.
+Use the shared mapper in the companion's existing private ConfigureSegment hook;
+no new generic WFC gap is currently demonstrated. Big Boss remains SOLO.
+
+## Previous handoff: positioned preferences published; CI537 running — 2026-10-31
 
 Previous goal turn is **progress**: real positioned weights, primary consumers,
 upstream source/CI, checked pin integration and energy deployment changed the
@@ -118,7 +147,7 @@ controlled sections, so shortening windows, hard filtering or output volume
 would not implement the requested soft controls. Preserve the initial fixture's
 missing InitialFailureKinds failure separately from corrected02 evidence.
 
-Add [cell priors](TODO/NS-4_cell-priors_01.md), effort6, before expanding scope.
+Add [cell priors](TODO/DONE/NS-4_cell-priors_01.md), effort6, before expanding scope.
 Accounting becomes99/146 (67.81%), seven open and21 current DONE; NS-4 adds six
 open units. Form's eight-unit estimate and accepted historical evidence remain.
 Its density work is dependency-blocked. The operator is notified of separate

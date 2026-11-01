@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Dependency-blocked
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,9 +22,9 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Positioned soft priors](NS-4_cell-priors_01.md) — different section density
-  preferences must reach actual future context/rhythm/drum choices inside one
-  bounded planning window; current shared value weights cannot express them.
+- [Positioned soft priors — DONE](DONE/NS-4_cell-priors_01.md) — primary WFC and
+  sequence/named-voice adapters now support different preferences inside the
+  actual future planning window; all upstream/downstream/extracted gates pass.
 
 - [Known future domains — DONE](DONE/NS-4_future-domains_01.md) — original24cell
   guide and real8/16cell form now pass with native/pas2js and full CI/packages.
@@ -33,6 +33,17 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: positioned priors are accepted after complete CI537,
+  all upstream CI64 jobs and Win64/pas2js extracted consumers. Resume AC1's actual
+  section-density mapping through context/joint rhythm and percussion choices,
+  using the primary activity-bias contract. Preserve guide/retained hard domains,
+  full lookahead, original neutral replay and exact performance clocks. Expose
+  the control in existing optional Structure, save/reopen it and close with
+  actual decisions/PCM plus desktop/phone use. Do not substitute output volume
+  or shorten windows. Stop for the task's real operator-listening criterion;
+  the six prerequisite units are not duplicate form credit. Accounting105/146
+  (71.92%), six open; form's eight units remain open. Counter remains zero.
 
 - 2026-10-31, Big Boss: energy479e1d5 completes all CI536 (41253996201) and is
   now in the fixed stable slot. All fourteen deployed hashes match the actual

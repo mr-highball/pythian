@@ -11,13 +11,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 99 / 146 effort units accepted (67.81%); seven open, twenty-one current-goal DONE.**
-The six-unit [positioned-prior prerequisite](TODO/NS-4_cell-priors_01.md) adds
-missing generic soft weights at actual graph positions. Native/pas2js reproduce
-why one shared value distribution cannot express different section-density
-preferences across already planned future choices. Follow the notified separate
-WFC branch; musical mappings remain in Pythian. No acceptance follows from this
-assessment, and musical form's eight units remain open.
+**Current snapshot: 105 / 146 effort units accepted (71.92%); six open, twenty-two current-goal DONE.**
+The six-unit [positioned-prior prerequisite — DONE](TODO/DONE/NS-4_cell-priors_01.md)
+adds actual per-position soft choices through primary WFC/sequence/named-voice
+adapters. All upstream CI64 and downstream CI537 integration/extracted gates
+pass, plus fresh Win64/actual pas2js package consumers. It closes six units;
+section-density form mapping and operator listening retain the form task's eight
+open units. The separate WFC branch remains unmerged and core stays independent.
 The five-unit [future-domain prerequisite — DONE](TODO/DONE/NS-4_future-domains_01.md)
 repairs the original feasible24cell guide's dead end after two8cell commits.
 The separately notified WFC branch now checks bounded future domains before
@@ -73,10 +73,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors and musical controls | 13 | 42 | 42 / 55 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors and musical controls | 7 | 48 | 48 / 55 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 44 | 44 / 49 |
-| **Total** | **28 current-goal tasks** | **47** | **99** | **67.81%** |
+| **Total** | **28 current-goal tasks** | **41** | **105** | **71.92%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -95,7 +95,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **99/146**; no partial effort or musical-quality credit follows.
+Accounting is **105/146**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -184,6 +184,10 @@ mapping; deeper recipes and graph visualization retain their own tasks.
 The accepted [future-domain stream](TODO/DONE/NS-4_future-domains_01.md) checks
 known later restrictions before publishing each prefix; the retained unequal-
 phrase guide and existing form/default consumers pass all affected gates.
+The accepted [positioned-prior adapters](TODO/DONE/NS-4_cell-priors_01.md) add
+different positive choices at actual positions without changing hard constraints
+or source-model frequencies. Saved named sessions retain them. Full upstream,
+downstream and extracted delivery gates pass; section-density form mapping follows.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -235,8 +239,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 21 current DONE; legacy records: 53 retired +
-97 historical DONE (118 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 6 open + 22 current DONE; legacy records: 53 retired +
+97 historical DONE (119 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

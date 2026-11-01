@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 146 total effort units · 21 current-goal DONE · 99 / 146 accepted (67.81%).**
+**6 open tasks · 146 total effort units · 22 current-goal DONE · 105 / 146 accepted (71.92%).**
 
 The optional [musical laboratory — DONE](DONE/NS-6_optional-lab_01.md) restores
 reachable authored key/tempo, per-role expression and editable affect controls
@@ -55,12 +55,13 @@ through actual attack performance and retained/replayed expression, with local
 native/pas2js and desktop/phone consumers. Complete CI536 and checked fourteen-file
 stable deployment pass. Section density and operator listening remain open.
 No additional effort is accepted.
-The actual section-density dependency is [positioned soft priors](NS-4_cell-priors_01.md):
+The section-density dependency is [positioned soft priors — DONE](DONE/NS-4_cell-priors_01.md):
 the prior accepted WFC weights could not express different preferences at future
 positions in one lookahead. Separate448b2a3 now passes all five upstream CI64
-jobs; primary sequence/named-voice consumers pass479 native/pas2js checks locally.
-Downstream integration/extracted gates remain pending, with no six-unit
-acceptance yet. The form task's eight units remain unchanged.
+jobs; primary sequence/named-voice consumers pass479 native/pas2js checks.
+Complete downstream CI537 and fresh Win64/actual pas2js extracted consumers
+pass. Its six units are accepted. Return to form's section-density mapping and
+operator listening; that task's eight units remain open.
 
 ## First operator-facing milestone
 
@@ -95,8 +96,8 @@ continuity experiments are selected.
 | [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Reopened; restore the optional recording-proposal correction consumer after the laboratory |
 | [NS-3_style-vocabulary_01 — DONE](DONE/NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Accepted; weighted providers, source-bound ancestry, explicit classification selection and real instrumental output |
 | [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
-| [NS-4_cell-priors_01](NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Ready; reviewed future-domain pin; implement generic support in separate WFC repository |
-| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Dependency-blocked by positioned soft priors for section density; energy and section consumers are implemented |
+| [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
+| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | In progress; positioned priors accepted; finish section density and actual operator listening |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
@@ -106,8 +107,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 28 current-goal tasks (7 open, twenty-one DONE),
-totaling 146 units: 47 open and 99 accepted. Subtotals:
+The two tables together are all 28 current-goal tasks (6 open, twenty-two DONE),
+totaling 146 units: 41 open and 105 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 55, NS-5 15, NS-6 49. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

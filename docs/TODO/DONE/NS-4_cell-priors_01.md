@@ -1,17 +1,17 @@
 # NS-4_cell-priors_01 — Soft choice preferences at actual graph positions
 
-[Tasks](README.md) · [Musical form](NS-5_musical-form_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Musical form](../NS-5_musical-form_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** Accepted — 2026-10-31
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Section density needs different positive rhythm-choice preferences inside one
 bounded planning window, including future context/percussion choices that are
-fixed before their section is performed. The current WFC solver shares one
+fixed before their section is performed. The previous WFC solver shared one
 weight per value across all positions. Shortening the window loses known future
 constraints; hard filtering or changing output volume does not implement the
 existing soft musical-control contract.
@@ -45,11 +45,26 @@ the eight-unit form task. No credit is earned by this assessment or reproduction
   core independence, licenses and the unrelated WFC checkout. No upstream merge,
   full musical-form acceptance or musical-quality verdict is implied.
 
-**Blockers**
+**Blockers:**
 
-- [Known future domains — DONE](DONE/NS-4_future-domains_01.md), reviewed base62c8597.
+- [Known future domains — DONE](NS-4_future-domains_01.md), reviewed base62c8597.
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: AC1–AC4 are accepted at source72df5d3 after complete
+  [Pythian CI537](https://github.com/mr-highball/pythian/actions/runs/41260246011)
+  passes maintained integration and extracted core/WFC consumers. All five
+  upstream CI64 jobs already pass. The fresh full Win64 ZIP verifies180 owned
+  units and306 content hashes; its actual479-check consumer passes with a clean
+  heap. Actual pas2js built solely from those extracted sources passes the same
+  479 checks. Archive3ad94c6f and final receipts are in the dedicated
+  `section-density-20261031-boss` packet. No source recordings, responses or
+  private catalog data enter that source archive. Core-only consumer checks
+  remain independent. No upstream branch was merged or vendor source edited.
+  Six effort units close:105/146 (71.92%), six open,22 current DONE. This accepts
+  actual graph/adapter capability, not section-density Studio mapping, full form,
+  musical quality or universal style learning. Counter remains zero after its
+  generic criteria closure. Return to the linked musical-form task.
 
 - 2026-10-31, Big Boss: complete source72df5d3 is published on hello-pythian.
   [Native FPC CI537](https://github.com/mr-highball/pythian/actions/runs/41260246011)
