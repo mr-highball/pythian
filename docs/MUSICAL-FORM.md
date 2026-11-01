@@ -8,7 +8,8 @@ through one continuous Pythian stream. This is a library capability under active
 development. The optional Studio laboratory now saves editable arrangements,
 generates them through the bounded performer and auditions exact sections.
 Per-section energy changes actual instrument attack strength. Section density
-and actual operator listening remain required.
+is being connected to positioned musical choices; its complete Studio checks
+and actual operator listening remain required before task acceptance.
 
 ## Explicit musical inputs
 
@@ -23,6 +24,7 @@ records:
 | RepeatFrom | Earlier phrase index, or−1 for newly generated material |
 | Keep | Actual provider names whose public musical choices must recur |
 | EnergyOffset | Explicit −50..50 performance hypothesis; zero is neutral. Maps through the primary affect contract to50..150% attack velocity |
+| DensityOffset | Explicit −50..50 attack preference; zero is neutral. Favors sparse/busy musical choices within the actual vocabulary and hard constraints |
 
 Lengths may differ; a retained phrase has the same length as its source. A repeat
 must explicitly retain at least one provider. Names must exist in the producer's
@@ -101,6 +103,23 @@ Only new attacks receive the section's velocity mapping. A note held across the
 boundary keeps its original velocity, envelope, source and effect state. This
 authored hypothesis is not a learned or calibrated mood measurement.
 
+Form version3 adds section density. The primary affect contract maps its offset
+to−100..100 activity bias. Context-bearing streams weight the actual joint
+context's rhythm choices. Context-free streams weight the rhythm pass through
+the companion's existing private planning hook. Percussion weights actual
+hit/rest choices and composes its existing global hit preference. The primary
+positioned public-token mapper applies these preferences across the full
+bounded planning window, including future sections. It does not shorten that
+window, manufacture transitions or filter performed notes afterward.
+
+Hard guide, pitch and retained-provider domains take priority. A vocabulary or
+guide with only one feasible rhythm may leave density with no effect. A future
+section's preference can affect earlier provisional choices in the same window.
+Profiles cache bounded public vocabulary weights, never an entire score; neutral
+sections install no position overrides. No source audio or volume change stands
+in for the selected musical attacks. This remains an experimental authored
+control rather than a promise of a particular attack count.
+
 Decision record version2 stores one explicit velocity expression per role/cell
 beside the original logical parts and actual provider states. Both the live
 stream and primary journal replay consume those expressions. Bounded copy,
@@ -129,8 +148,11 @@ No context model is invented for authored material that has none.
 Current structured jobs require neutral global activity/chord preferences and
 100% global note strength/length. Section energy is independently editable from
 0 soft through50 neutral to100 strong. Pitch bounds, instruments and mix remain
-editable. Section density remains open. Ordinary unstructured experiments retain
-their existing expression/preference controls.
+editable. The candidate Structure editor also saves density from0 sparse
+through50 neutral to100 busy; its full native/browser qualification is still
+in progress. Ordinary unstructured experiments retain their existing
+expression/preference controls. Neutral density is omitted from canonical JSON
+to preserve existing signed neutral form identities and operator history.
 
 The actual Studio48second A/B/A consumer retains all eight requested providers
 in its return; the primary journal reader verifies the actual tokens. Playback

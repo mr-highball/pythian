@@ -79,6 +79,7 @@ var
   LRows, LKeep: TJSONArray;
   LRow: TJSONObject;
   I, J: Integer;
+  LOptional: Integer;
 begin
   Result := nil;
   if AValue = nil then Exit;
@@ -91,8 +92,9 @@ begin
   begin
     Need(LRows[I].JSONType = jtObject, 'Each section must be an object');
     LRow := LRows.Objects[I];
-    Need((LRow.Count = 5) or ((LRow.Count = 6) and (LRow.Find('energy') <> nil)),
-      'Section needs section, name, cells, repeat_from, keep and optional energy');
+    LOptional := Ord(LRow.Find('energy') <> nil) + Ord(LRow.Find('density') <> nil);
+    Need(LRow.Count = 5 + LOptional,
+      'Section needs section, name, cells, repeat_from, keep and optional energy/density');
     Need((LRow.Find('section') <> nil) and (LRow.Find('section').JSONType = jtString) and
       (LRow.Find('name') <> nil) and (LRow.Find('name').JSONType = jtString),
       'Give each section a name');
@@ -102,6 +104,8 @@ begin
     Result[I].RepeatFrom := Whole(LRow, 'repeat_from', -1, I - 1);
     if LRow.Find('energy') <> nil then
       Result[I].EnergyOffset := Whole(LRow, 'energy', 0, 100) - 50;
+    if LRow.Find('density') <> nil then
+      Result[I].DensityOffset := Whole(LRow, 'density', 0, 100) - 50;
     Need((LRow.Find('keep') <> nil) and (LRow.Find('keep').JSONType = jtArray),
       'Choose the parts to retain from the earlier section');
     LKeep := LRow.Arrays['keep'];
@@ -130,6 +134,9 @@ begin
         'repeat_from', AForm[I].RepeatFrom, 'keep', LKeep,
         'energy', AForm[I].EnergyOffset + 50]);
       Result.Add(LRow);
+      { Neutral density keeps the existing signed neutral form identity. }
+      if AForm[I].DensityOffset <> 0 then
+        LRow.Add('density', AForm[I].DensityOffset + 50);
       for J := 0 to High(AForm[I].Keep) do LKeep.Add(String(AForm[I].Keep[J]));
     end;
   except

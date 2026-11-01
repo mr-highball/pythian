@@ -33,6 +33,10 @@ uses
   pythian.music.controls,
   pythian.progress,
   pythian.wfc.voices,
+  pythian.wfc.layers,
+  pythian.wfc.providers,
+  wfc_sequence,
+  wfc_music_ensemble,
   wfc_music_voices_graph;
 
 type
@@ -52,18 +56,72 @@ function CompileInstrumentalControls(const AConfig: TWfcMusicVoicesGraphConfig;
   const ACellCount, ATonic, ATonicBias: Integer; const AParts: TMusicalPartControls;
   const ABaseMasks: TVoiceMasks;
   const AProgress: TWorkProgressCallback = nil): TInstrumentalGraphControls;
+{ One primary rhythm-action bridge for finite controls and positioned form
+  preferences. Only public vocabulary is inspected; no graph/learning occurs. }
+function RhythmActivityWeight(const ARhythm: TWfcMusicRhythmFrame;
+  const AParts: TMusicalPartControls): Integer;
+function SequenceActivityPreferences(const AModel: TWfcSequenceModel;
+  const AKind: TStyleProviderVocabulary; const AParts: TMusicalPartControls;
+  const AProgress: TWorkProgressCallback = nil): TLayerTokenPreferences;
 
 implementation
 
 uses
   SysUtils,
   pythian.audio,
-  pythian.wfc.layers,
   wfc_model,
-  wfc_sequence,
   wfc_music,
-  wfc_music_sequence,
-  wfc_music_ensemble;
+  wfc_music_sequence;
+
+function RhythmActivityWeight(const ARhythm: TWfcMusicRhythmFrame;
+  const AParts: TMusicalPartControls): Integer;
+var
+  LAttacks: array of Boolean;
+  LIndex: Integer;
+begin
+  if Length(ARhythm.Actions) <> Length(AParts) then
+    raise EAudio.Create('Activity controls require the actual joint rhythm role order');
+  SetLength(LAttacks, Length(AParts));
+  for LIndex := 0 to High(LAttacks) do
+    LAttacks[LIndex] := ARhythm.Actions[LIndex] = wmcaAttack;
+  Result := MusicalActivityWeight(AParts, LAttacks);
+end;
+
+function SequenceActivityPreferences(const AModel: TWfcSequenceModel;
+  const AKind: TStyleProviderVocabulary; const AParts: TMusicalPartControls;
+  const AProgress: TWorkProgressCallback): TLayerTokenPreferences;
+var
+  LParts: TMusicalPartControls;
+  LCandidate: TLayerTokenPreferences;
+  LChoice: TStyleProviderChoice;
+  LToken: String;
+  LWeight: Integer;
+  LIndex: Integer;
+  LCount: Integer;
+begin
+  if (AModel = nil) or not (AKind in [spvRhythm, spvMusicalContext]) or
+    (Length(AParts) < 1) or (Length(AParts) > MaximumMusicalControlParts) then
+    raise EAudio.Create('Activity preferences need a rhythm/context model and ordered parts');
+  LParts := Copy(AParts);
+  for LIndex := 0 to High(LParts) do ValidateMusicalPartControl(LParts[LIndex]);
+  LCandidate := nil;
+  for LIndex := 0 to AModel.PublicTokenCount - 1 do
+  begin
+    if (LIndex mod 32) = 0 then
+      ReportWork(AProgress, 'musical_activity_tokens', wuItems, LIndex, AModel.PublicTokenCount);
+    LToken := AModel.PublicTokenAt(LIndex);
+    LChoice := DecodeStyleProviderChoice(AKind, LToken);
+    LWeight := RhythmActivityWeight(LChoice.Rhythm, LParts);
+    if LWeight = 1 then Continue;
+    LCount := Length(LCandidate);
+    if LCount >= MaximumLayerPreferences then
+      raise EAudio.Create('Activity preferences exceed the public token preference budget');
+    SetLength(LCandidate, LCount + 1);
+    LCandidate[LCount] := MakeLayerTokenPreference(LToken, LWeight);
+  end;
+  ReportWork(AProgress, 'musical_activity_preferences_ready', wuItems, 1, 1);
+  Result := LCandidate;
+end;
 
 function CopyMasks(const ASource: TVoiceMasks;
   const AProgress: TWorkProgressCallback): TVoiceMasks;
@@ -107,7 +165,6 @@ var
   LModel: TWfcSequenceModel;
   LFrame: TWfcMusicEnsembleFrame;
   LRhythm: TWfcMusicRhythmFrame;
-  LAttacks: array of Boolean;
   LHarmony: TWfcMusicPitchClassSet;
   LTone: TWfcMusicTone;
   LChoice: String;
@@ -175,12 +232,7 @@ begin
       else if LProvider = 1 then
       begin
         LRhythm := DecodeWfcMusicRhythmFrame(LChoice);
-        if Length(LRhythm.Actions) <> Length(AParts) then
-          raise EAudio.Create('Activity controls require the actual joint rhythm role order');
-        SetLength(LAttacks, Length(AParts));
-        for LIndex := 0 to High(LAttacks) do
-          LAttacks[LIndex] := LRhythm.Actions[LIndex] = wmcaAttack;
-        LWeight := MusicalActivityWeight(AParts, LAttacks);
+        LWeight := RhythmActivityWeight(LRhythm, AParts);
       end
       else if LRole >= 0 then
       begin

@@ -75,7 +75,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Six later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope

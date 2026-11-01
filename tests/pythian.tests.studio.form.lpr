@@ -319,7 +319,7 @@ end;
 procedure Run(const ARoot: String);
 var
   LSettings, LWrite, LProject, LRead, LRequest, LJob, LMeta: TJSONObject;
-  LRows: TJSONArray;
+  LRows, LEncoded: TJSONArray;
   LForm: TMusicForm;
   LFile: TStream;
   LReader: TMusicDecisionReader;
@@ -332,6 +332,8 @@ begin
   LRows := TJSONArray.Create([Section('Opening', 8), Section('Contrast', 16)]);
   LRows.Objects[0].Integers['energy'] := 0;
   LRows.Objects[1].Integers['energy'] := 100;
+  LRows.Objects[0].Add('density', 0);
+  LRows.Objects[1].Add('density', 100);
   LSettings := TJSONObject.Create(['tempo_bpm', 120, 'tonic', 0, 'cells', 24,
     'instruments', TJSONArray.Create(['saw', 'triangle', 'square']),
     'levels', TJSONArray.Create([100, 100, 100, 100, 100, 100]), 'form', LRows]);
@@ -349,6 +351,25 @@ begin
     LForm := DecodeStudioForm(LRows);
     Check((StudioFormCells(LForm) = 24) and (StudioFormFrames(LForm, 120, 8000) = 48000),
       'Form transport reuses the primary cell and rational frame clocks');
+    Check((LForm[0].DensityOffset = -50) and (LForm[1].DensityOffset = 50),
+      'Native form transport retains the actual sparse/busy section controls');
+    LRows.Objects[0].Integers['density'] := 101;
+    LRaised := False;
+    try LForm := DecodeStudioForm(LRows);
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'Out-of-range section density rejects at the native boundary');
+    LRows.Objects[0].Floats['density'] := 0.5;
+    LRaised := False;
+    try LForm := DecodeStudioForm(LRows);
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'Fractional section density rejects at the native boundary');
+    LRows.Objects[0].Integers['density'] := 50;
+    LEncoded := EncodeStudioForm(DecodeStudioForm(LRows));
+    try
+      Check(LEncoded.Objects[0].Find('density') = nil,
+        'Neutral density preserves the canonical signed form identity');
+    finally LEncoded.Free end;
+    LRows.Objects[0].Integers['density'] := 0;
     LRows.Objects[0].Delete('energy');
     LForm := DecodeStudioForm(LRows);
     Check(LForm[0].EnergyOffset = 0, 'Historical five-field forms remain explicitly neutral');

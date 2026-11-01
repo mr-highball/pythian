@@ -86,10 +86,21 @@ var LForm, LCopy: TMusicForm;
   LRejected: Boolean;
 begin
   LForm := Form;
+  LForm[0].DensityOffset := -50;
+  LForm[1].DensityOffset := 50;
   SetLength(LKeys, 2); LKeys[0] := 'lead'; LKeys[1] := 'bass';
   Check(MusicFormLookahead(LForm, 16) = 4, 'Solve windows divide unequal musical phrase boundaries');
   LCursor := TMusicFormCursor.Create(LForm, LKeys);
   try
+    Check((LCursor.DensityOffsetAt(0) = -50) and
+      (LCursor.DensityOffsetAt(11) = -50) and (LCursor.DensityOffsetAt(12) = 50) and
+      (LCursor.DensityOffsetAt(19) = 50) and (LCursor.DensityOffsetAt(20) = 0),
+      'Density uses exact half-open musical phrase boundaries');
+    LForm[0].DensityOffset := 999;
+    Check(LCursor.DensityOffsetAt(0) = -50, 'Section density is detached from caller edits');
+    LRejected := False;
+    try LCursor.DensityOffsetAt(32) except on E: EAudio do LRejected := True end;
+    Check(LRejected, 'Density lookup rejects the exclusive form end');
     Check(LCursor.ReadyLookaheadCells(32) = 12,
       'Planning waits for the first motif source before choosing its later transition');
     Check(not LCursor.TryCopyLocksAt(20, 4, LLocks),
@@ -134,7 +145,7 @@ begin
     Check((LCursor.CellCount = 32) and (LCursor.PhraseIndex = 3),
       'Exact musical tokens allow new independently authenticated latent states');
   finally LCursor.Free end;
-  for I := 0 to 4 do
+  for I := 0 to 6 do
   begin
     LForm := Form;
     case I of
@@ -143,6 +154,8 @@ begin
       2: LForm[2].Keep[0] := 'missing';
       3: LForm[0].Keep := Copy(LForm[2].Keep);
       4: LForm[1].Cells := 0;
+      5: LForm[1].DensityOffset := -51;
+      6: LForm[1].DensityOffset := 51;
     end;
     LRejected := False;
     LCursor := nil;

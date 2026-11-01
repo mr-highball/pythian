@@ -32,12 +32,13 @@ uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
   pythian.music.decisions, pythian.music.form,
   pythian.music.controls,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
-  pythian.wfc.percussion, pythian.wfc.stream, pythian.wfc.voices, wfc, wfc_model, wfc_sequence,
+  pythian.wfc.percussion, pythian.wfc.stream, pythian.wfc.voices,
+  pythian.wfc.layers, wfc, wfc_model, wfc_sequence,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
   wfc_music_voices_stream;
 
 const
-  InstrumentalStreamVersion = 3;
+  InstrumentalStreamVersion = 4;
 
 type
   { Borrowed immutable authored/caller domain source. Positions in returned
@@ -95,6 +96,9 @@ type
     FDomainProvider: TInstrumentalDomainProvider;
     FForm: TMusicFormCursor;
     FHasExpression: Boolean;
+    FHasDensity: Boolean;
+    FDensityProfiles: array of TObject;
+    FVoiceProgress: TWorkProgressCallback;
     FDrumStreams: array of TLearnedSequenceStream;
     FDrumPending: array of TWfcGeneratedSequenceSegment;
     FDrumAt: array of Integer;
@@ -115,6 +119,10 @@ type
     FBusy: Boolean;
     FFailed: Boolean;
     procedure RequireIdle;
+    function DensityRows(const AProvider: Integer; const AFirstCell: Int64;
+      const ACellCount: Integer; const AProgress: TWorkProgressCallback): TLayerPositionPreferences;
+    procedure ConfigureVoiceDensity(const AStartTick: Int64;
+      const ACellCount: Integer; const AGraph: TGraph);
     procedure PlanSegment(const AProgress: TWorkProgressCallback);
     procedure AdmitCell(const AProgress: TWorkProgressCallback);
     function DrumConstraints(const APart: Integer;
@@ -181,8 +189,98 @@ function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumen
 implementation
 
 uses SysUtils, Math, pythian.synth, pythian.wfc.music,
-  pythian.wfc.layers, pythian.wfc.musical.context,
+  pythian.wfc.musical.context, pythian.wfc.instrumental.controls,
+  pythian.wfc.providers,
   wfc_music_arrangement;
+
+type
+  TInstrumentalDensityKind = (idkRhythm, idkContext, idkPercussion);
+  { Big Boss: bounded memoization of public vocabulary weights, never decisions.
+    Models are borrowed and immutable for the owning stream's lifetime. }
+  TInstrumentalDensityProfile = class
+  private
+    FModel: TWfcSequenceModel;
+    FKind: TInstrumentalDensityKind;
+    FParts: Integer;
+    FReady: array[-50..50] of Boolean;
+    FPreferences: array[-50..50] of TLayerTokenPreferences;
+  public
+    constructor Create(const AModel: TWfcSequenceModel;
+      const AKind: TInstrumentalDensityKind; const AParts: Integer);
+    function Preferences(const AOffset: Integer;
+      const AProgress: TWorkProgressCallback): TLayerTokenPreferences;
+  end;
+
+  TInstrumentalFormVoices = class(TWfcMusicVoicesStream)
+  private
+    FOwner: TInstrumentalMusicStream;
+  protected
+    procedure ConfigureSegment(const AIndex, AStartTick: TWfcMusicArrangementWide;
+      const ACellCount: Integer; const AGraph: TGraph); override;
+  public
+    constructor Create(const AConfig: TWfcMusicVoicesStreamConfig;
+      const AOwner: TInstrumentalMusicStream);
+  end;
+
+constructor TInstrumentalDensityProfile.Create(const AModel: TWfcSequenceModel;
+  const AKind: TInstrumentalDensityKind; const AParts: Integer);
+begin
+  inherited Create;
+  FModel := AModel;
+  FKind := AKind;
+  FParts := AParts;
+end;
+
+function TInstrumentalDensityProfile.Preferences(const AOffset: Integer;
+  const AProgress: TWorkProgressCallback): TLayerTokenPreferences;
+var
+  LParts: TMusicalPartControls;
+  LCandidate: TLayerTokenPreferences;
+  LKind: TStyleProviderVocabulary;
+  LIndex: Integer;
+  LBias: Integer;
+begin
+  if (AOffset < -50) or (AOffset > 50) then
+    raise EAudio.Create('Section density offset must be -50..50');
+  if not FReady[AOffset] then
+  begin
+    LBias := MapMusicalAffect(50, 50 + AOffset, 50).ActivityBias;
+    if FKind = idkPercussion then
+      LCandidate := PercussionActivityPreferences(FModel, LBias)
+    else
+    begin
+      SetLength(LParts, FParts);
+      for LIndex := 0 to High(LParts) do
+      begin
+        LParts[LIndex] := DefaultMusicalPartControl;
+        LParts[LIndex].ActivityBias := LBias;
+      end;
+      LKind := spvRhythm;
+      if FKind = idkContext then LKind := spvMusicalContext;
+      LCandidate := SequenceActivityPreferences(FModel, LKind, LParts, AProgress);
+    end;
+    ReportWork(AProgress, 'instrumental_density_profile_ready', wuItems, 1, 1);
+    FPreferences[AOffset] := LCandidate;
+    FReady[AOffset] := True;
+  end;
+  { Private borrowed view. DensityRows detaches it before any caller can see it. }
+  Result := FPreferences[AOffset];
+end;
+
+constructor TInstrumentalFormVoices.Create(const AConfig: TWfcMusicVoicesStreamConfig;
+  const AOwner: TInstrumentalMusicStream);
+begin
+  inherited Create(AConfig);
+  FOwner := AOwner;
+end;
+
+procedure TInstrumentalFormVoices.ConfigureSegment(
+  const AIndex, AStartTick: TWfcMusicArrangementWide;
+  const ACellCount: Integer; const AGraph: TGraph);
+begin
+  inherited ConfigureSegment(AIndex, AStartTick, ACellCount, AGraph);
+  FOwner.ConfigureVoiceDensity(AStartTick, ACellCount, AGraph);
+end;
 
 function DefaultInstrumentalStreamOptions(const AMusicFrames: Int64): TInstrumentalStreamOptions;
 begin
@@ -229,7 +327,10 @@ begin
   FDecisionSink := ADecisionSink;
   FDomainProvider := ADomainProvider;
   for LIndex := 0 to High(AForm) do
+  begin
     FHasExpression := FHasExpression or (AForm[LIndex].EnergyOffset <> 0);
+    FHasDensity := FHasDensity or (AForm[LIndex].DensityOffset <> 0);
+  end;
   SetLength(FRoleNames, Length(ARoles));
   for LIndex := 0 to High(ARoles) do FRoleNames[LIndex] := ARoles[LIndex].Name;
   SetLength(FPreviousDecision, Length(ARoles) + Length(APercussion));
@@ -307,9 +408,22 @@ begin
   LStreamConfig.LookaheadCellCount := FVoiceLookaheadCells;
   LStreamConfig.Search.SolveOptions.MaxBacktracks := AOptions.MaxBacktracks;
   LStreamConfig.Search.MaxPassBacktracks := AOptions.MaxPassBacktracks;
-  FVoices := TWfcMusicVoicesStream.Create(LStreamConfig);
+  FVoices := TInstrumentalFormVoices.Create(LStreamConfig, Self);
   if AContext <> nil then FContext := TLearnedSequenceStream.Create(AContext);
   FDefinitions := CopyPercussionDefinitions(APercussion);
+  if FHasDensity then
+  begin
+    SetLength(FDensityProfiles, 2 + Length(APercussion));
+    if AContext <> nil then
+      FDensityProfiles[0] := TInstrumentalDensityProfile.Create(AContext, idkContext,
+        Length(ARoles))
+    else
+      FDensityProfiles[1] := TInstrumentalDensityProfile.Create(FConfig.RhythmModel,
+        idkRhythm, Length(ARoles));
+    for LIndex := 0 to High(APercussion) do
+      FDensityProfiles[LIndex + 2] := TInstrumentalDensityProfile.Create(
+        APercussion[LIndex].Model, idkPercussion, 0);
+  end;
   SetLength(FDrumStreams, Length(APercussion));
   SetLength(FDrumPending, Length(APercussion));
   SetLength(FDrumAt, Length(APercussion));
@@ -357,6 +471,7 @@ begin
   FForm.Free;
   for I := 0 to High(FDrumStreams) do FDrumStreams[I].Free;
   for I := 0 to High(FDrums) do FDrums[I].Free;
+  for I := 0 to High(FDensityProfiles) do FDensityProfiles[I].Free;
   FClock.Free;
   inherited Destroy;
 end;
@@ -364,6 +479,51 @@ end;
 procedure TInstrumentalMusicStream.RequireIdle;
 begin
   if FBusy then raise EAudio.Create('Instrumental stream calls cannot reenter');
+end;
+
+function TInstrumentalMusicStream.DensityRows(const AProvider: Integer;
+  const AFirstCell: Int64; const ACellCount: Integer;
+  const AProgress: TWorkProgressCallback): TLayerPositionPreferences;
+var
+  LCell: Integer;
+  LCount: Integer;
+  LOffset: Integer;
+  LPreferences: TLayerTokenPreferences;
+begin
+  Result := nil;
+  if not FHasDensity then Exit;
+  if (AProvider < 0) or (AProvider >= Length(FDensityProfiles)) or
+    (FDensityProfiles[AProvider] = nil) or (ACellCount < 1) or
+    (ACellCount > MaximumMusicDecisionCells) then
+    raise EAudio.Create('Section density needs its actual bounded provider window');
+  for LCell := 0 to ACellCount - 1 do
+  begin
+    if (LCell mod 32) = 0 then
+      ReportWork(AProgress, 'instrumental_density_cells', wuItems, LCell, ACellCount);
+    LOffset := FForm.DensityOffsetAt(AFirstCell + LCell);
+    if LOffset = 0 then Continue;
+    LPreferences := TInstrumentalDensityProfile(FDensityProfiles[AProvider]).Preferences(
+      LOffset, AProgress);
+    if Length(LPreferences) = 0 then Continue;
+    LCount := Length(Result);
+    SetLength(Result, LCount + 1);
+    Result[LCount] := MakeLayerPositionPreference(LCell, LPreferences);
+  end;
+  ReportWork(AProgress, 'instrumental_density_cells_ready', wuItems, ACellCount, ACellCount);
+end;
+
+procedure TInstrumentalMusicStream.ConfigureVoiceDensity(const AStartTick: Int64;
+  const ACellCount: Integer; const AGraph: TGraph);
+var
+  LRows: TLayerPositionPreferences;
+begin
+  { Context already chooses joint rhythm. Bias that upstream choice once, not
+    the downstream graph whose rhythm is then pinned by the context. }
+  if not FHasDensity or (FContext <> nil) then Exit;
+  LRows := DensityRows(1, AStartTick div FOptions.StepTicks, ACellCount, FVoiceProgress);
+  if Length(LRows) > 0 then
+    ApplySequencePositionPreferences(FConfig.RhythmModel, AGraph.PassGraph[1],
+      LRows, nil, FVoiceProgress);
 end;
 
 function TInstrumentalMusicStream.DrumConstraints(const APart: Integer;
@@ -539,6 +699,7 @@ begin
       raise EAudio.Create('Current form motif has no completed source decisions');
     LRequest.CellCount := LAt;
     LRequest.MinimumFollowingCells := Min(Int64(High(Integer)), FTotalCells - FCells - LAt);
+    LRequest.PositionPreferences := DensityRows(0, FCells, LAt, AProgress);
     LCandidate := Default(TWfcGeneratedSequenceSegment);
     Result := FContext.TryNext(LRequest, LConstraints, LCandidate, AReport, AProgress);
     if not Result then Exit;
@@ -605,6 +766,7 @@ begin
     LRequest := AOptions;
     LRequest.CellCount := LAt;
     LRequest.MinimumFollowingCells := Min(Int64(High(Integer)), FTotalCells - FCells - LAt);
+    LRequest.PositionPreferences := DensityRows(APart + 2, FCells, LAt, AProgress);
     LCandidate := Default(TWfcGeneratedSequenceSegment);
     Result := FDrumStreams[APart].TryNext(LRequest, LConstraints, LCandidate, AReport, AProgress);
     if not Result then Exit;
@@ -740,6 +902,7 @@ begin
   if (FContext <> nil) and (Length(LMasks[0]) > 0) then
     LExpected := '; next context harmony=' + LMasks[0][0].AllowedTokens[0];
   try
+    FVoiceProgress := AProgress;
     if FVoices.Next(LSegment, LVoiceReport, LPlanningCells) <> wmaspProduced then
       raise EAudio.Create('Musical frontier cannot continue at cell ' + IntToStr(FCells) +
         ', negotiation ' + IntToStr(Ord(LVoiceReport.Status)) + ', pass ' +
@@ -753,6 +916,7 @@ begin
     for I := 0 to High(FRoleNames) do
       KeepProvider(FRoleNames[I], LSegment.CopyGenerated(I + 2));
   finally
+    FVoiceProgress := nil;
     LSegment.Free;
   end;
   ReportWork(AProgress, 'instrumental_stream_voices', wuItems, FCells, FTotalCells);

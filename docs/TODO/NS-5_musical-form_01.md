@@ -34,6 +34,23 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss SOLO: the section-density candidate now uses the primary
+  musical activity mapper and positioned public-token preferences across actual
+  context/joint-rhythm and percussion windows. Neutral rows install nothing;
+  guide/Keep remain hard and the lookahead is unchanged. The optional Structure
+  editor and native form transport retain density separately from energy,
+  including invalid draft recovery and neutral canonical identity. Actual
+  native/actual pas2js consumer passes323 checks: pitched sparse/busy3/32 without context,
+  3/30 with context; drums5/31 and3/32. Exact retained returns, changed PCM under
+  identical sounds/energy, replay, a hard authored guide and cancellation pass.
+  Existing form3075695, finite controls208 and portable form23 pass on both
+  targets, with clean native heaps and unchanged neutral decision digest.
+  Full browser build plus shared codec/progress checks pass. Complete native
+  Studio save/reopen and desktop/phone checks remain pending; no task or
+  criterion acceptance yet. Evidence: `form-density-20261031-boss` on E. Stable
+  remains the checked energy release with deployed independent clips. The
+  operator's clip request is already accepted, not duplicate new effort.
+
 - 2026-10-31, Big Boss: positioned priors are accepted after complete CI537,
   all upstream CI64 jobs and Win64/pas2js extracted consumers. Resume AC1's actual
   section-density mapping through context/joint rhythm and percussion choices,

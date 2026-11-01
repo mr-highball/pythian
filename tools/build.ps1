@@ -896,6 +896,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental form compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.form$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental form checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.density.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental density compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.instrumental.density$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Instrumental density checks failed' }
     & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.decisions.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.decisions$executableSuffix")

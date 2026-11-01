@@ -97,6 +97,8 @@ function CopyPercussionDefinitions(const ADefinitions: TPercussionDefinitions): 
 function PercussionToken(const AVelocity: Integer): String;
 function PercussionVelocity(const AToken: String): Integer;
 function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
+function PercussionActivityPreferences(const AModel: TWfcSequenceModel;
+  const AActivityBias: Integer): TLayerTokenPreferences;
 { Detached musical projection shared by initial streams and retained graph edits.
   Drum tokens drive explicit synthesized hits, never source-audio windows. }
 function AppendPercussionDecisions(const APitched: TChordFrame;
@@ -120,7 +122,8 @@ implementation
 
 uses
   SysUtils,
-  pythian.audio;
+  pythian.audio,
+  pythian.music.controls;
 
 function AppendPercussionDecisions(const APitched: TChordFrame;
   const ATokens: TWfcModelTokens; const ADefinitions: TPercussionDefinitions): TChordFrame;
@@ -198,29 +201,41 @@ begin
   end;
 end;
 
-function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
+function BuildPercussionPreferences(const AModel: TWfcSequenceModel;
+  const AHitWeight, AActivityBias: Integer): TLayerTokenPreferences;
 var
   I: Integer;
   LWeight: Integer;
   LToken: String;
+  LHit: Boolean;
 begin
-  if (ADefinition.Model = nil) or (ADefinition.HitWeight < 1) or
-    (ADefinition.HitWeight > MaximumLayerPreferenceMultiplier) then
+  if (AModel = nil) or (AHitWeight < 1) or
+    (AHitWeight > MaximumLayerPreferenceMultiplier) then
   begin
     raise EAudio.Create('Percussion preferences require a model and hit weight 1..1024');
   end;
   Result := nil;
-  SetLength(Result, ADefinition.Model.PublicTokenCount);
+  MusicalBiasWeight(AActivityBias, False);
+  SetLength(Result, AModel.PublicTokenCount);
   for I := 0 to High(Result) do
   begin
-    LToken := ADefinition.Model.PublicTokenAt(I);
-    LWeight := 1;
-    if PercussionVelocity(LToken) > 0 then
-    begin
-      LWeight := ADefinition.HitWeight;
-    end;
+    LToken := AModel.PublicTokenAt(I);
+    LHit := PercussionVelocity(LToken) > 0;
+    LWeight := MusicalBiasWeight(AActivityBias, LHit);
+    if LHit then LWeight := LWeight * AHitWeight;
     Result[I] := MakeLayerTokenPreference(LToken, LWeight);
   end;
+end;
+
+function PercussionPreferences(const ADefinition: TPercussionDefinition): TLayerTokenPreferences;
+begin
+  Result := BuildPercussionPreferences(ADefinition.Model, ADefinition.HitWeight, 0);
+end;
+
+function PercussionActivityPreferences(const AModel: TWfcSequenceModel;
+  const AActivityBias: Integer): TLayerTokenPreferences;
+begin
+  Result := BuildPercussionPreferences(AModel, 1, AActivityBias);
 end;
 
 function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;

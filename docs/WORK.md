@@ -3,6 +3,54 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
+## Current handoff: density library passes; native Studio consumer running — 2026-10-31
+
+Big Boss SOLO continues the already selected section-density batch. Actual
+native Win64 and pas2js pass323 new checks with matching counts: pitched3/32
+sparse/busy without context and3/30 with context; drums5/31 and3/32. Hard Keep
+and authored guide override preferences. The same sounds/energy produce changed
+PCM; different pull sizes replay exactly, and cancellation publishes no partial
+music. Native heap is clean. Primary form3 and stream4 apply actual positioned
+context/rhythm/percussion weights across full bounded windows, using the existing
+companion hook and accepted public-token mapper. No vendor source changed.
+
+Neutral form3075695 checks retain original digestc4355af4...124a1130 on both
+targets; finite controls208 and portable form23 also pass native/actual pas2js,
+with clean native heaps. Browser build02 includes density fields, draft/config
+restoration and readable callback labels. Initial full browser build also passes
+the unchanged shared PCM/RF64, portable progress and presentation checks.
+Build/package/portability orchestration now includes the maintained density
+consumer; scripts parse and diff whitespace checks pass. Evidence is in dedicated
+`form-density-20261031-boss` roots on E. No density deployment/whole-task acceptance.
+
+Native library cold compilation session64229 and actual regression batch99704
+are terminal0, as are pas2js36723/97738 and browser74966/55782. Do not restart
+them. **Session6539 remains running**: compile/run the actual native Studio form
+consumer with sparse/busy settings, canonical neutral identity, signed save/reopen,
+generation and saved-score follow-ups. Poll that exact session. Its build/run
+logs are `studio-form-build01.log` / `studio-form01.log`; fixture catalog is
+`tests/form-density-20261031-boss/studio-catalog01` on E. It has a separate studio
+unit cache, borrowing previous caches; do not edit compiler inputs while live.
+This source-free form consumer does not invoke import/library staging fallbacks.
+Production session96772 separately compiles matching service/worker without
+heap tracing, using the dedicated production cache. Poll its exact handle too.
+
+Next finish that actual native consumer, then build matching service/worker,
+qualify desktop/phone Structure use with isolated fixture data, publish/check
+integration and deploy only a checked candidate through the fixed slot. Keep
+actual operator listening separate; form's eight units remain open. Batch is
+still in progress, consecutive nonclosing count0; accounting105/146 (71.92%).
+
+The latest explicit clip request is already accepted/deployed, not duplicate
+effort. Fresh source inspection confirms saved clips bypass full-parent SourceHash.
+All fourteen stable files match checked energy479e1d5 and loopback HTTP200;
+owner6872 remains in the fixed slot. Preserve the private catalog and saved
+answers. No new QA server/browser/audio was started in this follow-up. Current
+density candidate is based on published a371f9a; goal remains active. Publish
+the passed library/browser-build candidate for full integration CI while the
+local native Studio and matched production builds finish. No effort acceptance
+or stable replacement follows from publication alone.
+
 ## Current batch: section density; positioned-prior prerequisite accepted — 2026-10-31
 
 The preceding goal turn is **progress**: sparse-position repair, final consumers

@@ -116,12 +116,14 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.instrumental.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/INSTRUMENTAL.md') -Destination $docRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/MUSICAL-FORM.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/PERCUSSION.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.wfc.provider.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extension.units.pas') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extensions.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.provider.extension.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.cell.preferences.lpr') -Destination $testRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.instrumental.density.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/CALLER-PROVIDERS.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.events.lpr') -Destination $exampleRoot
   $toolRoot = Join-Path $stage 'tools'
@@ -283,6 +285,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned preference consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.cell.preferences$executableSuffix") > 'cell-preferences-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned sequence/session consumer failed' }
+    & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.instrumental.density.lpr') > 'instrumental-density-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental density consumer compilation failed' }
+    & (Join-Path $binRoot "pythian.tests.instrumental.density$executableSuffix") > 'instrumental-density-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental density consumer failed' }
     $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
     & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }

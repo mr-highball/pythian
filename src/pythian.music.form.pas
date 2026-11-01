@@ -31,7 +31,7 @@ interface
 uses pythian.music.decisions, pythian.text;
 
 const
-  MusicFormVersion = 2;
+  MusicFormVersion = 3;
   MaximumMusicFormPhrases = 4096;
   MaximumMusicFormRetainedCells = 1024;
   MaximumMusicFormTextBytes = 2097152;
@@ -48,6 +48,9 @@ type
     { Explicit performance hypothesis: -50..50 maps through primary musical
       affect to 50..150% attack velocity. Zero is neutral. Held notes continue. }
     EnergyOffset: Integer;
+    { -50..50 maps through primary affect to an attack preference -100..100.
+      This selects musical choices; it never scales performed audio. }
+    DensityOffset: Integer;
   end;
   TMusicForm = array of TMusicFormPhrase;
 
@@ -72,10 +75,12 @@ type
     FTotalCells: Int64;
     FPhrase: Integer;
     FTextBytes: Integer;
+    function PhraseAtCell(const ACell: Int64): Integer;
   public
     constructor Create(const AForm: TMusicForm; const AProviderKeys: TMusicDecisionTokens);
     function CopyForm: TMusicForm;
     function EnergyOffsetAt(const ACell: Int64): Integer;
+    function DensityOffsetAt(const ACell: Int64): Integer;
     function WindowCellsAt(const AFirstCell: Int64; const AMaximum: Integer): Integer;
     { Stop before passing the completion of a still-needed motif source. Its
       newly recorded choices must constrain the following planning request. }
@@ -163,6 +168,7 @@ begin
     ValidateScalarText(FForm[I].Name, 128, False);
     Need(Whole(FForm[I].RepeatFrom, -1, I - 1), 'Phrase references must name an earlier phrase');
     Need(Whole(FForm[I].EnergyOffset, -50, 50), 'Section energy offset must be -50..50');
+    Need(Whole(FForm[I].DensityOffset, -50, 50), 'Section density offset must be -50..50');
     FStarts[I] := FTotalCells;
     Inc(FTotalCells, FForm[I].Cells);
     Need(Length(FForm[I].Keep) <= Length(AProviderKeys), 'Too many retained phrase providers');
@@ -196,11 +202,14 @@ begin
   Result := CopyMusicForm(FForm);
 end;
 
-function TMusicFormCursor.EnergyOffsetAt(const ACell: Int64): Integer;
-var LLeft, LRight, LMiddle: Integer;
+function TMusicFormCursor.PhraseAtCell(const ACell: Int64): Integer;
+var
+  LLeft: Integer;
+  LRight: Integer;
+  LMiddle: Integer;
 begin
   Need((ACell = Trunc(ACell)) and (ACell >= 0) and (ACell < FTotalCells),
-    'Section energy requires an existing musical cell');
+    'Section controls require an existing musical cell');
   LLeft := 0;
   LRight := High(FForm);
   while LLeft < LRight do
@@ -208,7 +217,17 @@ begin
     LMiddle := (LLeft + LRight + 1) div 2;
     if FStarts[LMiddle] <= ACell then LLeft := LMiddle else LRight := LMiddle - 1;
   end;
-  Result := FForm[LLeft].EnergyOffset;
+  Result := LLeft;
+end;
+
+function TMusicFormCursor.EnergyOffsetAt(const ACell: Int64): Integer;
+begin
+  Result := FForm[PhraseAtCell(ACell)].EnergyOffset;
+end;
+
+function TMusicFormCursor.DensityOffsetAt(const ACell: Int64): Integer;
+begin
+  Result := FForm[PhraseAtCell(ACell)].DensityOffset;
 end;
 
 function TMusicFormCursor.WindowCellsAt(const AFirstCell: Int64;
