@@ -5,6 +5,17 @@
 
 ## Current handoff: operator song/clip usability repairs — 2026-10-31
 
+Published native/backend source8a88eac is under CI540 (41269241100). Native35 clip,
+10 song and103 HTTP-admission checks pass; clip/song heaps are clean. Actual
+desktop/390px saves, output playlists, exact WAV download, service restart,
+global Stop/immediate reload and whole/child selection pass. The final whole-to-
+clip presentation fix is browser-only, built with full pas2js07 and exercised in
+the real phone-width app. It does not change the native source under CI540.
+Two legacy operator ranges are now independent clips in a separate recovery
+playlist, with exact ranges/labels, preserved originals and no generated job.
+Existing approved LAN TLS preflight passes133 native checks with a clean heap;
+repeat after checked deployment. Gate acceptance remains open while CI runs.
+
 Big Boss remains SOLO. New operator screenshots take priority over unfinished
 form listening: missing output saving, hard-to-find Stop, reconnect after a
 whole-track request, unexplained Lab, and previously saved clips absent from

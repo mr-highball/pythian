@@ -30,6 +30,16 @@ Primary attribution: NS-6. Reuse existing clip receipts, range identity and play
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: the final phone check found a stored child was disabled
+  in the clip browser while Whole track dominated it. The browser now distinguishes
+  membership from actual learning inclusion; Use this clip releases whole-track
+  selection directly. Full pas2js build07 and the actual390px consumer pass.
+  This changes browser presentation only; native code remains8a88eac under CI540.
+  Two older operator ranges were restored through ordinary Studio into a separate
+  recovery playlist, retaining exact frames/labels and the original projects.
+  Both independent files are ready; recovery created only clip-save jobs, no
+  training/generation. Local lineage receipts retain the actual current collection
+  origins without claiming full-parent content equivalence.
 - 2026-10-31, Big Boss: native35 checks pass with a clean heap. Metadata discovery
   works with the parent unavailable and clip PCM exclusively locked; missing
   audio reports a clip error rather than substituting the parent. Existing

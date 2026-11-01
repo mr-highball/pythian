@@ -567,7 +567,7 @@ end;
 procedure TStudioSourceEditor.OpenSavedClips(const AKey: String);
 var I, J: Integer; LRow, LRecipe, LTrack, LSelection: TJSObject;
   LCard, LControl: TJSElement; LMedia: TJSNodeList; LCaption: String;
-  LSelected, LCompatible: Boolean;
+  LSelected, LCompatible, LWholeIncluded: Boolean;
 begin
   FClipBrowserKey := AKey;
   LMedia := El('saved-clips-list').querySelectorAll('audio');
@@ -577,6 +577,11 @@ begin
   for I := 0 to FTracks.length - 1 do
     if StudioSourceKey(TJSObject(FTracks[I])) = AKey then LTrack := TJSObject(FTracks[I]);
   if LTrack = nil then Exit;
+  LWholeIncluded := False;
+  for J := 0 to FSelections.length - 1 do
+    if (StudioSourceKey(TJSObject(FSelections[J])) = AKey) and
+      (StudioText(TJSObject(FSelections[J]), 'selection') = 'full') and
+      StudioIncluded(TJSObject(FSelections[J])) then LWholeIncluded := True;
   El('saved-clips-title').textContent := StudioText(LTrack, 'title') + ' · saved clips';
   for I := 0 to FSavedClips.length - 1 do
   begin
@@ -600,7 +605,7 @@ begin
         (StudioText(LSelection, 'selection') <> 'full') and
         (StudioNumber(LSelection, 'start_frame') = StudioNumber(LRecipe, 'start_frame')) and
         (StudioNumber(LSelection, 'end_frame') = StudioNumber(LRecipe, 'end_frame')) then
-        LSelected := StudioIncluded(LSelection);
+        LSelected := StudioIncluded(LSelection) and not LWholeIncluded;
     end;
     LCaption := '＋ Use this clip'; if LSelected then LCaption := '✓ In this playlist';
     LControl := Button(LCard, LCaption, 'use-saved-clip', IntToStr(I));
