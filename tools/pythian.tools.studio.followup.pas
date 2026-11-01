@@ -100,6 +100,7 @@ begin
     LRootPlan := ARequest.Strings['replay_source_plan_sha256'];
     LRoot := ReadStudioJob(ACatalogRoot, LRootId);
     Need(((LRoot.Strings['kind'] = 'instrumental_generate') or
+      (LRoot.Strings['kind'] = 'instrumental_style') or
       (LRoot.Strings['kind'] = 'instrumental_regenerate')) and
       (LRoot.Strings['status'] = 'completed'), 'Saved note source is unavailable');
     LRootResult := LRoot.Objects['results'];
@@ -153,10 +154,8 @@ begin
     for I := 0 to 2 do
     begin
       Need((LSettings.Find('sound_design') <> nil) or
-        (Pos('operator-patch-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
-        (Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
-        (Pos('structured-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1),
-        'Saved instrument recipe is unsupported by this editor');
+        (LMeta.Get('instrument_template', '') = 'primary-synth-v1'),
+        'Choose full instrument recipes for this saved track');
       LInstruments[I] := CreateStudioRecipeInstrument(StudioPlaylistInstrumentZones,
         LSettings.Arrays['instruments'].Strings[I], LSound,
         LHasSound and ((LMeta.Objects['applied_sound'].Find('part') = nil) or
@@ -248,6 +247,14 @@ begin
         PathDelim + 'instrumental-reperformance.json', LReplayMeta);
     end;
     LResult := TJSONObject(LParentResult.Clone);
+    if LResult.Find('style_candidate') <> nil then
+    begin
+      { The parent archive is immutable; do not save its old recipe as this
+        edited performance. Style recipe variants are a remaining parent gate. }
+      LResult.Objects['style_candidate'].Strings['status'] := 'unavailable';
+      LResult.Objects['style_candidate'].Strings['reason'] :=
+        'Saving edited notes or sounds as a style is not available yet. The original style is kept.';
+    end;
     for I := LResult.Count - 1 downto 0 do
       if Pos('|' + LResult.Names[I] + '|',
         '|outputs|parts|settings|stream|before|decisions|note_edit|edit_report|output_resources|instrument_recipes|sound_design_origin|') > 0 then LResult.Delete(I);

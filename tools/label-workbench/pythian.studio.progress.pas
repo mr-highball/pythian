@@ -49,6 +49,8 @@ end;
 
 function StudioStageText(const AStage: String): String;
 begin
+  if AStage = 'studio_style_read' then Exit('Open saved style');
+  if Copy(AStage, 1, 9) = 'semantic_' then Exit('Check saved musical ideas and instruments');
   if Copy(AStage, 1, 18) = 'instrumental_edit_' then
   begin
     if AStage = 'instrumental_edit_models' then Result := 'Open saved musical choices'
@@ -281,6 +283,7 @@ begin
     LNames[2] := 'Restore instruments';
     if StudioText(AJob, 'kind') = 'instrumental_regenerate' then LNames[2] := 'Change selected notes';
   end;
+  if StudioText(AJob, 'kind') = 'instrumental_style' then LNames[1] := 'Open saved style';
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
   LWorkflow := TJSObject(AJob['workflow']);
@@ -356,6 +359,7 @@ begin
   if ACompact and ((LStatus = 'completed') or (LStatus = 'cancelled') or
     (LStatus = 'failed')) then Exit;
   if ACompact and ((StudioText(AJob, 'kind') = 'instrumental_generate') or
+    (StudioText(AJob, 'kind') = 'instrumental_style') or
     (StudioText(AJob, 'kind') = 'instrumental_reperform') or
     (StudioText(AJob, 'kind') = 'instrumental_regenerate')) then
   begin

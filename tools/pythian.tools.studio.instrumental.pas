@@ -59,7 +59,81 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.instrumental.stream, pythian.tools.studio.form,
   pythian.wfc.instrumental.stream, pythian.tools.studio.sounds,
-  pythian.tools.json;
+  pythian.tools.json, pythian.wfc.semantic.style, pythian.tools.studio.styles;
+
+function RunSavedStyle(const ACatalogRoot, AJobId: String;
+  const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
+  const AProgress: TWorkProgressCallback): TJSONObject;
+var
+  LStyle: TSemanticStyle;
+  LDefinition: TSemanticStyleDefinition;
+  LMaterial: TStudioStreamMaterial;
+  LRoles: TInstrumentalRoles;
+  LSettings, LDesign, LSource: TJSONObject;
+  LRecipes: TJSONArray;
+  I: Integer;
+begin
+  LStyle := nil;
+  LSettings := nil;
+  LSource := ARequest.Objects['style_source'];
+  try
+    if Assigned(ACheck) then ACheck;
+    ReportWork(AProgress, 'instrumental_prepare', wuItems, 0, 1);
+    LStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+      LSource.Strings['sha256'], AProgress), nil, nil, AProgress);
+    LDefinition := LStyle.CopyDefinition(AProgress);
+    if not LDefinition.Instrumental.Enabled or
+      (LDefinition.Instrumental.SampleRate <> StudioInstrumentalRate) or
+      (Length(LDefinition.Instrumental.Instruments) <> 3) or
+      (Length(LDefinition.Instrumental.Percussion) <> 3) then
+      raise EAudio.Create('This saved style needs the Studio three-voice/three-drum layout at24kHz');
+    LSettings := TJSONObject(LSource.Objects['settings'].Clone);
+    { The retained mix already includes its original level controls. Apply it
+      once; changing the performance length/seed never changes frozen learning. }
+    LSettings.Delete('levels');
+    LSettings.Add('levels', TJSONArray.Create([100, 100, 100, 100, 100, 100]));
+    LSettings.Delete('sound_design');
+    LDesign := TJSONObject.Create(['version', 1]);
+    LSettings.Add('sound_design', LDesign);
+    LRecipes := TJSONArray.Create;
+    LDesign.Add('instruments', LRecipes);
+    for I := 0 to High(LDefinition.Instrumental.Instruments) do
+      LRecipes.Add(EncodeStudioInstrumentRecipe(LDefinition.Instrumental.Instruments[I]));
+    LDesign.Add('mix', EncodeStudioMixRecipe(LDefinition.Instrumental.Mix));
+    LMaterial := Default(TStudioStreamMaterial);
+    LMaterial.Style := LStyle;
+    LMaterial.SavedStyle := LSource;
+    LMaterial.StyleOptions := LDefinition.Instrumental.Options;
+    LMaterial.Config := SemanticStyleVoiceLayout(LDefinition);
+    LMaterial.ContextBinding := LDefinition.Instrumental.Options.ContextBinding;
+    LMaterial.Form := LDefinition.Instrumental.Form;
+    LMaterial.TempoMicroseconds := LDefinition.Instrumental.Options.TempoMicroseconds;
+    LMaterial.Origin := 'Saved style: ' + LSource.Strings['name'] + '; ' + LDefinition.Instrumental.Origin;
+    LMaterial.SoundRecipes := LDefinition.Instrumental.Instruments;
+    SetLength(LMaterial.Models, Length(LDefinition.Providers));
+    SetLength(LMaterial.Labels, Length(LDefinition.Providers));
+    for I := 0 to High(LDefinition.Providers) do
+    begin
+      LMaterial.Models[I] := LDefinition.Providers[I].ModelText;
+      LMaterial.Labels[I] := LDefinition.Providers[I].Contract.Name;
+      if I >= Length(LMaterial.Config.Voices) + 3 then
+        LMaterial.Labels[I] := 'percussion:' + LMaterial.Labels[I];
+    end;
+    SetLength(LRoles, Length(LMaterial.Config.Voices));
+    for I := 0 to High(LRoles) do
+    begin
+      LRoles[I].Name := LDefinition.Providers[I + 2].Contract.RoleId;
+      LRoles[I].InstrumentId := String(LDefinition.Instrumental.Instruments[I].Id);
+      LRoles[I].OutputBus := I;
+    end;
+    if Assigned(ACheck) then ACheck;
+    Result := RunStudioInstrumentalStream(ACatalogRoot, AJobId, ARequest,
+      LSettings, nil, LMaterial, LRoles, LDefinition.Instrumental.Percussion, ACheck, AProgress);
+  finally
+    LSettings.Free;
+    LStyle.Free;
+  end;
+end;
 
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
@@ -144,6 +218,8 @@ var
     for I := 0 to High(LDrums) do AddModel('percussion:' + LDrums[I].Name, LDrums[I].Model);
   end;
 begin
+  if ARequest.Strings['kind'] = 'instrumental_style' then
+    Exit(RunSavedStyle(ACatalogRoot, AJobId, ARequest, ACheck, AProgress));
   LConfig := ARequest.Objects['instrumental'];
   ValidateStudioInstrumentalConfig(LConfig);
   LHasForm := LConfig.Find('form') <> nil;

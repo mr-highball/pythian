@@ -190,10 +190,28 @@ begin
     'A workflow boundary is published even on slow storage');
 end;
 
+procedure SavedStyleWorkflow;
+var LView: TStudioGenerationProgress;
+begin
+  LView := Default(TStudioGenerationProgress);
+  LView.Observe('instrumental_prepare', 0, 1);
+  LView.Observe('studio_style_read', 65536, 131072);
+  Check((LView.Phase = 1) and (LView.Units = 'bytes') and
+    (LView.Done = 65536), 'Saved-style byte progress has its actual work unit');
+  LView.Observe('semantic_validate', 0, 9);
+  Check((LView.Done = 65536) and (LView.Total = 131072),
+    'Nested style validation does not replace the cumulative read counter');
+  LView.Observe('studio_style_read', 131072, 131072);
+  LView.Observe('instrumental_plan_begin', 0, 1);
+  Check((LView.Phase = 2) and (LView.Total = 0),
+    'Read style advances to planning without inventing new learning');
+end;
+
 begin
   Boundaries;
   WholeDay;
   SlowPublication;
   GenerateWorkflow;
+  SavedStyleWorkflow;
   WriteLn('PASS ', GChecks, ' Studio rendering publication checks');
 end.

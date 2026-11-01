@@ -11,7 +11,9 @@ complete [CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967
 native/actual pas2js replay and ordinary native playlist/clip consumers. Actual
 models, coverage, original clocks and performed recipes survive saving/reload;
 long Unicode cache paths preserve atomic publication. Studio naming, reuse and
-selective blend controls remain in the parent style task. These are bounded
+selective blend controls remain in the parent style task. Its named save/use
+consumer now passes local native and actual browser QA; publication qualification,
+edited-style capture and selective blending remain pending. These are bounded
 implementation outcomes, not musical-quality or WAV-accuracy claims.
 
 [Sound design — DONE](DONE/NS-2_sound-design_01.md) closes8 units after complete

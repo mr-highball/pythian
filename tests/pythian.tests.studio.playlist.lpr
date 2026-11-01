@@ -37,6 +37,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.listen.assets,
   pythian.tools.path,
   pythian.tools.studio.style.candidate,
+  pythian.tools.studio.styles,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -335,9 +336,14 @@ begin
   LReceipt := AResults.Objects['style_candidate'];
   Check(LReceipt.Strings['status'] = 'ready',
     'Ordinary playlist style is available: ' + LReceipt.Get('reason', ''));
-  Check((LReceipt.Integers['provider_count'] = 9) and
-    (LReceipt.Strings['corpus_revision'] = AResults.Objects['playlist_learning'].Objects['vocabulary'].Strings['revision_sha256']),
-    'Native style candidate retains the actual nine-provider model revision');
+  Check(LReceipt.Integers['provider_count'] = 9,
+    'Native style candidate retains the actual nine-provider model layout');
+  if AResults.Find('playlist_learning') <> nil then
+    Check(LReceipt.Strings['corpus_revision'] = AResults.Objects['playlist_learning'].Objects['vocabulary'].Strings['revision_sha256'],
+      'Native style candidate retains the actual learned model revision')
+  else
+    Check(LReceipt.Strings['corpus_revision'] = AResults.Objects['style_source'].Strings['corpus_revision'],
+      'Reused style retains its frozen corpus revision');
   LStyle := nil;
   LStream := nil;
   for I := 0 to 6 do LExpected[I] := nil;
@@ -382,6 +388,114 @@ begin
     for I := 0 to 6 do LExpected[I].Free;
     LStream.Free;
     LStyle.Free;
+  end;
+end;
+
+function SoundWrite(const AParentId, AId, AName: String;
+  const AParent: TJSONObject): TJSONObject; forward;
+function NoteWrite(const AParentId, AId: String;
+  const AParent: TJSONObject): TJSONObject; forward;
+
+procedure CheckNamedStyle(const ACatalog, ALibrary: String;
+  const AJob, AResults: TJSONObject);
+var
+  LWrite, LSaved, LAgain, LList, LJob, LStatus, LParent: TJSONObject;
+  LModelGuard, LSourceA, LSourceB: TFileStream;
+  LId, LText, LArtifact: String;
+  LAbort: TCandidateAbort;
+  LBytes: TAudioBytes;
+  LCancelled: Boolean;
+  I: Integer;
+begin
+  LWrite := TJSONObject.Create(['format', 'pythian.studio.style.write.v1',
+    'name', 'Night music', 'job_id', AJob.Strings['job_id']]);
+  LSaved := nil;
+  LJob := nil;
+  LStatus := nil;
+  LParent := nil;
+  try
+    LText := AResults.AsJSON;
+    LSaved := SaveStudioStyle(ACatalog, LWrite);
+    LId := LSaved.Strings['id'];
+    Check((LSaved.Strings['sha256'] = AResults.Objects['style_candidate'].Strings['sha256']) and
+      (AResults.AsJSON = LText), 'Naming retains the complete model and never changes the finished song');
+    LAgain := SaveStudioStyle(ACatalog, LWrite);
+    try Check(LAgain.AsJSON = LSaved.AsJSON, 'Saving a name is idempotent');
+    finally LAgain.Free end;
+    LArtifact := ListeningAssetDirectory(ACatalog) + '/' + AResults.Objects['style_candidate'].Strings['artifact'];
+    LModelGuard := TFileStream.Create(NativeFilePath(LArtifact), fmOpenReadWrite or fmShareExclusive);
+    try
+      LList := ListStudioStyles(ACatalog);
+      try
+        Check((LList.Arrays['styles'].Count = 1) and (LList.Arrays['errors'].Count = 0) and
+          (LList.Arrays['styles'].Objects[0].Find('settings') = nil),
+          'Catalog lists metadata only while the complete model is exclusively locked');
+      finally LList.Free end;
+    finally LModelGuard.Free end;
+    LAbort := TCandidateAbort.Create;
+    try
+      LCancelled := False;
+      try LBytes := ReadStudioStyleBytes(ACatalog, LSaved.Strings['sha256'], LAbort.Observe);
+      except on E: EAbort do LCancelled := E.Message = 'style-snapshot-test-cancel' end;
+      Check(LCancelled, 'Retained style reads propagate cancellation without changing the artifact');
+    finally LAbort.Free end;
+    LJob := TJSONObject.Create(['format', StudioJobWriteFormat,
+      'kind', 'instrumental_style', 'style_id', LId,
+      'project_id', AJob.Strings['project_id'], 'project_revision', AJob.Int64s['project_revision'],
+      'project_snapshot_sha256', AJob.Strings['project_snapshot_sha256']]);
+    LJob.Add('seeds', AJob.Arrays['seeds'].Clone);
+    for I := 0 to 1 do
+    begin
+      LJob.Strings['job_id'] := 'named-style-' + IntToStr(I);
+      LJob.Int64s['duration_ms'] := 2000 + I * 1000;
+      LStatus := PrepareStudioJob(ACatalog, LJob);
+      Check((LStatus.Int64s['unique_source_bytes_to_verify'] = 0) and
+        not LStatus.Booleans['learning_performed'] and
+        (LStatus.Objects['limits'].Integers['worker_seconds'] = MaximumStudioSessionSeconds),
+        'Saved style admission declares no source scan or relearning and uses the durable long-job policy');
+      FreeAndNil(LStatus);
+      LStatus := EnqueueStudioJob(ACatalog, LJob);
+      FreeAndNil(LStatus);
+      LSourceA := TFileStream.Create(ALibrary + '/collections/Chillsynth/Evening.wav', fmOpenReadWrite or fmShareExclusive);
+      try
+        LSourceB := TFileStream.Create(ALibrary + '/collections/lofi/Soft steps.wav', fmOpenReadWrite or fmShareExclusive);
+        try Check(RunStudioWorker(ACatalog, LJob.Strings['job_id'], ALibrary),
+          'Actual saved-style worker runs with every original recording exclusively locked');
+        finally LSourceB.Free end;
+      finally LSourceA.Free end;
+      LStatus := ReadStudioJob(ACatalog, LJob.Strings['job_id']);
+      Check(LStatus.Strings['status'] = 'completed', 'Saved style generation completes: ' + LStatus.Get('error_message', ''));
+      Check((not LStatus.Objects['results'].Booleans['learning_performed']) and
+        (LStatus.Objects['results'].Find('playlist_learning') = nil) and
+        (LStatus.Objects['results'].Objects['style_source'].Strings['sha256'] = LSaved.Strings['sha256']) and
+        (LStatus.Objects['results'].Objects['decisions'].Int64s['music_frames'] = (2 + I) * 24000),
+        'Actual saved-style job keeps source lineage, frozen learning and requested performance duration');
+      if I = 0 then CheckSavedStyle(ACatalog, LJob.Strings['job_id'], LStatus.Objects['results']);
+      FreeAndNil(LStatus);
+    end;
+    LParent := ReadStudioJob(ACatalog, 'named-style-1');
+    for I := 0 to 1 do
+    begin
+      FreeAndNil(LJob);
+      if I = 0 then LJob := SoundWrite('named-style-1', 'style-sound-edit', 'square', LParent.Objects['results'])
+      else LJob := NoteWrite('named-style-1', 'style-note-edit', LParent.Objects['results']);
+      LStatus := EnqueueStudioJob(ACatalog, LJob);
+      FreeAndNil(LStatus);
+      Check(RunStudioWorker(ACatalog, LJob.Strings['job_id'], ALibrary),
+        'Saved-style result remains a valid source for retained sound/note editing');
+      LStatus := ReadStudioJob(ACatalog, LJob.Strings['job_id']);
+      Check((LStatus.Strings['status'] = 'completed') and
+        (LStatus.Objects['results'].Objects['style_source'].Strings['id'] = LId) and
+        (LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'unavailable'),
+        'Edited performance preserves lineage without offering its stale parent recipe for saving');
+      FreeAndNil(LStatus);
+    end;
+  finally
+    LParent.Free;
+    LStatus.Free;
+    LJob.Free;
+    LSaved.Free;
+    LWrite.Free;
   end;
 end;
 
@@ -509,7 +623,11 @@ begin
       LStatus := ReadStudioJob(ACatalog, LId);
       Check(LStatus.Strings['status'] = 'completed', 'Classified instrumental generation completes');
       CheckSavedStyle(ACatalog, LId, LStatus.Objects['results']);
-      if I = 0 then CheckUnavailableStyle(ACatalog, ALibrary, LJob, LStatus.Objects['results']);
+      if I = 0 then
+      begin
+        CheckUnavailableStyle(ACatalog, ALibrary, LJob, LStatus.Objects['results']);
+        CheckNamedStyle(ACatalog, ALibrary, LJob, LStatus.Objects['results']);
+      end;
       LReceipt := LStatus.Objects['results'].Objects['playlist_learning'];
       Check((LReceipt.Arrays['sources'].Count = 1) and
         (LReceipt.Arrays['excluded_sources'].Count = 1) and

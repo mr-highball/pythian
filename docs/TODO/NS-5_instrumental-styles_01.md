@@ -30,6 +30,26 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: the native named-style slice now passes3,024,357
+  playlist checks with a clean heap, plus1,747,973 actual JavaScript performance
+  checks and36 native workflow-progress checks. Native metadata listing works
+  while the model is exclusively locked; actual jobs perform with both original
+  recordings exclusively locked. Model/source lineage, original-reference reuse,
+  requested2/3second clocks, full mix/six stems and callback cancellation pass.
+  Ordinary sound/note follow-ups now accept the new style job and its primary
+  instrument recipes. Native04 exposed an instrument-ID-prefix whitelist;
+  native06 exposed unprefixed drum replay labels. Both failures remain on E;
+  native07 repairs them through the shared template/replay contracts. Do not
+  relabel the unchanged parent archive as an edited sound/note recipe: edited-style
+  saving remains explicitly unavailable until its real derivation is implemented.
+  This and selective blend/reblend/constraint-preserving variants remain this
+  parent's AC1–AC3 work. No full criterion/task effort is accepted by the slice.
+  E/tests/studio-styles-native01/02/04/06/07, studio-styles-performance-js01,
+  E/build/studio-styles-native05/08 and E/runs/studio-styles-qa01 retain evidence.
+  Desktop/390px QA covers naming including Unicode, reuse, reload and cancellation;
+  exact publication CI and live deployment remain pending. The live operator
+  catalog, recordings and answers are unchanged. No generic WFC gap is demonstrated.
+
 - 2026-11-01, Big Boss: complete CI556 at0235194d51b8125b9dfba4198618fef64a3b7e20
   passes maintained integration and both clean extracted packages. The linked
   complete-corpus/native-path prerequisites are accepted; the shared performance

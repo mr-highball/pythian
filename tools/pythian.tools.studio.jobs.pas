@@ -124,6 +124,7 @@ uses
   pythian.tools.studio.instrumental.settings,
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.sounds,
+  pythian.tools.studio.styles,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.assets,
@@ -139,7 +140,8 @@ var
 
 function IsStudioInstrumentalJob(const AKind: String): Boolean;
 begin
-  Result := (AKind = 'instrumental_generate') or IsStudioInstrumentalFollowup(AKind);
+  Result := (AKind = 'instrumental_generate') or (AKind = 'instrumental_style') or
+    IsStudioInstrumentalFollowup(AKind);
 end;
 
 function IsStudioInstrumentalFollowup(const AKind: String): Boolean;
@@ -149,7 +151,8 @@ end;
 
 function StudioJobRuntimeSeconds(const AKind: String): Integer;
 begin
-  if (AKind = 'stream_generate') or IsStudioInstrumentalFollowup(AKind) then
+  if (AKind = 'stream_generate') or (AKind = 'instrumental_style') or
+    IsStudioInstrumentalFollowup(AKind) then
     Result := MaximumStudioSessionSeconds
   else if (AKind = 'library_refresh') or (AKind = 'library_prepare') or (AKind = 'clip_save') then
     Result := MaximumStudioLibrarySeconds
@@ -724,6 +727,7 @@ var
   LParentResult: TJSONObject;
   LExperiment: TJSONObject;
   LSoundDesign: TJSONObject;
+  LSavedStyle: TJSONObject;
   LChanged: Boolean;
 begin
   Need(AWrite <> nil, 'Job write is required');
@@ -731,7 +735,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|sound_design|');
+    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|sound_design|style_id|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -759,6 +763,33 @@ begin
         Need(LIndex > 0, 'Save a clip before requesting clip files');
         LRequest.Add('project_snapshot', LProject.Clone);
       finally LProject.Free end;
+    end
+    else if LKind = 'instrumental_style' then
+    begin
+      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
+        'style_id|duration_ms|seeds|retry_of|');
+      Need((Number(AWrite, 'duration_ms') >= 2000) and
+        (Number(AWrite, 'duration_ms') <= 86400000), 'Track length must be2seconds to24hours');
+      Need((AWrite.Find('seeds') <> nil) and (AWrite.Find('seeds').JSONType = jtArray) and
+        (AWrite.Arrays['seeds'].Count = 1) and
+        (AWrite.Arrays['seeds'][0].JSONType = jtNumber) and
+        (AWrite.Arrays['seeds'][0].AsFloat = AWrite.Arrays['seeds'][0].AsInt64) and
+        (AWrite.Arrays['seeds'][0].AsInt64 >= 0) and
+        (AWrite.Arrays['seeds'][0].AsInt64 <= 2147483000), 'Choose one valid instrumental seed');
+      LProject := ReadStudioProjectRevision(ACatalogRoot, Text(AWrite, 'project_id'),
+        Number(AWrite, 'project_revision'));
+      try
+        Need(LProject.Strings['snapshot_sha256'] = Text(AWrite, 'project_snapshot_sha256'),
+          'Project snapshot differs; reopen the saved playlist');
+        LRequest.Add('project_snapshot', LProject.Clone);
+      finally LProject.Free end;
+      LSavedStyle := ReadStudioNamedStyle(ACatalogRoot, Text(AWrite, 'style_id'));
+      try
+        Need(not LSavedStyle.Booleans['has_form'] or
+          (Number(AWrite, 'duration_ms') = LSavedStyle.Int64s['preferred_duration_ms']),
+          'This style retains a song form. Use its saved length before generating.');
+        LRequest.Add('style_source', LSavedStyle.Clone);
+      finally LSavedStyle.Free end;
     end
     else if LKind = 'instrumental_generate' then
     begin
@@ -1155,6 +1186,19 @@ begin
         for LClipIndex := 0 to LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Count - 1 do
           Inc(LIndex, LRequest.Objects['project_snapshot'].Objects['playlist'].Arrays['items'].Objects[LClipIndex].Arrays['clips'].Count);
         Result.Add('output_count', LIndex);
+      end
+      else if LRequest.Strings['kind'] = 'instrumental_style' then
+      begin
+        Result.Strings['source_validation'] := 'saved_style_pending_integrity_check';
+        Result.Add('learning_mode', 'instrumental');
+        Result.Add('learning_performed', False);
+        Result.Add('source_count', 0);
+        Result.Add('unique_source_bytes_to_verify', 0);
+        Result.Add('output_count', 1);
+        Result.Add('style_source', LRequest.Objects['style_source'].Clone);
+        Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
+        Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms'],
+          StudioSoundTailFrames(LRequest.Objects['style_source'].Objects['settings'], StudioInstrumentalRate)));
       end
       else if IsStudioInstrumentalFollowup(LRequest.Strings['kind']) then
       begin

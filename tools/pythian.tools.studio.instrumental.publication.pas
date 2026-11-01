@@ -139,6 +139,15 @@ begin
       LItem.Strings['question'] := 'Do the sections and repeated parts work together?';
       LChoice.Strings['id'] := 'section_flow';
     end;
+    if AResult.Find('style_source') <> nil then
+    begin
+      LItem.Strings['task_id'] := 'NS-5_instrumental-styles_01';
+      LItem.Strings['question'] := 'Does this saved style make music you want to keep developing?';
+      LChoice.Strings['id'] := 'saved_style_fit';
+      LAsset := LAssets.Objects[0];
+      LProvenance := LAsset.Objects['provenance'];
+      LProvenance.Strings['policy_sha256'] := AResult.Objects['style_source'].Strings['sha256'];
+    end;
     ReportWork(AProgress, 'instrumental_save', wuItems, 0, 1);
     WriteStudioJSONNew(LDirectory + PathDelim + 'listening-publication.json', LQueue);
     if Assigned(ACheck) then ACheck;

@@ -1807,7 +1807,8 @@ begin
   if FRequest.Strings['kind'] = 'clip_save' then
     Exit(PrepareStudioPlaylistClips(FCatalogRoot, ALibraryRoot, FJobId,
       FRequest.Objects['project_snapshot'].Objects['playlist'], AudioProgress));
-  if FRequest.Strings['kind'] = 'instrumental_generate' then
+  if (FRequest.Strings['kind'] = 'instrumental_generate') or
+    (FRequest.Strings['kind'] = 'instrumental_style') then
   begin
     Exit(RunStudioInstrumental(FCatalogRoot, FJobId, FRequest, Check, AudioProgress,
       ALibraryRoot, '', LibraryProgress));

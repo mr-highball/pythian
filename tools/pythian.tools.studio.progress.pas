@@ -81,6 +81,11 @@ begin
   LPhase := 0;
   LUnits := '';
   if AStage = 'instrumental_prepare' then LPhase := 1
+  else if AStage = 'studio_style_read' then
+  begin
+    LPhase := 1;
+    LUnits := 'bytes';
+  end
   else if AStage = 'playlist_selection_progress' then
   begin
     LPhase := 1;

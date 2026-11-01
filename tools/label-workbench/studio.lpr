@@ -28,7 +28,7 @@ program PythianStudio;
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
-  pythian.studio.laboratory, pythian.studio.songs, pythian.studio.sounds,
+  pythian.studio.laboratory, pythian.studio.songs, pythian.studio.sounds, pythian.studio.styles,
   pythian.wave.stream, pythian.music.selection;
 
 type
@@ -45,6 +45,8 @@ type
     FLaboratory: TStudioLaboratory;
     FSongs: TStudioSongs;
     FSounds: TStudioSounds;
+    FStyles: TStudioStyles;
+    FSelectedStyle: TJSObject;
     FResultProjectId: String;
     FToken, FProjectId, FName: String;
     FRevision, FChanges, FPendingVersion: Integer;
@@ -89,6 +91,7 @@ type
     procedure CancelClips; async;
     function OutputSeconds(out ASeconds: Double): Boolean;
     procedure Generate; async;
+    procedure ChooseStyle(const AStyle: TJSObject);
     procedure SubmitGeneration; async;
     procedure OpenSoundChoices;
     procedure ApplySoundDesign(ADesign: TJSObject);
@@ -330,6 +333,7 @@ begin
 end;
 procedure TStudio.NewPlaylist;
 begin
+  FSelectedStyle := nil;
   ClearClips;
   FLearningLabel := '';
   FProjectId := 'playlist-' + IntToStr(Round(TJSDate.now)) + '-' + IntToStr(Random(1000000));
@@ -356,6 +360,7 @@ begin
   LState['name'] := FName;
   LState['selections'] := FSelections;
   LState['learning_label'] := FLearningLabel;
+  LState['style_source'] := FSelectedStyle;
   LState['dirty'] := FDirty;
   LState['changes'] := FChanges;
   LState['pending_version'] := FPendingVersion;
@@ -368,6 +373,7 @@ begin
 end;
 procedure TStudio.Changed;
 begin
+  FSelectedStyle := nil;
   FLearningLabel := '';
   QueueSave;
   Draw;
@@ -799,13 +805,36 @@ begin
   TJSHTMLButtonElement(El('exit-experiment')).disabled := LActive;
   if FLaboratory <> nil then FLaboratory.SetGenerationAvailable(not LActive);
   if FSounds <> nil then FSounds.SetAvailable(FConnected and not LActive and not FSubmitting);
+  if FStyles <> nil then FStyles.SetAvailable(FConnected and not LActive and not FSubmitting);
+  TJSHTMLButtonElement(El('open-styles')).disabled := not FConnected or LActive or FLoading;
+  TJSHTMLButtonElement(El('use-selected-music')).disabled := LActive;
+  El('generation-style-source').setAttribute('hidden', '');
+  El('use-selected-music').setAttribute('hidden', '');
+  El('track-influence-controls').removeAttribute('hidden');
+  if FSelectedStyle <> nil then
+  begin
+    El('generation-style-source').removeAttribute('hidden');
+    El('generation-style-source').textContent := 'Using saved style: ' + Str(FSelectedStyle, 'name') +
+      '. Your selected recordings will not be analyzed again.';
+    El('generate-summary').textContent := 'Saved musical ideas, instruments and effects.';
+    El('use-selected-music').removeAttribute('hidden');
+    El('track-influence-controls').setAttribute('hidden', '');
+    if FSelectedStyle['has_form'] = True then
+      El('generation-style-source').textContent := El('generation-style-source').textContent +
+        ' Keeps its saved song length and form.';
+  end;
   El('previous-version').setAttribute('hidden', '');
   if not LActive and (Str(FJob, 'parent_job_id') <> '') then
     El('previous-version').removeAttribute('hidden');
   TJSHTMLInputElement(El('output-duration')).disabled := LActive;
   TJSHTMLSelectElement(El('output-duration-unit')).disabled := LActive;
+  if (FSelectedStyle <> nil) and (FSelectedStyle['has_form'] = True) then
+  begin
+    TJSHTMLInputElement(El('output-duration')).disabled := True;
+    TJSHTMLSelectElement(El('output-duration-unit')).disabled := True;
+  end;
   TJSHTMLButtonElement(El('generate-music')).disabled := not FConnected or FLoading or
-    (FIncludedSeconds <= 0) or LActive or FGenerateAfterSave;
+    ((FIncludedSeconds <= 0) and (FSelectedStyle = nil)) or LActive or FGenerateAfterSave;
   El('generation-progress').innerHTML := '';
   if (FJob <> nil) and not FSubmitting and not FGenerateAfterSave then
     DrawStudioProgress(El('generation-progress'), FJob, True);
@@ -823,6 +852,8 @@ begin
   else if LState = 'failed' then El('generation-status').textContent := Str(FJob, 'error_message')
   else if ResultProjectId <> FProjectId then
     El('generation-status').textContent := 'Open Experiment settings to change this music or generate another version.'
+  else if FSelectedStyle <> nil then
+    El('generation-status').textContent := 'Generate uses the saved style. No new learning.'
   else El('generation-status').textContent := 'Your selections save automatically. Generate learns from the selected music.';
   LClipJob := nil;
   if FClipState <> nil then LClipJob := Obj(FClipState['job']);
@@ -839,9 +870,19 @@ begin
   end;
   if (LState <> 'completed') or (Obj(FJob['results']) = nil) then Exit;
   LResult := Obj(FJob['results']);
+  El('save-style').setAttribute('hidden', '');
+  El('save-style-availability').textContent := '';
+  if Str(Obj(LResult['style_candidate']), 'status') = 'ready' then
+    El('save-style').removeAttribute('hidden')
+  else if Obj(LResult['style_candidate']) <> nil then
+    El('save-style-availability').textContent := 'Style unavailable: ' + Str(Obj(LResult['style_candidate']), 'reason')
+  else El('save-style-availability').textContent := 'Generate a new track to save its learned style.';
   if ResultProjectId <> FProjectId then El('generation-learning-panel').setAttribute('hidden', '')
   else El('generation-learning-panel').removeAttribute('hidden');
   El('generation-revision-note').textContent := '';
+  if Obj(LResult['style_source']) <> nil then
+    El('generation-revision-note').textContent := 'Generated from saved style: ' +
+      Str(Obj(LResult['style_source']), 'name') + '. No new recording analysis.';
   if Str(FJob, 'kind') = 'instrumental_reperform' then
     El('generation-revision-note').textContent := 'Notes kept. Only instrument sounds changed.';
   if Str(FJob, 'kind') = 'instrumental_regenerate' then
@@ -921,6 +962,13 @@ begin
         '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=7';
     end;
     El('generation-learning').innerHTML := '';
+    if Obj(LResult['style_source']) <> nil then
+    begin
+      LRow := Obj(LResult['style_source']);
+      Add(El('generation-learning'), 'p', 'Saved style: ' + Str(LRow, 'name'));
+      Add(El('generation-learning'), 'p', FloatToStr(Num(LRow, 'source_count')) +
+        ' original recording(s). This run reuses their learned musical ideas without reading the recordings again.');
+    end;
     LLearning := Obj(LResult['playlist_learning']);
     LClassChoice := nil;
     if LLearning <> nil then LClassChoice := Obj(LLearning['classification_selection']);
@@ -1355,6 +1403,11 @@ begin
     end;
     ClearGeneration;
     FResultProjectId := Str(LJob, 'project_id'); FJobId := AJobId; FJob := LJob;
+    if Obj(Obj(LJob['results'])['style_source']) <> nil then
+    begin
+      FSelectedStyle := CloneObject(Obj(Obj(LJob['results'])['style_source']));
+      Remember;
+    end;
     RememberGeneration;
     TStudioDialog(El('songs-dialog')).close;
     ShowStep('generate'); Draw;
@@ -1403,6 +1456,22 @@ begin
     if FStopRequested then CancelGeneration
     else if FJob <> nil then PollGeneration;
   end;
+end;
+
+procedure TStudio.ChooseStyle(const AStyle: TJSObject);
+begin
+  if GenerationActive or FLoading then Exit;
+  PauseResult;
+  FSelectedStyle := CloneObject(AStyle);
+  if AStyle['has_form'] = True then
+  begin
+    TJSHTMLInputElement(El('output-duration')).value := FloatToStr(Num(AStyle, 'preferred_duration_ms') / 1000);
+    TJSHTMLSelectElement(El('output-duration-unit')).value := 'seconds';
+  end;
+  FGenerationMessage := 'Style selected. Choose a length, then Generate.';
+  Remember;
+  Draw;
+  ShowStep('generate');
 end;
 
 procedure TStudio.Generate; async;
@@ -1470,7 +1539,12 @@ begin
       LSettings['cells'] := 16;
       LSettings['instruments'] := TJSArray.new('saw', 'triangle', 'square');
       LSettings['levels'] := TJSArray.new(75, 65, 60, 80, 65, 50);
-      LWrite['instrumental'] := LSettings;
+      if FSelectedStyle <> nil then
+      begin
+        LWrite['kind'] := 'instrumental_style';
+        LWrite['style_id'] := Str(FSelectedStyle, 'id');
+      end
+      else LWrite['instrumental'] := LSettings;
       FJobWrite := LWrite;
       FJobId := LId;
       FJob := nil;
@@ -1569,6 +1643,7 @@ begin
         for I := LRows.length - 1 downto 0 do
           if (Str(Obj(LRows[I]), 'project_id') = ResultProjectId) and
             ((Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') or
+             (Str(Obj(LRows[I]), 'kind') = 'instrumental_style') or
              (Str(Obj(LRows[I]), 'kind') = 'instrumental_reperform') or
              (Str(Obj(LRows[I]), 'kind') = 'instrumental_regenerate')) then
           begin FJobId := Str(Obj(LRows[I]), 'job_id'); Break end;
@@ -1826,6 +1901,7 @@ begin
       end;
     end;
     FLearningLabel := LLabel;
+    FSelectedStyle := nil;
     QueueSave;
     Draw;
     TStudioDialog(El('learning-label-dialog')).close;
@@ -1979,6 +2055,7 @@ procedure TStudio.LoadProject(AProject: TJSObject);
 var LRows: TJSArray; LRow, LWhole: TJSObject; I, J: Integer; LName: String;
   LNames: array of String;
 begin
+  FSelectedStyle := nil;
   FLearningLabel := '';
   ClearClips;
   ClearGeneration;
@@ -2079,7 +2156,7 @@ end;
 procedure TStudio.CatalogSaved;
 begin Connect end;
 procedure TStudio.Connect; async;
-var LSession, LData, LPrepared, LDiscovery, LState: TJSObject;
+var LSession, LData, LPrepared, LDiscovery, LState, LStyle: TJSObject;
   LTracks, LCollections: TJSArray; I: Integer; LLocal, LResultProject: String;
 begin
   if FLoading then Exit;
@@ -2121,6 +2198,7 @@ begin
         FName := Str(LState, 'name');
         FSelections := Arr(LState, 'selections');
         FLearningLabel := Str(LState, 'learning_label');
+        FSelectedStyle := Obj(LState['style_source']);
         FDirty := isBoolean(LState['dirty']) and Boolean(LState['dirty']);
         FPendingWrite := Obj(LState['pending_write']);
         FPendingVersion := Trunc(Num(LState, 'pending_version'));
@@ -2133,10 +2211,12 @@ begin
       begin
         LState := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(FProjectId), 'GET', ''));
         LResultProject := FResultProjectId;
+        LStyle := FSelectedStyle;
         LoadProject(LState);
         { Big Boss: reopening playlist choices must retain the separately saved
           laboratory run. Explicit playlist navigation still clears it. }
         FResultProjectId := LResultProject;
+        FSelectedStyle := LStyle;
         Remember;
       end;
     end;
@@ -2175,6 +2255,10 @@ begin
     'generate-music': Generate;
     'open-songs': FSongs.Open;
     'save-song': FSongs.SaveJob(FJobId);
+    'open-styles': FStyles.Open;
+    'save-style': FStyles.SaveJob(FJobId);
+    'use-selected-music':
+      begin FSelectedStyle := nil; FGenerationMessage := ''; Remember; Draw end;
     'open-laboratory': FLaboratory.Open(FProjects);
     'edit-experiment':
       if FLaboratory.ProjectId = ResultProjectId then FLaboratory.Open(FProjects)
@@ -2262,6 +2346,7 @@ begin
   end;
   if LControl.hasAttribute('data-influence') then
   begin
+    FSelectedStyle := nil;
     LIndex := StrToInt(LControl.getAttribute('data-influence'));
     Obj(FSelections[LIndex])['influence'] := StrToInt(TJSHTMLInputElement(LControl).value);
     LControl.parentElement.querySelector('output').textContent := TJSHTMLInputElement(LControl).value + '×';
@@ -2351,6 +2436,7 @@ begin
     @LaboratorySaved, @LaboratoryGenerate, @LaboratoryOpened);
   FSongs := TStudioSongs.Create(@FetchApi, @OpenSavedGeneration);
   FSounds := TStudioSounds.Create(document.body, @FetchApi, @ApplySoundDesign);
+  FStyles := TStudioStyles.Create(@FetchApi, @ChooseStyle);
   LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
   El('track-search').addEventListener('input', @Edit);

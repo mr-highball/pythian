@@ -279,6 +279,9 @@ type
     property NodeCount: Integer read FNodeCount;
   end;
 
+{ Detached model-free layout for inspection/adapters. Use the owning factory
+  for generation; it binds the actual immutable models through this layout. }
+function SemanticStyleVoiceLayout(const ADefinition: TSemanticStyleDefinition): TWfcMusicVoicesGraphConfig;
 function SemanticVocabularyIdentity(const AModelText: String; const AContract: TProviderContract;
   const AProgress: TWorkProgressCallback = nil): String;
 function SemanticPreparationIdentity(const ASource: TSemanticSource;
@@ -1402,23 +1405,22 @@ begin
   end;
 end;
 
-function VoiceConfig(const ADefinition: TSemanticStyleDefinition;
-  const ALayers: TLearnedLayers): TWfcMusicVoicesGraphConfig;
+function SemanticStyleVoiceLayout(const ADefinition: TSemanticStyleDefinition): TWfcMusicVoicesGraphConfig;
 var
   LIndex: Integer;
 begin
   Result := Default(TWfcMusicVoicesGraphConfig);
-  Require(ADefinition.NamedVoices and (Length(ALayers) >= 3) and
+  Require(ADefinition.NamedVoices and (Length(ADefinition.Providers) >= 3) and
     (Length(ADefinition.VoiceRanges) >= 1), 'Semantic named voice layout is incomplete');
   if ADefinition.Instrumental.Enabled then
   begin
-    Require(Length(ALayers) = 3 + Length(ADefinition.VoiceRanges) +
+    Require(Length(ADefinition.Providers) = 3 + Length(ADefinition.VoiceRanges) +
       Length(ADefinition.Instrumental.Percussion),
       'Instrumental style requires harmony/rhythm/roles/context/drums in that order');
   end
   else
   begin
-    Require(Length(ADefinition.VoiceRanges) = Length(ALayers) - 2,
+    Require(Length(ADefinition.VoiceRanges) = Length(ADefinition.Providers) - 2,
       'Semantic named voice layout is incomplete');
   end;
   Require(Length(ADefinition.Projections) = 0, 'Named voice dependencies are defined by its actual config');
@@ -1427,18 +1429,26 @@ begin
     'Named voice schema requires built-in harmony/rhythm codecs');
   Result.StepsPerOctave := 12;
   Result.HarmonyMode := ADefinition.HarmonyMode;
-  Result.HarmonyModel := ALayers[0].Model;
-  Result.RhythmModel := ALayers[1].Model;
   Result.PairConstraints := Copy(ADefinition.VoicePairs);
   SetLength(Result.Voices, Length(ADefinition.VoiceRanges));
   for LIndex := 0 to High(Result.Voices) do
   begin
     Require(ADefinition.Providers[LIndex + 2].Contract.Vocabulary = spvVoice,
       'Named voice schema requires built-in voice codecs; caller traits use generic layers');
-    Result.Voices[LIndex].Model := ALayers[LIndex + 2].Model;
     Result.Voices[LIndex].MinPitch := ADefinition.VoiceRanges[LIndex].MinimumPitch;
     Result.Voices[LIndex].MaxPitch := ADefinition.VoiceRanges[LIndex].MaximumPitch;
   end;
+end;
+
+function VoiceConfig(const ADefinition: TSemanticStyleDefinition;
+  const ALayers: TLearnedLayers): TWfcMusicVoicesGraphConfig;
+var I: Integer;
+begin
+  Require(Length(ALayers) = Length(ADefinition.Providers), 'Semantic model inventory differs');
+  Result := SemanticStyleVoiceLayout(ADefinition);
+  Result.HarmonyModel := ALayers[0].Model;
+  Result.RhythmModel := ALayers[1].Model;
+  for I := 0 to High(Result.Voices) do Result.Voices[I].Model := ALayers[I + 2].Model;
 end;
 
 constructor TSemanticInstrumentalStream.Create(const ADefinition: TSemanticStyleDefinition;

@@ -3,7 +3,65 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: corpus/path prerequisites accepted; Studio styles next - 2026-11-01
+## Current handoff: named Studio style reuse passes local consumers - 2026-11-01
+
+Big Boss SOLO. The previous operator clip recheck resolved the reported missing
+clip through the actual live catalog/390px consumer: three healthy independent
+files, including both earlier lofi ranges. That was a check of accepted work,
+not another implementation batch or new effort. The unfinished style task is
+now advancing through an actual named save/use consumer, rather than another
+archive-only fixture. Goal remains active; no operator input is needed now.
+
+Criterion: name a finished track's learned style and generate from it in ordinary
+Studio without rereading or analyzing its recordings. The private named reference
+pins the exact immutable artifact, original job, actual recipes and source
+context. Catalog/preflight remain WFC-free and metadata-only. A new native
+instrumental_style job freezes that reference and uses the primary style factory
+inside the existing stream/output/score/publication path. Requested length/seed
+do not mutate frozen learning; the retained mix is applied once. Save never
+learns or generates. Contextual Save style/Use a saved style dialogs retain the
+three-step Studio flow, explicit return to selection learning and Unicode names.
+
+Native playlist3,024,357 checks pass with a clean heap, including full mix/six
+stems, changed2/3second clocks, locked original recordings, locked model during
+metadata listing, read cancellation and sound/note follow-ups. Actual JS primary
+performance1,747,973 and native workflow36 checks pass. The native catalog tool
+also compiles with core/tool paths only: the new opaque storage boundary does
+not import WFC. All browser units compile in pas2js. Actual isolated catalog/origin
+desktop/390px QA covers naming/reuse, saved Unicode name, reload, return to
+playlist mode and cancellation of a running120second synthesis. A final new-build
+note edit completes with honest no-change feedback and Before/After controls.
+This proves the exercised implementation, not musical usefulness or all style gates.
+
+Preserve native01's instrument-ID type error, native04's ID-prefix rejection and
+native06's drum replay-label failure. Native07 repairs the latter two through
+shared template/metadata contracts. QA's first server lacked its inbox fixture;
+the copied catalog then correctly rejected copied Windows file identities.
+All35 copied WAV hashes were verified before archiving only their copied OS
+receipts and using ordinary guarded hash validation. No production receipt was
+changed. The original failure jobs/logs remain. Evidence: E/tests/studio-styles-
+native01/02/04/06/07, studio-styles-performance-js01, E/build/studio-styles-
+native05/08, studio-styles-web01/02/03 and E/runs/studio-styles-qa01.
+
+No full style criterion/task is accepted yet. Edited-style recipe derivation,
+retained provider controls through edits, selective blends/reblends and actual
+operator usefulness remain under [the parent](TODO/NS-5_instrumental-styles_01.md).
+An edited performance explicitly cannot save its unchanged parent archive as its
+new recipe. This is a temporary pending gate, not a completed substitute.
+Accounting stays41 tasks/34 DONE/seven open,152/194 (78.35%). Consecutive
+nonclosing count is1 after this bounded slice; require a real criterion closure
+or reassess after one further nonclosing batch. No rename/handoff resets it.
+
+Stop this slice after relevant local consumers and cleanup; publish its source
+for complete integration/extracted-package CI. Live deployment remains unchanged
+pending that qualification. Next criterion is saving the actual edited musical/
+sound recipe without changing learned models, losing retained controls or
+flattening ancestry, then using it as a selective blend/reblend parent. Reuse the
+primary semantic derivation and ordinary jobs/dialogs. Full AC1–AC3 and review,
+not extra tests alone, are the stopping/acceptance boundary. No generic WFC gap
+or dependency source change is demonstrated.
+
+## Previous handoff: corpus/path prerequisites accepted; Studio styles next - 2026-11-01
 
 Big Boss SOLO. Previous goal turns were verified waits on the same live CI556
 job, not new implementation batches. Complete [CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967)

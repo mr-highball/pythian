@@ -30,7 +30,7 @@ uses fpjson, pythian.progress, pythian.music.form, pythian.music.sound, pythian.
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.instrumental.stream,
   wfc_sequence, wfc_music_voices_graph,
   pythian.wfc.instrumental, pythian.wfc.percussion,
-  pythian.wfc.musical.corpus,
+  pythian.wfc.musical.corpus, pythian.wfc.semantic.style,
   pythian.tools.studio.instrumental.publication;
 
 type
@@ -51,6 +51,11 @@ type
     SoundRecipes: TInstrumentRecipes;
     { Borrowed only for this synchronous job; native owner remains alive. }
     Corpus: TMusicalCorpus;
+    { Borrowed immutable style. Its primary factory owns models/instruments;
+      this runner continues to own output, decisions and publication. }
+    Style: TSemanticStyle;
+    StyleOptions: TInstrumentalStreamOptions;
+    SavedStyle: TJSONObject;
   end;
 
 { Borrows explicit musical providers, instruments and percussion models. The ordinary
@@ -69,7 +74,7 @@ uses SysUtils, pythian.audio, pythian.bus,
   pythian.tools.studio.form,
   pythian.tools.studio.material.reference, pythian.tools.studio.decisions,
   pythian.tools.studio.instrumental.settings, pythian.tools.studio.sounds,
-  pythian.wfc.semantic.style, pythian.tools.studio.style.candidate;
+  pythian.tools.studio.style.candidate;
 
 function RunStudioInstrumentalStream(const ACatalogRoot, AJobId: String;
   const ARequest, ASettings, ALearning: TJSONObject; const AMaterial: TStudioStreamMaterial;
@@ -79,6 +84,7 @@ var
   LOptions: TInstrumentalStreamOptions;
   LStyleRecipe: TSemanticInstrumentalRecipe;
   LStream: TInstrumentalMusicStream;
+  LStyleStream: TSemanticInstrumentalStream;
   LOutput: TStudioInstrumentalOutput;
   LDecisions: TStudioDecisionWriter;
   LMaster: TAudioSamples;
@@ -97,6 +103,7 @@ var
 begin
   Result := nil;
   LStream := nil;
+  LStyleStream := nil;
   LOutput := nil;
   LDecisions := nil;
   LReference := nil;
@@ -111,6 +118,9 @@ begin
   try
     LDirectory := StudioJobDirectory(ACatalogRoot, AJobId);
     LOptions := DefaultInstrumentalStreamOptions(LEstimate.Int64s['music_frames']);
+    if AMaterial.Style <> nil then
+      LOptions := AMaterial.StyleOptions;
+    LOptions.MusicFrames := LEstimate.Int64s['music_frames'];
     LOptions.TailFrames := LEstimate.Int64s['tail_frames'];
     LOptions.TempoMicroseconds := AMaterial.TempoMicroseconds;
     LOptions.ContextBinding := AMaterial.ContextBinding;
@@ -139,7 +149,7 @@ begin
     LMeta.Add('instrument_template', 'primary-synth-v1');
     LMeta.Add('model_sha256', LModelHash);
     LMeta.Add('settings', ASettings.Clone);
-    if ALearning <> nil then
+    if (ALearning <> nil) or (AMaterial.Style <> nil) then
     begin
       LMeta.Objects['settings'].Delete('tonic');
       LMeta.Objects['settings'].Delete('mode');
@@ -148,7 +158,7 @@ begin
     LMeta.Add('tempo_microseconds', LOptions.TempoMicroseconds);
     LMeta.Add('ticks_per_quarter', LOptions.TicksPerQuarter);
     LMeta.Add('step_ticks', LOptions.StepTicks);
-    if AMaterial.Context = nil then LMeta.Add('context_binding', 'none')
+    if (AMaterial.Context = nil) and (AMaterial.Style = nil) then LMeta.Add('context_binding', 'none')
     else if AMaterial.ContextBinding = icbAllRoles then LMeta.Add('context_binding', 'all_roles')
     else LMeta.Add('context_binding', 'driven_role');
     LMeta.Add('continuation_policy', 'require_structural_support_for_remaining_cells');
@@ -162,6 +172,7 @@ begin
       LMeta.Add('sections', StudioFormTimeline(AMaterial.Form,
         AMaterial.TempoMicroseconds, StudioInstrumentalRate));
     if ALearning <> nil then LMeta.Add('playlist_learning', ALearning.Clone);
+    if AMaterial.SavedStyle <> nil then LMeta.Add('style_source', AMaterial.SavedStyle.Clone);
     if AMaterial.HasSound then
       LMeta.Add('applied_sound', TJSONObject.Create(['cutoff_hz', AMaterial.Sound.CutoffHz,
         'sustain_percent', AMaterial.Sound.SustainPercent, 'part', AMaterial.SoundPart,
@@ -227,15 +238,22 @@ begin
       StudioSoundMix(ASettings, StudioInstrumentalRate));
     LDecisions := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
-    LStream := TInstrumentalMusicStream.Create(LConfig, ARoles, ADrums,
-      LOutput.Graph, LOptions, AMaterial.Context, LDecisions.Append,
-      AMaterial.Form, AMaterial.DomainProvider);
+    if AMaterial.Style <> nil then
+    begin
+      LStyleStream := AMaterial.Style.CreateInstrumentalStream(LOptions,
+        LDecisions.Append, LOutput.Graph, AProgress);
+      LStream := LStyleStream.Stream;
+    end
+    else
+      LStream := TInstrumentalMusicStream.Create(LConfig, ARoles, ADrums,
+        LOutput.Graph, LOptions, AMaterial.Context, LDecisions.Append,
+        AMaterial.Form, AMaterial.DomainProvider);
     LMeta.Add('voice_lookahead_cells', LStream.VoiceLookaheadCells);
     LMeta.Add('context_lookahead_cells', LStream.ContextLookaheadCells);
     LMeta.Add('total_cells', LStream.TotalCells);
     LGraph := TJSONArray.Create;
     LMeta.Add('graph', LGraph);
-    if AMaterial.Context <> nil then
+    if (AMaterial.Context <> nil) or (AMaterial.Style <> nil) then
       LGraph.Add(TJSONObject.Create(['name', 'Musical context', 'kind', 'sequence',
         'transaction', 0,
         'maximum_width', LStream.ContextLookaheadCells, 'height', 1, 'depth', 1]));
@@ -265,7 +283,16 @@ begin
     LMeta.Add('planned_segments', LStream.PlannedSegments);
     LMeta.Add('peak_voices', LStream.PeakVoices);
     LMeta.Add('percussion_hits', LStream.PercussionHits);
-    if AMaterial.Corpus <> nil then
+    if AMaterial.SavedStyle <> nil then
+      LMeta.Add('style_candidate', TJSONObject.Create(['status', 'ready',
+        'sha256', AMaterial.SavedStyle.Strings['sha256'],
+        'artifact', 'styles/' + AMaterial.SavedStyle.Strings['sha256'] + '.pysg',
+        'bytes', AMaterial.SavedStyle.Int64s['bytes'],
+        'provider_count', AMaterial.SavedStyle.Integers['provider_count'],
+        'source_count', AMaterial.SavedStyle.Integers['source_count'],
+        'contribution_count', AMaterial.SavedStyle.Integers['contribution_count'],
+        'corpus_revision', AMaterial.SavedStyle.Strings['corpus_revision']]))
+    else if AMaterial.Corpus <> nil then
     begin
       LStyleRecipe := Default(TSemanticInstrumentalRecipe);
       LStyleRecipe.Enabled := True;
@@ -286,7 +313,9 @@ begin
     end;
     { Requested replay metadata is immutable; completion is a separate receipt. }
     WriteStudioJSONNew(LDirectory + PathDelim + 'instrumental-stream-completed.json', LMeta);
-    if AMaterial.Reference <> nil then
+    if (AMaterial.SavedStyle <> nil) and (AMaterial.SavedStyle.Find('original_reference') <> nil) then
+      LReference := TJSONObject(AMaterial.SavedStyle.Objects['original_reference'].Clone)
+    else if AMaterial.Reference <> nil then
       LReference := StageStudioMaterialReference(ACatalogRoot, AJobId, AMaterial.Reference, AProgress);
     Result := TJSONObject.Create;
     try
@@ -305,10 +334,16 @@ begin
       end;
       if ASettings.Find('sound_design') <> nil then
       begin
-        Result.Add('sound_design_origin', 'operator_selected');
+        if AMaterial.Style <> nil then Result.Add('sound_design_origin', 'saved_style_recipe')
+        else Result.Add('sound_design_origin', 'operator_selected');
       end;
       if LMeta.Find('sections') <> nil then Result.Add('sections', LMeta.Arrays['sections'].Clone);
       if ALearning <> nil then Result.Add('playlist_learning', ALearning.Clone);
+      if AMaterial.SavedStyle <> nil then
+      begin
+        Result.Add('style_source', AMaterial.SavedStyle.Clone);
+        Result.Add('learning_performed', False);
+      end;
       if LMeta.Find('style_candidate') <> nil then
         Result.Add('style_candidate', LMeta.Objects['style_candidate'].Clone);
       Result.Add('decisions', LMeta.Objects['decisions'].Clone);
@@ -336,13 +371,13 @@ begin
       Result.Add('outputs', LStored.Arrays['outputs'].Clone);
       if LReference <> nil then Result.Add('original_reference', LReference.Clone);
       PublishStudioInstrumental(ACatalogRoot, AJobId, ARequest, Result, LReference,
-        ALearning <> nil, ACheck, AProgress);
+        (ALearning <> nil) or (AMaterial.Style <> nil), ACheck, AProgress);
     except
       FreeAndNil(Result);
       raise;
     end;
   finally
-    LStream.Free;
+    if LStyleStream <> nil then LStyleStream.Free else LStream.Free;
     LDecisions.Free;
     LOutput.Free;
     LStored.Free;

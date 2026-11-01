@@ -66,6 +66,18 @@ playlists. **Save to playlist** names the exact current mix without rendering or
 copying audio. **Download WAV** saves a copy to the device. Output playlists are
 separate from the input playlists used to teach Pythian.
 
+**Save style** keeps a finished track's learned musical providers, instruments
+and effects under a name you choose. **Use a saved style** opens a small chooser
+in Generate. Choose one, set the track length and generate without reading or
+analyzing the original recordings again. **Learn from my selection** switches
+back; changing the selected music also returns to playlist learning. Saving a
+style changes metadata only and never starts a job. Older tracks without a
+retained model explain that a new generation is needed. Edited-style saving and
+selective blending remain unfinished under the [style task](TODO/NS-5_instrumental-styles_01.md);
+an edited performance does not offer its unchanged parent recipe as its own style.
+These controls are being qualified in the isolated QA slot; WORK records the
+live deployment separately.
+
 While generation starts or runs, a visible status and **Stop generation** remain
 available across the three steps. Returning from background reconnects to the
 same job. Stop intent is retained when a submitted request loses its response;

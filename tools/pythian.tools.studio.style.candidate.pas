@@ -41,10 +41,9 @@ function RetainStudioStyleCandidate(const ACatalogRoot: String;
 
 implementation
 
-uses Classes, SysUtils, pythian.audio, pythian.text, pythian.hash,
+uses SysUtils, pythian.audio, pythian.text,
   pythian.wfc.semantic.corpus, pythian.tools.json,
-  pythian.tools.path,
-  pythian.tools.studio.jobs, pythian.tools.listen.assets;
+  pythian.tools.studio.styles;
 
 type
   TCandidateProgress = class
@@ -163,8 +162,6 @@ var
   LDefinition: TSemanticStyleDefinition;
   LProgress: TCandidateProgress;
   LBytes: TAudioBytes;
-  LFile: TFileStream;
-  LPath: String;
 begin
   Result := TJSONObject.Create(['format', 'pythian.studio.style-candidate.v1',
     'status', 'unavailable']);
@@ -182,20 +179,7 @@ begin
         CorpusSources(ACorpus, AAudioSources), ARecipe, LProgress.Observe);
       LStyle := TSemanticStyle.CreateSource(LDefinition, nil, nil, LProgress.Observe);
       LBytes := LStyle.Encode(LProgress.Observe);
-      LPath := ListeningAssetDirectory(ACatalogRoot) + PathDelim + 'styles' +
-        PathDelim + LStyle.Identity + '.pysg';
-      if FileExists(NativeFilePath(LPath)) then
-      begin
-        LFile := OpenStudioReadStream(LPath);
-        try
-          Need((LFile.Size = Length(LBytes)) and
-            (Sha256Stream(LFile, LFile.Size, LProgress.Observe) = LStyle.Identity),
-            'Existing style content differs from its immutable identity');
-        finally
-          LFile.Free;
-        end;
-      end
-      else WriteStudioBinaryNew(LPath, LBytes, MaximumSemanticStyleBytes);
+      RetainStudioStyleBytes(ACatalogRoot, LStyle.Identity, LBytes, LProgress.Observe);
       Result.Strings['status'] := 'ready';
       Result.Add('sha256', LStyle.Identity);
       Result.Add('bytes', Length(LBytes));

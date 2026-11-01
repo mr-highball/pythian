@@ -28,7 +28,7 @@ SOFTWARE.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101719">
   <title>Pythian · Studio</title>
-  <link rel="stylesheet" href="studio.css?v=sounds-20261101">
+  <link rel="stylesheet" href="studio.css?v=styles-20261101">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to music</a>
@@ -77,12 +77,14 @@ SOFTWARE.
     <div class="page-heading"><p class="eyebrow">MAKE SOMETHING NEW</p><h1 id="generate-heading">Let it play.</h1><p id="generate-summary" class="summary"></p></div>
     <div id="experiment-actions" class="library-actions" hidden><button id="edit-experiment" data-studio-action type="button">Experiment settings</button><button id="exit-experiment" data-studio-action type="button">Back to playlist</button></div>
     <div id="playlist-generation-controls">
+      <div class="library-actions"><button id="open-styles" data-studio-action type="button">Use a saved style</button><button id="use-selected-music" data-studio-action type="button" hidden>Learn from my selection</button></div>
+      <p id="generation-style-source" class="hint" role="status" hidden></p>
       <div class="duration-controls">
         <label class="duration-control" for="output-duration">Track length<input id="output-duration" type="number" min="0.001" step="any" value="2" inputmode="decimal"></label>
         <label class="duration-control" for="output-duration-unit">Unit<select id="output-duration-unit"><option value="seconds">Seconds</option><option value="minutes" selected>Minutes</option><option value="hours">Hours</option></select></label>
       </div>
       <p id="output-estimate" class="hint" aria-live="polite"></p>
-    <details><summary>Track influence <span class="hint">optional</span></summary><p class="hint">Higher influence gives a track more weight in learning. This does not change its playback volume.</p><div id="track-influences"></div></details>
+    <details id="track-influence-controls"><summary>Track influence <span class="hint">optional</span></summary><p class="hint">Higher influence gives a track more weight in learning. This does not change its playback volume.</p><div id="track-influences"></div></details>
       <p class="hint">Experimental · 2 seconds to 24 hours, plus a 1-second effect tail.</p>
     <button id="generate-music" data-studio-action type="button" class="primary generate-button" disabled>Generate music</button>
     </div>
@@ -93,6 +95,7 @@ SOFTWARE.
     <section id="generation-result" class="generation-result" hidden aria-label="Your generated music">
       <h2 id="generation-title">Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p>
       <div class="library-actions"><button id="save-song" data-studio-action class="primary" type="button">＋ Save to playlist</button><a id="download-generated" class="button-link" download="pythian-track.wav">↓ Download WAV</a></div>
+      <button id="save-style" data-studio-action type="button" hidden>Save style</button><p id="save-style-availability" class="hint"></p>
       <p class="hint">Audio is kept on this computer. Save to a playlist to name it and find it in Songs.</p>
       <div id="version-comparison" class="version-comparison">
         <section id="generation-before" hidden aria-label="Before"><h3>Before</h3><audio id="generated-before-audio" controls preload="none"></audio></section>
@@ -127,6 +130,8 @@ SOFTWARE.
 </footer>
 <dialog id="songs-dialog" aria-labelledby="songs-title"><header class="dialog-heading"><h2 id="songs-title">Your generated songs</h2><button type="button" data-close="songs-dialog">Done</button></header><p class="hint">Saved playlists and recent finished tracks. Audio stays on this computer; Download WAV saves a copy to your device.</p><label for="song-filter">Playlist<select id="song-filter"><option value="">All songs</option></select></label><p id="songs-status" role="status"></p><button id="refresh-songs" data-studio-action type="button">Refresh songs</button><div id="songs-list" class="tracks"></div></dialog>
 <dialog id="save-song-dialog" aria-labelledby="save-song-title"><header class="dialog-heading"><h2 id="save-song-title">Save your song</h2><button id="save-song-close" type="button" data-close="save-song-dialog">Cancel</button></header><label for="song-name">Song name<input id="song-name" type="text" maxlength="160"></label><label for="song-playlist">Output playlist<input id="song-playlist" type="text" maxlength="160" list="song-playlist-names" value="My songs"></label><datalist id="song-playlist-names"></datalist><p class="hint">Keeps this exact generation. No new learning or audio copy.</p><p id="save-song-status" role="status"></p><button id="confirm-save-song" data-studio-action class="primary" type="button">Save song</button></dialog>
+<dialog id="styles-dialog" aria-labelledby="styles-title"><header class="dialog-heading"><h2 id="styles-title">Your saved styles</h2><button type="button" data-close="styles-dialog">Done</button></header><p class="hint">Reuse the musical ideas and sounds from a finished track. Choose a style, then Generate.</p><p id="styles-status" role="status"></p><button id="refresh-styles" type="button">Refresh styles</button><div id="styles-list" class="tracks"></div></dialog>
+<dialog id="save-style-dialog" aria-labelledby="save-style-title"><header class="dialog-heading"><h2 id="save-style-title">Save this style</h2><button id="save-style-close" type="button" data-close="save-style-dialog">Cancel</button></header><label for="style-name">Style name<input id="style-name" type="text" maxlength="128"></label><p class="hint">Keeps the learned musical ideas, instruments and effects. Saving does not learn or generate again.</p><p id="save-style-status" role="status"></p><button id="confirm-save-style" type="button" class="primary">Save style</button></dialog>
 <dialog id="saved-clips-dialog" aria-labelledby="saved-clips-title"><header class="dialog-heading"><h2 id="saved-clips-title">Saved clips</h2><button type="button" data-close="saved-clips-dialog">Done</button></header><p class="hint">Clips belong to this track and can be used in any playlist. Removing a clip from Selection keeps its saved audio here.</p><p id="saved-clips-status" role="status"></p><div id="saved-clips-list" class="tracks"></div></dialog>
 <dialog id="source-inspector" aria-labelledby="source-title" hidden>
   <header class="dialog-heading"><div><p class="eyebrow">CHOOSE A CLIP</p><h2 id="source-title" tabindex="-1"></h2></div><button id="source-close" type="button">Done</button></header>
@@ -208,6 +213,6 @@ SOFTWARE.
   <p id="note-choice-status" class="hint" role="status"></p>
   <button id="apply-notes" data-studio-action class="primary" type="button" disabled>Create new version</button>
 </dialog>
-<script src="studio.js?v=sounds-20261101"></script><script>rtl.run();</script>
+<script src="studio.js?v=styles-20261101"></script><script>rtl.run();</script>
 </body>
 </html>

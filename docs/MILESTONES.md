@@ -316,8 +316,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 28 current DONE; legacy records: 53 retired +
-97 historical DONE (125 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 7 open + 34 current DONE; legacy records: 53 retired +
+97 historical DONE (131 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.

@@ -62,6 +62,7 @@ uses
   pythian.tools.studio.clips,
   pythian.tools.studio.sounds,
   pythian.tools.studio.sound.patches,
+  pythian.tools.studio.styles,
   pythian.tools.studio.material,
   pythian.tools.studio.effects,
   pythian.tools.studio.capture,
@@ -1473,6 +1474,13 @@ begin
     end
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/songs') then
       LReport := ListStudioSongs(ACatalogRoot)
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/styles') then
+      LReport := ListStudioStyles(ACatalogRoot)
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/style') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := SaveStudioStyle(ACatalogRoot, LBody);
+    end
     else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/song') then
     begin
       LBody := ParseBodyObject(ARequest.Body);
