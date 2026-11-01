@@ -48,7 +48,7 @@ release history, gain edits, repeatability, key/velocity layers, detached nested
 data and an explicit sampler after its original clip is freed. The library
 catalog is available independently of WFC. The optional Studio sound editor
 uses these same definitions; its current release qualification is recorded in
-[sound design](TODO/NS-2_sound-design_01.md).
+[sound design](TODO/DONE/NS-2_sound-design_01.md).
 
 ## Reusable stem and effect recipes
 

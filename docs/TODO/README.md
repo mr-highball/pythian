@@ -3,11 +3,15 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 188 total effort units · 31 current-goal DONE · 138 / 188 accepted (73.40%).**
+**7 open tasks · 188 total effort units · 32 current-goal DONE · 146 / 188 accepted (77.66%).**
 
-Sound design is reestimated6→8 for its actual library/native/editor integration.
-No partial effort is accepted; the published backend passes complete CI549,
-while the optional sound editor and its actual audition consumer remain open.
+[Sound design — DONE](DONE/NS-2_sound-design_01.md) closes8 units after complete
+CI550, native/actual pas2js and desktop/390px consumers, then checked fixed-slot
+deployment with all saved data preserved. Studio edits actual primary recipes,
+layers, envelopes, movement and14 shared effects, reuses saved notes and offers
+Before/After mix/part playback. Private sound setups save without learning or
+generation. Reusable musical styles/blends are now Ready; they remain separate
+from these sound setups. No musical-quality or inference-accuracy credit follows.
 
 [Unguided form — DONE](DONE/NS-4_unguided-form_01.md),
 [native qualification — DONE](DONE/NS-6_native-reuse_01.md) and
@@ -81,8 +85,8 @@ Next follow NS-5: [bounded future domains — DONE](DONE/NS-4_future-domains_01.
 unblocks evolving musical form. The original24cell guide now performs through
 three8cell commits; all upstream and downstream gates pass. These five units
 repair the primary companion stream, not Studio form controls. Saved
-styles/blends also require reusable sound recipes. Graph inspection, recording
-proposal corrections, sound design and useful synthesis reviews retain their own
+styles/blends now have their accepted reusable sound recipes. Graph inspection,
+recording proposal corrections and useful synthesis reviews retain their own
 open tasks. Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
@@ -117,7 +121,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Ten later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -128,7 +132,7 @@ continuity experiments are selected.
 | [NS-6_generation-activity_01 — DONE](DONE/NS-6_generation-activity_01.md) — visible activity within Generate | 2 | Accepted; native callback details, actual desktop/phone progress, reconnect and checked stable assets |
 | [NS-6_saved-clips_01 — DONE](DONE/NS-6_saved-clips_01.md) — independent clip files and source lineage | 5 | Accepted; shared lossless range I/O, durable native save, clip-only learning/reference and actual desktop/phone consumers |
 | [NS-6_optional-lab_01 — DONE](DONE/NS-6_optional-lab_01.md) — reachable optional musical experiments | 4 | Accepted; signed authored controls, paired native audio, desktop/phone recovery and unchanged main flow |
-| [NS-2_sound-design_01](NS-2_sound-design_01.md) — reusable instrument/effects recipes | 8 | Runtime + instrumental Studio |
+| [NS-2_sound-design_01 — DONE](DONE/NS-2_sound-design_01.md) — reusable instrument/effects recipes | 8 | Accepted; primary recipes/racks, actual saved-score editing/audition, native/pas2js/browser, CI550 and deployment |
 | [NS-4_graph-workbench_01](NS-4_graph-workbench_01.md) — inspect and edit actual graph | 7 | Instrumental Studio |
 | [NS-4_graph-controls_01 — DONE](DONE/NS-4_graph-controls_01.md) — dimensions, affect and selective regeneration | 7 | Accepted; explicit controls/affect, retained role/passage edits, sound replay and paired output |
 | [NS-4_decision-replay_01 — DONE](DONE/NS-4_decision-replay_01.md) — retain/replay actual streamed music without solving | 5 | Accepted; actual native/pas2js decisions and native saved mix/stem replay |
@@ -143,7 +147,7 @@ continuity experiments are selected.
 | [NS-4_unguided-form_01 — DONE](DONE/NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Accepted; original request, native/pas2js, actual Studio/browser, complete CI547 and fixed-slot deployment |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
-| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
+| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Ready; style vocabulary, graph controls, sound design and instrumental Studio accepted |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
@@ -160,8 +164,8 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all 39 current-goal tasks (8 open, thirty-one DONE),
-totaling 188 units: 50 open and 138 accepted. Subtotals:
+The two tables together are all 39 current-goal tasks (7 open, thirty-two DONE),
+totaling 188 units: 42 open and 146 accepted. Subtotals:
 NS-2 18, NS-3 15, NS-4 71, NS-5 15, NS-6 69. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

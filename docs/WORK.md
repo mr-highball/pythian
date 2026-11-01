@@ -3,7 +3,53 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: optional sound editor qualified locally; release gate next — 2026-11-01
+## Current handoff: sound design accepted and deployed — 2026-11-01
+
+Big Boss SOLO. Exact source538b0ad6991d542977b5b0798ae7f7836740fdac passes
+complete CI550/run41325451184, integration and both extracted packages. Its
+checked native server/worker and twelve matching browser assets are deployed in
+the existing approved stable slot with the same TLS/Private/LAN settings. The
+guarded release preserves old binaries/UI for rollback. Ordinary HTTPS200 and
+authenticated APIs show all23 saved jobs, zero active,3 clips/zero errors, eight
+instrument recipes and an available worker. All7,143 preexisting private metadata
+hashes match after deployment and browser verification. No operator store was
+replaced. Three actual older retained scores open through the new sound API;
+the deployed390px browser opens a real recording-informed track with its original
+Experimental cutoff/sustain provenance. Zero console errors, no playback started.
+Owned tab6 is closed and viewport reset. The prior fixed QA tab/service/processes
+are also closed; only the normal stable service remains.
+
+[Sound design — DONE](TODO/DONE/NS-2_sound-design_01.md) closes AC1–4 and8 effort
+units. Native/actual JS recipes, all14 effect processors, actual scoped same-note
+sound jobs, dry restoration, saved setup reload without training, mix/part
+playback, layer/envelope/modulation edits and release-aware output are qualified
+by the linked packets below. The actual optional editor/audition criterion closes
+this batch: consecutive nonclosing count resets1→0. This is solo implementation
+qualification, not independent review, musical preference or universal inference.
+All prior cancellation, interrupted-run, native fixture and browser failures
+remain. Current progress146/188 (77.66%), seven open/32 DONE,42 open units.
+The separate DONE index was still reporting99/140 and omitted eleven current
+accepted rows; it now agrees with actual task metadata and the main catalog.
+This repairs stale accounting without awarding any additional effort.
+
+Evidence: E/runs/sound-design-20261101-boss/release01/verified.json,
+browser-render-proof.json, live-sounds-mobile.jpg; E/tests/sd-ui06, sd-js06,
+sd-patches06 and sd-legacy02. The server/worker/artifact hashes and full rollback
+identity are in release01/manifest.json. No new listener scope, certificate,
+firewall approval, source audio, feedback write or silent learning was introduced.
+
+Next select [instrumental styles](TODO/NS-5_instrumental-styles_01.md), whose
+actual sound-design prerequisite now passes. NS-5 is the least-delivered outcome;
+save/reload actual provider/schema/control and primary sound recipes before
+selective blends/reblends. Reuse the existing semantic model/evidence contracts,
+repair their known archive portability inside the real consumer and preserve
+origins. A saved sound setup alone is not a reusable musical graph style. Do not
+insert new benchmark gates or mark operator usefulness accepted without its
+actual review. The broader goal remains active; no operator decision blocks this
+implementation. Publish this documentation/accounting closure before the next
+bounded implementation batch.
+
+## Previous handoff: sound editor published; CI550 pending — 2026-11-01
 
 Big Boss SOLO. Backend b5e6905 is published and complete CI549/run41317718388
 passes, including the maintained source-effect consumer and HTTP bindings. The
@@ -39,6 +85,18 @@ variable, and an overbroad handler repair read a button as a select. Current
 code uses shared numeric presentation and the actual change-event target, with
 the Add movement button retaining its intended selected target.
 
+Source538b0ad6991d542977b5b0798ae7f7836740fdac is pushed; exact CI550/
+run41325451184 is in progress. Do not cancel it with another source push.
+Read-only native qualification also opens all three actual older retained scores
+from the operator catalog with a clean heap (sd-legacy02). The first diagnostic
+compiler invocation incorrectly passed an option array as one argument; its
+sd-legacy01 failure remains and no production change was inferred. Owned QA
+tab5 is closed, viewport reset, zero playing audio; exact fixed-slot QA PID52760
+exited with zero active jobs and zero remaining QA processes/listener. Cleanup
+and guarded fixed-slot release/verification scripts are in the evidence packet.
+The release script requires exact complete CI success before touching stable;
+it preserves rollback binaries/UI and checks existing private metadata hashes.
+
 Evidence: E/runs/sound-design-20261101-boss, sd-ui06, sd-js06 and sd-patches06.
 The prior published backend batch was nonclosing count1; this current editor/
 audition batch remains underway through complete CI and fixed-slot release.
@@ -49,8 +107,8 @@ Its ordinary authenticated API still has23 jobs/zero active and3 clips/zero erro
 The previously missing lofi clip is saved and visible alongside the newer clip;
 the live Library count/modal evidence is retained. Preserve all operator stores.
 Current accounting138/188 (73.40%), eight open/31 DONE,50 open effort. No operator
-input is needed. Finish QA cleanup, publish current source, require complete
-maintained CI, then stage matching checked server/worker/UI into stable and
+input is needed. Require complete maintained CI550, then stage matching checked
+server/worker/UI into stable and
 verify old-score opening, clip/job/answer retention before accepting sound design.
 
 ## Previous handoff: sound-design backend qualification — 2026-11-01
@@ -594,7 +652,7 @@ Section-density implementation is also qualified/deployed, but
 [musical form](TODO/NS-5_musical-form_01.md) still needs its deliberate sustained
 form experiment and actual operator listening (AC3); its eight units remain open.
 Resume that musical outcome without another general UI audit. Reusable styles
-also have the real [sound-design prerequisite](TODO/NS-2_sound-design_01.md).
+also have the real [sound-design prerequisite](TODO/DONE/NS-2_sound-design_01.md).
 The overall goal remains active; six tasks/41 effort remain. No helpers started.
 
 ## Previous handoff: operator song/clip usability repairs — 2026-10-31

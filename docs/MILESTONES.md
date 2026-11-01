@@ -22,10 +22,14 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 138 / 188 effort units accepted (73.40%); eight open, thirty-one current-goal DONE.**
-Sound design is reestimated6→8 for the actual portable/native/editor integration;
-its published backend passes complete CI549, while the operator editor/audition
-consumer remains unfinished. No partial effort is accepted.
+**Current snapshot: 146 / 188 effort units accepted (77.66%); seven open, thirty-two current-goal DONE.**
+[Sound design — DONE](TODO/DONE/NS-2_sound-design_01.md) accepts8 units after
+complete CI550, native/actual pas2js, actual desktop/390px editing/audition and
+checked stable deployment. Primary recipes, key/velocity layers, envelopes,
+movement and14 shared effects now drive ordinary retained-score sound versions;
+private setups save without learning or generation. All23 jobs,3 clips and7,143
+existing metadata files are preserved. This closes the sound-design prerequisite
+of reusable musical styles/blends, not musical-quality or transcription claims.
 [Unguided form — DONE](TODO/DONE/NS-4_unguided-form_01.md) and its
 [native qualification](TODO/DONE/NS-6_native-reuse_01.md)/
 [scalar fixture](TODO/DONE/NS-6_scalar-fixture_01.md) prerequisites close eight units
@@ -123,12 +127,12 @@ per-task percentages or north-star weights apply.
 | North star | Required outcome in this goal | Open effort | Accepted effort | Derived progress |
 | --- | --- | ---: | ---: | ---: |
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
-| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 12 | 6 | 6 / 18 |
+| [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 64 | 64 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 61 | 61 / 69 |
-| **Total** | **39 current-goal tasks** | **50** | **138** | **73.40%** |
+| **Total** | **39 current-goal tasks** | **42** | **146** | **77.66%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -178,7 +182,7 @@ earns new effort. Existing code did not become unimplemented because scope chang
 ### NS-2 — Playable sound breadth
 
 [Percussion](TODO/DONE/NS-2_percussion_01.md) and
-[sound design](TODO/NS-2_sound-design_01.md) expose actual sources, envelopes,
+[sound design](TODO/DONE/NS-2_sound-design_01.md) expose actual sources, envelopes,
 automation, filters, routing and effects rather than inventing a parallel engine.
 
 <a id="ns-3"></a>

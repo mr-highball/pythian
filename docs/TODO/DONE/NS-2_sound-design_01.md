@@ -1,10 +1,10 @@
 # NS-2_sound-design_01 — Expose the synthesis library as editable instrument and effect recipes
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -12,6 +12,19 @@
 Make the library's sound capabilities usable in the instrumental experiment. Use shared recipes and controls rather than isolated browser approximations. Stop on a control that has no audible backend effect.
 
 Primary attribution: NS-2. Effort estimates relative implementation/integration complexity, not musical value, accuracy, elapsed time or assigned percentage. No part of this new outcome is accepted by planning or by historical component tests.
+
+Accepted 2026-11-01 at source538b0ad6991d542977b5b0798ae7f7836740fdac after
+complete CI550/run41325451184, native and actual pas2js consumers, isolated
+desktop/390px Studio edits and the checked fixed-slot deployment. The ordinary
+retained-score jobs perform complete recipes through primary code; actual
+Before/After mix and part playback, scoped changed stems, immutable setup Save/
+reload without learning, source-preview effects and release-aware replay pass.
+All23 saved jobs,3 clips and7,143 existing private metadata files are unchanged.
+The deployed editor opens an actual older recording-informed score with its
+original cutoff/sustain provenance. This accepts usable Experimental controls,
+ownership and replay, not musical quality or source-instrument identification.
+Studio explicitly reports its sampler resolver as unconnected; explicit sampler
+ownership is exercised by the portable library consumer.
 
 **Acceptance Criteria:**
 
@@ -22,10 +35,21 @@ Primary attribution: NS-2. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
-- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
+- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
+- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: complete exact-source CI550 and extracted packages pass.
+  The fixed stable slot now serves the matching checked server/worker/twelve
+  browser assets. HTTPS200, available worker, all three legacy sound API reads,
+  actual390px saved-track editor opening and zero console errors pass. Existing
+  jobs/clips and all7,143 metadata hashes match before/after browser verification.
+  Owned QA/stable-check tabs are closed, viewport reset, zero QA processes and
+  zero playing audio; only the normal stable service remains. AC1–4 and their
+  prerequisites pass, closing8 effort units. Consecutive nonclosing count resets
+  from1 to0 on this actual editor/audition delivery. All recorded failures remain.
+  Packet: E/runs/sound-design-20261101-boss/release01 and live-sounds-mobile.jpg.
 
 - 2026-11-01, Big Boss: local editor/audition qualification now passes. Native
   mix57643, actual pas2js mix57643, native score worker66 and separately invoked
@@ -148,5 +172,5 @@ Primary attribution: NS-2. Effort estimates relative implementation/integration 
   the frozen75cdd0e worker currently awaiting CI/deployment.
 
 - 2026-10-29, Big Boss: TSynthVoice, TInstrument, TStyleInstrument, source factories, automation, effects and buses are already implemented and exercised by native callers.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

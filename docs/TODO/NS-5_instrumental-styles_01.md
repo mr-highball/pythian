@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Dependency-blocked
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -24,10 +24,17 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
-- [NS-2_sound-design_01](NS-2_sound-design_01.md)
+- [NS-2_sound-design_01](DONE/NS-2_sound-design_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: the sound-design prerequisite is accepted after actual
+  Studio editing/replay, complete CI550 and checked deployment. All listed
+  prerequisites are now accepted; this task is Ready. Existing semantic models,
+  vocabulary identities and primary instrument/mix recipes must be reused.
+  Saving only a sound setup is not saving an actual graph style. No effort or
+  usefulness is accepted by this readiness change.
 
 - 2026-10-30, Big Boss: The new musical corpus and native semantic reblend now
   share weighted, sample-boundary-preserving learning. Native blend/progress

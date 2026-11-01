@@ -187,8 +187,14 @@ Source verification and first analysis can take time. Saved proposal caches are
 reused. This workstation also showed seconds of latency closing small files on
 its E drive; retain this measured limitation when assessing job speed.
 
-The [graph workbench](TODO/NS-4_graph-workbench_01.md),
-[sound design](TODO/NS-2_sound-design_01.md), reusable styles/blends and guided
+Open **Songs**, open a finished track, then choose **Sounds & effects** to edit
+its instruments and racks. **Create new version** keeps the saved notes and
+learning model; compare Before/After or expand **Hear individual parts**.
+**Saved sound setups** saves the complete sound settings without starting a job.
+The editor is optional; the main Library → Selection → Generate flow stays simple.
+See the accepted [sound-design scope](TODO/DONE/NS-2_sound-design_01.md).
+
+The [graph workbench](TODO/NS-4_graph-workbench_01.md), reusable styles/blends and guided
 [synthesis reviews](TODO/NS-6_synthesis-reviews_01.md) remain open work. Their
 library foundations do not imply that the simple Studio exposes every control.
 Optional correction/bypass of recording-derived musical proposals remains

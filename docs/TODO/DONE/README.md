@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Twenty-one current-goal tasks are accepted: **99 / 140 effort units (70.71%)**. Their
+Thirty-two current-goal tasks are accepted: **146 / 188 effort units (77.66%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -14,11 +14,26 @@ continuation and long Studio generation are also accepted. Actual bounded
 decision recording, exact saved-score replay and visible Generate operation
 counters are accepted. Independent lossless clips now feed learning and Original
 comparison without full-parent reads. Bounded future voice domains now preserve
-known later restrictions before committing a prefix. There are 118 DONE files: twenty-one current,
+known later restrictions before committing a prefix. Saved clips/song playlists,
+Unicode listening feedback, positioned priors, composed/projected domains and
+usable unguided form are accepted through their actual consumers. Complete sound
+recipes, editable layers/envelopes/movement and shared effect racks now drive
+retained-score Studio versions and saved private setups. There are129 DONE files: thirty-two current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-2_sound-design_01](NS-2_sound-design_01.md) | 2026-11-01 | 8/10 | Primary instrument/effect recipes, actual desktop/390px saved-score editing/audition, no-learning setup persistence, CI550 and checked deployment |
+| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) | 2026-11-01 | 4/10 | Original192cell free arrangement at unchanged seed/limits, native/pas2js, actual Studio/browser and CI547 deployment |
+| [NS-6_native-reuse_01](NS-6_native-reuse_01.md) | 2026-11-01 | 3/10 | Fresh safe compiler contexts retain every consumer and finish full CI547 inside the unchanged budget |
+| [NS-6_scalar-fixture_01](NS-6_scalar-fixture_01.md) | 2026-11-01 | 1/10 | Shared encoded JSON fixture composition, native/actual pas2js checks and complete CI547; original code-page failures preserved |
+| [NS-4_projected-domains_01](NS-4_projected-domains_01.md) | 2026-11-01 | 6/10 | Known target restrictions prepare actual WFC source domains; original reproduction and native/pas2js consumers, upstream67/downstream544 packages |
+| [NS-4_context-composition_01](NS-4_context-composition_01.md) | 2026-11-01 | 6/10 | Verified source/voice/auxiliary transaction and shared frontier, native/pas2js/extracted consumers, upstream66/downstream543 |
+| [NS-6_listening-utf8_01](NS-6_listening-utf8_01.md) | 2026-11-01 | 3/10 | Exact Unicode review publication, Save/reopen/replay, retained responses, native/browser consumers and CI541 deployment |
+| [NS-6_song-library_01](NS-6_song-library_01.md) | 2026-11-01 | 5/10 | Named output playlists reuse saved audio, visible Stop/reconnect, native/browser consumers and CI540 deployment |
+| [NS-6_clip-library_01](NS-6_clip-library_01.md) | 2026-11-01 | 3/10 | Reusable clip discovery/preview, explicit parent-child selection, whole-track collapse and actual recovery |
+| [NS-6_connection-admission_01](NS-6_connection-admission_01.md) | 2026-11-01 | 2/10 | Bounded idle preconnections preserve responsive app/API admission; native/browser/TLS and CI540 deployment |
+| [NS-4_cell-priors_01](NS-4_cell-priors_01.md) | 2026-10-31 | 6/10 | Positioned soft preferences retain hard locks and source ownership; native/pas2js, upstream64/downstream537 and extracted packages |
 | [NS-4_future-domains_01](NS-4_future-domains_01.md) | 2026-10-31 | 5/10 | Primary bounded WFC lookahead, original guide and real form/default consumers; upstream CI63 and downstream CI533/packages pass |
 | [NS-6_optional-lab_01](NS-6_optional-lab_01.md) | 2026-10-31 | 4/10 | Reachable signed authored controls, editable affect, real paired audio, contextual tabs/help and native recovery |
 | [NS-4_graph-controls_01](NS-4_graph-controls_01.md) | 2026-10-31 | 7/10 | Explicit musical controls, retained selective role/passage edits, sound replay and preserved Before/After lineage |

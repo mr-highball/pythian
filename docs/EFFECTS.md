@@ -27,6 +27,13 @@ keeps the delay constant. Both time effects use linear dry/wet mixing. Reverb
 retains the core's rate-scaled default network; its decay control is not a claim
 about a measured room's exact RT60.
 
+`TStereoBalanceEffect.Create(Rate, Balance)` shares stereo balance between source
+previews and instrumental part racks. Balance is−1..1: zero is exact identity,
+negative values attenuate the right channel and positive values attenuate the
+left. It neither boosts nor folds stereo to mono. The catalog key is `balance`
+with parameter `pan`; finite input and the usual sample-rate admission apply.
+This stateless processor costs two channel multiplications per frame.
+
 Studio accepts an explicit 0–10 second tail after its bounded source passage.
 Tail frames feed zeros through the existing chain without resetting it, then cut
 at the selected duration. Preview and saved clip share that exact WAV and recipe;
