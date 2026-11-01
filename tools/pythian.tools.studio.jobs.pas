@@ -119,6 +119,7 @@ uses
   pythian.tools.studio.instrumental.config,
   pythian.tools.studio.instrumental.settings,
   pythian.tools.studio.instrumental.output,
+  pythian.tools.studio.sounds,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.assets,
@@ -702,6 +703,7 @@ var
   LParentRequest: TJSONObject;
   LParentResult: TJSONObject;
   LExperiment: TJSONObject;
+  LSoundDesign: TJSONObject;
   LChanged: Boolean;
 begin
   Need(AWrite <> nil, 'Job write is required');
@@ -709,7 +711,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|');
+    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|sound_design|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -811,24 +813,48 @@ begin
     else if IsStudioInstrumentalFollowup(LKind) then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'parent_job_id|parent_plan_sha256|instruments|note_edit|retry_of|');
+        'parent_job_id|parent_plan_sha256|instruments|note_edit|retry_of|sound_design|');
       LExisting := ReadStudioInstrumentalParent(ACatalogRoot, AWrite);
       try
         LParentResult := LExisting.Objects['results'];
         if LKind = 'instrumental_reperform' then
         begin
-          Need((AWrite.Find('note_edit') = nil) and (AWrite.Find('instruments') <> nil) and
-            (AWrite.Find('instruments').JSONType = jtArray), 'Choose the instrument sounds');
-          ValidateStudioInstrumentNames(AWrite.Arrays['instruments']);
-          LChanged := False;
-          for LIndex := 0 to 2 do
-            LChanged := LChanged or (AWrite.Arrays['instruments'].Strings[LIndex] <>
-              LParentResult.Objects['settings'].Arrays['instruments'].Strings[LIndex]);
-          Need(LChanged, 'Choose at least one different instrument sound');
+          Need(AWrite.Find('note_edit') = nil, 'Sound changes keep the saved notes');
+          if AWrite.Find('sound_design') <> nil then
+          begin
+            Need(AWrite.Find('instruments') = nil, 'Choose recipes or basic sounds, not both');
+            LSoundDesign := CanonicalStudioSoundDesign(AWrite.Find('sound_design'), StudioInstrumentalRate);
+            try
+              LChanged := LParentResult.Objects['settings'].Find('sound_design') = nil;
+              if not LChanged then
+              begin
+                LChanged := LSoundDesign.AsJSON <>
+                  LParentResult.Objects['settings'].Objects['sound_design'].AsJSON;
+              end;
+              LRequest.Delete('sound_design');
+              LRequest.Add('sound_design', LSoundDesign);
+              LSoundDesign := nil;
+            finally
+              LSoundDesign.Free;
+            end;
+          end
+          else
+          begin
+            Need((AWrite.Find('instruments') <> nil) and
+              (AWrite.Find('instruments').JSONType = jtArray), 'Choose the instrument sounds');
+            ValidateStudioInstrumentNames(AWrite.Arrays['instruments']);
+            LChanged := LParentResult.Objects['settings'].Find('sound_design') <> nil;
+            for LIndex := 0 to 2 do
+            begin
+              LChanged := LChanged or (AWrite.Arrays['instruments'].Strings[LIndex] <>
+                LParentResult.Objects['settings'].Arrays['instruments'].Strings[LIndex]);
+            end;
+          end;
+          Need(LChanged, 'Change a sound or effect before rendering again');
         end
         else
         begin
-          Need((AWrite.Find('instruments') = nil) and (AWrite.Find('note_edit') <> nil) and
+          Need((AWrite.Find('instruments') = nil) and (AWrite.Find('sound_design') = nil) and (AWrite.Find('note_edit') <> nil) and
             (AWrite.Find('note_edit').JSONType = jtObject), 'Choose the notes to change');
           DecodeStudioPassageEdit(AWrite.Objects['note_edit'],
             LParentResult.Objects['decisions'].Int64s['music_frames']);
@@ -1075,6 +1101,8 @@ var
   LPlan: TStudioPreparationPlan;
   LSelectedSeconds: Double;
   LPreparing: Boolean;
+  LSoundParent: TJSONObject;
+  LSoundSettings: TJSONObject;
 begin
   LRequest := BuildJobRequest(ACatalogRoot, AWrite);
   try
@@ -1120,7 +1148,18 @@ begin
           Result.Add('notes_changed', False)
         else Result.Add('notes_change_requested', True);
         Result.Add('parent_job_id', LRequest.Strings['parent_job_id']);
-        Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms']));
+        LSoundParent := ReadStudioInstrumentalParent(ACatalogRoot, LRequest);
+        LSoundSettings := nil;
+        try
+          LSoundSettings := StudioFollowupSoundSettings(LSoundParent.Objects['results'].Objects['settings'],
+            LRequest, StudioInstrumentalRate);
+          Result.Add('output_resources', StudioInstrumentalOutputEstimateFrames(
+            LSoundParent.Objects['results'].Objects['decisions'].Int64s['music_frames'],
+            StudioSoundTailFrames(LSoundSettings, StudioInstrumentalRate)));
+        finally
+          LSoundSettings.Free;
+          LSoundParent.Free;
+        end;
       end
       else if LRequest.Strings['kind'] = 'instrumental_generate' then
       begin
@@ -1140,7 +1179,8 @@ begin
             LRequest.Objects['project_snapshot'].Objects['playlist']);
           Result.Delete('unique_source_bytes_to_verify');
           Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
-          Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms']));
+          Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms'],
+            StudioSoundTailFrames(LRequest.Objects['instrumental'], StudioInstrumentalRate)));
           Result.Add('analysis_coverage', 'All included time; bounded representative musical cells enter providers');
         end;
         if LRequest.Objects['project_snapshot'].Find('musical_material') <> nil then

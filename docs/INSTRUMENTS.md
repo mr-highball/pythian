@@ -31,9 +31,11 @@ factory/curve/envelope pointers must be nil: source definitions, point/LFO
 controls and optional gated envelopes belong in the detached recipe fields.
 Control times are note-relative seconds converted through the primary sample
 clock. Knots collapsing onto one frame reject. FM depth is Hz; PM depth is
-radians. Wavetable motion uses recipe indices. Declared key ranges, modulation
-bounds and cutoff must fit the actual sample rate; no silent clipping or
-retuning is applied.
+radians. Wavetable motion uses recipe indices. Construction admits the recipe
+at its minimum key; each played key passes the primary instrument's actual
+sample-rate/source admission. A broad declared key range does not promise every
+key is playable at every rate. Modulation and cutoff must also fit that rate;
+no silent clipping or retuning is applied.
 
 A sampler recipe explicitly names a registered `SampleId`, region/root frequency
 and playback/loop quality. Construction borrows the registered clip only while
@@ -47,6 +49,34 @@ data and an explicit sampler after its original clip is freed. The library
 catalog is available independently of WFC. Studio recipe editing, saved patches
 and full effect routing remain [sound-design work](TODO/NS-2_sound-design_01.md);
 this catalog alone does not complete that operator workflow.
+
+## Reusable stem and effect recipes
+
+`pythian.effects.rack` exposes detached `TCatalogEffectRecipe` values: primary
+catalog settings plus an explicit bypass flag. `CopyEffectRecipes` deep-copies
+parameter arrays. `CreateCatalogEffectChain` validates every stage, including
+bypassed stages, and returns an owned chain of primary processors. Source-clip
+and instrumental adapters share the same named-parameter JSON boundary; neither
+adapter implements a second filter, compressor, delay or reverb.
+
+`pythian.mix.recipe.CreateStemMixGraph` realizes an ordered per-part rack once,
+then sends each post-fader part to its isolated stem and the master. With N
+parts, inputs occupy buses0..N−1, stemsN..2N−1, and the master2N. User master
+effects precede independent output protection. Global, part and stage bypass
+preserve saved settings; dry comparison retains the same output protection.
+The caller owns the graph and must keep it alive throughout playback. Do not
+reset it at phrase or pull boundaries: delay, reverb and dynamics history belong
+to the continuous performance.
+
+Studio's native sound-design boundary saves three complete pitched recipes and
+six part racks. Retained-score sound edits reuse the note journal and model;
+they do not repeat learning or WFC selection. Output admission includes the
+longest declared note release and the explicit effect tail. An effect tail is a
+finite saved duration, not a promise that arbitrary feedback has become silent.
+The private patch store saves immutable content-addressed setups without
+starting a job. A sampler needs explicit audio bindings; the Studio catalog
+reports that resolver as unconnected. The optional Studio editing/audition UI
+remains open in the linked task until its actual consumer is delivered.
 
 ## Experimental observed sound controls
 

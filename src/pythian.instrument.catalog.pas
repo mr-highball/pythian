@@ -27,14 +27,14 @@ unit pythian.instrument.catalog;
 
 interface
 
-uses pythian.instrument.recipe;
+uses pythian.instrument.recipe, pythian.text;
 
 { Detached authored starting points, not learned instrument identifications.
   Callers may edit, append or replace recipes; no global registry owns them.
   Realization validates the requested rate and complete declared key range. }
 function BuiltInInstrumentRecipes: TInstrumentRecipes;
 function FindInstrumentRecipe(const ARecipes: TInstrumentRecipes;
-  const AId: String): TInstrumentRecipe;
+  const AId: TScalarText): TInstrumentRecipe;
 
 implementation
 
@@ -166,12 +166,12 @@ begin
 end;
 
 function FindInstrumentRecipe(const ARecipes: TInstrumentRecipes;
-  const AId: String): TInstrumentRecipe;
+  const AId: TScalarText): TInstrumentRecipe;
 var I, LFound: Integer;
 begin
   LFound := -1;
   for I := 0 to High(ARecipes) do
-    if ARecipes[I].Id = AId then
+    if CompareScalarText(ARecipes[I].Id, AId, 256) = 0 then
     begin
       if LFound >= 0 then raise EAudio.Create('Instrument recipe identity is ambiguous');
       LFound := I;

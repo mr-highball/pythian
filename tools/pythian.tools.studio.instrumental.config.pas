@@ -30,7 +30,7 @@ unit pythian.tools.studio.instrumental.config;
 interface
 
 uses fpjson, pythian.music.controls, pythian.instrument, pythian.music.sound,
-  pythian.oscillator, pythian.percussion;
+  pythian.oscillator, pythian.percussion, pythian.instrument.recipe;
 
 const
   StudioInstrumentalOrigin =
@@ -41,15 +41,16 @@ const
 
 function StudioInstrumentShape(const AName: String): TWaveShape;
 function StudioPlaylistInstrumentZones: TInstrumentZones;
-function CreateStudioInstrument(const ATemplate: TInstrumentZones;
+function CreateStudioRecipeInstrument(const ATemplate: TInstrumentZones;
   const AName: String; const ASound: TMusicalSound; const AApplySound: Boolean;
-  const ASampleRate: Integer): TInstrument;
+  const ASampleRate: Integer; const ASettings: TJSONObject = nil;
+  const APart: Integer = -1): TRecipeInstrument;
 function DecodeStudioPercussionSettings(const ARow: TJSONObject;
   const ASampleRate: Integer): TPercussionSettings;
 
 implementation
 
-uses SysUtils, pythian.audio, pythian.synth;
+uses SysUtils, pythian.audio, pythian.synth, pythian.tools.studio.sounds;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -90,19 +91,43 @@ begin
   Result := LZones;
 end;
 
-function CreateStudioInstrument(const ATemplate: TInstrumentZones;
+function CreateStudioRecipeInstrument(const ATemplate: TInstrumentZones;
   const AName: String; const ASound: TMusicalSound; const AApplySound: Boolean;
-  const ASampleRate: Integer): TInstrument;
-var LZones: TInstrumentZones; I: Integer;
+  const ASampleRate: Integer; const ASettings: TJSONObject;
+  const APart: Integer): TRecipeInstrument;
+var
+  LRecipe: TInstrumentRecipe;
+  I: Integer;
 begin
-  LZones := Copy(ATemplate);
-  for I := 0 to High(LZones) do
+  if (ASettings <> nil) and (ASettings.Find('sound_design') <> nil) then
   begin
-    LZones[I].Voice.Shape := StudioInstrumentShape(AName);
-    if AApplySound then
-      LZones[I].Voice := ApplyMusicalSound(LZones[I].Voice, ASound, ASampleRate);
+    Need((APart >= 0) and (APart < 3), 'Choose a pitched part for its sound recipe');
+    LRecipe := DecodeStudioInstrumentRecipe(ASettings.Objects['sound_design'].Arrays['instruments'][APart]);
+  end
+  else
+  begin
+    LRecipe := Default(TInstrumentRecipe);
+    LRecipe.Id := 'studio-oscillator-' + AName;
+    LRecipe.Caption := AName;
+    LRecipe.Origin := 'Studio oscillator; explicit voice controls';
+    SetLength(LRecipe.Zones, Length(ATemplate));
+    for I := 0 to High(ATemplate) do
+    begin
+      LRecipe.Zones[I] := DefaultInstrumentZoneRecipe;
+      LRecipe.Zones[I].MinimumKey := ATemplate[I].MinimumKey;
+      LRecipe.Zones[I].MaximumKey := ATemplate[I].MaximumKey;
+      LRecipe.Zones[I].MinimumVelocity := ATemplate[I].MinimumVelocity;
+      LRecipe.Zones[I].MaximumVelocity := ATemplate[I].MaximumVelocity;
+      LRecipe.Zones[I].Voice := ATemplate[I].Voice;
+      LRecipe.Zones[I].Voice.Shape := StudioInstrumentShape(AName);
+      if AApplySound then
+      begin
+        LRecipe.Zones[I].Voice := ApplyMusicalSound(LRecipe.Zones[I].Voice, ASound, ASampleRate);
+        LRecipe.Origin := 'Studio oscillator; Experimental recording-derived cutoff/sustain';
+      end;
+    end;
   end;
-  Result := TInstrument.Create(LZones);
+  Result := TRecipeInstrument.Create(LRecipe, ASampleRate);
 end;
 
 function DecodeStudioPercussionSettings(const ARow: TJSONObject;

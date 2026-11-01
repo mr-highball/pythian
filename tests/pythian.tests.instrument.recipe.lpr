@@ -243,6 +243,36 @@ begin
   finally LBank.Free end;
 end;
 
+procedure CheckPlayedKeyAdmission;
+var
+  LRecipe: TInstrumentRecipe;
+  LBank: TRecipeInstrument;
+  LClip: TAudioClip;
+  LRejected: Boolean;
+begin
+  LRecipe := FindInstrumentRecipe(BuiltInInstrumentRecipes, 'sub-bass');
+  LRecipe.Zones[0].MinimumKey := 0;
+  LRecipe.Zones[0].MaximumKey := 127;
+  LBank := TRecipeInstrument.Create(LRecipe, CRate);
+  try
+    LClip := Audition(LBank);
+    try
+      Check(Energy(LClip) > 0, 'Broad key range rejected a supported played key');
+    finally
+      LClip.Free;
+    end;
+    LRejected := False;
+    try
+      LBank.Instrument.PlanNote(127, 110, CRate, 0, 4800, 731);
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected, 'Actual unsupported high key was silently clipped or retuned');
+  finally
+    LBank.Free;
+  end;
+end;
+
 procedure CheckFailures;
 var LRecipe: TInstrumentRecipe; LCurve: TAutomationCurve;
   LPoints: TAutomationPoints; LRejected: Boolean;
@@ -274,6 +304,7 @@ end;
 begin
   CheckCatalog;
   CheckGateAndSample;
+  CheckPlayedKeyAdmission;
   CheckFailures;
   WriteLn('Instrument recipe/catalog checks=', GChecks);
 end.

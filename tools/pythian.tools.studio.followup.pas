@@ -37,10 +37,11 @@ function RunStudioInstrumentalFollowup(const ACatalogRoot, AJobId: String;
 implementation
 
 uses Classes, SysUtils, pythian.audio, pythian.bus, pythian.time,
-  pythian.instrument, pythian.percussion, pythian.music.sound,
+  pythian.instrument, pythian.instrument.recipe, pythian.percussion, pythian.music.sound,
   pythian.music.stream, pythian.music.replay,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions, pythian.tools.studio.notes,
-  pythian.tools.studio.instrumental.config, pythian.tools.studio.instrumental.output;
+  pythian.tools.studio.instrumental.config, pythian.tools.studio.instrumental.output,
+  pythian.tools.studio.sounds, pythian.tools.json;
 
 procedure Need(const AValue: Boolean; const AMessage: String);
 begin
@@ -54,12 +55,15 @@ var
   LParent, LRoot, LMeta, LSettings, LReplayMeta, LStored, LResult: TJSONObject;
   LParentResult, LRootResult, LDecisions, LRow: TJSONObject;
   LNoteChanges: TJSONObject;
+  LResources: TJSONObject;
+  LRecipeJSON: TJSONObject;
+  LRecipeRows: TJSONArray;
   LFile: TFileStream;
   LOutput: TStudioInstrumentalOutput;
   LReplay: TMusicDecisionReplay;
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
-  LInstruments: array[0..2] of TInstrument;
+  LInstruments: array[0..2] of TRecipeInstrument;
   LDrums: array[0..2] of TPercussionInstrument;
   LSound: TMusicalSound;
   LDrumSettings: TPercussionSettings;
@@ -80,6 +84,7 @@ begin
   LStored := nil;
   LResult := nil;
   LNoteChanges := nil;
+  LResources := nil;
   LFile := nil;
   LOutput := nil;
   LReplay := nil;
@@ -110,17 +115,14 @@ begin
     Need((LMeta.Strings['model_sha256'] = LParentResult.Strings['model_sha256']) and
       (LMeta.Objects['decisions'].AsJSON = LParentResult.Objects['decisions'].AsJSON),
       'Saved model or notes differ from the previous track');
-    AdmitStudioInstrumentalOutput(ACatalogRoot, ARequest.Int64s['duration_ms']);
+    LSettings := StudioFollowupSoundSettings(LParentResult.Objects['settings'],
+      ARequest, StudioInstrumentalRate);
+    AdmitStudioInstrumentalOutput(ACatalogRoot, ARequest.Int64s['duration_ms'],
+      StudioSoundTailFrames(LSettings, StudioInstrumentalRate));
     LDecisions := LParentResult.Objects['decisions'];
     LFile := OpenStudioDecisionJournal(ACatalogRoot, LDecisions, AProgress);
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
-    LSettings := TJSONObject(LParentResult.Objects['settings'].Clone);
-    if not LNoteEdit then
-    begin
-      LSettings.Delete('instruments');
-      LSettings.Add('instruments', ARequest.Arrays['instruments'].Clone);
-    end
-    else
+    if LNoteEdit then
     begin
       LNoteChanges := EditStudioRetainedNotes(ACatalogRoot, AJobId, LMeta,
         ARequest.Objects['note_edit'], LFile, AProgress);
@@ -150,15 +152,29 @@ begin
     SetLength(LBindings, 6);
     for I := 0 to 2 do
     begin
-      Need((Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
+      Need((LSettings.Find('sound_design') <> nil) or
+        (Pos('operator-patch-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
+        (Pos('playlist-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1) or
         (Pos('structured-primary-v1-', LMeta.Arrays['roles'].Objects[I].Strings['instrument_id']) = 1),
         'Saved instrument recipe is unsupported by this editor');
-      LInstruments[I] := CreateStudioInstrument(StudioPlaylistInstrumentZones,
+      LInstruments[I] := CreateStudioRecipeInstrument(StudioPlaylistInstrumentZones,
         LSettings.Arrays['instruments'].Strings[I], LSound,
         LHasSound and ((LMeta.Objects['applied_sound'].Find('part') = nil) or
           (LMeta.Objects['applied_sound'].Integers['part'] < 0) or
-          (LMeta.Objects['applied_sound'].Integers['part'] = I)), StudioInstrumentalRate);
-      LBindings[I].Instrument := LInstruments[I];
+          (LMeta.Objects['applied_sound'].Integers['part'] = I)), StudioInstrumentalRate,
+        LSettings, I);
+      LBindings[I].Instrument := LInstruments[I].Instrument;
+      LRecipeJSON := EncodeStudioInstrumentRecipe(LInstruments[I].CopyRecipe);
+      if LMeta.Arrays['roles'].Objects[I].Find('instrument_recipe') <> nil then
+      begin
+        LMeta.Arrays['roles'].Objects[I].Delete('instrument_recipe');
+      end;
+      if LSettings.Find('sound_design') <> nil then
+      begin
+        LMeta.Arrays['roles'].Objects[I].Strings['instrument_id'] := 'operator-patch-v1-' +
+          HashNativeText(WriteNativeJSON(LRecipeJSON, 262144));
+      end;
+      LMeta.Arrays['roles'].Objects[I].Add('instrument_recipe', LRecipeJSON);
       LBindings[I].Bus := LMeta.Arrays['roles'].Objects[I].Integers['output_bus'];
       LBindings[I].MaximumTones := 128;
       LRow := LMeta.Arrays['percussion'].Objects[I];
@@ -171,22 +187,25 @@ begin
         SampleFramesFromSeconds(LDrumSettings.GateSeconds, StudioInstrumentalRate);
     end;
     LOptions := DefaultInstrumentStreamOptions(LDecisions.Int64s['music_frames']);
-    LOptions.TailFrames := LParentResult.Objects['output_resources'].Int64s['tail_frames'];
+    LResources := StudioInstrumentalOutputEstimateFrames(LOptions.MusicFrames,
+      StudioSoundTailFrames(LSettings, StudioInstrumentalRate));
+    LOptions.TailFrames := LResources.Int64s['tail_frames'];
     LOptions.Seed := LMeta.Int64s['seed'];
     LOptions.VoiceLimit := LMeta.Integers['voice_limit'];
     LOptions.WorkLimit := LMeta.Integers['work_limit'];
     LOutput := TStudioInstrumentalOutput.Create(ACatalogRoot, AJobId,
-      StudioInstrumentalRate, LParentResult.Objects['output_resources'].Int64s['frame_count'],
-      LSettings.Arrays['levels'], LOptions.Seed);
+      StudioInstrumentalRate, LResources.Int64s['frame_count'],
+      LSettings.Arrays['levels'], LOptions.Seed,
+      StudioSoundMix(LSettings, StudioInstrumentalRate));
     LReplay := TMusicDecisionReplay.Create(LFile, LBindings, LOutput.Graph, LOptions);
     ReportWork(AProgress, 'instrumental_render', wuFrames, 0,
-      LParentResult.Objects['output_resources'].Int64s['frame_count']);
+      LResources.Int64s['frame_count']);
     while LReplay.ReadOutputs(2048, StudioInstrumentalStemBuses, LMaster, LStems, AProgress) do
     begin
       if Assigned(ACheck) then ACheck;
       LOutput.Append(LMaster, LStems);
       ReportWork(AProgress, 'instrumental_render', wuFrames, LReplay.Position,
-        LParentResult.Objects['output_resources'].Int64s['frame_count']);
+        LResources.Int64s['frame_count']);
     end;
     Need((LReplay.State = issCompleted) and (LReplay.CellCount = LDecisions.Int64s['cells']),
       'Saved notes did not complete on their declared cell clock');
@@ -194,6 +213,12 @@ begin
     LStored := LOutput.Finish(AProgress);
     if LNoteEdit then
     begin
+      LMeta.Int64s['frame_count'] := LResources.Int64s['frame_count'];
+      LMeta.Int64s['tail_frames'] := LResources.Int64s['tail_frames'];
+      if (LSettings.Find('sound_design') <> nil) and (LMeta.Find('applied_sound') <> nil) then
+      begin
+        LMeta.Delete('applied_sound');
+      end;
       LPlanHash := StudioTextHash(LMeta.AsJSON);
       WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
         PathDelim + 'instrumental-stream-completed.json', LMeta);
@@ -210,8 +235,14 @@ begin
         'seed', Int64(LOptions.Seed), 'learning_performed', False, 'notes_changed', False,
         'math_target', {$I %FPCTARGETCPU%} + '-' + {$I %FPCTARGETOS%} + '/FPC' + {$I %FPCVERSION%}]);
       LReplayMeta.Add('settings', LSettings.Clone);
+      LRecipeRows := TJSONArray.Create;
+      LReplayMeta.Add('instrument_recipes', LRecipeRows);
+      for I := 0 to 2 do
+      begin
+        LRecipeRows.Add(EncodeStudioInstrumentRecipe(LInstruments[I].CopyRecipe));
+      end;
       LReplayMeta.Add('decisions', LDecisions.Clone);
-      LReplayMeta.Add('output_resources', LParentResult.Objects['output_resources'].Clone);
+      LReplayMeta.Add('output_resources', LResources.Clone);
       LPlanHash := StudioTextHash(LReplayMeta.AsJSON);
       WriteStudioJSONNew(StudioJobDirectory(ACatalogRoot, AJobId) +
         PathDelim + 'instrumental-reperformance.json', LReplayMeta);
@@ -219,11 +250,26 @@ begin
     LResult := TJSONObject(LParentResult.Clone);
     for I := LResult.Count - 1 downto 0 do
       if Pos('|' + LResult.Names[I] + '|',
-        '|outputs|parts|settings|stream|before|decisions|note_edit|edit_report|') > 0 then LResult.Delete(I);
+        '|outputs|parts|settings|stream|before|decisions|note_edit|edit_report|output_resources|instrument_recipes|sound_design_origin|') > 0 then LResult.Delete(I);
     LResult.Add('outputs', LStored.Arrays['outputs'].Clone);
     LResult.Add('parts', LStored.Arrays['parts'].Clone);
     LResult.Add('settings', LSettings.Clone);
     LResult.Add('decisions', LDecisions.Clone);
+    LRecipeRows := TJSONArray.Create;
+    LResult.Add('instrument_recipes', LRecipeRows);
+    for I := 0 to 2 do
+    begin
+      LRecipeRows.Add(EncodeStudioInstrumentRecipe(LInstruments[I].CopyRecipe));
+    end;
+    LResult.Add('output_resources', LResources.Clone);
+    if LSettings.Find('sound_design') <> nil then
+    begin
+      if LResult.Find('applied_sound') <> nil then
+      begin
+        LResult.Delete('applied_sound');
+      end;
+      LResult.Strings['sound_design_origin'] := 'operator_selected';
+    end;
     LResult.Strings['runtime'] := 'retained_instrumental_score_replay';
     if LNoteEdit then
     begin
@@ -258,6 +304,7 @@ begin
     end;
     LResult.Free;
     LNoteChanges.Free;
+    LResources.Free;
     LStored.Free;
     LReplayMeta.Free;
     LSettings.Free;

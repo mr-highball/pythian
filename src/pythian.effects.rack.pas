@@ -32,6 +32,22 @@ uses
   pythian.effects,
   pythian.effects.catalog;
 
+type
+  TCatalogEffectRecipe = record
+    Settings: TCatalogEffectSettings;
+    Bypass: Boolean;
+  end;
+  TCatalogEffectRecipes = array of TCatalogEffectRecipe;
+
+function DefaultEffectRecipe(const AKind: TCatalogEffect): TCatalogEffectRecipe;
+function CopyEffectRecipes(const ARecipes: TCatalogEffectRecipes): TCatalogEffectRecipes;
+procedure ValidateEffectRecipes(const ARecipes: TCatalogEffectRecipes;
+  const ASampleRate: Integer);
+{ Detached ordered recipes; bypassed stages are validated too. The owned chain
+  retains its history across pulls. No stage borrows the input recipe. }
+function CreateCatalogEffectChain(const ASampleRate: Integer;
+  const ARecipes: TCatalogEffectRecipes): TEffectChain;
+
 { Returns an owned, reset effect. Settings are borrowed only during creation.
   Mix is linear dry=1-mix, wet=mix. Delay uses opposed stereo sine modulation;
   zero depth is a steady echo. No JSON, playback or WFC dependency. }
@@ -48,6 +64,67 @@ uses
   pythian.dynamics,
   pythian.delay.modulated,
   pythian.reverb;
+
+function DefaultEffectRecipe(const AKind: TCatalogEffect): TCatalogEffectRecipe;
+begin
+  Result := Default(TCatalogEffectRecipe);
+  Result.Settings := DefaultCatalogEffect(AKind);
+end;
+
+function CopyEffectRecipes(const ARecipes: TCatalogEffectRecipes): TCatalogEffectRecipes;
+var
+  I: Integer;
+begin
+  Result := Copy(ARecipes);
+  for I := 0 to High(Result) do
+  begin
+    Result[I].Settings.Values := Copy(ARecipes[I].Settings.Values);
+  end;
+end;
+
+procedure ValidateEffectRecipes(const ARecipes: TCatalogEffectRecipes;
+  const ASampleRate: Integer);
+var
+  I: Integer;
+begin
+  if Length(ARecipes) > MaximumEffects then
+  begin
+    raise EAudio.Create('Effect recipe exceeds the primary stage limit');
+  end;
+  for I := 0 to High(ARecipes) do
+  begin
+    ValidateCatalogEffect(ARecipes[I].Settings, ASampleRate);
+  end;
+end;
+
+function CreateCatalogEffectChain(const ASampleRate: Integer;
+  const ARecipes: TCatalogEffectRecipes): TEffectChain;
+var
+  I: Integer;
+  LEffect: TAudioEffect;
+begin
+  ValidateEffectRecipes(ARecipes, ASampleRate);
+  Result := TEffectChain.Create(ASampleRate);
+  try
+    for I := 0 to High(ARecipes) do
+    begin
+      if ARecipes[I].Bypass then
+      begin
+        Continue;
+      end;
+      LEffect := CreateCatalogEffect(ASampleRate, ARecipes[I].Settings);
+      try
+        Result.Add(LEffect);
+        LEffect := nil;
+      finally
+        LEffect.Free;
+      end;
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
 
 function CreateCatalogEffect(const ASampleRate: Integer;
   const ASettings: TCatalogEffectSettings): TAudioEffect;

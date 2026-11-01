@@ -27,7 +27,7 @@ unit pythian.instrument.recipe;
 
 interface
 
-uses pythian.audio, pythian.source, pythian.source.oscillator,
+uses pythian.audio, pythian.text, pythian.source, pythian.source.oscillator,
   pythian.source.wavetable, pythian.source.sample, pythian.additive,
   pythian.automation, pythian.synth, pythian.instrument;
 
@@ -69,7 +69,7 @@ type
     TableMotion: TInstrumentCurveRecipe;
     ModulatorRatio: Double;
     ModulationDepth: Double; { Hz for FM, radians for PM. }
-    SampleId: String;
+    SampleId: TScalarText;
     SampleStartFrame: Integer;
     SampleEndFrame: Integer; { -1 explicitly selects the registered clip end. }
     SampleLoopStart: Integer;
@@ -98,12 +98,14 @@ type
   end;
   TInstrumentZoneRecipes = array of TInstrumentZoneRecipe;
   TInstrumentRecipe = record
-    Id, Caption, Origin: String;
+    Id: TScalarText;
+    Caption: TScalarText;
+    Origin: TScalarText;
     Zones: TInstrumentZoneRecipes;
   end;
   TInstrumentRecipes = array of TInstrumentRecipe;
   TInstrumentSampleBinding = record
-    Id: String;
+    Id: TScalarText;
     Clip: TAudioClip; { Borrowed only during recipe construction. }
   end;
   TInstrumentSampleBindings = array of TInstrumentSampleBinding;
@@ -264,7 +266,7 @@ begin
         if AZone.Source.SampleId = '' then raise EAudio.Create('Sampler needs an explicit registered sample');
         LClip := nil;
         for I := 0 to High(ASamples) do
-          if ASamples[I].Id = AZone.Source.SampleId then
+          if CompareScalarText(ASamples[I].Id, AZone.Source.SampleId, 256) = 0 then
           begin
             if LClip <> nil then raise EAudio.Create('Sampler binding is ambiguous');
             LClip := ASamples[I].Clip;
@@ -290,11 +292,14 @@ end;
 
 constructor TRecipeInstrument.Create(const ARecipe: TInstrumentRecipe;
   const ASampleRate: Integer; const ASamples: TInstrumentSampleBindings);
-var I, J, LKey: Integer; LReleaseFrames: Int64; LSeen: set of TInstrumentControlTarget;
+var I, J: Integer; LReleaseFrames: Int64; LSeen: set of TInstrumentControlTarget;
   LCurve, LHeld, LRelease: TAutomationCurve; LTone: TFrameTone;
 begin
   inherited Create;
   ValidateAudioFormat(ASampleRate, 2);
+  ValidateScalarText(ARecipe.Id, 256, False);
+  ValidateScalarText(ARecipe.Caption, 512, False);
+  ValidateScalarText(ARecipe.Origin, 4096, False);
   if (ARecipe.Id = '') or (ARecipe.Caption = '') or (ARecipe.Origin = '') or
     (Length(ARecipe.Zones) < 1) or (Length(ARecipe.Zones) > MaximumInstrumentZones) then
     raise EAudio.Create('Instrument recipe needs identity, origin and bounded zones');
@@ -348,11 +353,11 @@ begin
   for I := 0 to High(FZones) do
   begin
     LTone.Voice := FZones[I].Voice;
-    for LKey := FZones[I].MinimumKey to FZones[I].MaximumKey do
-    begin
-      LTone.FrequencyHz := MidiFrequency(LKey);
-      ValidateFrameTone(LTone, ASampleRate);
-    end;
+    { Primary PlanNote owns admission for the actual played key. A zone may span
+      the MIDI domain without promising that Nyquist permits every key at every
+      output rate. Validate its definition here, not every hypothetical note. }
+    LTone.FrequencyHz := MidiFrequency(FZones[I].MinimumKey);
+    ValidateFrameTone(LTone, ASampleRate);
     SynthFrameCost(LTone.Voice, ASampleRate);
   end;
 end;

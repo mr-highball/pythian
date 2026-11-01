@@ -3,7 +3,50 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: unguided form deployed; sound-design integration next — 2026-11-01
+## Current handoff: sound-design backend qualification — 2026-11-01
+
+Big Boss SOLO. Published source0cff683 and complete CI548/run41300076778 now
+pass; the portable recipe catalog is qualified, not the newer working backend.
+The current backend adds full saved instrument definitions, primary per-part/
+master effect routing, one shared source/instrumental effect JSON boundary,
+retained-score sound edits, actual release-aware output admission and immutable
+private patch storage. Native and actual pas2js instrument109/mix53288 pass;
+native codec/store37 passes, with clean heaps. Current-source native worker65
+in E/tests/sd-score03 now passes actual gain/dry/FM changes, unchanged decisions/
+model/unrelated stems and an audible eight-second release. It supersedes the
+pre-consolidation sd-scenes01 packet without deleting it. The source-effect
+fixture compiled successfully, then its run stopped without a terminal receipt
+or log output; both its tool handle and OS process are absent. Keep its partial
+sd-shared03 packet, do not call it a pass or a live wait. Full maintained CI
+must qualify that source consumer and the new HTTP bindings before deployment.
+No new sound UI, scoped audition, full task effort or new stable deployment is
+accepted. This backend batch closes no complete Studio criterion: consecutive
+nonclosing count1. The next batch must deliver the actual sound editor and
+audition consumer, or reassess after a second nonclosing batch.
+
+The broad sd-native02 instrumental run failed at live cancellation with an event
+file sharing violation, after its earlier rendering checks. Its log and clean
+heap remain. Its focused same-executable smoke retry passes47 with a clean heap
+in E/tests/sd-baseline-retry01, including live cancellation and saved experiment.
+A tiny native FileOpen probe retains ERROR_SHARING_VIOLATION32 after the failed
+constructor: it disproves the suspected lost-error-code explanation, so no
+speculative reader/retry-policy change was made. A retry does not replace the
+original failed full-consumer evidence. E/tests/sd-file-probe01 preserves it.
+
+The stable service remains unchanged at HTTPS192.168.12.108:18097/studio.html,
+with23 saved jobs, zero active jobs, three saved clips and zero clip errors. The
+actual live browser shows lofi's2 clips, chillwave's1 and stoner-rock's0. Opening
+the lofi modal shows both0:11.123–0:29.001 and11:06.660–13:42.831 with the original
+labels; the latter is the operator's previously missing selection. Its screenshot
+is E/runs/sound-design-20261101-boss/clip-library-live.jpg. Owned QA tab58 was
+closed, no audio was started, and no QA review service was launched. Next publish
+the backend component with its honest partial Windows qualification, require
+complete maintained CI, then deliver optional Studio sound editing using these
+same recipes.
+Keep Library→Selection→Generate intact. Current accounting stays138/186
+(74.19%); eight open/31 current DONE,48 open effort. No operator input is needed.
+
+## Previous handoff: unguided form deployed; sound-design integration next — 2026-11-01
 
 Big Boss SOLO. Complete CI547/run41297589893 at0d1557d passes every step:
 integration23m17s, both extracted packages2m13s, full job25m56s under the unchanged

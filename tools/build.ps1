@@ -275,8 +275,13 @@ try {
   & (Join-Path $buildRoot "pythian.tests.instrument$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument checks failed' }
   Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.instrument.recipe.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Instrument recipe/catalog compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.instrument.recipe$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument recipe/catalog checks failed' }
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.mix.recipe.lpr'
+  if ($LASTEXITCODE -ne 0) { throw 'Stem mix recipe compilation failed' }
+  & (Join-Path $buildRoot "pythian.tests.mix.recipe$executableSuffix")
+  if ($LASTEXITCODE -ne 0) { throw 'Stem mix recipe checks failed' }
   Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.percussion.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.percussion.core$executableSuffix")
@@ -653,6 +658,13 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.sounds.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Studio sound recipes compilation failed' }
+    $studioSoundsRoot = Join-Path $buildRoot ('studio-sounds-' + [Guid]::NewGuid().ToString('N'))
+    & (Join-Path $buildRoot "pythian.tests.studio.sounds$executableSuffix") "$studioSoundsRoot-patches"
+    if ($LASTEXITCODE -ne 0) { throw 'Studio sound patch checks failed' }
+    & (Join-Path $buildRoot "pythian.tests.studio.sounds$executableSuffix") '--worker' "$studioSoundsRoot-worker"
+    if ($LASTEXITCODE -ne 0) { throw 'Studio sound replay checks failed' }
     Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.form.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical form compilation failed' }
     $studioFormRoot = Join-Path $buildRoot ('studio-form-' + [Guid]::NewGuid().ToString('N'))

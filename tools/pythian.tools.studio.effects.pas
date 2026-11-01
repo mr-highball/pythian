@@ -52,7 +52,7 @@ implementation
 uses
   SysUtils, Math,
   pythian.audio, pythian.hash, pythian.effects,
-  pythian.effects.catalog, pythian.effects.rack,
+  pythian.effects.catalog, pythian.effects.rack, pythian.tools.effects.json,
   pythian.wave.read, pythian.wave.stream,
   pythian.tools.annotations.catalog, pythian.tools.annotations.sourceguard,
   pythian.tools.studio.projects, pythian.tools.studio.jobs,
@@ -77,16 +77,6 @@ begin
   Result := LData.AsFloat;
   RequireFinite(Result, AKey);
   Need((Result >= AMinimum) and (Result <= AMaximum), 'Effect setting is outside its bound: ' + AKey);
-end;
-
-procedure CheckKeys(const AObject: TJSONObject; const AKeys: String);
-var
-  LIndex: Integer;
-begin
-  for LIndex := 0 to AObject.Count - 1 do
-  begin
-    Need(Pos('|' + AObject.Names[LIndex] + '|', AKeys) > 0, 'Unsupported effect setting');
-  end;
 end;
 
 function SafeName(const AName: String): Boolean;
@@ -139,14 +129,6 @@ end;
 
 procedure ValidateStudioEffectRequest(const ARequest: TJSONObject);
 var
-  LEffects: TJSONArray;
-  LRow: TJSONObject;
-  LIndex: Integer;
-  LKind: String;
-  LDefinition: TEffectDefinition;
-  LSetting: TEffectParameter;
-  LParameter: Integer;
-  LKeys: String;
   LStart: Double;
   LEnd: Double;
 begin
@@ -170,70 +152,12 @@ begin
   begin
     Number(ARequest, 'tail_seconds', 0, 10);
   end;
-  Need((ARequest.Find('effects') <> nil) and (ARequest.Find('effects').JSONType = jtArray),
-    'Effect stack must be an array');
-  LEffects := ARequest.Arrays['effects'];
-  Need(LEffects.Count <= 8, 'Use at most eight effect stages');
-  for LIndex := 0 to LEffects.Count - 1 do
-  begin
-    Need(LEffects[LIndex].JSONType = jtObject, 'Effect stage must be an object');
-    LRow := LEffects.Objects[LIndex];
-    LKind := LRow.Get('kind', '');
-    Need((LRow.Find('bypass') <> nil) and (LRow.Find('bypass').JSONType = jtBoolean),
-      'Each effect stage must declare bypass');
-    Need(FindEffectDefinition(LKind, LDefinition), 'Unsupported effect kind');
-    LKeys := '|kind|bypass|';
-    for LParameter := 0 to High(LDefinition.Parameters) do
-    begin
-      LSetting := LDefinition.Parameters[LParameter];
-      LKeys := LKeys + LSetting.Key + '|';
-      Number(LRow, LSetting.Key, LSetting.Minimum, LSetting.Maximum);
-    end;
-    CheckKeys(LRow, LKeys);
-  end;
+  DecodeEffectRecipes(ARequest.Find('effects'), 8);
 end;
 
 function CreateChain(const AEffects: TJSONArray; const ARate: Integer): TEffectChain;
-var
-  LIndex: Integer;
-  LRow: TJSONObject;
-  LEffect: TAudioEffect;
-  LDefinition: TEffectDefinition;
-  LSettings: TCatalogEffectSettings;
-  LSetting: TEffectParameter;
-  LParameter: Integer;
 begin
-  Result := TEffectChain.Create(ARate);
-  try
-    for LIndex := 0 to AEffects.Count - 1 do
-    begin
-      LRow := AEffects.Objects[LIndex];
-      Need(FindEffectDefinition(LRow.Strings['kind'], LDefinition), 'Unsupported effect kind');
-      LSettings := DefaultCatalogEffect(LDefinition.Kind);
-      for LParameter := 0 to High(LDefinition.Parameters) do
-      begin
-        { Big Boss: a bypassed recipe must remain valid when enabled. }
-        LSetting := LDefinition.Parameters[LParameter];
-        LSettings.Values[LParameter] := Number(LRow, LSetting.Key, LSetting.Minimum,
-          EffectParameterMaximum(LSetting, ARate));
-      end;
-      ValidateCatalogEffect(LSettings, ARate);
-      if LRow.Booleans['bypass'] then
-      begin
-        Continue;
-      end;
-      LEffect := CreateCatalogEffect(ARate, LSettings);
-      try
-        Result.Add(LEffect);
-        LEffect := nil;
-      finally
-        LEffect.Free;
-      end;
-    end;
-  except
-    Result.Free;
-    raise;
-  end;
+  Result := CreateCatalogEffectChain(ARate, DecodeEffectRecipes(AEffects, 8, ARate));
 end;
 
 function RenderStudioEffectPreview(const ACatalogRoot, AJobId: String;

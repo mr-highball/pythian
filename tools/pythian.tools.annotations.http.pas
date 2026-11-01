@@ -60,6 +60,8 @@ uses
   pythian.tools.listen.stream,
   pythian.tools.studio.projects,
   pythian.tools.studio.clips,
+  pythian.tools.studio.sounds,
+  pythian.tools.studio.sound.patches,
   pythian.tools.studio.material,
   pythian.tools.studio.effects,
   pythian.tools.studio.capture,
@@ -1456,6 +1458,17 @@ begin
     end
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/saved-clips') then
       LReport := ListStudioSavedClips(ACatalogRoot)
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-catalog') then
+      LReport := StudioSoundCatalog
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-patches') then
+      LReport := ListStudioSoundPatches(ACatalogRoot)
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/sound-patch') then
+      LReport := ReadStudioSoundPatch(ACatalogRoot, QueryValue(ARequest.Query, 'id'))
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/sound-patch') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := SaveStudioSoundPatch(ACatalogRoot, LBody);
+    end
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/songs') then
       LReport := ListStudioSongs(ACatalogRoot)
     else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/song') then

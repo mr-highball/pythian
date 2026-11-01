@@ -27,7 +27,7 @@ unit pythian.tools.studio.instrumental.output;
 
 interface
 
-uses fpjson, pythian.audio, pythian.bus, pythian.wave.stream,
+uses fpjson, pythian.audio, pythian.bus, pythian.mix.recipe, pythian.wave.stream,
   pythian.tools.listen.assets, pythian.progress;
 
 const
@@ -51,7 +51,10 @@ type
     FSeed: Cardinal;
   public
     constructor Create(const ACatalogRoot, AJobId: String; const ASampleRate: Integer;
-      const AFrames: Int64; const ALevels: TJSONArray; const ASeed: Cardinal);
+      const AFrames: Int64; const ALevels: TJSONArray; const ASeed: Cardinal); overload;
+    constructor Create(const ACatalogRoot, AJobId: String; const ASampleRate: Integer;
+      const AFrames: Int64; const ALevels: TJSONArray; const ASeed: Cardinal;
+      const AMix: TStemMixRecipe); overload;
     destructor Destroy; override;
     procedure Append(const AMaster: TAudioSamples; const AStems: TBusSampleBlocks);
     function Finish(const AProgress: TWorkProgressCallback = nil): TJSONObject;
@@ -60,46 +63,60 @@ type
 
 { Owned estimate, no payload allocation. Includes all seven retained files,
   primary RIFF/RF64 headers and a fixed metadata/free-space reserve. }
-function StudioInstrumentalOutputEstimate(const ADurationMs: Int64): TJSONObject;
+function StudioInstrumentalOutputEstimate(const ADurationMs: Int64;
+  const ATailFrames: Int64 = -1): TJSONObject;
 { Exact musical clocks, including section lengths at fractional BPM, reuse the
   same resource accounting without rounding through milliseconds. }
-function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64): TJSONObject;
+function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64;
+  const ATailFrames: Int64 = -1): TJSONObject;
 { Native host volume check, before learning/rendering. Does not reserve space
   against other writers; later I/O failures remain normal terminal job errors. }
-procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String; const ADurationMs: Int64);
+procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String;
+  const ADurationMs: Int64; const ATailFrames: Int64 = -1);
 
 implementation
 
-uses Classes, SysUtils, pythian.effects, pythian.tools.studio.instrumental.config
+uses Classes, SysUtils, pythian.tools.studio.instrumental.config
   {$IFDEF MSWINDOWS}, Windows{$ENDIF}
   {$IFDEF UNIX}, Unix, BaseUnix{$ENDIF};
 
 const
   CPartNames: array[0..5] of String = ('Bass', 'Harmony', 'Lead', 'Kick', 'Snare', 'Hat');
 
-function StudioInstrumentalOutputEstimate(const ADurationMs: Int64): TJSONObject;
+function StudioInstrumentalOutputEstimate(const ADurationMs: Int64;
+  const ATailFrames: Int64): TJSONObject;
 begin
   if (ADurationMs < 2000) or (ADurationMs > 86400000) then
     raise EAudio.Create('Track length must be2seconds to24hours');
-  Result := StudioInstrumentalOutputEstimateFrames(ADurationMs * StudioInstrumentalRate div 1000);
+  Result := StudioInstrumentalOutputEstimateFrames(
+    ADurationMs * StudioInstrumentalRate div 1000, ATailFrames);
 end;
 
-function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64): TJSONObject;
+function StudioInstrumentalOutputEstimateFrames(const AMusicFrames: Int64;
+  const ATailFrames: Int64): TJSONObject;
 var
-  LFrames, LBytes: Int64;
+  LFrames, LBytes, LTailFrames: Int64;
 begin
   if (AMusicFrames < Int64(2) * StudioInstrumentalRate) or
     (AMusicFrames > Int64(86400) * StudioInstrumentalRate) then
     raise EAudio.Create('Track length must be2seconds to24hours');
-  LFrames := AMusicFrames +
-    StudioInstrumentalTailSeconds * StudioInstrumentalRate;
+  LTailFrames := ATailFrames;
+  if LTailFrames = -1 then
+  begin
+    LTailFrames := Int64(StudioInstrumentalTailSeconds) * StudioInstrumentalRate;
+  end;
+  if (LTailFrames < 0) or (LTailFrames > Int64(86400) * StudioInstrumentalRate) then
+  begin
+    raise EAudio.Create('Effect tail must be0..24hours');
+  end;
+  LFrames := AMusicFrames + LTailFrames;
   LBytes := WavePcm16ByteCount(StudioInstrumentalRate, 2, LFrames);
   Result := TJSONObject.Create;
   Result.Add('sample_rate', StudioInstrumentalRate);
   Result.Add('channels', 2);
   Result.Add('bits_per_sample', 16);
   Result.Add('music_frames', AMusicFrames);
-  Result.Add('tail_frames', Int64(StudioInstrumentalTailSeconds) * StudioInstrumentalRate);
+  Result.Add('tail_frames', LTailFrames);
   Result.Add('frame_count', LFrames);
   Result.Add('wav_bytes_each', LBytes);
   Result.Add('retained_outputs', StudioInstrumentalOutputCount);
@@ -110,7 +127,8 @@ begin
   Result.Add('storage_note', 'Mix plus six stems; retained musical decisions and analysis caches are additional. Space is checked again when the native job starts.');
 end;
 
-procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String; const ADurationMs: Int64);
+procedure AdmitStudioInstrumentalOutput(const ACatalogRoot: String;
+  const ADurationMs: Int64; const ATailFrames: Int64);
 var
   LEstimate: TJSONObject;
   LRoot: String;
@@ -122,7 +140,7 @@ var
   LInfo: TStatfs;
   {$ENDIF}
 begin
-  LEstimate := StudioInstrumentalOutputEstimate(ADurationMs);
+  LEstimate := StudioInstrumentalOutputEstimate(ADurationMs, ATailFrames);
   try
     EnsureListeningAssetStorage(ACatalogRoot);
     LRoot := ListeningAssetDirectory(ACatalogRoot);
@@ -146,28 +164,32 @@ end;
 constructor TStudioInstrumentalOutput.Create(const ACatalogRoot, AJobId: String;
   const ASampleRate: Integer; const AFrames: Int64; const ALevels: TJSONArray;
   const ASeed: Cardinal);
+begin
+  Create(ACatalogRoot, AJobId, ASampleRate, AFrames, ALevels, ASeed,
+    DefaultStemMixRecipe(6));
+end;
+
+constructor TStudioInstrumentalOutput.Create(const ACatalogRoot, AJobId: String;
+  const ASampleRate: Integer; const AFrames: Int64; const ALevels: TJSONArray;
+  const ASeed: Cardinal; const AMix: TStemMixRecipe);
 var
-  LSettings: array[0..12] of TBusSettings;
+  LRecipe: TStemMixRecipe;
   I: Integer;
 begin
   inherited Create;
   if (ALevels = nil) or (ALevels.Count <> 6) then
     raise EAudio.Create('Instrumental output requires six part levels');
   FSeed := ASeed;
-  for I := 0 to 12 do
+  LRecipe := CopyStemMixRecipe(AMix);
+  if Length(LRecipe.Parts) <> 6 then
   begin
-    LSettings[I] := Default(TBusSettings);
-    if I < 6 then LSettings[I].Gain := ALevels.Integers[I] / 100
-    else LSettings[I].Gain := 0.7;
+    raise EAudio.Create('Instrumental output requires six part mix recipes');
   end;
-  FGraph := TBusGraph.Create(ASampleRate, LSettings);
   for I := 0 to 5 do
   begin
-    FGraph.AddSend(I, I + 6, stPostFader, 1, 0);
-    FGraph.AddSend(I, 12, stPostFader, 1, 0);
-    FGraph.AddEffect(I + 6, TLimiterEffect.Create(ASampleRate, -1, 0.08));
+    LRecipe.Parts[I].Gain := LRecipe.Parts[I].Gain * ALevels.Integers[I] / 100;
   end;
-  FGraph.AddEffect(12, TLimiterEffect.Create(ASampleRate, -1, 0.08));
+  FGraph := CreateStemMixGraph(LRecipe, ASampleRate);
   for I := 0 to 6 do
   begin
     FAssets[I] := TListeningAssetWriter.Create(ACatalogRoot, AJobId + '-part-' + IntToStr(I));

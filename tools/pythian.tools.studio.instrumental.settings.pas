@@ -59,7 +59,8 @@ function CanonicalStudioInstrumentalConfig(const AConfig: TJSONObject): TJSONObj
 implementation
 
 uses SysUtils, pythian.audio, pythian.music.form, pythian.music.decisions,
-  pythian.tools.studio.form;
+  pythian.tools.studio.form, pythian.tools.studio.sounds,
+  pythian.tools.studio.instrumental.config;
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
   if not ACondition then raise EAudio.Create(AMessage);
@@ -143,13 +144,20 @@ end;
 procedure ValidateStudioInstrumentalConfig(const AConfig: TJSONObject);
 var LIndex, LMaximumCells: Integer; LValue: TJSONData; LForm: TMusicForm;
   LControls: TMusicalPartControls;
+  LSoundDesign: TJSONObject;
 begin
   Need((AConfig <> nil) and (AConfig.Count = 5 + Ord(AConfig.Find('mode') <> nil) +
-    Ord(AConfig.Find('controls') <> nil) + Ord(AConfig.Find('form') <> nil)),
+    Ord(AConfig.Find('controls') <> nil) + Ord(AConfig.Find('form') <> nil) +
+    Ord(AConfig.Find('sound_design') <> nil)),
     'Instrumental settings require tempo_bpm, tonic, cells, instruments and levels');
   for LIndex := 0 to AConfig.Count - 1 do
     Need(Pos('|' + AConfig.Names[LIndex] + '|',
-      '|tempo_bpm|tonic|cells|instruments|levels|mode|controls|form|') > 0, 'Unsupported instrumental setting');
+      '|tempo_bpm|tonic|cells|instruments|levels|mode|controls|form|sound_design|') > 0, 'Unsupported instrumental setting');
+  if AConfig.Find('sound_design') <> nil then
+  begin
+    LSoundDesign := CanonicalStudioSoundDesign(AConfig.Find('sound_design'), StudioInstrumentalRate);
+    LSoundDesign.Free;
+  end;
   LMaximumCells := StudioInstrumentalMaximumCells;
   if AConfig.Find('form') <> nil then
   begin
@@ -252,6 +260,10 @@ begin
     if AConfig.Find('form') <> nil then
       Result.Add('form', EncodeStudioForm(DecodeStudioForm(AConfig.Find('form'))));
     Result.Add('instruments', AConfig.Arrays['instruments'].Clone);
+    if AConfig.Find('sound_design') <> nil then
+    begin
+      Result.Add('sound_design', CanonicalStudioSoundDesign(AConfig.Find('sound_design'), StudioInstrumentalRate));
+    end;
     LLevels := TJSONArray.Create;
     Result.Add('levels', LLevels);
     for I := 0 to 5 do LLevels.Add(AConfig.Arrays['levels'].Integers[I]);

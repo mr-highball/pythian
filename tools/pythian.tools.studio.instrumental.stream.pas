@@ -26,7 +26,7 @@ unit pythian.tools.studio.instrumental.stream;
 {$H+}
 
 interface
-uses fpjson, pythian.progress, pythian.music.form, pythian.music.sound,
+uses fpjson, pythian.progress, pythian.music.form, pythian.music.sound, pythian.instrument.recipe,
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.instrumental.stream,
   wfc_sequence, wfc_music_voices_graph,
   pythian.wfc.instrumental, pythian.wfc.percussion,
@@ -47,6 +47,7 @@ type
     HasSound: Boolean;
     Sound: TMusicalSound;
     SoundPart: Integer;
+    SoundRecipes: TInstrumentRecipes;
   end;
 
 { Borrows explicit musical providers, instruments and percussion models. The ordinary
@@ -64,7 +65,7 @@ uses SysUtils, pythian.audio, pythian.bus,
   pythian.tools.studio.instrumental.output, pythian.tools.studio.instrumental.config,
   pythian.tools.studio.form,
   pythian.tools.studio.material.reference, pythian.tools.studio.decisions,
-  pythian.tools.studio.instrumental.settings;
+  pythian.tools.studio.instrumental.settings, pythian.tools.studio.sounds;
 
 function RunStudioInstrumentalStream(const ACatalogRoot, AJobId: String;
   const ARequest, ASettings, ALearning: TJSONObject; const AMaterial: TStudioStreamMaterial;
@@ -81,6 +82,7 @@ var
   LProviderNames: TLayerModelTexts;
   LMeta, LStored, LReference, LEstimate, LRow: TJSONObject;
   LProviders, LGraph, LModelsJson, LModelNames: TJSONArray;
+  LRecipeRows: TJSONArray;
   LRhythms, LConstraints, LTokens: TJSONArray;
   LDirectory, LModelText, LModelHash: String;
   LConfig: TWfcMusicVoicesGraphConfig;
@@ -96,8 +98,10 @@ begin
   LStored := nil;
   if Length(AMaterial.Form) > 0 then
     LEstimate := StudioInstrumentalOutputEstimateFrames(StudioFormFramesAtTempo(AMaterial.Form,
-      AMaterial.TempoMicroseconds, StudioInstrumentalRate))
-  else LEstimate := StudioInstrumentalOutputEstimate(ARequest.Int64s['duration_ms']);
+      AMaterial.TempoMicroseconds, StudioInstrumentalRate),
+      StudioSoundTailFrames(ASettings, StudioInstrumentalRate))
+  else LEstimate := StudioInstrumentalOutputEstimate(ARequest.Int64s['duration_ms'],
+    StudioSoundTailFrames(ASettings, StudioInstrumentalRate));
   LMeta := TJSONObject.Create;
   try
     LDirectory := StudioJobDirectory(ACatalogRoot, AJobId);
@@ -109,7 +113,8 @@ begin
       LOptions.SegmentCells := MusicFormLookahead(AMaterial.Form, LOptions.SegmentCells);
     LEstimate.Integers['lookahead_cells'] := LOptions.SegmentCells;
     AdmitStudioInstrumentalOutput(ACatalogRoot,
-      (LOptions.MusicFrames * 1000 + StudioInstrumentalRate - 1) div StudioInstrumentalRate);
+      (LOptions.MusicFrames * 1000 + StudioInstrumentalRate - 1) div StudioInstrumentalRate,
+      LOptions.TailFrames);
     LOptions.Seed := ARequest.Arrays['seeds'].Int64s[0];
     LConfig := AMaterial.Config;
     LModels := AMaterial.Models;
@@ -170,6 +175,10 @@ begin
       LProviders.Add(TJSONObject.Create(['name', ARoles[I].Name,
         'instrument_id', ARoles[I].InstrumentId, 'output_bus', ARoles[I].OutputBus,
         'minimum_pitch', LConfig.Voices[I].MinPitch, 'maximum_pitch', LConfig.Voices[I].MaxPitch]));
+      if Length(AMaterial.SoundRecipes) = 3 then
+      begin
+        LProviders.Objects[I].Add('instrument_recipe', EncodeStudioInstrumentRecipe(AMaterial.SoundRecipes[I]));
+      end;
     end;
     LReplayConfig := TJSONObject.Create;
     LMeta.Add('musical_config', LReplayConfig);
@@ -209,7 +218,8 @@ begin
     if LModelNames.Count <> Length(LModels) then
       raise EAudio.Create('Musical corpus model layout differs from stream replay metadata');
     LOutput := TStudioInstrumentalOutput.Create(ACatalogRoot, AJobId,
-      StudioInstrumentalRate, LEstimate.Int64s['frame_count'], ASettings.Arrays['levels'], LOptions.Seed);
+      StudioInstrumentalRate, LEstimate.Int64s['frame_count'], ASettings.Arrays['levels'], LOptions.Seed,
+      StudioSoundMix(ASettings, StudioInstrumentalRate));
     LDecisions := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
     LStream := TInstrumentalMusicStream.Create(LConfig, ARoles, ADrums,
@@ -263,6 +273,16 @@ begin
       Result.Add('experimental', True);
       Result.Add('material_origin', AMaterial.Origin);
       Result.Add('settings', LMeta.Objects['settings'].Clone);
+      LRecipeRows := TJSONArray.Create;
+      Result.Add('instrument_recipes', LRecipeRows);
+      for I := 0 to High(AMaterial.SoundRecipes) do
+      begin
+        LRecipeRows.Add(EncodeStudioInstrumentRecipe(AMaterial.SoundRecipes[I]));
+      end;
+      if ASettings.Find('sound_design') <> nil then
+      begin
+        Result.Add('sound_design_origin', 'operator_selected');
+      end;
       if LMeta.Find('sections') <> nil then Result.Add('sections', LMeta.Arrays['sections'].Clone);
       if ALearning <> nil then Result.Add('playlist_learning', ALearning.Clone);
       Result.Add('decisions', LMeta.Objects['decisions'].Clone);

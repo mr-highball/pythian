@@ -56,9 +56,12 @@ seed/limits, with188 native/actual pas2js checks. The typed Pythian consumer
 covers original/prepared paths with96 checks. Complete [downstream CI544](https://github.com/mr-highball/pythian/actions/runs/41285686814)
 and its extracted core/WFC consumers pass; the [six-unit prerequisite — DONE](docs/TODO/DONE/NS-4_projected-domains_01.md)
 is accepted. The actual192cell musical candidate passes115 native/actual pas2js
-checks with identical free-note digest, but its broader runtime/Studio integration
-remains unpublished work in progress. No service or upstream branch is changed
-by candidate pinning, and no dependency source was edited here.
+checks with identical free-note digest. Its broader runtime/Studio integration
+now passes120 native/actual pas2js checks, ordinary Studio and browser playback,
+complete CI547 and checked stable deployment in the
+[accepted unguided-form repair](docs/TODO/DONE/NS-4_unguided-form_01.md). The original
+failures remain; musical form judgment is separate. No dependency source was
+edited here.
 
 Current accepted predecessor: `80772b648e183dd1201696954dd427529942700e`, on separate
 unmerged branch `codex/pythian-context-composition`. It adds caller-declared

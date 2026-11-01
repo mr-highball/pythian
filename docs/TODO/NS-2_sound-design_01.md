@@ -27,6 +27,59 @@ Primary attribution: NS-2. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: final shared-code native worker65 now passes in
+  E/tests/sd-score03, including unchanged notes/models/unrelated stems, dry
+  restoration, FM timbre and the real long release. Native/pas2js109 and53288,
+  native codec/store37 and their clean heaps stand. The original cancellation
+  failure remains; the focused same-executable smoke retry passes47. The full
+  Windows source-effect run stopped without a completion receipt (no live
+  process/handle); retain sd-shared03 as partial, not passed. Require complete
+  maintained CI for source-effect and HTTP bindings before deployment. A direct
+  native probe disproved lost GetLastError as the sharing-error explanation, so
+  no speculative retry policy change was made. This backend component does not
+  close a whole Studio criterion; current consecutive nonclosing count is1.
+  Next deliver the actual optional editor/audition consumer, preserving the
+  simple playlist flow; reassess before a third nonclosing batch.
+
+- 2026-11-01, Big Boss: backend batch now routes detached full instrument
+  definitions and ordered part/master racks through primary recipe realization.
+  Source-clip and instrumental effects share one named-parameter JSON boundary
+  and primary chain factory; bypass validates retained stages. Native and actual
+  pas2js mix53288 and instrument109 checks pass, with clean native heaps. The
+  played-key check admits a broad zone at a supported key and rejects an actual
+  above-Nyquist key. Metadata now uses scalar text, including private Unicode
+  patch names; native codec/store37 passes. Native worker65 in sd-scenes01
+  renders actual retained-score gain/dry/FM edits: notes/model stay unchanged,
+  unrelated stems match, and an eight-second release remains audible after the
+  former one-second tail. This packet predates the final shared effect JSON
+  consolidation; current-source consumer checks and full CI remain required.
+  No UI editing, scoped audition or full AC2/AC3 acceptance is claimed yet.
+  Sampler bindings remain an explicit unconnected Studio capability.
+- 2026-11-01, Big Boss: repaired validation approaches remain recorded under
+  E/tests/sound-design-20261101-boss and E/tests/sd-native01. Neutral default EQ
+  and limiter settings cannot prove a changed sound; the mix test now uses
+  deliberately nonneutral primary parameters. Actual pas2js rejected a const
+  owned-effect parameter during cleanup; the ownership helper is repaired.
+  Native compilation exposed the invalid frCeil enum spelling; frCeiling uses
+  the primary clock. The broader sd-native02 instrumental run failed at a live
+  cancellation event read with a Windows sharing violation, after earlier
+  renders; its clean heap and failed log remain. A focused retry is a diagnostic,
+  not replacement evidence for a complete passing consumer. Do not silently
+  raise lock/deadline budgets or claim this failed run passed.
+
+- 2026-11-01, Big Boss: next batch advances AC2 and the sound-only part of AC3.
+  Deliver saved detached instrument definitions and ordered per-part effects
+  through one primary stem/mix recipe, then reuse them in generation and retained
+  score playback. Native/pas2js checks must show changed sound, unchanged notes,
+  unaffected other stems, continued effect/release state and ownership. Studio
+  presents these through optional sound controls; simple playlist generation
+  stays intact. Close at the actual sound-edit/audition consumer, or preserve a
+  distinct prerequisite rather than expand into new inference or DSP. The prior
+  turn closed AC1's concrete library component and deployed the separate runtime;
+  consecutive nonclosing count starts at0. CI548/run41300076778 at0cff683 is
+  now terminal success, qualifying the published AC1 catalog. Do not describe it
+  as qualifying the newer backend changes or as completing this whole task.
+
 - 2026-11-01, Big Boss: AC1 now has a concrete portable library consumer.
   `instrument.recipe` owns detached recipes and primary realizations;
   `instrument.catalog` exposes eight authored, editable starting points covering

@@ -45,7 +45,7 @@ implementation
 
 uses Classes, SysUtils, Math,
   pythian.audio, pythian.time, pythian.bus,
-  pythian.instrument, pythian.synth, pythian.oscillator, pythian.schedule,
+  pythian.instrument, pythian.instrument.recipe, pythian.synth, pythian.oscillator, pythian.schedule,
   pythian.music.pattern, pythian.music.sound, pythian.music.controls, pythian.music.form,
   pythian.wfc.instrumental.controls,
   pythian.wfc.instrumental, pythian.wfc.instrumental.starter,
@@ -58,7 +58,8 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.playlist.learning,
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.instrumental.stream, pythian.tools.studio.form,
-  pythian.wfc.instrumental.stream;
+  pythian.wfc.instrumental.stream, pythian.tools.studio.sounds,
+  pythian.tools.json;
 
 function RunStudioInstrumental(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
@@ -70,11 +71,13 @@ var
   LOptions: TInstrumentalOptions;
   LReport: TInstrumentalReport;
   LRoles: TInstrumentalRoles;
-  LInstruments: array[0..2] of TInstrument;
+  LInstruments: array[0..2] of TRecipeInstrument;
+  LSoundRecipes: TInstrumentRecipes;
   LZones: TInstrumentZones;
   LDrums: TPercussionDefinitions;
   LConfig, LMeta, LRow: TJSONObject;
   LPasses, LDependencies: TJSONArray;
+  LRecipeRows: TJSONArray;
   LGraphInfo: TVoiceGraphPasses;
   LModel: TWfcSequenceModel;
   LTokens: TWfcModelTokens;
@@ -172,7 +175,8 @@ begin
     LSoundRole := -1;
     if LIsPlaylist then
     begin
-      AdmitStudioInstrumentalOutput(ACatalogRoot, ARequest.Int64s['duration_ms']);
+      AdmitStudioInstrumentalOutput(ACatalogRoot, ARequest.Int64s['duration_ms'],
+        StudioSoundTailFrames(LConfig, StudioInstrumentalRate));
       LCache := ACacheRoot;
       if LCache = '' then LCache := SysUtils.GetEnvironmentVariable('PYTHIAN_STUDIO_LEARNING_CACHE_ROOT');
       if LCache = '' then LCache := IncludeTrailingPathDelimiter(ACatalogRoot) +
@@ -231,6 +235,12 @@ begin
       LGraphConfig := LStarter.Config;
       LContextModel := LStarter.ContextModel;
     end;
+    if LConfig.Find('sound_design') <> nil then
+    begin
+      LPlaylistHasSound := False;
+      LSoundRole := -1;
+    end;
+    SetLength(LSoundRecipes, 3);
     for LRole := 0 to 2 do
     begin
       if LIsPlaylist or LHasForm then
@@ -239,21 +249,36 @@ begin
         LRoles[LRole].OutputBus := LRole;
       end
       else LZones := LRoles[LRole].Instrument.CopyZones;
-      LInstruments[LRole] := CreateStudioInstrument(LZones,
+      LInstruments[LRole] := CreateStudioRecipeInstrument(LZones,
         LConfig.Arrays['instruments'].Strings[LRole], LSound,
-        (LRole = LSoundRole) or LPlaylistHasSound, StudioInstrumentalRate);
-      LRoles[LRole].Instrument := LInstruments[LRole];
+        (LRole = LSoundRole) or LPlaylistHasSound, StudioInstrumentalRate, LConfig, LRole);
+      LRoles[LRole].Instrument := LInstruments[LRole].Instrument;
+      LSoundRecipes[LRole] := LInstruments[LRole].CopyRecipe;
       if LIsPlaylist then
         LRoles[LRole].InstrumentId := 'playlist-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]
       else if LHasForm then
         LRoles[LRole].InstrumentId := 'structured-primary-v1-' + LConfig.Arrays['instruments'].Strings[LRole]
       else LRoles[LRole].InstrumentId := 'starter-' + LConfig.Arrays['instruments'].Strings[LRole];
+      if LConfig.Find('sound_design') <> nil then
+      begin
+        LRow := EncodeStudioInstrumentRecipe(LSoundRecipes[LRole]);
+        try
+          LRoles[LRole].InstrumentId := 'operator-patch-v1-' +
+            HashNativeText(WriteNativeJSON(LRow, 262144));
+        finally
+          LRow.Free;
+        end;
+      end;
       if LRole = LSoundRole then
         LRoles[LRole].InstrumentId := LRoles[LRole].InstrumentId + '-cutoff' +
           IntToStr(LSound.CutoffHz) + '-sustain' + IntToStr(LSound.SustainPercent);
     end;
     LOptions := DefaultInstrumentalOptions;
     LOptions.SampleRate := StudioInstrumentalRate;
+    if LConfig.Find('sound_design') <> nil then
+    begin
+      LOptions.EffectTailFrames := StudioSoundTailFrames(LConfig, StudioInstrumentalRate);
+    end;
     LOptions.Session.CellCount := LConfig.Integers['cells'];
     LOptions.Session.Seed := LSeed;
     LOptions.PercussionSeed := LSeed xor Cardinal($50455243);
@@ -268,6 +293,7 @@ begin
       LBaseMasks := nil;
       FreeAndNil(Result);
       LStreamMaterial := Default(TStudioStreamMaterial);
+      LStreamMaterial.SoundRecipes := LSoundRecipes;
       LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
       LStreamMaterial.Context := LContextModel;
       LStreamMaterial.ContextBinding := icbAllRoles;
@@ -292,6 +318,7 @@ begin
     if LHasForm then
     begin
       LStreamMaterial := Default(TStudioStreamMaterial);
+      LStreamMaterial.SoundRecipes := LSoundRecipes;
       LStreamMaterial.Config := CopyWfcMusicVoicesGraphConfig(LGraphConfig);
       LStreamMaterial.Context := LContextModel;
       LStreamMaterial.ContextBinding := icbDrivenRole;
@@ -452,6 +479,16 @@ begin
     Result.Add('experimental', True);
     Result.Add('material_origin', LOrigin);
     Result.Add('settings', LMeta.Objects['settings'].Clone);
+    LRecipeRows := TJSONArray.Create;
+    Result.Add('instrument_recipes', LRecipeRows);
+    for LRole := 0 to 2 do
+    begin
+      LRecipeRows.Add(EncodeStudioInstrumentRecipe(LSoundRecipes[LRole]));
+    end;
+    if LConfig.Find('sound_design') <> nil then
+    begin
+      Result.Add('sound_design_origin', 'operator_selected');
+    end;
     if LMaterial <> nil then
     begin
       Result.Add('musical_material', LMaterial.Clone);
@@ -481,7 +518,8 @@ begin
     { Big Boss: one native performance supplies independently processed stems
       and the master through the same output owner as long playlist jobs. }
     LOutputWriter := TStudioInstrumentalOutput.Create(ACatalogRoot, AJobId,
-      LPlan.SampleRate, LPlan.FrameCount, LConfig.Arrays['levels'], LSeed);
+      LPlan.SampleRate, LPlan.FrameCount, LConfig.Arrays['levels'], LSeed,
+      StudioSoundMix(LConfig, StudioInstrumentalRate));
     LPlayer := nil;
     LStored := nil;
     try
