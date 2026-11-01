@@ -47,15 +47,15 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Candidate WFC pin: `d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2`, on separate
+Current accepted WFC pin: `d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2`, on separate
 unmerged branch `codex/pythian-projected-domains`. It adds opt-in known-domain
 preparation through shared primary graph compilation, temporal propagation and
 binary arc support. All five [upstream CI67 jobs](https://github.com/mr-highball/wfc/actions/runs/41284525161)
 pass. The original64cell case now solves/proves with zero retries at the same
 seed/limits, with188 native/actual pas2js checks. The typed Pythian consumer
-covers original/prepared paths with96 checks. Complete downstream CI/extracted
-qualification is pending; the [six-unit prerequisite](docs/TODO/NS-4_projected-domains_01.md)
-remains open. The actual192cell musical candidate passes115 native/actual pas2js
+covers original/prepared paths with96 checks. Complete [downstream CI544](https://github.com/mr-highball/pythian/actions/runs/41285686814)
+and its extracted core/WFC consumers pass; the [six-unit prerequisite — DONE](docs/TODO/DONE/NS-4_projected-domains_01.md)
+is accepted. The actual192cell musical candidate passes115 native/actual pas2js
 checks with identical free-note digest, but its broader runtime/Studio integration
 remains unpublished work in progress. No service or upstream branch is changed
 by candidate pinning, and no dependency source was edited here.
@@ -74,7 +74,7 @@ pass at the repair. The expanded typed consumer passes48 native/actual pas2js
 checks and both extracted targets; the clean Win64 archive verifies180 owned
 units/309 hashes. The [six-unit prerequisite — DONE](docs/TODO/DONE/NS-4_context-composition_01.md)
 is accepted. Ordinary Studio free-form repair still needs the separate
-[known-domain preparation](docs/TODO/NS-4_projected-domains_01.md). No service is
+[known-domain preparation](docs/TODO/DONE/NS-4_projected-domains_01.md). No service is
 redeployed or upstream branch merged, and no dependency source was edited here.
 
 Previous accepted WFC pin: `448b2a3e25beded8503e94b5f4705b7156eca966`, on separate

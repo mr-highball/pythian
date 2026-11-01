@@ -3,7 +3,7 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: original free form passes pas2js; native and integration pending — 2026-11-01
+## Current handoff: projected domains accepted; current musical runtime qualification continues — 2026-11-01
 
 Big Boss SOLO. Separate WFC `codex/pythian-projected-domains` now publishes
 d0c04d2756c9ea1f0e4cc057a1d9d73b633d2bc2; all five upstream CI67/run41284525161 jobs pass.
@@ -23,18 +23,36 @@ digest e26778c7f9e87d242d3fd50944638dfa0418898ecbc45f823bf99469cc149fbe.
 The native115 consumer now matches both digests exactly with a clean heap.
 The guided digest remains b6796894ad28666fb455d48a8c9224bc00cb284db6abc077cc9a07bd84750ece.
 The broader native stream passes4043524 checks, including interior preparation/
-search cancellation. Complete downstream CI, extracted consumers and actual
-Studio integration are pending. The expanded actual ctx2 consumer passes96
-native checks with a clean heap, covering selected/original stream paths.
-Runtime source/test edits are unpublished WIP; only the generic candidate pin
-d0c04d2 and typed consumer are selected for the next component qualification.
-The accepted predecessor is80772b6. Broader form assertions assumed the removed
+search cancellation. Complete downstream CI544/run41285686814 at e1708fa passes
+maintained integration and extracted core/WFC consumers. The expanded actual
+ctx2 consumer passes96 native/actual pas2js checks. Projected domains accepts
+six units at d0c04d2. The extra local Win64 package attempt was stopped before
+staging after required CI package qualification passed; it has no claimed local
+archive and its exact process is reaped. Its clean release worktree remains at
+E/runs/projected-domains-20261101-boss/pythian-release for possible future use.
+Do not restart the redundant check simply because its observation was slow.
+
+Runtime source/test edits remain unpublished WIP, with actual Studio still
+pending. Broader form assertions assumed the removed
 separate64cell context commit; the joint prefix correctly commits16 and retains
 only provisional lookahead. The fresh adjacent form now completes rather than
 reproducing an earlier chosen impossible Hat cycle; retain that exact old motif
-as a separate negative fixture. One fresh part is silent, so inspect its actual
-decisions before changing audible assertions or accepting the runtime.
-No musical or prerequisite task is accepted yet: accounting124/175, counter0.
+as a separate negative fixture: the original authored Hat motif still rejects.
+The fresh adjacent case's kick is deliberately all-rest; score/audio checks
+protect actual selected notes and silence, not an invented minimum hit floor.
+The full positive five-section form sounds all six parts, retains/edits source
+choices and passes3075736 native/actual pas2js checks with identical new digest
+21131a9f6102818393c249c9a5bc273c7e0529b7943a361ed701a64a742bdd4f.
+Density323, reperform128, passage180 and material1439 native checks pass with
+clean heaps. The remaining edit-stream fixture regenerated a changed source and
+incorrectly claimed the exact historical11a4d055... source. Its current-version
+digest is4ad6aa2cbd2dd8d5554b66cc359c666bca7a4a899c94401ae29572e4c5eafa46;
+retain the former source/request in the old e1708fa regression and E evidence,
+then qualify current-version editing without claiming historical equivalence.
+Do not reintroduce the removed generation code or overwrite operator data.
+
+No musical task is accepted yet. Accounting130/175 (74.29%), seven open/28 current
+DONE,45 open units. Counter0 follows the actual six-unit capability closure.
 Original source/candidate/failure packets, saved operator answers and deployed
 service remain intact. Resume exact running commands; never rerun on an
 observation timeout.
@@ -58,7 +76,7 @@ source uses sixteen whole-assignment retries and fails. The same models,
 seed1704297163 and256/16 limits with the known feasible source domain prove
 all64cells with zero retries and a clean heap. Existing primary reference
 InitializeDomains/Propagate logic is private; expose/reuse it rather than copy a
-propagator into Pythian. [Projected domains](TODO/NS-4_projected-domains_01.md)
+propagator into Pythian. [Projected domains](TODO/DONE/NS-4_projected-domains_01.md)
 adds six units and is the real prerequisite for the retained unguided task.
 The operator was notified of the new separate WFC branch
 codex/pythian-projected-domains from80772b6 before new upstream edits.

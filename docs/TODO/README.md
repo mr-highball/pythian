@@ -3,15 +3,15 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 175 total effort units · 27 current-goal DONE · 124 / 175 accepted (70.86%).**
+**7 open tasks · 175 total effort units · 28 current-goal DONE · 130 / 175 accepted (74.29%).**
 
-[Known projected domains](NS-4_projected-domains_01.md) adds six required units:
+[Known projected domains — DONE](DONE/NS-4_projected-domains_01.md) accepts six units:
 the retained shared musical candidate reached its search limit at64 on both
 targets. The new upstream preparation now solves/proves its64cell reproduction
 with zero retries and passes all five CI67 jobs. The repaired192cell musical
 candidate passes115 native/actual pas2js checks at the original seed/limits;
-typed component qualification, broader runtime and Studio integration are not
-yet accepted. The original failure remains preserved. No local model filters,
+complete downstream CI544 and extracted consumers qualify the typed component.
+Broader runtime and Studio integration remain open. The original failure remains preserved. No local model filters,
 hidden guide/seed changes or raised budgets are selected.
 
 [Context composition — DONE](DONE/NS-4_context-composition_01.md) closes six units
@@ -104,7 +104,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -127,9 +127,9 @@ continuity experiments are selected.
 | [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Awaiting operator feedback; actual guided form review is live, judgment remains |
-| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Dependency-blocked; shared candidate still fails at64, projected-domain prerequisite selected |
+| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | In progress; original192cell native/pas2js request now passes; runtime/Studio qualification remains |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
-| [NS-4_projected-domains_01](NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | In progress; bounded upstream-only proof, new separate WFC branch notified |
+| [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
@@ -143,8 +143,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 35 current-goal tasks (8 open, twenty-seven DONE),
-totaling 175 units: 51 open and 124 accepted. Subtotals:
+The two tables together are all 35 current-goal tasks (7 open, twenty-eight DONE),
+totaling 175 units: 45 open and 130 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 71, NS-5 15, NS-6 62. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

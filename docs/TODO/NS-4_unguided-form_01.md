@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** Dependency-blocked
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -32,9 +32,10 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
-- [Projected known domains](NS-4_projected-domains_01.md) — the actual shared
-  candidate still exhausts the original limit; use known future restrictions
-  before selecting upstream assignments rather than trying another model filter.
+- [Projected known domains — DONE](DONE/NS-4_projected-domains_01.md) — accepted
+  after upstream CI67/downstream CI544, original64cell proof and typed consumers.
+  The original192cell candidate now passes on both targets; actual Studio and
+  current-runtime consumer qualification remain owned here.
 
 - [Verified context composition — DONE](DONE/NS-4_context-composition_01.md) — context must
   negotiate with the actual free voice graph rather than commit independently.

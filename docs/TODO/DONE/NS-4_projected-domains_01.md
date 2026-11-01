@@ -1,10 +1,10 @@
 # NS-4_projected-domains_01 — Use known musical domains before choosing source passes
 
-[Active tasks](README.md) · [Composition — DONE](DONE/NS-4_context-composition_01.md) · [Unguided form](NS-4_unguided-form_01.md)
+[Active tasks](../README.md) · [Composition — DONE](NS-4_context-composition_01.md) · [Unguided form](../NS-4_unguided-form_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -41,10 +41,23 @@ search preparation, rather than replacing its graph, proof or stream engine.
 
 **Blockers**
 
-- [Verified shared composition — DONE](DONE/NS-4_context-composition_01.md) —
+- [Verified shared composition — DONE](NS-4_context-composition_01.md) —
   repaired80772b6/96cba34 passes upstream CI66/downstream CI543 and both extracted targets.
 
 **Dev Notes:**
+
+- Accepted by Big Boss after all four criteria pass. Source d0c04d2 passes all
+  five [upstream CI67 jobs](https://github.com/mr-highball/wfc/actions/runs/41284525161).
+  Pythian e1708fa passes complete [CI544](https://github.com/mr-highball/pythian/actions/runs/41285686814),
+  including maintained integration and extracted core/WFC packages. The96-check
+  typed consumer passes native/actual pas2js locally and the extracted consumer
+  is part of that successful package gate. The maintained188-check upstream
+  consumer covers the retained failure, prepared proof and full-window stream.
+  This accepts six library-capability units, not Studio integration or musical
+  quality. The separate Win64 extra-package attempt was interrupted before
+  staging once the required CI package gate had passed; no local archive is
+  claimed. Its exact command is reaped and no process remains. The upstream
+  branch stays separate/unmerged; dependency source was not edited here.
 
 - Big Boss, subsequent batch: separate upstream source d0c04d2 is published on
   `codex/pythian-projected-domains`; all five CI67/run41284525161 jobs pass. Primary

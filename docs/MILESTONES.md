@@ -22,16 +22,17 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 124 / 175 effort units accepted (70.86%); eight open, twenty-seven current-goal DONE.**
-The six-unit [projected-domain prerequisite](TODO/NS-4_projected-domains_01.md)
+**Current snapshot: 130 / 175 effort units accepted (74.29%); seven open, twenty-eight current-goal DONE.**
+The six-unit [projected-domain prerequisite — DONE](TODO/DONE/NS-4_projected-domains_01.md)
 addresses the retained shared candidate's64cell search failure. A pure
 WFC64cell proof shows that a known target restriction is not used before source
 assignment: sixteen retries fail, while the unchanged explicit witness proves
 with zero. Reuse primary propagation in the notified separate WFC branch; keep
 the failed musical candidate for repair. Candidate d0c04d2 now passes all five
 upstream CI67 jobs and188 native/actual pas2js checks. The original192cell musical
-candidate completes on both targets with identical free-note digest. Downstream/
-extracted qualification and runtime/Studio integration remain; six units stay open.
+candidate completes on both targets with identical free-note digest. Complete
+downstream CI544 and extracted consumers pass, closing six library units.
+Runtime/Studio integration remains separate and open.
 The six-unit [context composition — DONE](TODO/DONE/NS-4_context-composition_01.md)
 closes after all upstream CI66/downstream CI543 and native/actual pas2js/extracted
 gates pass. Explicit source layout/projection proof, shared prefix ownership and
@@ -108,10 +109,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 17 | 54 | 54 / 71 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 11 | 60 | 60 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 57 | 57 / 62 |
-| **Total** | **35 current-goal tasks** | **51** | **124** | **70.86%** |
+| **Total** | **35 current-goal tasks** | **45** | **130** | **74.29%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -274,8 +275,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 8 open + 26 current DONE; legacy records: 53 retired +
-97 historical DONE (122 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 7 open + 28 current DONE; legacy records: 53 retired +
+97 historical DONE (125 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
