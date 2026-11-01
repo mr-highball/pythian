@@ -924,6 +924,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context checks failed' }
+    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.musical.composition.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Shared context composition compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.musical.composition$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Shared context composition checks failed' }
     & $compilerPath @adapterArgs 'tests/pythian.tests.musical.corpus.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Weighted musical corpus compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.musical.corpus$executableSuffix") (Join-Path $buildRoot 'musical-corpus')

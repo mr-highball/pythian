@@ -47,6 +47,18 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
+Candidate checkout pin: `37c2755ac261faf4022b354c98dbe4fea7934a22`, on separate
+unmerged branch `codex/pythian-context-composition`. It adds caller-declared
+symbolic sequence passes and projections to the primary independent-voice graph
+and stream, with one negotiated transaction and shared prefix frontier. Generic
+native/actual pas2js136 and typed Pythian context-consumer44 checks pass on both
+targets. Existing native graph/projection/stream/preparation checks pass with
+clean heaps. [Upstream CI65](https://github.com/mr-highball/wfc/actions/runs/41277896792),
+downstream CI and extracted consumers remain acceptance gates for the
+[six-unit prerequisite](docs/TODO/NS-4_context-composition_01.md). Ordinary Studio
+free-form repair remains with its linked task. This candidate is not yet accepted
+or deployed, and no source was edited in this submodule checkout.
+
 Current accepted WFC pin: `448b2a3e25beded8503e94b5f4705b7156eca966`, on separate
 unmerged branch `codex/pythian-cell-priors`. It adds opt-in position-specific
 positive soft weights to the primary graph/numeric solver, including weighted

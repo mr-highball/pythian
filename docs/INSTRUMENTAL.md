@@ -67,6 +67,29 @@ factory/automation/envelope resources; preserve those resources through player
 creation, and preserve source factories for their own source lifetime.
 RoleAt returns metadata with Instrument=nil after planning, not a dangling pointer.
 
+## Declare shared musical context
+
+`ComposeMusicalContextGraph` in `pythian.wfc.musical.context` converts the existing
+typed `ctx2` provider into declared projections on the primary WFC voice graph.
+It reuses `BindMusicalContextTokens` for H/R and role semantics. WFC owns model
+identity, sequence paths, independent relation proof, negotiation and shared
+stream frontiers; no Pythian token codec is added upstream.
+
+The default binds H/R and the source's explicitly driven role. With driven role
+`-1`, pitches remain independently generated. Explicit `AAllRoles=True` binds
+the complete context frame. The returned configuration has detached arrays and
+borrows the same immutable models; feed it to `TWfcMusicVoicesStream` while those
+models remain alive. Its additional model index follows the existing model
+vector, and its public label is `musical-context`. Progress/cancellation is
+forwarded while decoding and constructing the bounded maps.
+
+The maintained `pythian.tests.musical.composition` consumer proves that a context
+example at C4 can coexist with independently generated C5 when only H/R is bound;
+explicit role binding rejects that conflicting choice. Finite capture and a
+bounded stream exercise the same actual typed provider. This API is the shared
+prerequisite; the ordinary Studio free-form planning path remains under
+[unguided-form integration](TODO/NS-4_unguided-form_01.md).
+
 ## Retain the score while changing sound
 
 `TInstrumentalPlan.Reperform` accepts one or more `TInstrumentalSoundEdit` records.

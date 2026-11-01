@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** In progress
+**Status:** Dependency-blocked
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -32,10 +32,24 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
+- [Verified context composition](NS-4_context-composition_01.md) — context must
+  negotiate with the actual free voice graph rather than commit independently.
+
 - [Positioned priors — DONE](DONE/NS-4_cell-priors_01.md)
 - [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: preserve the exact baseline and guided witness. Paired
+  H/R-only context removes the initial failure but still fails at64; retained
+  voice compatibility and an actual-frontier entry filter do not fix the full
+  window. The final pass0 report is an excluded assignment after a conditional
+  failure, not proof of an initially empty harmony domain. No empty initial
+  domains were found by the bounded diagnostic. Do not keep adding local filters
+  or pin every role to the context example. The generic projection-source proof
+  demonstrates the linked primary API prerequisite. All rejected source edits,
+  diagnostic hooks and the test are preserved under E/rejected-candidate; source
+  is restored to the accepted implementation. No candidate was deployed/pushed.
 
 - 2026-11-01, Big Boss SOLO: select AC1/AC2 while the exact listening-repair
   CI541 remains live. Deliver a primary native/pas2js regression for the original

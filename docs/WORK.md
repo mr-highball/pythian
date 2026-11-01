@@ -3,7 +3,59 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: listening repair accepted; unguided form in progress — 2026-11-01
+## Current handoff: generic composition prerequisite selected — 2026-11-01
+
+The notified separate WFC branch now publishes source37c2755. New generic
+composition136 checks pass on native and actual pas2js; no-composition signatures
+match a fresh accepted448b2a3 build exactly. Existing native graph187, projection29,
+stream1834 and complete preparation533791 checks pass with clean heaps. The latter
+exercises132 original abort/retries and456086 actual callbacks. CI65 is running
+at that exact source. Its order-one fixture mistake is retained; the corrected
+order-two corpus encodes intended transitions with unchanged seed/window/limits.
+
+Pythian's candidate gitlink advances explicitly to37c2755, with no dependency
+source edits. ComposeMusicalContextGraph reuses the existing typed projection;
+its actual finite/primary-stream caller passes44 native and actual pas2js checks,
+including free octave selection versus explicit role binding and cancellation.
+Native build and extracted-package gates include that consumer. Complete upstream
+and downstream CI/extracted consumers are pending. Ordinary Studio source/drum
+streams are not yet consolidated; the original192cell failure remains owned by
+unguided-form. The live service/review are unchanged. Accounting stays118/169;
+no infrastructure test is counted as a musical result or task acceptance.
+Affected existing native material1439 and density323 checks also pass with clean
+heaps. Upstream Linux stable/trunk jobs pass; Windows/macOS/browser remain live.
+
+Big Boss SOLO. Listening repair is accepted after complete CI541 and remains
+deployed atcc45248. The original exact free-form regression and four paired-
+context/filter candidates are retained. They do not deliver the required free
+continuation: context is committed separately from the conditional voice graph.
+Do not pin every part or add further one-cell filters. A two-cell Pascal probe
+with only WFC units solves both ordinary music and a harmless abstract upstream
+source, but the existing primary voice capture rejects the latter's graph layout.
+This confirms a generic composition API gap without an audio/Pythian dependency.
+The probe heap is clean. The earlier final pass0/kind9 was an excluded assignment
+after negotiation, not proof of an initially empty harmony domain.
+
+[Context composition](TODO/NS-4_context-composition_01.md) adds six units and is
+the genuine prerequisite for [unguided form](TODO/NS-4_unguided-form_01.md).
+Accounting118/169 (69.82%), eight open/26 current DONE. No additional acceptance
+follows from diagnosis. Counter0 follows the real listening-repair closure;
+moving tasks/branches does not reset it. All partial runtime edits and temporary
+diagnostic hooks are saved in E/runs/unguided-form-20261101-boss/rejected-candidate
+and removed from source; its patch SHA is
+781acf63b1226e556d76d9642af20c89049b6281060e4197a0f284854e2c7b53.
+The valid regression/source/proof logs remain under the same E packet. Stable
+10284 and the operator's pending review are unaffected; no response was invented.
+
+Before generic implementation, the operator was notified of the separate WFC
+repository and new branch codex/pythian-context-composition. Base it on reviewed
+448b2a3; preserve D:/Docs/GitHub/wfc's unrelated expansion checkout/attachments.
+Use a new dedicated E worktree and read its actual guidance. Generic declared
+source composition, proof and shared source/voice prefix ownership belong there;
+Pythian retains musical token maps, instruments and downstream integration.
+Do not relax the closed verifier merely to allow arbitrary unverified passes.
+
+## Previous handoff: listening repair accepted; unguided form in progress — 2026-11-01
 
 Big Boss SOLO. Complete CI541 atcc45248 passes both integration and extracted
 consumers. The [listening UTF-8 repair — DONE](TODO/DONE/NS-6_listening-utf8_01.md)

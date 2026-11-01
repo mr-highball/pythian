@@ -73,7 +73,16 @@ type
   Returns detached masks; no solve, source inference or caller mutation. }
 function BindMusicalContextTokens(const ATokens: TWfcModelTokens;
   const ARoleCount: Integer; const AMasks: TVoiceMasks;
-  const AAllRoles: Boolean = False): TVoiceMasks;
+  const AAllRoles: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil): TVoiceMasks;
+
+{ Big Boss: declare this musical provider in the primary negotiated voice graph.
+  The source and H/R/selected roles then share one future window and frontier.
+  Reuses BindMusicalContextTokens for musical semantics; WFC owns composition,
+  solving and independent proof. Models remain borrowed and immutable. }
+function ComposeMusicalContextGraph(const AConfig: TWfcMusicVoicesGraphConfig;
+  const AContext: TWfcSequenceModel; const AAllRoles: Boolean = False;
+  const AProgress: TWorkProgressCallback = nil): TWfcMusicVoicesGraphConfig;
 
 implementation
 
@@ -331,7 +340,7 @@ end;
 
 function BindMusicalContextTokens(const ATokens: TWfcModelTokens;
   const ARoleCount: Integer; const AMasks: TVoiceMasks;
-  const AAllRoles: Boolean): TVoiceMasks;
+  const AAllRoles: Boolean; const AProgress: TWorkProgressCallback): TVoiceMasks;
 var
   LProvider, LMask, LCell, LCount: Integer;
   LHarmony, LRhythm: String;
@@ -353,6 +362,8 @@ begin
   end;
   for LCell := 0 to High(ATokens) do
   begin
+    if LCell mod 32 = 0 then
+      ReportWork(AProgress, 'context_project_tokens', wuItems, LCell, Length(ATokens));
     LChoice := DecodeStyleProviderChoice(spvMusicalContext, ATokens[LCell]);
     if (LChoice.Harmony.StepsPerOctave <> 12) or
       (Length(LChoice.Rhythm.Actions) <> ARoleCount) or
@@ -381,6 +392,91 @@ begin
       Result[LTargetProvider][LCount] := MakeWfcSequenceTokenConstraint(LCell, [LTargetToken]);
     end;
   end;
+  ReportWork(AProgress, 'context_project_tokens', wuItems, Length(ATokens), Length(ATokens));
+end;
+
+function ComposeMusicalContextGraph(const AConfig: TWfcMusicVoicesGraphConfig;
+  const AContext: TWfcSequenceModel; const AAllRoles: Boolean;
+  const AProgress: TWorkProgressCallback): TWfcMusicVoicesGraphConfig;
+var
+  LCandidate: TWfcMusicVoicesGraphConfig;
+  LTokens: TWfcModelTokens;
+  LAllowed: TWfcModelTokens;
+  LProjection: TVoiceMasks;
+  LTarget: TWfcSequenceModel;
+  LRule: TWfcSequenceProjectionRules;
+  LSourceIndex: Integer;
+  LProvider: Integer;
+  LToken: Integer;
+  LContext: Integer;
+  LCount: Integer;
+  LAt: Integer;
+  LTotal: Int64;
+  LDone: Int64;
+begin
+  ValidateWfcMusicVoicesGraphConfig(AConfig);
+  if (AContext = nil) or (AContext.PublicTokenCount < 1) then
+    raise EAudio.Create('Musical composition needs a context vocabulary');
+  LTotal := 0;
+  for LProvider := 0 to Length(AConfig.Voices) + 1 do
+    Inc(LTotal, WfcMusicVoicesModelAt(AConfig, LProvider).PublicTokenCount);
+  if AContext.PublicTokenCount > MaximumLayerProjectionWork div LTotal then
+    raise EAudio.Create('Musical context composition exceeds its projection work bound');
+  SetLength(LTokens, AContext.PublicTokenCount);
+  for LContext := 0 to High(LTokens) do
+    LTokens[LContext] := AContext.PublicTokenAt(LContext);
+  LProjection := BindMusicalContextTokens(LTokens, Length(AConfig.Voices), nil, AAllRoles, AProgress);
+  LTotal := 0;
+  for LProvider := 0 to High(LProjection) do
+    if Length(LProjection[LProvider]) > 0 then
+    begin
+      if Length(LProjection[LProvider]) <> Length(LTokens) then
+        raise EAudio.Create('Musical context cannot mix driven-role assignments');
+      Inc(LTotal, WfcMusicVoicesModelAt(AConfig, LProvider).PublicTokenCount);
+    end;
+  LTotal := LTotal * Length(LTokens);
+  if LTotal > MaximumLayerProjectionWork then
+    raise EAudio.Create('Musical context composition exceeds its projection work bound');
+  LDone := 0;
+  ReportWork(AProgress, 'context_compose_projection', wuItems, LDone, LTotal);
+  LCandidate := CopyWfcMusicVoicesGraphConfig(AConfig);
+  LSourceIndex := WfcMusicVoicesModelCount(LCandidate);
+  LAt := Length(LCandidate.Auxiliary);
+  SetLength(LCandidate.Auxiliary, LAt + 1);
+  LCandidate.Auxiliary[LAt].Name := MusicalContextPassName;
+  LCandidate.Auxiliary[LAt].Model := AContext;
+  for LProvider := 0 to High(LProjection) do
+  begin
+    if Length(LProjection[LProvider]) = 0 then Continue;
+    LTarget := WfcMusicVoicesModelAt(LCandidate, LProvider);
+    LRule := nil;
+    SetLength(LRule, LTarget.PublicTokenCount);
+    for LToken := 0 to LTarget.PublicTokenCount - 1 do
+    begin
+      LAllowed := nil;
+      for LContext := 0 to High(LTokens) do
+      begin
+        if LDone mod 256 = 0 then
+          ReportWork(AProgress, 'context_compose_projection', wuItems, LDone, LTotal);
+        if LProjection[LProvider][LContext].AllowedTokens[0] = LTarget.PublicTokenAt(LToken) then
+        begin
+          LCount := Length(LAllowed);
+          SetLength(LAllowed, LCount + 1);
+          LAllowed[LCount] := LTokens[LContext];
+        end;
+        Inc(LDone);
+      end;
+      LRule[LToken] := MakeWfcSequenceProjectionRule(LTarget.PublicTokenAt(LToken), LAllowed);
+    end;
+    LAt := Length(LCandidate.Projections);
+    SetLength(LCandidate.Projections, LAt + 1);
+    LCandidate.Projections[LAt].SourceModelIndex := LSourceIndex;
+    LCandidate.Projections[LAt].TargetModelIndex := LProvider;
+    LCandidate.Projections[LAt].Rules := LRule;
+  end;
+  ValidateWfcMusicVoicesGraphConfig(LCandidate);
+  ReportWork(AProgress, 'context_compose_projection', wuItems, LDone, LTotal);
+  Result := LCandidate;
 end;
 
 end.
