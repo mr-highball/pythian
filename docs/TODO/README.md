@@ -3,11 +3,11 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 163 total effort units · 25 current-goal DONE · 115 / 163 accepted (70.55%).**
+**7 open tasks · 163 total effort units · 26 current-goal DONE · 118 / 163 accepted (72.39%).**
 
-[Listening UTF-8](NS-6_listening-utf8_01.md) adds three required units: the actual
-prepared review exposes a legacy queue writer that publishes invalid text bytes.
-Preserve historical answers and repair the primary writer before handing off.
+[Listening UTF-8 — DONE](DONE/NS-6_listening-utf8_01.md) accepts three units after
+complete CI541, native publication/response/replay, desktop/390px Save/reopen and
+checked fixed-slot deployment. All seven prior completed responses are preserved.
 
 The first real unguided form experiment fails before audio at its pass-backtrack
 limit. [Unguided form](NS-4_unguided-form_01.md) adds four required effort units
@@ -89,7 +89,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -111,14 +111,14 @@ continuity experiments are selected.
 | [NS-3_style-vocabulary_01 — DONE](DONE/NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Accepted; weighted providers, source-bound ancestry, explicit classification selection and real instrumental output |
 | [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
-| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | In progress; density controls deployed; actual form experiment/operator listening remain |
-| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Ready; first real A/B/A request exhausts negotiated planning before audio |
+| [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | Awaiting operator feedback; actual guided form review is live, judgment remains |
+| [NS-4_unguided-form_01](NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | In progress; exact request reproduced, paired-context candidate still fails later |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
-| [NS-6_listening-utf8_01](NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | In progress; actual form review exposes a legacy host-code-page write |
+| [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
 | [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
 | [NS-6_instrumental-progress_01 — DONE](DONE/NS-6_instrumental-progress_01.md) — bound durable fine-phase publication | 2 | Accepted; unchanged native consumers, cancellation and actual HTTP worker |
@@ -126,8 +126,8 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 33 current-goal tasks (8 open, twenty-five DONE),
-totaling 163 units: 48 open and 115 accepted. Subtotals:
+The two tables together are all 33 current-goal tasks (7 open, twenty-six DONE),
+totaling 163 units: 45 open and 118 accepted. Subtotals:
 NS-2 12, NS-3 15, NS-4 59, NS-5 15, NS-6 62. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 

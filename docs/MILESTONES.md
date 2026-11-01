@@ -22,10 +22,12 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 115 / 163 effort units accepted (70.55%); eight open, twenty-five current-goal DONE.**
-The actual review also exposes the three-unit [listening writer repair](TODO/NS-6_listening-utf8_01.md).
-Its legacy host-code-page publication is not repaired by changing the title;
-preserve/recover the queue and reuse primary native JSON serialization.
+**Current snapshot: 118 / 163 effort units accepted (72.39%); seven open, twenty-six current-goal DONE.**
+The three-unit [listening writer repair — DONE](TODO/DONE/NS-6_listening-utf8_01.md)
+passes complete CI541, native Unicode response/export/replay, desktop/390px Save
+and reopening, checked fixed-slot deployment and trusted HTTP/HTTPS133. Recovery
+and publication preserve all seven prior completed responses. These are durable
+review/storage units; the actual form judgment remains open.
 The first real unguided A/B/A experiment exposes a four-unit
 [planning gap](TODO/NS-4_unguided-form_01.md): bounded pass negotiation fails
 at cell0. Preserve the original seed and evidence. Guided form listening can
@@ -94,8 +96,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls and usable unguided form | 11 | 48 | 48 / 59 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 54 | 54 / 62 |
-| **Total** | **33 current-goal tasks** | **48** | **115** | **70.55%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 57 | 57 / 62 |
+| **Total** | **33 current-goal tasks** | **45** | **118** | **72.39%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -114,7 +116,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **115/163**; no partial effort or musical-quality credit follows.
+Accounting is **118/163**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -258,7 +260,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 8 open + 25 current DONE; legacy records: 53 retired +
+Current scoped records: 7 open + 26 current DONE; legacy records: 53 retired +
 97 historical DONE (122 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered

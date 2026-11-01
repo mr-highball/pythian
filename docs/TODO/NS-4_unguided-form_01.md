@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -36,6 +36,18 @@ workbench owns interactive diagnostics; this task owns usable generation.
 - [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss SOLO: select AC1/AC2 while the exact listening-repair
+  CI541 remains live. Deliver a primary native/pas2js regression for the original
+  192cell request/seed and a repair that preserves free musical domains, full
+  lookahead and existing search limits. First reproduce its initial failure and
+  verify the stricter guided witness. Inspect the actual pass dependency failure;
+  do not silently substitute a context/guide that pins the parts. Close with
+  actual six-part output, retention/replay/cancellation and the same ordinary
+  Studio request. Stop for a demonstrated generic WFC prerequisite and notify
+  before separate-repository edits if one is necessary. No seed sweep. The prior
+  goal turn made concrete progress; its nonclosing counter1 carries until a real
+  criterion/task closes. CI observation expiry will not restart its run.
 
 - The same-seed explicit guided alternative completes. Its model SHA is the same
   `dd7eae4dcde7a165a901376e44783a04512056bc5bee8c6ab6f021f675a9b33e`

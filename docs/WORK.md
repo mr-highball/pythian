@@ -3,7 +3,41 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: form review live; complete CI pending — 2026-11-01
+## Current handoff: listening repair accepted; unguided form in progress — 2026-11-01
+
+Big Boss SOLO. Complete CI541 atcc45248 passes both integration and extracted
+consumers. The [listening UTF-8 repair — DONE](TODO/DONE/NS-6_listening-utf8_01.md)
+closes all criteria after the previously recorded native/browser, recovery,
+deployed fourteen-file and trusted TLS checks. All seven historical completed
+responses remain. Accounting118/163 (72.39%), seven open/26 current DONE. This
+real three-unit closure resets the consecutive nonclosing counter to0. The prior
+goal turn was progress, not a status-only wait. Stable10284 remains the accepted
+cc45248 backend with browser3e42723; the operator's form review stays available.
+
+Current unpublished [unguided work](TODO/NS-4_unguided-form_01.md) reproduces the
+original exact192cell/seed1704297163 failure at cell0, pass2, with unchanged
+16cell segments,256voice lookahead and256/16 search limits. Its stricter guided
+feasible witness completes with decision digest
+1aed8144140352469ce1ce3c3777a8c4b79bf58d026a056aa4d1a09eb863fc55.
+The candidate reuses the starter's paired history for authored H/R with no driven
+voice; actual voice masks stay unpinned. This passes the original point but stops
+at64, pass0/entry-domain. Retained independent voices now project action/pitch
+compatibility through one shared finite/stream helper, without copying context
+example notes. That does not yet repair the64cell failure. Preserve baseline and
+context01/02/03 evidence under unguided-form-20261101-boss on E. Source is WIP,
+not published/deployed/accepted. Do not change seeds, budgets or lookahead to
+hide it. No generic WFC defect is established and no vendor source was edited.
+
+## Previous handoff: form review live; complete CI pending — 2026-11-01
+
+Next batch, Big Boss SOLO: CI541 is authoritatively still running, stable10284 is
+live and the source tree is clean at998d859. While that exact run continues,
+follow unguided-form AC1/AC2: reproduce the original same-seed request, validate
+its guided feasible-path witness, inspect actual failed-pass domains and repair
+the musical/shared planning boundary. Deliver actual native/pas2js free-domain
+output without guide substitution, seed changes, smaller windows or raised
+budgets. Stop for a demonstrated generic WFC dependency before upstream edits.
+Counter1 carries from the prior concrete-progress turn; do not rename it away.
 
 Big Boss remains SOLO. The actual review **Returning melody · Experimental** is
 published as `form-lead-return-20261101`. It asks whether the returning lead at
@@ -14,7 +48,7 @@ saved settings and primary decision journal remain on its ordinary native job
 output. Saving a response will not train or regenerate. No operator answer is
 invented; [form](TODO/NS-5_musical-form_01.md) awaits actual listening judgment.
 
-The [listening UTF-8 repair](TODO/NS-6_listening-utf8_01.md) is deployed from
+The [listening UTF-8 repair](TODO/DONE/NS-6_listening-utf8_01.md) is deployed from
 sourcecc45248 with unchanged browser3e42723. Fixed stable PID10284 runs from the
 same approved executable/TLS paths. Fourteen deployed hashes match checked
 artifacts; trusted LAN HTTP/HTTPS passes133 checks with a clean heap (optional
@@ -55,7 +89,7 @@ The first unguided request fails before audio at its configured pass-negotiation
 limit; [unguided form](TODO/NS-4_unguided-form_01.md) owns the retained request.
 Review publication then exposes a distinct Unicode writer defect. The guarded
 native rollback restores every prior request hash; eight pending/seven completed
-responses validate unchanged. New [listening UTF-8](TODO/NS-6_listening-utf8_01.md)
+responses validate unchanged. New [listening UTF-8](TODO/DONE/NS-6_listening-utf8_01.md)
 reuses the primary native writer for publication, fingerprints, feedback and
 export/replay. The complete focused suite now passes with a clean heap, including
 Unicode content, idempotent Save, exact replay and the legacy ASCII export hash.
@@ -74,7 +108,7 @@ was fabricated. The only new saved QA answer is in the isolated synthetic catalo
 
 Current prerequisite: guided form completes and primary journal/form validation
 passes192cells/12chunks with a clean heap. Publication exposes a legacy listening
-writer that publishes invalid UTF-8. [Listening repair](TODO/NS-6_listening-utf8_01.md)
+writer that publishes invalid UTF-8. [Listening repair](TODO/DONE/NS-6_listening-utf8_01.md)
 adds three units, accounting115/163 (70.55%), eight open/25 current DONE.
 Preserve the failed bytes and original answers; repair primary JSON publication,
 recover the queue and finish the usable review before unrelated implementation.

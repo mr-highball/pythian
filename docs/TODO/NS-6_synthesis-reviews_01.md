@@ -28,7 +28,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 - 2026-11-01, Big Boss: reuse the current form experiment and prepared-listening
   factory. Native Unicode review publication/response/replay is repaired under
-  [listening UTF-8](NS-6_listening-utf8_01.md), not a new comparison framework.
+  [listening UTF-8](DONE/NS-6_listening-utf8_01.md), not a new comparison framework.
   The390px saved-note view keeps exact Unicode, but its narrow Remove button
   wraps one word over several lines. AC2 should give that note action enough
   width. This does not block the current question or justify another broad audit.

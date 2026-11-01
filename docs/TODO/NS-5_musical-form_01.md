@@ -22,7 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Listening UTF-8](NS-6_listening-utf8_01.md) — actual deliberate review
+- [Listening UTF-8 — DONE](DONE/NS-6_listening-utf8_01.md) — actual deliberate review
   publication exposes invalid host-code-page queue bytes; preserve/recover it.
 
 - [Positioned soft priors — DONE](DONE/NS-4_cell-priors_01.md) — primary WFC and

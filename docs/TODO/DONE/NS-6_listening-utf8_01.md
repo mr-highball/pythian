@@ -1,18 +1,27 @@
 # NS-6_listening-utf8_01 — Preserve Unicode in saved listening queues and feedback
 
-[Active tasks](README.md) · [Form](NS-5_musical-form_01.md) · [Work](../WORK.md)
+[Active tasks](../README.md) · [Form](../NS-5_musical-form_01.md) · [Work](../../WORK.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 3/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Use the primary native JSON writer for listening publication, fingerprints,
-responses and export/replay. The current legacy AsJSON-to-host-String path can
-publish bytes that the primary UTF-8 reader then rejects. Primary attribution:
-NS-6. Repair this concrete review blocker without another serialization framework.
+responses and export/replay. The legacy AsJSON-to-host-String path published
+bytes that the primary UTF-8 reader then rejected. Primary attribution: NS-6.
+The repaired path preserves exact scalar text without another serialization framework.
+
+Accepted2026-11-01 by Big Boss SOLO atcc45248. Actual complete native listening
+publication/feedback/export/replay and malformed-text preservation pass with a
+clean heap, including the unchanged legacy ASCII export hash. Desktop/390px Save
+and reopening retain exact Unicode notes. Guarded recovery and live publication
+preserve all seven historical completed fingerprints/revisions. Fourteen checked
+fixed-slot files and trusted HTTP/HTTPS133 pass. Complete CI541 passes integration
+and extracted-package consumers. This accepts three storage/review effort units,
+not the form hypothesis or any operator musical judgment.
 
 **Acceptance Criteria:**
 
@@ -32,6 +41,12 @@ NS-6. Repair this concrete review blocker without another serialization framewor
 
 **Dev Notes:**
 
+- Complete [CI541](https://github.com/mr-highball/pythian/actions/runs/41273822026)
+  passes atcc45248, including native job124751822531's integration and extracted
+  consumer steps. The pending entries below are retained chronological evidence,
+  superseded by this acceptance. Fixed stable10284 remains live; the new unguided
+  form candidate is separate unaccepted work. Counter resets to0 on this closure.
+
 - 2026-11-01, Big Boss: checked sourcecc45248 is now live in the fixed stable
   slot with all fourteen hashes matched and existing LAN/TLS approval preserved.
   Trusted HTTP/HTTPS133 passes cleanly; optional media fixtures are explicitly
@@ -45,7 +60,7 @@ NS-6. Repair this concrete review blocker without another serialization framewor
 - Fixed-slot loopback QA passes actual desktop Save and390px reload with the
   exact note `Big Boss QA only: mélodie 🎵 音 stays exact.` Two synthetic answers
   remain in that isolated fixture only. All inspected playback is paused. Keep
-  the observed narrow Remove-button wrapping as a [review UX follow-up](NS-6_synthesis-reviews_01.md);
+  the observed narrow Remove-button wrapping as a [review UX follow-up](../NS-6_synthesis-reviews_01.md);
   no general UI audit is selected. Stable deployment and complete CI are pending.
 
 - Big Boss: the native regression first reproduces the production self-read
