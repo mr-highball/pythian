@@ -3,12 +3,12 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current batch: positioned preferences checked locally; publication next — 2026-10-31
+## Current handoff: positioned preferences published; CI537 running — 2026-10-31
 
 Previous goal turn is **progress**: real positioned weights, primary consumers,
 upstream source/CI, checked pin integration and energy deployment changed the
 authoritative state. Big Boss remains SOLO.
-The existing batch criterion is real per-position soft preferences through the
+The batch criterion is real per-position soft preferences through the
 primary solver and adapters. Deliver detached bounded inputs with actual
 choice/entropy/restoration and unchanged hard constraints/default replay. Close
 with native/pas2js, upstream CI and actual downstream consumers; stop before
@@ -49,8 +49,10 @@ Generate-after-acceptance fixture calls. Native layer01 exposed the superseded
 worst-case work assertion; repaired sparse-admission/dense-rejection checks pass
 with clean heap. Its file-writing fixture cannot compile for pas2js (SaveToFile);
 do not count that as browser evidence. Portable sequence, publication and snapshot
-regressions now pass separately. Publish on hello-pythian and inspect full
-CI/extracted results before
+regressions now pass separately. Source72df5d3 is published on hello-pythian.
+Native FPC CI537 (41260246011) is confirmed running its maintained integration
+step at the exact source; extracted core/WFC consumers are still pending. Inspect
+the complete result before
 accepting the task or selecting the parent form mapping. The goal remains active.
 
 Native batch session91139 finishes with exit0: layer02, learned-stream02,
@@ -69,6 +71,12 @@ fixture type import. Neutral rows avoid unused domain resolution, and self-copy
 checks protect nested ownership. No extra broad suite follows these bounded API
 repairs; full integration/extracted CI checks the complete publication. No local
 test/compiler, new QA service or browser remains. Stable6872 stays available.
+
+The prior batch handles91139/88652 are terminal with exit0; do not resume or
+restart them. Next recheck the exact CI537 run/job124711841757, finish AC4's
+actual integration/extracted evidence and update task links/accounting together
+only on acceptance. Stable HTTP200 and exact owner6872 were freshly checked.
+The goal remains active; no operator input is required for the current work.
 
 ## Previous follow-up: independent clips confirmed — 2026-10-31
 

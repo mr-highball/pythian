@@ -51,6 +51,12 @@ the eight-unit form task. No credit is earned by this assessment or reproduction
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: complete source72df5d3 is published on hello-pythian.
+  [Native FPC CI537](https://github.com/mr-highball/pythian/actions/runs/41260246011)
+  is running at that exact commit; all integration/extracted gates remain
+  necessary before acceptance of the six units. The final local native/actual
+  pas2js479 consumer and affected regression evidence are retained below.
+
 - 2026-10-31, Big Boss: primary sequence segment/chunk and named-session
   consumers now use positioned public-token preferences. Local native/actual
   pas2js479 final checks pass with identical authored choices and a clean native heap:
