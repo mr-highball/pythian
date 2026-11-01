@@ -38,44 +38,45 @@ $compilerOs = (& $compilerPath '-iTO' | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler OS probe failed' }
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) { $OutputRoot = Join-Path $projectRoot 'build' }
 $buildRoot = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) "$compilerVersion-$compilerCpu-$compilerOs"
-$unitRoot = Join-Path $buildRoot 'core-units'
-New-Item -ItemType Directory -Force $unitRoot | Out-Null
+. (Join-Path $PSScriptRoot 'native-compiler.ps1')
+New-Item -ItemType Directory -Force $buildRoot | Out-Null
+$nativeUnitContext = New-PythianNativeUnitContext $buildRoot
 Write-Output "Compiler: $compilerPath ($compilerVersion $compilerCpu-$compilerOs)"
 
 Push-Location $projectRoot
 try {
-  $compilerArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc', "-FU$unitRoot", "-FE$buildRoot")
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.form.lpr'
+  $compilerArgs = @('-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc', "-FE$buildRoot")
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.music.form.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical form compilation failed' }
   $formSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.music.form$formSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical form checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.decisions.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.music.decisions.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical decision codec compilation failed' }
   $decisionSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.music.decisions$decisionSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical decision codec checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.music.selection.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.music.selection.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical classification selection compilation failed' }
   $selectionSuffix = if ($compilerOs -in @('win32', 'win64')) { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.music.selection$selectionSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical classification selection checks failed' }
-  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.text.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar compilation failed' }
   $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
   & (Join-Path $buildRoot "pythian.tests.json.text$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON scalar and native adapter checks failed' }
-  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.write.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.json.write.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON serialization compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.json.write$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared JSON serialization and native adapter checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.core.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.core$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Core checks failed' }
-  & $compilerPath @compilerArgs 'examples/pythian.example.core.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'examples/pythian.example.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Controlled core example compilation failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.delivery.native.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.delivery.native.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Native delivery verifier compilation failed' }
   $deliveryRoot = Join-Path $buildRoot ('delivery-' + [Guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Path $deliveryRoot | Out-Null
@@ -91,303 +92,303 @@ try {
     (Join-Path $deliveryRoot 'core-replay.wav') '44100' '2' '67032' '0.5'
   if ($LASTEXITCODE -ne 0) { throw 'Core saved-file control/replay proof failed' }
   $extensionCompilerArgs = $compilerArgs + @('-gh', '-Fuexamples')
-  & $compilerPath @extensionCompilerArgs 'examples/pythian.example.extensions.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @extensionCompilerArgs 'examples/pythian.example.extensions.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Caller extension compilation failed' }
   & (Join-Path $buildRoot "pythian.example.extensions$executableSuffix") (Join-Path $deliveryRoot 'extensions.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Caller extension consumer failed' }
-  & $compilerPath @extensionCompilerArgs 'tests/pythian.tests.extension.conformance.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @extensionCompilerArgs 'tests/pythian.tests.extension.conformance.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Caller extension conformance compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.extension.conformance$executableSuffix") (Join-Path $deliveryRoot 'extensions') (Join-Path $deliveryRoot 'extensions.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Caller extension conformance failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Shared evaluation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.parts.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.parts.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part-set evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.parts$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Part-set evaluation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.notes.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.notes.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.notes$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Overlapping-note evaluation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation progress and cancellation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.reference.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part reference builder compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.reference$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Part reference builder checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.evaluation.style.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.evaluation.style.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Style distribution checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.style.card.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.style.card.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style-card contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.style.card$executableSuffix") (Join-Path $buildRoot 'style-card-contract')
   if ($LASTEXITCODE -ne 0) { throw 'Style-card contract checks failed' }
-  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.style.evaluation.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.style.evaluation.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style evaluation progress build failed' }
   & (Join-Path $buildRoot "pythian.tests.style.evaluation.progress$executableSuffix") (Join-Path $buildRoot 'style-card-contract')
   if ($LASTEXITCODE -ne 0) { throw 'Style evaluation progress checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.style.card.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.style.card.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Style-card operator compilation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.files.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tests/pythian.tests.evaluation.files.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.evaluation.files$executableSuffix") (Join-Path $buildRoot 'evaluation-files')
   if ($LASTEXITCODE -ne 0) { throw 'File-bound evaluation checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tests/pythian.tests.reference.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tests/pythian.tests.reference.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Reviewed reference progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.reference.progress$executableSuffix") (Join-Path $buildRoot ('reference-progress-' + [Guid]::NewGuid().ToString('N')))
   if ($LASTEXITCODE -ne 0) { throw 'Reviewed reference progress and cancellation checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.evaluate.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.evaluate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Evaluation operator compilation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.label.catalog.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Label catalog operator compilation failed' }
-  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.annotations.import.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.annotations.import.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Catalog import progress compilation failed' }
   $importProgressRoot = Join-Path $buildRoot ('import-progress-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.annotations.import.progress$executableSuffix") $importProgressRoot
   if ($LASTEXITCODE -ne 0) { throw 'Catalog import progress and cancellation checks failed' }
-  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.preparation.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.preparation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Studio range preparation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.studio.preparation$executableSuffix") (Join-Path $buildRoot ('studio-preparation-' + [Guid]::NewGuid().ToString('N')))
   if ($LASTEXITCODE -ne 0) { throw 'Studio range preparation checks failed' }
-  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.net.transport.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.net.transport.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.net.transport$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'HTTP/TLS transport contract checks failed' }
-  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.projects.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.projects.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Studio project contract compilation failed' }
   $studioProjectRoot = Join-Path $buildRoot ('studio-project-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.projects$executableSuffix") $studioProjectRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio project persistence checks failed' }
-  & $compilerPath @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.material.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' 'tests/pythian.tests.studio.material.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice storage compilation failed' }
   $studioMaterialRoot = Join-Path $buildRoot ('studio-material-' + [Guid]::NewGuid().ToString('N'))
   & (Join-Path $buildRoot "pythian.tests.studio.material$executableSuffix") $studioMaterialRoot
   if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice storage and Unicode identity checks failed' }
   foreach ($studioComponent in @('library', 'library.discovery', 'jobs', 'progress', 'effects', 'capture')) {
-    & $compilerPath @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' '-Futools' "tests/pythian.tests.studio.$studioComponent.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
     $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
     & (Join-Path $buildRoot "pythian.tests.studio.$studioComponent$executableSuffix") $studioFixtureRoot
     if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent checks failed" }
   }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.controls.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.part.controls.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part control operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.controls$executableSuffix") '--controls'
   if ($LASTEXITCODE -ne 0) { throw 'Part control arithmetic checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.part.prepare.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.part.prepare.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Part preparation operator compilation failed' }
   & (Join-Path $buildRoot "pythian.part.prepare$executableSuffix") '--controls'
   if ($LASTEXITCODE -ne 0) { throw 'Part preparation arithmetic checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.separation.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.separation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Fourier/separation fixture compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.separation$executableSuffix") (Join-Path $buildRoot 'separation-control')
   if ($LASTEXITCODE -ne 0) { throw 'Fourier/separation signal checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.separate.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.separate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Separation operator compilation failed' }
   & (Join-Path $buildRoot "pythian.separate$executableSuffix") (Join-Path $buildRoot 'separation-control-source.wav') (Join-Path $buildRoot 'separated') '512' '128' '17' '17'
   if ($LASTEXITCODE -ne 0) { throw 'Native separation operator failed' }
   & (Join-Path $buildRoot "pythian.tests.separation$executableSuffix") 'reconstruct' (Join-Path $buildRoot 'separation-control-source.wav') (Join-Path $buildRoot 'separated-harmonic.wav') (Join-Path $buildRoot 'separated-percussive.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Encoded separated component reconstruction failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.hash.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.hash.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Hash compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.hash$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Hash checks failed' }
-  & $compilerPath @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.listen.assets.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' '-gh' 'tests/pythian.tests.listen.assets.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Listening asset compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.listen.assets$executableSuffix") (Join-Path $buildRoot ('listening-assets-' + [Guid]::NewGuid().ToString('N')))
   if ($LASTEXITCODE -ne 0) { throw 'Listening asset ownership and publication checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Progress parity and cancellation checks failed' }
   foreach ($portableFixture in @('hash.portable', 'stream.bytes', 'stream.storage', 'binary.portable', 'binary.fields',
       'wave.reader.portable', 'analysis.portable', 'fourier.window', 'journal.portable',
       'journal.intake.progress')) {
-    & $compilerPath @compilerArgs "tests/pythian.tests.$portableFixture.lpr"
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs "tests/pythian.tests.$portableFixture.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Portable contract compilation failed: $portableFixture" }
     & (Join-Path $buildRoot "pythian.tests.$portableFixture$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw "Portable contract checks failed: $portableFixture" }
   }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.chord.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.chord.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Chord stream compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.chord.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Chord stream checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument music stream compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument music stream checks failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.chord.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.chord.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Chord demo compilation failed' }
   & (Join-Path $buildRoot "pythian.chord.demo$executableSuffix") (Join-Path $buildRoot 'chords.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Chord demo smoke failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.resample.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.resample.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Oscillator/resampling compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.resample$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Oscillator/resampling checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.resample.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.resample.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Streaming resampling compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.resample.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Streaming resampling checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.modulation.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.modulation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Automation/modulation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.modulation$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Automation/modulation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.control.curves.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.control.curves.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Periodic automation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.control.curves$executableSuffix") (Join-Path $buildRoot 'envelope-source.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Periodic automation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.delay.modulated.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.delay.modulated.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Modulated delay compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.delay.modulated$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Modulated delay checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.reverb.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.reverb.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Reverb compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.reverb$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Reverb checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.context.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.context.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical context compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.context$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical context checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.tempo.evidence.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.tempo.evidence.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Tempo evidence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.tempo.evidence$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Tempo evidence checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.context.admission.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.context.admission.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAV context admission compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.context.admission$executableSuffix") (Join-Path $buildRoot 'key-admission-source.wav')
   if ($LASTEXITCODE -ne 0) { throw 'WAV context admission checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.source.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.source.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Source compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.source$executableSuffix") (Join-Path $buildRoot 'cycle-source.wav') (Join-Path $buildRoot 'harmonic-source.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Source checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.sample.loop.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.sample.loop.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Interior sample loop compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.sample.loop$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Interior sample loop checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.instrument.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.instrument.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.instrument$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.percussion.core.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.percussion.core.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.percussion.core$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion checks failed' }
-  & $compilerPath @compilerArgs 'examples/pythian.example.percussion.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'examples/pythian.example.percussion.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion caller compilation failed' }
   & (Join-Path $buildRoot "pythian.example.percussion$executableSuffix") (Join-Path $buildRoot 'percussion')
   if ($LASTEXITCODE -ne 0) { throw 'Core percussion caller failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.instrument.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.instrument.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument sequence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.instrument$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Instrument sequence checks failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.instrument.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.instrument.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument demo compilation failed' }
   & (Join-Path $buildRoot "pythian.instrument.demo$executableSuffix") (Join-Path $buildRoot 'instrument.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Instrument demo failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.effects.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.effects.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Effects compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.effects$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Effects checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.bus.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.bus.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Bus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.bus$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Bus checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.schedule.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.schedule.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.schedule$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.schedule.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.schedule.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler replacement progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.schedule.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler replacement cancellation and replay checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.bus.portability.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.bus.portability.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Bus scalar portability compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.bus.portability$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Bus scalar portability checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.corpus.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.text.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Scalar text compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.text$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Scalar text checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.text.utf8.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.text.utf8.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Primary UTF-8 conversion compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.text.utf8$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Primary UTF-8 conversion and digest fields failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.text.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.corpus.text.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus text compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.text$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus text checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.intake.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.corpus.intake.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.intake$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake core checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.corpus.portability.qa.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.corpus.portability.qa.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake portability compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.corpus.portability.qa$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Corpus intake portability checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.passage.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.passage.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Passage compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.passage$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Passage checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.passage.ownership.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.passage.ownership.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Primary passage ownership compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.passage.ownership$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Primary passage ownership and selected PCM checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.activity.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.activity.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Activity compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.activity$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Activity and continuity checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.journal.source.successor.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.journal.source.successor.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Exact source successor compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.journal.source.successor$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Exact source successor checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.journal.selection.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.journal.selection.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Source selection progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.journal.selection.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Source selection cancellation/replay checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.presence.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.presence.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Presence evidence compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.presence$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Presence evidence checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.onset.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.onset.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Onset localization compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.onset$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Onset localization checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.events.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.events.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Onset event compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.events$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Onset event checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.beat.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.beat.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat grid compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.beat$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Beat grid checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.beat.track.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.beat.track.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat tracking compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.beat.track$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Beat tracking checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.beat.clock.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.beat.clock.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat clock compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.beat.clock$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Beat clock checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.pulse.events.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.pulse.events.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Pulse event compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.pulse.events$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Pulse event checks failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.beat.lab.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.beat.lab.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat laboratory compilation failed' }
   & (Join-Path $buildRoot "pythian.beat.lab$executableSuffix") (Join-Path $buildRoot 'beat-lab')
   if ($LASTEXITCODE -ne 0) { throw 'Beat laboratory failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.beats.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.beats.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat inspection compilation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.beat.candidates.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.beat.candidates.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Beat candidate evaluation compilation failed' }
   & (Join-Path $buildRoot "pythian.beats$executableSuffix") (Join-Path $buildRoot 'beat-lab-polyphonic.wav') (Join-Path $buildRoot 'beat-polyphonic.json') '--audition' (Join-Path $buildRoot 'beat-polyphonic-listen.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Beat inspection smoke failed' }
@@ -397,168 +398,168 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Continuous beat clock smoke failed' }
   & (Join-Path $buildRoot "pythian.beats$executableSuffix") (Join-Path $buildRoot 'beat-lab-tempo-change.wav') (Join-Path $buildRoot 'beat-alignment-change.json') '--track' '--clock' 'step' '--alignment-context' '--audition' (Join-Path $buildRoot 'beat-alignment-change-listen.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Contextual beat alignment smoke failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.onset.lab.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.onset.lab.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Onset laboratory compilation failed' }
   & (Join-Path $buildRoot "pythian.onset.lab$executableSuffix") (Join-Path $buildRoot 'onset-lab')
   if ($LASTEXITCODE -ne 0) { throw 'Onset laboratory failed' }
   & (Join-Path $buildRoot "pythian.onset.lab$executableSuffix") (Join-Path $buildRoot 'onset-fine') '1024' '256'
   if ($LASTEXITCODE -ne 0) { throw 'Fine-grid onset laboratory failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.onsets.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.onsets.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Onset inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.onsets$executableSuffix") (Join-Path $buildRoot 'onset-fine-close-percussion.wav') (Join-Path $buildRoot 'onset-close.json') '--audition' (Join-Path $buildRoot 'onset-close.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Onset inspection smoke failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.granular.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.granular.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Granular compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.granular$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Granular checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.wave.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Streaming WAVE checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.wave.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Observed WAVE export compilation failed' }
   $waveProgressRoot = Join-Path $buildRoot ('wave-progress-' + [Guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Force -Path $waveProgressRoot | Out-Null
   & (Join-Path $buildRoot "pythian.tests.wave.progress$executableSuffix") $waveProgressRoot
   if ($LASTEXITCODE -ne 0) { throw 'Observed WAVE export checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.render.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.render.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.render.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Observed bulk rendering checks failed' }
-  & $compilerPath @compilerArgs '-gh' 'tests/pythian.tests.archive.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' 'tests/pythian.tests.archive.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Observed corpus archive compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.archive.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Observed corpus archive parity/abort/retry checks failed' }
   foreach ($sharedFixture in @('synthesis.portable', 'time.portable')) {
-    & $compilerPath @compilerArgs '-gh' "tests/pythian.tests.$sharedFixture.lpr"
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-gh' "tests/pythian.tests.$sharedFixture.lpr"
     if ($LASTEXITCODE -ne 0) { throw "Shared $sharedFixture compilation failed" }
     & (Join-Path $buildRoot "pythian.tests.$sharedFixture$executableSuffix") `
       *> (Join-Path $buildRoot "$sharedFixture.native.log")
     if ($LASTEXITCODE -ne 0) { throw "Shared $sharedFixture checks failed (see build log)" }
   }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.portable.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.wave.portable.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.portable$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Portable WAV contract checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.wave.read.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.wave.read.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAVE reader compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.wave.read$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'WAVE reader checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.spectrum.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.spectrum.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Spectrum partition compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.spectrum$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Spectrum partition checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.analysis.wave.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.analysis.wave.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAVE analysis compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.analysis.wave$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'WAVE analysis checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.observations.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.observations.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.observations$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical observation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.controls.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.controls.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Portable musical controls compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.controls$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Portable musical controls checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.pattern.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.pattern.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Musical pattern compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music.pattern$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Musical pattern checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.analysis.journal.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.analysis.journal.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Feature journal compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.analysis.journal$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Feature journal checks failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.wave.transcode.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.wave.transcode.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'WAVE transcode compilation failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.music.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.music.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Music compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.music$executableSuffix") (Join-Path $buildRoot 'timing.mid')
   if ($LASTEXITCODE -ne 0) { throw 'Music checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.midi.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.midi.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'MIDI stream compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.midi.stream$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'MIDI stream checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.midi.chord.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.midi.chord.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Chord MIDI compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.midi.chord$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Chord MIDI checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.midi.export.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.midi.export.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'MIDI note export compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.midi.export$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'MIDI note export checks failed' }
-  & $compilerPath @compilerArgs 'examples/pythian.example.midi.stream.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'examples/pythian.example.midi.stream.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'MIDI stream example compilation failed' }
   & (Join-Path $buildRoot "pythian.example.midi.stream$executableSuffix") (Join-Path $buildRoot 'streamed.mid')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI stream example failed' }
-  & $compilerPath @compilerArgs 'examples/pythian.example.notes.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'examples/pythian.example.notes.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Native notes example compilation failed' }
   & (Join-Path $buildRoot "pythian.example.notes$executableSuffix") (Join-Path $buildRoot 'notes-example')
   if ($LASTEXITCODE -ne 0) { throw 'Native notes example failed' }
-  & $compilerPath @compilerArgs 'examples/pythian.example.instrument.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'examples/pythian.example.instrument.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Instrument envelope example compilation failed' }
   & (Join-Path $buildRoot "pythian.example.instrument$executableSuffix") (Join-Path $buildRoot 'instrument-envelope.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Instrument envelope example failed' }
   & (Join-Path $buildRoot "pythian.example.instrument$executableSuffix") (Join-Path $buildRoot 'instrument-midi-envelope.wav') (Join-Path $buildRoot 'timing.mid')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI instrument envelope example failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.clock.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.clock.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Incremental clock compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.clock$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Incremental clock checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.articulation.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.articulation.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Articulation compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.articulation$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Articulation checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.alignment.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.alignment.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Alignment compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.alignment$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Alignment checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.tonal.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.tonal.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Tonal compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.tonal$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Tonal checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.pitch.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.pitch.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Pitch estimator compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.pitch$executableSuffix") (Join-Path $buildRoot 'pitch-source.wav') (Join-Path $buildRoot 'pitch-octave.wav') (Join-Path $buildRoot 'run-source.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Pitch estimator checks failed' }
-  & $compilerPath @compilerArgs 'tests/pythian.tests.measurement.progress.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tests/pythian.tests.measurement.progress.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Primary measurement progress compilation failed' }
   & (Join-Path $buildRoot "pythian.tests.measurement.progress$executableSuffix")
   if ($LASTEXITCODE -ne 0) { throw 'Primary measurement progress and cancellation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.phrase.wav.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.phrase.wav.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Recorded phrase evaluator compilation failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.presence.reference.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.presence.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence reference checker compilation failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.presence.decision.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.presence.decision.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision compilation failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.presence.inspect.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.presence.inspect.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Presence inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.presence.decision$executableSuffix") 'controls'
   if ($LASTEXITCODE -ne 0) { throw 'Note-presence decision controls failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.localkey.reference.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.localkey.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key reference checker compilation failed' }
   & (Join-Path $buildRoot "pythian.localkey.reference$executableSuffix") 'controls'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key reference controls failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.localkey.score.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.localkey.score.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key packet scorer compilation failed' }
   & (Join-Path $buildRoot "pythian.localkey.score$executableSuffix") 'controls'
   if ($LASTEXITCODE -ne 0) { throw 'Local-key packet scorer controls failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.localkey.nokey.reference.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.localkey.nokey.reference.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Acoustic no-key reference checker compilation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.tonal.inspect.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.tonal.inspect.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Tonal inspection compilation failed' }
   & (Join-Path $buildRoot "pythian.tonal.inspect$executableSuffix") 'midi' (Join-Path $buildRoot 'timing.mid') > (Join-Path $buildRoot 'tonal-midi.json')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI tonal inspection failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.articulate.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.articulate.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Articulation tool compilation failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.midi.render.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.midi.render.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'MIDI renderer compilation failed' }
   & (Join-Path $buildRoot "pythian.midi.render$executableSuffix") (Join-Path $buildRoot 'timing.mid') (Join-Path $buildRoot 'timing.wav')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI renderer smoke failed' }
-  & $compilerPath @compilerArgs '-Futools' 'tools/pythian.render.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs '-Futools' 'tools/pythian.render.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Renderer compilation failed' }
   & (Join-Path $buildRoot "pythian.render$executableSuffix") (Join-Path $buildRoot 'synthesis.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Renderer smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.compose.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.compose.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Composition tool compilation failed' }
   & (Join-Path $buildRoot "pythian.compose$executableSuffix") (Join-Path $buildRoot 'composition.wav') '2731'
   if ($LASTEXITCODE -ne 0) { throw 'Composition smoke failed' }
@@ -574,19 +575,19 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Grid articulation smoke failed' }
   & (Join-Path $buildRoot "pythian.articulate$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'articulation-midi.wav') 'midi' (Join-Path $buildRoot 'timing.mid')
   if ($LASTEXITCODE -ne 0) { throw 'MIDI articulation smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.dsp.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.dsp.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'DSP demo compilation failed' }
   & (Join-Path $buildRoot "pythian.dsp.demo$executableSuffix") (Join-Path $buildRoot 'dsp-comparison.wav')
   if ($LASTEXITCODE -ne 0) { throw 'DSP demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.modulation.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.modulation.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Modulation demo compilation failed' }
   & (Join-Path $buildRoot "pythian.modulation.demo$executableSuffix") (Join-Path $buildRoot 'modulation.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Modulation demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.control.curves.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.control.curves.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Periodic automation demo compilation failed' }
   & (Join-Path $buildRoot "pythian.control.curves.demo$executableSuffix") (Join-Path $buildRoot 'control-curves.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Periodic automation demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.sources.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.sources.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Source demo compilation failed' }
   & (Join-Path $buildRoot "pythian.sources.demo$executableSuffix") (Join-Path $buildRoot 'sources.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Source demo smoke failed' }
@@ -602,68 +603,66 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Measured harmonic trajectory source demo failed' }
   & (Join-Path $buildRoot "pythian.sources.demo$executableSuffix") (Join-Path $buildRoot 'harmonic-trajectory-shape.wav') '--trajectory-shape' (Join-Path $buildRoot 'harmonic-source.wav') '7' '499' '500' '3' '1' '5' '213.7' '0.001' '0.1'
   if ($LASTEXITCODE -ne 0) { throw 'Measured magnitude trajectory source demo failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.sample.loop.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.sample.loop.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Interior sample loop demo compilation failed' }
   & (Join-Path $buildRoot "pythian.sample.loop.demo$executableSuffix") (Join-Path $buildRoot 'sample-loop.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Interior sample loop demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.effects.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.effects.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Effects demo compilation failed' }
   & (Join-Path $buildRoot "pythian.effects.demo$executableSuffix") (Join-Path $buildRoot 'effects.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Effects demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.delay.modulated.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.delay.modulated.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Modulated delay demo compilation failed' }
   & (Join-Path $buildRoot "pythian.delay.modulated.demo$executableSuffix") (Join-Path $buildRoot 'modulated-delay.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Modulated delay demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.reverb.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.reverb.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Reverb demo compilation failed' }
   & (Join-Path $buildRoot "pythian.reverb.demo$executableSuffix") (Join-Path $buildRoot 'reverb.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Reverb demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.bus.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.bus.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Bus demo compilation failed' }
   & (Join-Path $buildRoot "pythian.bus.demo$executableSuffix") (Join-Path $buildRoot 'buses.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Bus demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.schedule.demo.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.schedule.demo.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler demo compilation failed' }
   & (Join-Path $buildRoot "pythian.schedule.demo$executableSuffix") (Join-Path $buildRoot 'scheduled.wav')
   if ($LASTEXITCODE -ne 0) { throw 'Scheduler demo smoke failed' }
-  & $compilerPath @compilerArgs 'tools/pythian.convert.lpr'
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'tools/pythian.convert.lpr'
   if ($LASTEXITCODE -ne 0) { throw 'Rate converter compilation failed' }
   & (Join-Path $buildRoot "pythian.convert$executableSuffix") (Join-Path $buildRoot 'dsp-comparison.wav') (Join-Path $buildRoot 'dsp-comparison-44100.wav') '44100'
   if ($LASTEXITCODE -ne 0) { throw 'Rate conversion smoke failed' }
   if (-not $CoreOnly) {
-    $adapterUnitRoot = Join-Path $buildRoot 'wfc-units'
-    New-Item -ItemType Directory -Force $adapterUnitRoot | Out-Null
-    $adapterArgs = @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
-      '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FU$adapterUnitRoot", "-FE$buildRoot")
+    $adapterArgs = @('-Sa', '-Cr', '-Co', '-Ci', '-gl', '-Fusrc',
+      '-Fuadapters/wfc', '-Fuvendor/wfc/src', '-Futools', "-FE$buildRoot")
     # Big Boss: qualify the ordinary optimized native job path, retaining all
     # assertions/range/overflow/I/O checks and the unchanged job time budgets.
-    & $compilerPath @adapterArgs '-O2' 'tools/pythian.studio.worker.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' 'tools/pythian.studio.worker.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio worker compilation failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.playlist.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.playlist.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.playlist$executableSuffix") (Join-Path $buildRoot ('studio-playlist-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio playlist learning checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.clips.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.clips.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio saved clips compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.clips$executableSuffix") (Join-Path $buildRoot ('studio-clips-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio saved clips checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.studio.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.instrumental$executableSuffix") (Join-Path $buildRoot ('studio-instrumental-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio instrumental checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.form.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.form.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical form compilation failed' }
     $studioFormRoot = Join-Path $buildRoot ('studio-form-' + [Guid]::NewGuid().ToString('N'))
     & (Join-Path $buildRoot "pythian.tests.studio.form$executableSuffix") $studioFormRoot
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical form checks failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.form$executableSuffix") '--songs-only' $studioFormRoot
     if ($LASTEXITCODE -ne 0) { throw 'Studio song metadata checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.studio.material.generation.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.studio.material.generation$executableSuffix") (Join-Path $buildRoot ('studio-material-generation-' + [Guid]::NewGuid().ToString('N')))
     if ($LASTEXITCODE -ne 0) { throw 'Studio musical-choice generation checks failed' }
     foreach ($studioComponent in @('worker', 'supervisor', 'reviews')) {
-      & $compilerPath @adapterArgs '-gh' "tests/pythian.tests.studio.$studioComponent.lpr"
+      Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' "tests/pythian.tests.studio.$studioComponent.lpr"
       if ($LASTEXITCODE -ne 0) { throw "Studio $studioComponent compilation failed" }
       $studioFixtureRoot = Join-Path $buildRoot ("studio-$studioComponent-" + [Guid]::NewGuid().ToString('N'))
       & (Join-Path $buildRoot "pythian.tests.studio.$studioComponent$executableSuffix") $studioFixtureRoot
@@ -692,7 +691,7 @@ try {
         }
       }
     }
-    & $compilerPath @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'examples/pythian.example.wfc.provider.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Caller-provider example compilation failed' }
     $providerConsumer = Join-Path $buildRoot "pythian.example.wfc.provider$executableSuffix"
     & $providerConsumer (Join-Path $deliveryRoot 'provider-base.wav') '0.25' '731'
@@ -705,139 +704,139 @@ try {
       (Join-Path $deliveryRoot 'provider-replay.wav') '16000' '2' '16000' '2'
     if ($LASTEXITCODE -ne 0) { throw 'Provider saved-file control/replay proof failed' }
     $callerProviderArgs = $adapterArgs + @('-gh', '-Fuexamples')
-    & $compilerPath @callerProviderArgs 'examples/pythian.example.provider.extensions.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @callerProviderArgs 'examples/pythian.example.provider.extensions.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Caller codec example compilation failed' }
     & (Join-Path $buildRoot "pythian.example.provider.extensions$executableSuffix") (Join-Path $deliveryRoot 'caller-trait.wav') '731'
     if ($LASTEXITCODE -ne 0) { throw 'Caller codec saved-style/native example failed' }
-    & $compilerPath @callerProviderArgs 'tests/pythian.tests.provider.extension.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @callerProviderArgs 'tests/pythian.tests.provider.extension.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Caller codec conformance compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.provider.extension$executableSuffix") (Join-Path $deliveryRoot 'caller-codec')
     if ($LASTEXITCODE -ne 0) { throw 'Caller codec admission/persistence/blend conformance failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.corpus.intake.cli.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.corpus.intake.cli.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake operator compilation failed' }
-    & $compilerPath @adapterArgs 'examples/pythian.example.corpus.intake.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'examples/pythian.example.corpus.intake.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake example compilation failed' }
     # Native admission requires fresh publication prefixes on every run.
     $corpusIntakeExample = Join-Path $buildRoot ("corpus-intake-" + [Guid]::NewGuid().ToString('N'))
     & (Join-Path $buildRoot "pythian.example.corpus.intake$executableSuffix") $corpusIntakeExample
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake example failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.corpus.intake.files.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.corpus.intake.files.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake file checks compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.corpus.intake.files$executableSuffix") $corpusIntakeExample
     if ($LASTEXITCODE -ne 0) { throw 'Corpus intake admission/learner checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.corpus.contributions.qa.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.corpus.contributions.qa.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Corpus contribution boundary compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.corpus.contributions.qa$executableSuffix") $corpusIntakeExample
     if ($LASTEXITCODE -ne 0) { throw 'Corpus contribution boundary/consumer replay checks failed' }
-    & $compilerPath @adapterArgs '-dWFC_MIDI_STREAM_CHECKS' 'tests/pythian.tests.midi.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_MIDI_STREAM_CHECKS' 'tests/pythian.tests.midi.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC MIDI stream parity compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.midi.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC MIDI stream parity failed' }
-    & $compilerPath @adapterArgs '-dWFC_CHORD_MIDI_CHECKS' 'tests/pythian.tests.midi.chord.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_CHORD_MIDI_CHECKS' 'tests/pythian.tests.midi.chord.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC chord MIDI compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.midi.chord$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC chord MIDI parity failed' }
-    & $compilerPath @adapterArgs '-dWFC_CHORD_CHECKS' 'tests/pythian.tests.chord.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_CHORD_CHECKS' 'tests/pythian.tests.chord.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC chord bridge compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.chord.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC chord bridge checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.music.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.music.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC music compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.music$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC music checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.wfc.composition.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.wfc.composition.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC composition consumer compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.wfc.longform.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.wfc.longform.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC long-form composition consumer compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.composition.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.composition.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC composition checks compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.composition$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC composition checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.note.events.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.note.events.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.note.events$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event codec checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.note.events.generation.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.note.events.generation.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event generation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.note.events.generation$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint note-event generation checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.cell.preferences.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.cell.preferences.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Positioned token preference compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.cell.preferences$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Positioned sequence/voice preference checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.sequence.stream.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.sequence.stream.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.stream.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream cancellation and replay checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.model.clone.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.model.clone.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Shared immutable model clone compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.model.clone.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Shared immutable model clone callback/replay checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.preparation.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.layer.preparation.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.preparation.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Layer preparation progress checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.layer.publication.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.layer.publication.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Layer publication progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.layer.publication.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Layer publication cancellation and replay checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.sequence.capture.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.sequence.capture.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Finite sequence capture progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.capture.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Finite sequence capture progress and cancellation checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.voice.preparation.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.voice.preparation.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Named voice preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voice.preparation.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Named voice preparation cancellation and replay checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.voice.publication.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.voice.publication.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Named voice publication progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voice.publication.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Named voice publication cancellation and replay checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.accepted.snapshot.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.accepted.snapshot.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Accepted musical session snapshot compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.accepted.snapshot$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Accepted musical session restoration and regeneration checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.utf8.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.provider.utf8.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Provider UTF-8 byte validation compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.provider.utf8$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Provider UTF-8 byte validation checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.provider.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.provider.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Provider progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.provider.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Provider progress checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.layers.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.layers.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC layer compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.layers$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC layer checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.context.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.context.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.context$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC context checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.context.learning.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.context.learning.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context learning progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.learning.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Context learning progress checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.context.archive.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.context.archive.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context archive compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.archive$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Context archive checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.context.profile.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.context.profile.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context archive/profile progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.profile.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Context archive/profile progress checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.context.demo.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.context.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC context demo compilation failed' }
     & (Join-Path $buildRoot "pythian.context.demo$executableSuffix") (Join-Path $buildRoot 'context')
     if ($LASTEXITCODE -ne 0) { throw 'WFC context demo failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.context.profile.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.context.profile.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context profile compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.context.profile$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Context profile checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.context.track.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.context.track.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Tracked context operator compilation failed' }
     $trackSource = Join-Path $buildRoot 'beat-lab-tempo-change.wav'
     $trackHash = (Get-FileHash -LiteralPath $trackSource -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -859,13 +858,13 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Saved contextual alignment audition failed' }
     & (Join-Path $buildRoot "pythian.tests.context.profile$executableSuffix") 'track' (Join-Path $buildRoot 'alignment-context') $trackSource
     if ($LASTEXITCODE -ne 0) { throw 'Contextual alignment/profile/audio replay failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.context.select.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.context.select.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Context selector compilation failed' }
     & (Join-Path $buildRoot "pythian.context.select$executableSuffix") '--source' (Join-Path $buildRoot 'context.ptc') (Join-Path $buildRoot 'context-source.pcp')
     if ($LASTEXITCODE -ne 0) { throw 'Context source profile smoke failed' }
     & (Join-Path $buildRoot "pythian.context.select$executableSuffix") (Join-Path $buildRoot 'context.profile-1.pcp') (Join-Path $buildRoot 'context.profile-0.pcp') (Join-Path $buildRoot 'context-derived.pcp')
     if ($LASTEXITCODE -ne 0) { throw 'Derived context profile smoke failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.context.wav.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.context.wav.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV context operator compilation failed' }
     $admissionSource = Join-Path $buildRoot 'key-admission-source.wav'
     $admissionHash = (Get-FileHash -LiteralPath $admissionSource -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -875,77 +874,77 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WAV key admission smoke failed' }
     & (Join-Path $buildRoot "pythian.tests.context.profile$executableSuffix") (Join-Path $buildRoot 'key-admission') $admissionSource
     if ($LASTEXITCODE -ne 0) { throw 'WAV context profile binding/generation checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.layers.demo.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.layers.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Layer synthesis demo compilation failed' }
     & (Join-Path $buildRoot "pythian.layers.demo$executableSuffix") (Join-Path $buildRoot 'layers.wav')
     if ($LASTEXITCODE -ne 0) { throw 'Layer synthesis demo failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.ensemble.demo.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.ensemble.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Ensemble stream demo compilation failed' }
     & (Join-Path $buildRoot "pythian.ensemble.demo$executableSuffix") (Join-Path $buildRoot 'ensemble.wav') '--verify'
     if ($LASTEXITCODE -ne 0) { throw 'Ensemble stream demo verification failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.voices.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.voices.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voices$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Named independent-voice checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.instrumental.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental runtime checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental stream checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.form.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.form.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental form compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.form$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental form checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.unguided.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.unguided.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Original unguided form compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.unguided$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Original unguided form checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.density.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.density.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental density compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.density$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental density checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.decisions.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.decisions.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.decisions$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental decision replay checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.passage.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.passage.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.passage$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental passage edit checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.edit.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.edit.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental future-accompaniment edit compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.edit.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental future-accompaniment edit checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.controls.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.controls$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental controls checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.reperform.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.instrumental.reperform.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Retained instrumental performance compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.instrumental.reperform$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Retained instrumental performance checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.material.instrumental.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.material.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.material.instrumental$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint musical context checks failed' }
-    & $compilerPath @adapterArgs '-O2' '-gh' 'tests/pythian.tests.musical.composition.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' '-gh' 'tests/pythian.tests.musical.composition.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Shared context composition compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.musical.composition$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Shared context composition checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.musical.corpus.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.musical.corpus.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Weighted musical corpus compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.musical.corpus$executableSuffix") (Join-Path $buildRoot 'musical-corpus')
     if ($LASTEXITCODE -ne 0) { throw 'Weighted source-to-instrumental corpus checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.percussion.wfc.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.percussion.wfc.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC percussion compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.percussion.wfc$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC percussion checks failed' }
-    & $compilerPath @adapterArgs 'examples/pythian.example.instrumental.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'examples/pythian.example.instrumental.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental caller compilation failed' }
-    & $compilerPath @adapterArgs '-O2' 'examples/pythian.example.instrumental.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-O2' 'examples/pythian.example.instrumental.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental streaming caller compilation failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental.stream$executableSuffix") (Join-Path $buildRoot 'instrumental-stream.wav') '8'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental streaming caller failed' }
@@ -955,29 +954,29 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental percussion caller failed' }
     & (Join-Path $buildRoot "pythian.example.instrumental$executableSuffix") (Join-Path $buildRoot 'instrumental-motif.wav') '16' '731' '120' '0' '--drums' '--motif=60,?,r,62'
     if ($LASTEXITCODE -ne 0) { throw 'Instrumental motif caller failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.semantic.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style$executableSuffix") (Join-Path $buildRoot 'semantic-style')
     if ($LASTEXITCODE -ne 0) { throw 'Semantic style checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.semantic.blend.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.semantic.blend.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic blend compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.blend$executableSuffix") (Join-Path $buildRoot 'semantic-blend')
     if ($LASTEXITCODE -ne 0) { throw 'Semantic blend checks failed' }
-    & $compilerPath @adapterArgs '-Fuexamples' '-gh' 'tests/pythian.tests.semantic.style.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-Fuexamples' '-gh' 'tests/pythian.tests.semantic.style.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Semantic progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.semantic.style.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Semantic progress and cancellation checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.duration.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.duration.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Duration stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.duration.stream$executableSuffix") (Join-Path $buildRoot 'duration-stream')
     if ($LASTEXITCODE -ne 0) { throw 'Duration stream checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.voices.demo.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.voices.demo.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Independent voices demo compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.instrument.style.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.instrument.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Saved instrument consumer compilation failed' }
     & (Join-Path $buildRoot "pythian.voices.demo$executableSuffix") (Join-Path $buildRoot 'voices.wav') '--verify'
     if ($LASTEXITCODE -ne 0) { throw 'Independent voices demo verification failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.voices.context.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.voices.context.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Voice context fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.voices.context$executableSuffix") (Join-Path $buildRoot 'voice-context')
     if ($LASTEXITCODE -ne 0) { throw 'Voice context fixtures failed' }
@@ -985,15 +984,15 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Saved context voice realization failed' }
     & (Join-Path $buildRoot "pythian.tests.voices.context$executableSuffix") (Join-Path $buildRoot 'voice-context.minor.pcp') (Join-Path $buildRoot 'voices-context.wav')
     if ($LASTEXITCODE -ne 0) { throw 'Saved context voice output checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wave.style.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wave.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV style fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wave.style$executableSuffix") (Join-Path $buildRoot 'wave-style')
     if ($LASTEXITCODE -ne 0) { throw 'Weighted saved WAV style checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wave.style.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wave.style.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Wave-style progress fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wave.style.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Wave-style progress and cancellation checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.style.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.style.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV style operator compilation failed' }
     & (Join-Path $buildRoot "pythian.onsets$executableSuffix") $admissionSource (Join-Path $buildRoot 'style-onsets.json') '1024' '128'
     if ($LASTEXITCODE -ne 0) { throw 'Controlled style onset measurement failed' }
@@ -1290,36 +1289,36 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Separated style voice generation failed' }
     & (Join-Path $buildRoot "pythian.tests.wave.style$executableSuffix") 'output' (Join-Path $buildRoot 'separated-reblend.pys') (Join-Path $buildRoot 'voices-separated.wav')
     if ($LASTEXITCODE -ne 0) { throw 'Separated style voice/model validation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.pitch.wfc.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.pitch.wfc.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch learner fixture compilation failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.pitch.learning.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.pitch.learning.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.pitch.learning.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Pitch preparation progress checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch/WFC bridge fixture compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch/WFC bridge checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.journal.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.journal.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.journal$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch contribution journal checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.reviewed.catalog.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.reviewed.catalog.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Reviewed catalog/WFC adapter compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.reviewed.catalog$executableSuffix") (Join-Path $buildRoot 'reviewed-catalog-check')
     if ($LASTEXITCODE -ne 0) { throw 'Reviewed catalog/WFC adapter checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.balance.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.admitted.pitch.balance.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch group balance compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.admitted.pitch.balance$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Admitted pitch group balance checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.style.comparators.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.style.comparators.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Style comparator conformance compilation failed' }
     $styleComparatorRoot = Join-Path $buildRoot ('style-comparators-' + [Guid]::NewGuid().ToString('N'))
     & (Join-Path $buildRoot "pythian.tests.wfc.style.comparators$executableSuffix") $styleComparatorRoot
     if ($LASTEXITCODE -ne 0) { throw 'Style comparator conformance failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.style.comparators.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.style.comparators.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Style comparator operator compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.pitch.wav.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.pitch.wav.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Pitch WAV operator compilation failed' }
     & (Join-Path $buildRoot "pythian.pitch.wav$executableSuffix") 'learn' (Join-Path $buildRoot 'pitch-source.wav') (Join-Path $buildRoot 'pitch-learned') '500000' '0' '--monophonic'
     if ($LASTEXITCODE -ne 0) { throw 'WAV pitch learning failed' }
@@ -1469,97 +1468,97 @@ try {
     }
     & (Join-Path $buildRoot "pythian.tests.wave.style$executableSuffix") 'duration-voice-tempo' (Join-Path $buildRoot 'duration-voices.wav') (Join-Path $buildRoot 'duration-voices-slow.wav')
     if ($LASTEXITCODE -ne 0) { throw 'Duration-driven voice tempo independence failed' }
-    & $compilerPath @adapterArgs '-dWFC_CLOCK_CHECKS' 'tests/pythian.tests.clock.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_CLOCK_CHECKS' 'tests/pythian.tests.clock.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC ensemble clock compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.clock$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC ensemble clock parity failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.corpus.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.corpus.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC corpus compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.corpus$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC corpus checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.learning.journal.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.learning.journal.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.journal$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal learning checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.journal.preparation.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.journal.preparation.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal preparation progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.preparation.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal preparation cancellation and replay checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.selection.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.journal.selection.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal selection stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.selection.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal selection stream checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.render.stream.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.journal.render.stream.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal render stream compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.render.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal render stream checks failed' }
-    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.journal.render.progress.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-gh' 'tests/pythian.tests.journal.render.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal renderer progress checks compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.journal.render.progress$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal renderer progress checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.learning.profile.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.learning.profile.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Journal profile compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning.profile$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Journal profile checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.activity.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.activity.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC activity compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.activity$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC activity and continuity checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.joint.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.joint.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint WFC compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.joint$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint WFC checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.joint.archive.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.joint.archive.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Joint archive compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.joint.archive$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Joint archive checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.wfc.timing.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.wfc.timing.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Timed WFC compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.timing$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Timed WFC checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.timed.remix.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.timed.remix.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Timed remix compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.passage.remix.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.passage.remix.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Passage remix compilation failed' }
-    & $compilerPath @adapterArgs '-dWFC_EVENT_CHECKS' 'tests/pythian.tests.events.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_EVENT_CHECKS' 'tests/pythian.tests.events.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC event compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.events$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC event checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.event.corpus.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.event.corpus.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Recorded event corpus compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.event.corpus$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Recorded event corpus checks failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.event.archive.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.event.archive.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Recorded event archive compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.event.archive$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'Recorded event archive checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.event.merge.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.event.merge.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Event merge compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.event.merge.output.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.event.merge.output.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Event merge output checker compilation failed' }
-    & $compilerPath @adapterArgs '-dWFC_EVENT_CHECKS' 'tests/pythian.tests.pulse.events.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs '-dWFC_EVENT_CHECKS' 'tests/pythian.tests.pulse.events.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC pulse event compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.pulse.events$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC pulse event checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.event.remix.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.event.remix.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Event remix compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.events.output.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.events.output.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Published event checker compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.passage.output.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.passage.output.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Published passage checker compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.learning.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.learning.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WFC learning compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.learning$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC learning checks failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.learn.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.learn.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV learner compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.source.successor.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.source.successor.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Source successor comparison compilation failed' }
     # The bounded session fixture takes caller-supplied profile/journal files;
     # private recorded evidence is not a build or CI input.
-    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.source.session.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.journal.source.session.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Source successor session fixture compilation failed' }
-    & $compilerPath @adapterArgs 'tests/pythian.tests.journal.long.output.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tests/pythian.tests.journal.long.output.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Long journal output verifier compilation failed' }
     & (Join-Path $buildRoot "pythian.learn$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'synthesis-model')
     if ($LASTEXITCODE -ne 0) { throw 'WAV learner smoke failed' }
@@ -1575,13 +1574,13 @@ try {
       $extendedModelHash = (Get-FileHash -LiteralPath (Join-Path $buildRoot "extensible-model-$encoding.wfcs") -Algorithm SHA256).Hash
       if ($extendedModelHash -ne $referenceModelHash) { throw 'Extensible WAV changed the learned model' }
     }
-    & $compilerPath @adapterArgs 'tools/pythian.remix.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.remix.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV remix compilation failed' }
     & (Join-Path $buildRoot "pythian.remix$executableSuffix") (Join-Path $buildRoot 'synthesis.wav') (Join-Path $buildRoot 'remix.wav') '731' '256'
     if ($LASTEXITCODE -ne 0) { throw 'WAV remix smoke failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.inspect.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.inspect.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'WAV inspection compilation failed' }
-    & $compilerPath @adapterArgs 'tools/pythian.archive.lpr'
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @adapterArgs 'tools/pythian.archive.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Archive tool compilation failed' }
     & (Join-Path $buildRoot "pythian.archive$executableSuffix") 'learn' (Join-Path $buildRoot 'demo.pyac') (Join-Path $buildRoot 'synthesis.wav')
     if ($LASTEXITCODE -ne 0) { throw 'Archive training smoke failed' }

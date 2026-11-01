@@ -22,7 +22,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 130 / 182 effort units accepted (71.43%); nine open, twenty-eight current-goal DONE.**
+**Current snapshot: 130 / 186 effort units accepted (69.89%); eleven open, twenty-eight current-goal DONE.**
 The six-unit [projected-domain prerequisite — DONE](TODO/DONE/NS-4_projected-domains_01.md)
 addresses the retained shared candidate's64cell search failure. A pure
 WFC64cell proof shows that a known target restriction is not used before source
@@ -117,8 +117,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 11 | 60 | 60 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 57 | 57 / 65 |
-| **Total** | **37 current-goal tasks** | **52** | **130** | **71.43%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 12 | 57 | 57 / 69 |
+| **Total** | **39 current-goal tasks** | **56** | **130** | **69.89%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

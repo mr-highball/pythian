@@ -32,6 +32,10 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
+- [Fresh native build reuse](NS-6_native-reuse_01.md) — CI546 passes maintained
+  integration, then the unchanged30-minute deadline interrupts package proof.
+  Complete the full gate before deployment/acceptance.
+
 
 - [Projected known domains — DONE](DONE/NS-4_projected-domains_01.md) — accepted
   after upstream CI67/downstream CI544, original64cell proof and typed consumers.

@@ -76,10 +76,10 @@ if (Test-Path -LiteralPath $outputRoot) {
 }
 $stage = Join-Path $outputRoot 'pythian'
 $checkRoot = Join-Path $outputRoot 'consumer-check'
-$unitRoot = Join-Path $checkRoot 'units'
-$coreUnitRoot = Join-Path $checkRoot 'core-units'
 $binRoot = Join-Path $checkRoot 'bin'
-New-Item -ItemType Directory -Force $stage, $unitRoot, $coreUnitRoot, $binRoot | Out-Null
+New-Item -ItemType Directory -Force $stage, $binRoot | Out-Null
+. (Join-Path $PSScriptRoot 'native-compiler.ps1')
+$nativeUnitContext = New-PythianNativeUnitContext $checkRoot
 Copy-SourceDirectory (Join-Path $projectRoot 'src') (Join-Path $stage 'src')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging/README.md') -Destination $stage
@@ -197,8 +197,8 @@ $unitProbeText = 'program pythian_package_units;' + "`n" + '{$mode delphi}{$H+}'
   "`nuses`n  " + ($unitNames -join ",`n  ") + ";`nbegin`nend.`n"
 [IO.File]::WriteAllText((Join-Path $checkRoot 'pythian.package.units.lpr'), $unitProbeText)
 Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.core.lpr') -Destination $checkRoot
-$compilerArgs = $targetArgs + @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FU$unitRoot", "-FE$binRoot") + $searchArgs
-$coreCompilerArgs = $targetArgs + @('-B', '-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FU$coreUnitRoot", "-FE$binRoot", ('-Fu' + (Join-Path $stage 'src')))
+$compilerArgs = $targetArgs + @('-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FE$binRoot") + $searchArgs
+$coreCompilerArgs = $targetArgs + @('-Sa', '-Cr', '-Co', '-Ci', '-gl', "-FE$binRoot", ('-Fu' + (Join-Path $stage 'src')))
 $executableSuffix = if ($compilerOs -eq 'win32' -or $compilerOs -eq 'win64') { '.exe' } else { '' }
 
 function Test-NativeConsumer([string]$Name, [string]$Prefix, [string]$BaseGain,
@@ -237,34 +237,34 @@ function Test-NativeConsumer([string]$Name, [string]$Prefix, [string]$BaseGain,
 }
 Push-Location $checkRoot
 try {
-  & $compilerPath @compilerArgs 'pythian.package.units.lpr' > 'units-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.package.units.lpr' > 'units-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Package unit closure failed; see $checkRoot/units-build.log" }
-  & $compilerPath @coreCompilerArgs 'pythian.example.core.lpr' > 'core-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @coreCompilerArgs 'pythian.example.core.lpr' > 'core-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Core consumer build failed; see $checkRoot/core-build.log" }
   & (Join-Path $binRoot "pythian.example.core$executableSuffix") 'core.wav' > 'core-run.log'
   if ($LASTEXITCODE -ne 0) { throw 'Core consumer failed' }
   Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.percussion.lpr') -Destination $checkRoot
-  & $compilerPath @coreCompilerArgs 'pythian.example.percussion.lpr' > 'percussion-core-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @coreCompilerArgs 'pythian.example.percussion.lpr' > 'percussion-core-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted core percussion compilation failed' }
   & (Join-Path $binRoot "pythian.example.percussion$executableSuffix") 'percussion' > 'percussion-core-run.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted core percussion caller failed' }
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.delivery.native.lpr') -Destination $checkRoot
-  & $compilerPath @coreCompilerArgs 'pythian.tests.delivery.native.lpr' > 'native-proof-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @coreCompilerArgs 'pythian.tests.delivery.native.lpr' > 'native-proof-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Native saved-file verifier compilation failed' }
   Test-NativeConsumer 'pythian.example.core' 'core-control' '1' '0.5' '44100' '67032' '0.5'
   # Caller extensions resolve only extracted core/examples, even with WFC enabled.
   $extensionCompilerArgs = $coreCompilerArgs + @('-gh', ('-Fu' + $exampleRoot))
-  & $compilerPath @extensionCompilerArgs (Join-Path $exampleRoot 'pythian.example.extensions.lpr') > 'extensions-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @extensionCompilerArgs (Join-Path $exampleRoot 'pythian.example.extensions.lpr') > 'extensions-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted caller extension compilation failed' }
   & (Join-Path $binRoot "pythian.example.extensions$executableSuffix") 'extensions.wav' > 'extensions-run.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted caller extension failed' }
-  & $compilerPath @extensionCompilerArgs (Join-Path $stage 'tests/pythian.tests.extension.conformance.lpr') > 'extension-conformance-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @extensionCompilerArgs (Join-Path $stage 'tests/pythian.tests.extension.conformance.lpr') > 'extension-conformance-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted caller conformance compilation failed' }
   & (Join-Path $binRoot "pythian.tests.extension.conformance$executableSuffix") 'extension-evidence' 'extensions.wav' > 'extension-conformance-run.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw 'Extracted caller conformance failed' }
   foreach ($exampleName in @('pythian.example.notes', 'pythian.example.midi.stream', 'pythian.example.instrument')) {
     Copy-Item -LiteralPath (Join-Path $exampleRoot ($exampleName + '.lpr')) -Destination $checkRoot
-    & $compilerPath @compilerArgs ($exampleName + '.lpr') > ($exampleName + '-build.log') 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs ($exampleName + '.lpr') > ($exampleName + '-build.log') 2>&1
     if ($LASTEXITCODE -ne 0) { throw "Example compilation failed: $exampleName" }
     $exampleOutput = switch ($exampleName) {
       'pythian.example.notes' { 'notes' }
@@ -276,55 +276,55 @@ try {
   }
   if ($WithWfc) {
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.instrumental.lpr') -Destination $checkRoot
-    & $compilerPath @compilerArgs 'pythian.example.instrumental.lpr' > 'instrumental-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.example.instrumental.lpr' > 'instrumental-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer compilation failed' }
     & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental.wav' '32' > 'instrumental-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer failed' }
     & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental-drums.wav' '32' '731' '120' '0' '--drums' > 'instrumental-drums-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental percussion caller failed' }
     $cellConsumerArgs = @($compilerArgs | Where-Object { $_ -ne '-B' }) + @('-gh')
-    & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.cell.preferences.lpr') > 'cell-preferences-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.cell.preferences.lpr') > 'cell-preferences-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned preference consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.cell.preferences$executableSuffix") > 'cell-preferences-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned sequence/session consumer failed' }
-    & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.musical.composition.lpr') > 'musical-composition-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.musical.composition.lpr') > 'musical-composition-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted context composition consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.musical.composition$executableSuffix") > 'musical-composition-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted context composition consumer failed' }
-    & $compilerPath @cellConsumerArgs '-O2' (Join-Path $stage 'tests/pythian.tests.instrumental.unguided.lpr') > 'instrumental-unguided-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @cellConsumerArgs '-O2' (Join-Path $stage 'tests/pythian.tests.instrumental.unguided.lpr') > 'instrumental-unguided-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted original unguided form compilation failed' }
     & (Join-Path $binRoot "pythian.tests.instrumental.unguided$executableSuffix") > 'instrumental-unguided-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted original unguided form consumer failed' }
-    & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.instrumental.density.lpr') > 'instrumental-density-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.instrumental.density.lpr') > 'instrumental-density-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental density consumer compilation failed' }
     & (Join-Path $binRoot "pythian.tests.instrumental.density$executableSuffix") > 'instrumental-density-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental density consumer failed' }
     $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
-    & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }
     & (Join-Path $binRoot "pythian.example.provider.extensions$executableSuffix") 'caller-provider.wav' '731' > 'caller-provider-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec saved-style/native consumer failed' }
-    & $compilerPath @callerProviderArgs (Join-Path $stage 'tests/pythian.tests.provider.extension.lpr') > 'caller-provider-conformance-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @callerProviderArgs (Join-Path $stage 'tests/pythian.tests.provider.extension.lpr') > 'caller-provider-conformance-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec conformance compilation failed' }
     & (Join-Path $binRoot "pythian.tests.provider.extension$executableSuffix") 'caller-provider-control' > 'caller-provider-conformance-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec admission/persistence/blend conformance failed' }
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.wfc.provider.lpr') -Destination $checkRoot
-    & $compilerPath @compilerArgs 'pythian.example.wfc.provider.lpr' > 'provider-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.example.wfc.provider.lpr' > 'provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Caller-provider consumer compilation failed' }
     Test-NativeConsumer 'pythian.example.wfc.provider' 'provider-control' '0.25' '0.5' '16000' '16000' '2'
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.wfc.lpr') -Destination $checkRoot
-    & $compilerPath @compilerArgs 'pythian.example.wfc.lpr' > 'wfc-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.example.wfc.lpr' > 'wfc-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw "WFC consumer build failed; see $checkRoot/wfc-build.log" }
     & (Join-Path $binRoot "pythian.example.wfc$executableSuffix") 'core.wav' 'learned.wav' > 'wfc-run.log'
     if ($LASTEXITCODE -ne 0) { throw 'WFC consumer failed' }
     Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.events.lpr') -Destination $checkRoot
-    & $compilerPath @compilerArgs 'pythian.example.events.lpr' > 'events-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.example.events.lpr' > 'events-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw "Saved event consumer build failed; see $checkRoot/events-build.log" }
     & (Join-Path $binRoot "pythian.example.events$executableSuffix") 'core.wav' 'instrument.wav' 'events' > 'events-run.log'
     if ($LASTEXITCODE -ne 0) { throw 'Saved event consumer failed' }
     $toolRoot = Join-Path $stage 'tools'
     Copy-Item -LiteralPath (Join-Path $toolRoot 'pythian.learn.lpr') -Destination $checkRoot
-    & $compilerPath @compilerArgs "-Fu$toolRoot" 'pythian.learn.lpr' > 'journal-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs "-Fu$toolRoot" 'pythian.learn.lpr' > 'journal-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Packaged journal operator compilation failed' }
     $learner = Join-Path $binRoot "pythian.learn$executableSuffix"
     & $learner 'cache' 'core.wav' 'core.pyaf' '--batch-features' '7' > 'journal-cache.log'
@@ -348,7 +348,7 @@ try {
     # the extracted package, like the other external consumer checks.
     Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.learning.profile.lpr') -Destination $checkRoot
     Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.audio.session.pas') -Destination $checkRoot
-    & $compilerPath @compilerArgs 'pythian.tests.learning.profile.lpr' > 'partition-check-build.log' 2>&1
+    Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.tests.learning.profile.lpr' > 'partition-check-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Partition report verifier compilation failed' }
     & (Join-Path $binRoot "pythian.tests.learning.profile$executableSuffix") 'partition' 'journal' 'partitioned' '3' 'training' > 'partition-check.log'
     if ($LASTEXITCODE -ne 0) { throw 'Partition audit/profile parity failed' }
@@ -379,7 +379,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Packaged saved-context replay failed' }
   }
   Copy-Item -LiteralPath (Join-Path $exampleRoot 'pythian.example.processing.lpr') -Destination $checkRoot
-  & $compilerPath @compilerArgs 'pythian.example.processing.lpr' > 'processing-build.log' 2>&1
+  Invoke-PythianNativeCompile $compilerPath $nativeUnitContext @compilerArgs 'pythian.example.processing.lpr' > 'processing-build.log' 2>&1
   if ($LASTEXITCODE -ne 0) { throw "Processing consumer build failed; see $checkRoot/processing-build.log" }
   & (Join-Path $binRoot "pythian.example.processing$executableSuffix") 'core.wav' 'processed.wav' > 'processing-run.log'
   if ($LASTEXITCODE -ne 0) { throw 'Processing consumer failed' }

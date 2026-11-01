@@ -5,6 +5,41 @@
 
 ## Current handoff: musical qualification; consolidation stopped at note-gate contract — 2026-11-01
 
+Resume checkpoint: runtime source75cdd0e is pushed and all focused checks pass:
+indexed native/actual pas2js120, ordinary Studio91, proposed/manual99, fresh
+Windows form190 plus separate locked-song10, all native heaps clean. Complete
+CI546/run41292465280 is terminal cancelled: integration passes in27m25s, then the
+job exceeds its unchanged30minute limit during extracted packages. The exact
+GitHub annotation confirms the deadline; no newer push superseded it. Preserve
+the failure. [Native reuse](TODO/NS-6_native-reuse_01.md), effort3, removes repeated
+forced rebuilds through fresh per-invocation option/source contexts while keeping
+all consumers and the budget. Real compiler context probes pass, including warm
+reuse, defines/O2/search/automatic-source scopes, fresh invocation, errors and
+foreign PPU rejection. The complete local build is running in the isolated E
+qualification checkout; do not restart a live check on an observation timeout.
+
+The full Windows build also exposes existing JSON reader/writer fixture
+conversion through host code page1252. Original forced `-B` reproduces it:
+`'e' + ScalarText($301)` becomes invalid65B4, and quoted astral text becomes
+question marks. [Scalar fixture](TODO/NS-6_scalar-fixture_01.md), effort1, shares
+raw encoded fixture composition between both tests without changing production
+codecs or assertions. Native cold/warm checks5859/656 and actual pas2js5642/174
+pass; native heaps are clean. Full/CI acceptance remains open. Preserve the
+failed full-build01/02 and diagnostic logs under E/native-reuse-20261101-boss.
+
+Only the original stable service remains, with its old checked worker. All3
+clips remain discoverable with0 errors; there are0 active stable jobs. Current
+LAN address was reverified. The fixed QA service/tab are closed, no owned audio
+plays and viewport is reset. New worker SHA is
+d1fec68945378edb5ca206bda7b4d1260b78d3af81ac0505c1785aae5fb8e72a.
+The ignored E packet contains matching browser hashes, prior worker rollback,
+checked source/test receipts and `start-stable-75cdd0e.ps1`. After complete CI
+passes, recheck the exact stable owner/jobs/interface, stage that worker with the
+unchanged accepted server/UI into the existing slot, restart using existing TLS,
+verify LAN/API/data retention, then accept/move unguided-form and update all links
+and effort together. Do not accept or deploy on this pending observation. Leave
+the existing goal active; no operator decision is needed for the CI gate.
+
 Big Boss SOLO. The original192cell free arrangement now passes120 actual pas2js
 checks (including five canonical domain-intersection checks), with the unchanged
 free/guided digests below. Ordinary finite Studio exposed duplicate context-mask
@@ -29,7 +64,7 @@ are100%. Continue its narrowly changed mask/Studio qualification after this
 recorded reassessment. The counter2 checkpoint remains historical; the concrete
 original-request repair below now closes AC1/AC2 and resets the current counter.
 
-Accounting is130/182 (71.43%), nine open/28 current DONE,52 open units. No current
+Accounting is130/186 (69.89%), eleven open/28 current DONE,56 open units. No current
 runtime is accepted or deployed; stable and all operator data remain intact.
 
 The ordinary native Studio91 and proposed/manual-material99 now pass with clean

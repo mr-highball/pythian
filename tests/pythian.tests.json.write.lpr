@@ -26,7 +26,7 @@ program pythian_tests_json_write;
 {$mode delphi}{$H+}
 
 uses
-  SysUtils, pythian.text, pythian.json.text, pythian.progress
+  SysUtils, pythian.text, pythian.json.text, pythian.progress, pythian.tests.text.fixture
   {$ifndef pas2js}, Math, fpjson, pythian.tools.json{$endif};
 
 type
@@ -118,16 +118,16 @@ begin
   LSource := '';
   for I := 0 to 31 do
   begin
-    LSource := LSource + ScalarText(I);
+    LSource := FixtureText([LSource, ScalarText(I)]);
   end;
-  LSource := LSource + ScalarText($D7FF) + ScalarText($E000) + ScalarText($10000) +
-    ScalarText($10FFFF) + 'e' + ScalarText($301);
+  LSource := FixtureText([LSource, ScalarText($D7FF), ScalarText($E000), ScalarText($10000),
+    ScalarText($10FFFF), 'e', ScalarText($301)]);
   LActual := Quoted(LSource, 256);
   LPosition := 1;
   Check(CompareScalarText(ReadJSONString(LActual, LPosition, 256), LSource, 256, True) = 0,
     'Scalar/control round trip differs');
   Check(LPosition = Length(LActual) + 1, 'Quoted scalar cursor differs');
-  Check(Quoted(ScalarText($10000), 6) = '"' + ScalarText($10000) + '"',
+  Check(Quoted(ScalarText($10000), 6) = FixtureText(['"', ScalarText($10000), '"']),
     'Exact UTF-8 byte budget differs');
   for I := 0 to 3 do
   begin
@@ -253,7 +253,7 @@ begin
     LRows.Add(True);
     LRows.Add(False);
     LRows.Add(TJSONData(nil));
-    LSource := ScalarText($E000) + ScalarText($10000);
+    LSource := FixtureText([ScalarText($E000), ScalarText($10000)]);
     LRows.Add(NativeJSONText(LSource));
     LSource := '';
     for I := 0 to 31 do
@@ -261,7 +261,7 @@ begin
       LSource := LSource + AnsiChar(I);
     end;
     LSource := LSource + '"\/';
-    LRoot.Add(NativeJSONText(ScalarText($E000) + '/'), NativeJSONText(LSource));
+    LRoot.Add(NativeJSONText(FixtureText([ScalarText($E000), '/'])), NativeJSONText(LSource));
     LRoot.Add('long', StringOfChar('x', 18000));
     for I := 0 to 3 do
     begin

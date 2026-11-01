@@ -26,7 +26,8 @@ program pythian_tests_json_text;
 {$mode delphi}{$H+}
 
 uses
-  SysUtils, StrUtils, pythian.audio, pythian.text, pythian.json.text, pythian.progress
+  SysUtils, StrUtils, pythian.audio, pythian.text, pythian.json.text, pythian.progress,
+  pythian.tests.text.fixture
   {$ifndef pas2js}, fpjson, pythian.tools.json{$endif};
 
 type
@@ -149,15 +150,15 @@ begin
         end;
       2:
         begin
-          LExpected := DupeString(ScalarText($10000), CCount);
+          LExpected := RepeatFixture(ScalarText($10000), CCount);
           LSource := '"' + DupeString('\uD800\uDC00', CCount) + '"';
           LMaximum := CCount * 4;
           LSourceBytes := CCount * 12 + 2;
         end;
       3:
         begin
-          LExpected := DupeString(ScalarText($E000) + ScalarText($10000), CCount);
-          LSource := '"' + LExpected + '"';
+          LExpected := RepeatFixture(FixtureText([ScalarText($E000), ScalarText($10000)]), CCount);
+          LSource := FixtureText(['"', LExpected, '"']);
           LMaximum := CCount * 7;
           LSourceBytes := LMaximum + 2;
         end;
@@ -165,7 +166,7 @@ begin
     ReadCase(LSource, LExpected, LMaximum);
     Check(GObserver.SourceFinal = LSourceBytes, 'Final encoded UTF-8 source bytes differ');
     RejectCase(LSource, LMaximum - 1);
-    LDocument := 'skip' + LSource + 'tail';
+    LDocument := FixtureText(['skip', LSource, 'tail']);
     LPosition := 5;
     LValue := ReadJSONString(LDocument, LPosition, LMaximum, GObserver.Observe);
     Check((CompareScalarText(LValue, LExpected, LMaximum, True) = 0) and
@@ -223,11 +224,11 @@ begin
   ReadCase('"hello"', 'hello', 5);
   ReadCase('"\"\\\/\b\f\n\r\t\u0000"', '"\/' + #8 + #12 + #10 + #13 + #9 + #0, 9);
   ReadCase('"\u00e9"', ScalarText($E9), 2);
-  ReadCase('"\uD7FF\uE000"', ScalarText($D7FF) + ScalarText($E000), 6);
+  ReadCase('"\uD7FF\uE000"', FixtureText([ScalarText($D7FF), ScalarText($E000)]), 6);
   ReadCase('"\uD800\uDC00"', ScalarText($10000), 4);
   ReadCase('"\uDBFF\uDFFF"', ScalarText($10FFFF), 4);
-  ReadCase('"e\u0301"', 'e' + ScalarText($301), 3);
-  ReadCase('"' + ScalarText($10000) + '"', ScalarText($10000), 4);
+  ReadCase('"e\u0301"', FixtureText(['e', ScalarText($301)]), 3);
+  ReadCase(FixtureText(['"', ScalarText($10000), '"']), ScalarText($10000), 4);
   for I := 0 to 14 do
   begin
     case I of
@@ -260,7 +261,7 @@ begin
   RejectCase(TScalarText('"') + #$C0#$AF + '"', 8);
   RejectCase(TScalarText('"') + #$F4#$90#$80#$80 + '"', 8);
   {$endif}
-  LSource := ScalarText($E000) + ScalarText($10000);
+  LSource := FixtureText([ScalarText($E000), ScalarText($10000)]);
   LPosition := 1;
   LScalar := ReadTextScalar(LSource, LPosition, LBytes);
   Check((LScalar = $E000) and (LBytes = 3), 'Primary scalar traversal differs');
@@ -321,9 +322,9 @@ begin
   try
     Check(LData.JSONType = jtObject, 'Native JSON root differs');
     Check(CompareScalarText(TJSONObject(LData).Names[0],
-      ScalarText($E000) + ScalarText($10000), 8) = 0, 'Native escaped key differs');
+      FixtureText([ScalarText($E000), ScalarText($10000)]), 8) = 0, 'Native escaped key differs');
     Check(CompareScalarText(TJSONObject(LData).Items[0].AsString,
-      ScalarText($E000) + ScalarText($10000) + #0, 8, True) = 0, 'Native escaped value differs');
+      FixtureText([ScalarText($E000), ScalarText($10000), #0]), 8, True) = 0, 'Native escaped value differs');
     Check(TJSONObject(LData).Int64s['n'] = 9007199254740991, 'Native exact integer changed');
     Check(TJSONObject(LData).Strings['s'] = '0', 'Native string token collided with framing');
     Check(TJSONObject(LData).Find('f').AsFloat = CExpectedFloat, 'Native numeric value changed');

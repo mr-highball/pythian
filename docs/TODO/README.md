@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**9 open tasks · 182 total effort units · 28 current-goal DONE · 130 / 182 accepted (71.43%).**
+**11 open tasks · 186 total effort units · 28 current-goal DONE · 130 / 186 accepted (69.89%).**
 
 [Known projected domains — DONE](DONE/NS-4_projected-domains_01.md) accepts six units:
 the retained shared musical candidate reached its search limit at64 on both
@@ -104,7 +104,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Ten later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -144,10 +144,12 @@ continuity experiments are selected.
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 | [NS-6_generation-unification_01](NS-6_generation-unification_01.md) — one Studio instrumental stream | 3 | Shared controls/streams/projected domains accepted; Blocked by explicit streamed note-gate contract; failed consolidation preserved |
 | [NS-2_stream-articulation_01](NS-2_stream-articulation_01.md) — explicit streamed note articulation | 4 | Open held notes need a supported bounded gate contract and replay |
+| [NS-6_native-reuse_01](NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | CI546 integration passes; extracted packages time out after redundant rebuilds |
+| [NS-6_scalar-fixture_01](NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Original forced rebuild confirms host-code-page conversion in the oracle; shared test-only repair |
 
-The two tables together are all 37 current-goal tasks (9 open, twenty-eight DONE),
-totaling 182 units: 52 open and 130 accepted. Subtotals:
-NS-2 16, NS-3 15, NS-4 71, NS-5 15, NS-6 65. NS-1 remains a preserved core
+The two tables together are all 39 current-goal tasks (11 open, twenty-eight DONE),
+totaling 186 units: 56 open and 130 accepted. Subtotals:
+NS-2 16, NS-3 15, NS-4 71, NS-5 15, NS-6 69. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit
