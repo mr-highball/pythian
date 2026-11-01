@@ -41,6 +41,39 @@ These controls currently address the three pitched parts. Percussion keeps its
 own explicit rhythm-dependent provider, velocity vocabulary and sound recipes.
 Sounds/mix and saved sound starting points remain separate controls.
 
+## Positioned library preferences
+
+The primary sequence segment/chunk options accept `PositionPreferences` as
+`TLayerPositionPreferences`. Each row binds a zero-based position in the actual
+bounded graph to public token/multiplier preferences:
+
+```pascal
+Options.PositionPreferences := [
+  MakeLayerPositionPreference(0, [MakeLayerTokenPreference(RestToken, 31)]),
+  MakeLayerPositionPreference(7, [MakeLayerTokenPreference(AttackToken, 31)])];
+```
+
+Named sessions expose `SetPositionPreferences(Name, Rows)` and
+`CopyPositionPreferences(Name)`. These are explicit positive soft weights, not
+new vocabulary or hard exclusions. Local multipliers compose with global token
+preferences. The shared scope resolves actual latent values through the
+companion's public token-domain API; it does not invent private state names or
+change source-model frequencies. Hard domains, history, harmony and inter-part
+constraints still win. Preparation is bounded and observed, input arrays are
+detached, and cancellation restores accepted music and pending controls.
+
+Positions belong to the finite session or requested chunk, not absolute source
+audio time. Named accepted snapshots retain them and selective regeneration
+applies only the actual affected providers. The library capability is distinct
+from section-density controls in Studio, whose form mapping remains unfinished.
+
+Private companion planning hooks can use `ApplySequencePositionPreferences` to
+install graph-owned rows through the same checked mapper. Failed preparation or
+callbacks restore original inputs; success retains no borrowed graph owner.
+`TSequencePositionPreferenceScope` instead restores rows when disposed. Prepare
+these rows against original model weights before applying a separate global
+weight scope; pass that scope's global multipliers when composing local rows.
+
 ## Editable affect starting points
 
 The authored helper's shared mapping sets control numbers; it does not generate

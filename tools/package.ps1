@@ -121,6 +121,7 @@ if ($WithWfc) {
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extension.units.pas') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.provider.extensions.lpr') -Destination $exampleRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.provider.extension.lpr') -Destination $testRoot
+  Copy-Item -LiteralPath (Join-Path $projectRoot 'tests/pythian.tests.cell.preferences.lpr') -Destination $testRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'docs/CALLER-PROVIDERS.md') -Destination $docRoot
   Copy-Item -LiteralPath (Join-Path $projectRoot 'examples/pythian.example.events.lpr') -Destination $exampleRoot
   $toolRoot = Join-Path $stage 'tools'
@@ -277,6 +278,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental consumer failed' }
     & (Join-Path $binRoot "pythian.example.instrumental$executableSuffix") 'instrumental-drums.wav' '32' '731' '120' '0' '--drums' > 'instrumental-drums-run.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted instrumental percussion caller failed' }
+    $cellConsumerArgs = @($compilerArgs | Where-Object { $_ -ne '-B' }) + @('-gh')
+    & $compilerPath @cellConsumerArgs (Join-Path $stage 'tests/pythian.tests.cell.preferences.lpr') > 'cell-preferences-build.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned preference consumer compilation failed' }
+    & (Join-Path $binRoot "pythian.tests.cell.preferences$executableSuffix") > 'cell-preferences-run.log' 2>&1
+    if ($LASTEXITCODE -ne 0) { throw 'Extracted positioned sequence/session consumer failed' }
     $callerProviderArgs = $compilerArgs + @('-gh', ('-Fu' + $exampleRoot))
     & $compilerPath @callerProviderArgs (Join-Path $exampleRoot 'pythian.example.provider.extensions.lpr') > 'caller-provider-build.log' 2>&1
     if ($LASTEXITCODE -ne 0) { throw 'Extracted caller codec consumer compilation failed' }

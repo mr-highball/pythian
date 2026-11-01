@@ -762,6 +762,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.wfc.stream$executableSuffix")
     if ($LASTEXITCODE -ne 0) { throw 'WFC streaming checks failed' }
+    & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.cell.preferences.lpr'
+    if ($LASTEXITCODE -ne 0) { throw 'Positioned token preference compilation failed' }
+    & (Join-Path $buildRoot "pythian.tests.cell.preferences$executableSuffix")
+    if ($LASTEXITCODE -ne 0) { throw 'Positioned sequence/voice preference checks failed' }
     & $compilerPath @adapterArgs '-gh' 'tests/pythian.tests.sequence.stream.progress.lpr'
     if ($LASTEXITCODE -ne 0) { throw 'Shared sequence stream progress compilation failed' }
     & (Join-Path $buildRoot "pythian.tests.sequence.stream.progress$executableSuffix")

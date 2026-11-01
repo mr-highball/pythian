@@ -3,7 +3,132 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: section energy checked locally; CI536 pending — 2026-10-31
+## Current batch: positioned preferences checked locally; publication next — 2026-10-31
+
+Previous goal turn is **progress**: real positioned weights, primary consumers,
+upstream source/CI, checked pin integration and energy deployment changed the
+authoritative state. Big Boss remains SOLO.
+The existing batch criterion is real per-position soft preferences through the
+primary solver and adapters. Deliver detached bounded inputs with actual
+choice/entropy/restoration and unchanged hard constraints/default replay. Close
+with native/pas2js, upstream CI and actual downstream consumers; stop before
+section-density form/UI mapping. No full musical-form or quality acceptance.
+
+Energy479e1d5 passes all CI536 and is now deployed in the fixed stable slot.
+All fourteen hashes match the tested release manifest; HTTP/HTTPS200. Service6872
+owns the same private catalog, bind/TLS and dedicated output roots, after an
+idle17-job check. Existing approved paths remain. Its receipt and startup wrapper
+are in `section-energy-20261031-boss`. The first ownership guard rejected differing
+slash forms before any stop; path normalization repaired it. No new firewall or
+certificate installation. Stable still uses the separately checked energy
+runtime; it is not the new preference candidate.
+
+Separate WFC448b2a3 on notified `codex/pythian-cell-priors` passes all five
+upstream CI64 (41257225759), including actual browser conformance. New native240 /
+actual pas2js276, default741 and connectivity66 checks pass. Its reviewed pin is
+integrated without editing vendor source or merging a branch. Generic AC1/AC2
+close: this is actual usable solver behavior, not credit for a report. Consecutive
+nonclosing count resets to zero. Six task units remain unaccepted until all
+adapter/downstream gates pass; accounting stays99/146 (67.81%), seven open.
+
+Pythian final local consumers pass479 native/actual pas2js checks, with identical
+authored public-token choices and a clean native heap. Primary sequence chunks
+and named sessions compose global/local/existing soft weights, retain hard
+constraints/order-three history and preserve ownership/cancellation. Named
+accepted snapshots v2 retain position rows across reopening, selective changes
+and provider replacement; original v1 remains exact without these controls.
+The duplicate named-voice weight mapper is removed in favor of the primary
+sequence scope. Sparse global preferences resolve only requested token domains;
+the unchanged budget still rejects real dense work. Maintain native integration
+and extracted-package coverage for the new consumer.
+
+All new evidence uses `section-density-20261031-boss` in dedicated E-drive roots.
+Preserve upstream fixture declaration/private-method and chained-property
+syntax failures; adapter01's nonexistent extent and native03/JS02's incorrect
+Generate-after-acceptance fixture calls. Native layer01 exposed the superseded
+worst-case work assertion; repaired sparse-admission/dense-rejection checks pass
+with clean heap. Its file-writing fixture cannot compile for pas2js (SaveToFile);
+do not count that as browser evidence. Portable sequence, publication and snapshot
+regressions now pass separately. Publish on hello-pythian and inspect full
+CI/extracted results before
+accepting the task or selecting the parent form mapping. The goal remains active.
+
+Native batch session91139 finishes with exit0: layer02, learned-stream02,
+shared sequence-publication352890, named-publication407214 and accepted-snapshot
+15778 pass with clean heaps. Matching portable pas2js consumers pass; the
+file-writing layer fixture remains native-only. A final shared
+`ApplySequencePositionPreferences` helper transfers checked detached rows into a
+private companion planning graph, without retaining a scoped owner past the hook.
+It reuses the same constructor rollback path. Final `adapter-native06` and
+`adapter-js06` pass479 checks, with a clean native heap. A newly demonstrated
+sparse-position defect had unnecessarily resolved the full256-token vocabulary
+for one preference and hit the unchanged budget (`position-sparse-js02`). Reuse
+the primary selective mapper for the deduplicated requested-token union; the
+repaired real authored prefix passes. Retain that failure and the initial missing
+fixture type import. Neutral rows avoid unused domain resolution, and self-copy
+checks protect nested ownership. No extra broad suite follows these bounded API
+repairs; full integration/extracted CI checks the complete publication. No local
+test/compiler, new QA service or browser remains. Stable6872 stays available.
+
+## Previous follow-up: independent clips confirmed — 2026-10-31
+
+Big Boss rechecked the operator's independent-clip request against the actual
+primary save/learning paths and the running stable fourteen-file manifest.
+All deployed hashes match checked1fda087; Studio returns HTTP200 and includes
+clip-save status. Saving queues independent lossless WAV publication and linked
+origin metadata. Learning resolves included ranges to saved clips and opens only
+those files; the retained32-check native fixture and257-check playlist evidence
+include actual learning/reference with the parent held unavailable. The signed
+HTTP save/reload/automatic queue check also passes. No redundant test run or
+additional completion credit follows. The accepted task remains
+[saved clips](TODO/DONE/NS-6_saved-clips_01.md).
+
+Energy CI536 (41253996201) now completes successfully at479e1d5, including the
+full workflow. Stable remains checked1fda087; energy deployment is still pending.
+The generic prerequisite source is in the reused clean62c8597 checkout at
+`E:/CodexWork/pythian/runs/form-frontier-20261031-boss/wfc-worktree`, on separate
+branch `codex/pythian-cell-priors`. An initially slow fresh checkout was explicitly
+cancelled and only that owned checkout removed; its branch/evidence remain.
+Generic source/test edits are uncommitted. The first new fixture build fails on
+two Pascal loop/type declarations and an incorrect public reset method name;
+preserve `upstream-priors-build01.log` in `section-density-20261031-boss` before
+repair. The earlier741-check upstream baseline passes, but does not establish
+acceptance of the new fixture or latest validation edit. No vendor pin changed.
+Consecutive nonclosing count remains one; the goal remains active.
+
+## Current batch: positioned-prior prerequisite; energy CI536 passed — 2026-10-31
+
+Previous turn is **progress**: primary section expression/replay, actual native
+and browser consumers, source publication and checked stable section-edit delivery
+changed authoritative state. Consecutive nonclosing count remains one.
+
+Density assessment now establishes a distinct required generic gap. A native/
+actual pas2js two-cell primary-solver reproduction shows one global31:1 vector
+selecting0,0 and global1:31 selecting1,1; opposing per-position positive vectors
+cannot be supplied. Known future context/drum windows can span differently
+controlled sections, so shortening windows, hard filtering or output volume
+would not implement the requested soft controls. Preserve the initial fixture's
+missing InitialFailureKinds failure separately from corrected02 evidence.
+
+Add [cell priors](TODO/NS-4_cell-priors_01.md), effort6, before expanding scope.
+Accounting becomes99/146 (67.81%), seven open and21 current DONE; NS-4 adds six
+open units. Form's eight-unit estimate and accepted historical evidence remain.
+Its density work is dependency-blocked. The operator is notified of separate
+WFC branch `codex/pythian-cell-priors` from reviewed62c8597; unrelated upstream
+`expansion`85d19fe and private attachments remain untouched.
+
+Reassess the next action now: follow this real generic prerequisite while the
+independent energy CI runs, rather than inventing a dependency on that result.
+Before this batch, criterion is actual position-specific soft selection in the
+primary solver. Deliver bounded detached per-cell graph weights through weighted
+entropy, search/backtracking and Pythian's existing preference scopes. Closing
+evidence is opposing positive priors in one bounded graph, unchanged hard
+constraints/default replay, ownership/cancellation and native/actual pas2js.
+Stop at that usable generic/adapter capability before section-density UI mapping;
+complete upstream/downstream CI before accepting its six units. The counter is
+carried, not reset by the new task or branch. No report/assessment credit follows.
+
+## Previous handoff: section energy checked locally; CI536 pending — 2026-10-31
 
 Big Boss SOLO selects the section-energy slice of musical-form AC1. Deliver
 editable section strength through the primary instruments, persisted expression,

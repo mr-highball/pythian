@@ -52,6 +52,7 @@ type
   end;
   TVoiceMasks = array of TWfcSequenceTokenConstraints;
   TVoicePreferences = array of TLayerTokenPreferences;
+  TVoicePositionPreferences = array of TLayerPositionPreferences;
   { Detached pending-state flags prepared with the accepted music snapshot. }
   TVoiceDirtyFlags = array of Boolean;
   { Clean accepted snapshot. Config owns detached role/pair vectors, with nil
@@ -64,6 +65,7 @@ type
     Models: TLayerModelTexts;
     Constraints: TVoiceMasks;
     Preferences: TVoicePreferences;
+    PositionPreferences: TVoicePositionPreferences;
     Contracts: TProviderContracts;
     Assignments: TGraphAssignmentSnapshot;
   end;
@@ -90,6 +92,8 @@ type
     FCommitted: TVoiceMasks;
     FPreferences: TVoicePreferences;
     FCommittedPreferences: TVoicePreferences;
+    FPositions: TVoicePositionPreferences;
+    FCommittedPositions: TVoicePositionPreferences;
     FDirty: TVoiceDirtyFlags;
     FBusy: Boolean;
     FAccepted: TWfcMusicVoicesGenerated;
@@ -133,6 +137,10 @@ type
       const AProgress: TWorkProgressCallback = nil);
     function CopyPreferences(const AName: String;
       const AProgress: TWorkProgressCallback = nil): TLayerTokenPreferences;
+    procedure SetPositionPreferences(const AName: String;
+      const APreferences: TLayerPositionPreferences;
+      const AProgress: TWorkProgressCallback = nil);
+    function CopyPositionPreferences(const AName: String): TLayerPositionPreferences;
     function CopyAccepted(const AProgress: TWorkProgressCallback = nil): TWfcMusicVoicesGenerated;
     function CopyAcceptedSnapshot(const AProgress: TWorkProgressCallback = nil): TVoiceAcceptedSnapshot;
     class function FromAcceptedSnapshot(const ASnapshot: TVoiceAcceptedSnapshot;
@@ -177,15 +185,10 @@ type
   public
     Publication: TNamedVoicePublication;
   end;
-  TNamedPreferenceChange = record
-    Group: TGraphRuleGroup;
-    Original: Integer;
-    Preferred: Integer;
-  end;
   TNamedPreferenceScope = class
   private
-    FChanges: array of TNamedPreferenceChange;
-    FApplied: Boolean;
+    FScopes: array of TSequencePreferenceScope;
+    FPositions: array of TSequencePositionPreferenceScope;
   public
     constructor Create(const ASession: TNamedVoiceSession; const AActive: TGraphPassIndices;
       const AProgress: TWorkProgressCallback = nil);
@@ -207,6 +210,7 @@ type
     FGuarded: Boolean;
     FCommitted: TVoiceMasks;
     FCommittedPreferences: TVoicePreferences;
+    FCommittedPositions: TVoicePositionPreferences;
     FDirty: TVoiceDirtyFlags;
   public
     Captured: TWfcMusicVoicesGenerated;
@@ -232,68 +236,31 @@ constructor TNamedPreferenceScope.Create(const ASession: TNamedVoiceSession;
   const AActive: TGraphPassIndices; const AProgress: TWorkProgressCallback);
 var
   LIndex: Integer;
-  LCount: Integer;
   LPass: TGraph;
   LModel: TWfcSequenceModel;
-  LPreference: TLayerTokenPreference;
-  LValue: TGraphValue;
-  LDomain: TGraphValues;
-  LHadDomain: Boolean;
   LWork: TWfcObservedWork;
-  LBridge: TWfcSolveProgressBridge;
-  LMask: TWfcSequenceTokenConstraints;
 begin
   inherited Create;
+  SetLength(FScopes, ASession.ProviderCount);
+  SetLength(FPositions, ASession.ProviderCount);
   LWork := TWfcObservedWork.Create(AProgress, 'voice_weight_visits');
   try
     for LIndex in AActive do
     begin
       LWork.Visit;
-      if (LIndex >= ASession.ProviderCount) or
-        (Length(ASession.FPreferences[LIndex]) = 0) then
+      if LIndex >= ASession.ProviderCount then
       begin
         Continue;
       end;
       LPass := ASession.FGraph.PassGraph[LIndex];
       LModel := WfcMusicVoicesModelAt(ASession.FConfig, LIndex);
-      LBridge := TWfcSolveProgressBridge.Create(AProgress, LIndex + 1);
-      try
-        LHadDomain := LPass.HasAllowedValues(0, 0, 0);
-        LDomain := LPass.CopyAllowedValues(0, 0, 0);
-        try
-          for LPreference in ASession.FPreferences[LIndex] do
-          begin
-            LWork.Visit;
-            LPass.ClearAllowedValues(0, 0, 0);
-            SetLength(LMask, 1);
-            LMask[0].Position := 0;
-            SetLength(LMask[0].AllowedTokens, 1);
-            LMask[0].AllowedTokens[0] := LPreference.Token;
-            IntersectSequenceTokenConstraints(LModel, LPass, LMask,
-              LBridge.SequenceWorkObserver());
-            for LValue in LPass.CopyAllowedValues(0, 0, 0) do
-            begin
-              LCount := Length(FChanges);
-              SetLength(FChanges, LCount + 1);
-              FChanges[LCount].Group := LPass.Rules[LValue];
-              FChanges[LCount].Original := FChanges[LCount].Group.Weight;
-              FChanges[LCount].Preferred := Integer(Int64(FChanges[LCount].Original) *
-                LPreference.Multiplier);
-              LWork.Visit;
-            end;
-          end;
-        finally
-          LPass.ClearAllowedValues(0, 0, 0);
-          if LHadDomain then
-          begin
-            LPass.SetAllowedValues(0, 0, 0, LDomain);
-          end;
-        end;
-      finally
-        LBridge.Free;
-      end;
+      if Length(ASession.FPositions[LIndex]) > 0 then
+        FPositions[LIndex] := TSequencePositionPreferenceScope.Create(LModel, LPass,
+          ASession.FPositions[LIndex], ASession.FPreferences[LIndex], AProgress);
+      if Length(ASession.FPreferences[LIndex]) > 0 then
+        FScopes[LIndex] := TSequencePreferenceScope.Create(LModel, LPass,
+          ASession.FPreferences[LIndex], AProgress);
     end;
-    UsePreferred(LWork);
     LWork.Finish;
   finally
     LWork.Free;
@@ -304,10 +271,9 @@ procedure TNamedPreferenceScope.UsePreferred(const AWork: TWfcObservedWork);
 var
   LIndex: Integer;
 begin
-  FApplied := True;
-  for LIndex := 0 to High(FChanges) do
+  for LIndex := 0 to High(FScopes) do
   begin
-    FChanges[LIndex].Group.Weight := FChanges[LIndex].Preferred;
+    if FScopes[LIndex] <> nil then FScopes[LIndex].UsePreferred;
     VisitVoice(AWork);
   end;
 end;
@@ -316,19 +282,21 @@ procedure TNamedPreferenceScope.UseOriginal(const AWork: TWfcObservedWork);
 var
   LIndex: Integer;
 begin
-  for LIndex := 0 to High(FChanges) do
+  for LIndex := 0 to High(FScopes) do
   begin
-    FChanges[LIndex].Group.Weight := FChanges[LIndex].Original;
+    if FScopes[LIndex] <> nil then FScopes[LIndex].UseOriginal;
     VisitVoice(AWork);
   end;
-  FApplied := False;
 end;
 
 destructor TNamedPreferenceScope.Destroy;
+var
+  LIndex: Integer;
 begin
-  if FApplied then
+  for LIndex := High(FScopes) downto 0 do
   begin
-    UseOriginal;
+    FScopes[LIndex].Free;
+    FPositions[LIndex].Free;
   end;
   inherited Destroy;
 end;
@@ -499,6 +467,7 @@ begin
     CallerCopy := CopyGenerated(Captured, FCallback);
     FCommitted := Copy(FSession.FCommitted);
     FCommittedPreferences := Copy(FSession.FCommittedPreferences);
+    FCommittedPositions := Copy(FSession.FCommittedPositions);
     FDirty := Copy(FSession.FDirty);
     LWork := TWfcObservedWork.Create(FCallback, 'voice_commit_visits');
     for LIndex in FActive do
@@ -508,6 +477,7 @@ begin
         FCommitted[LIndex] := CopyVoiceTokenConstraints(FSession.FPending[LIndex], FCallback, LIndex + 1);
         FCommittedPreferences[LIndex] :=
           CopyVoicePreferences(FSession.FPreferences[LIndex], FCallback, LIndex + 1);
+        FCommittedPositions[LIndex] := CopyLayerPositionPreferences(FSession.FPositions[LIndex]);
         FDirty[LIndex] := False;
       end;
       LWork.Visit;
@@ -527,6 +497,7 @@ begin
   { Only ownership assignments remain after graph acceptance. }
   FSession.FCommitted := FCommitted;
   FSession.FCommittedPreferences := FCommittedPreferences;
+  FSession.FCommittedPositions := FCommittedPositions;
   FSession.FDirty := FDirty;
   FSession.FAccepted := Captured;
   AGenerated := CallerCopy;
@@ -680,6 +651,8 @@ begin
     SetLength(FCommitted, Length(FNames));
     SetLength(FPreferences, Length(FNames));
     SetLength(FCommittedPreferences, Length(FNames));
+    SetLength(FPositions, Length(FNames));
+    SetLength(FCommittedPositions, Length(FNames));
     SetLength(FDirty, Length(FNames));
     for LIndex := 0 to High(FNames) do
     begin
@@ -869,11 +842,13 @@ begin
       begin
         LCandidate.SetConstraints(FNames[LIndex], FPending[LIndex], AProgress);
         LCandidate.SetPreferences(FNames[LIndex], FPreferences[LIndex], AProgress);
+        LCandidate.SetPositionPreferences(FNames[LIndex], FPositions[LIndex], AProgress);
       end
       else
       begin
         LCandidate.SetConstraints(FNames[LIndex], FCommitted[LIndex], AProgress);
         LCandidate.SetPreferences(FNames[LIndex], FCommittedPreferences[LIndex], AProgress);
+        LCandidate.SetPositionPreferences(FNames[LIndex], FCommittedPositions[LIndex], AProgress);
       end;
       LCandidate.ApplyMask(LIndex, LCandidate.FPending[LIndex], AProgress);
       if not LActive[LIndex] then
@@ -926,6 +901,8 @@ begin
         CopyVoicePreferences(FPreferences[LIndex], AProgress, LIndex + 1);
       LCandidate.FCommittedPreferences[LIndex] :=
         CopyVoicePreferences(FCommittedPreferences[LIndex], AProgress, LIndex + 1);
+      LCandidate.FPositions[LIndex] := CopyLayerPositionPreferences(FPositions[LIndex]);
+      LCandidate.FCommittedPositions[LIndex] := CopyLayerPositionPreferences(FCommittedPositions[LIndex]);
       LCandidate.FDirty[LIndex] := FDirty[LIndex];
       LWork.Visit;
     end;
@@ -945,6 +922,8 @@ begin
     FPending := LCandidate.FPending;
     FPreferences := LCandidate.FPreferences;
     FCommittedPreferences := LCandidate.FCommittedPreferences;
+    FPositions := LCandidate.FPositions;
+    FCommittedPositions := LCandidate.FCommittedPositions;
     FDirty := LCandidate.FDirty;
     FAccepted := LCandidate.FAccepted;
     FContracts := LCandidate.FContracts;
@@ -1185,6 +1164,32 @@ begin
   end;
 end;
 
+procedure TNamedVoiceSession.SetPositionPreferences(const AName: String;
+  const APreferences: TLayerPositionPreferences; const AProgress: TWorkProgressCallback);
+var
+  LIndex: Integer;
+  LCandidate: TLayerPositionPreferences;
+begin
+  CheckIdle;
+  LIndex := IndexOf(AName);
+  FBusy := True;
+  try
+    LCandidate := ValidateSequencePositionPreferences(
+      WfcMusicVoicesModelAt(FConfig, LIndex), FOptions.CellCount, APreferences, AProgress);
+    ReportWork(AProgress, 'voice_position_preferences_ready', wuItems, 1, 1, LIndex + 1);
+    FPositions[LIndex] := LCandidate;
+    FDirty[LIndex] := True;
+  finally
+    FBusy := False;
+  end;
+end;
+
+function TNamedVoiceSession.CopyPositionPreferences(const AName: String): TLayerPositionPreferences;
+begin
+  CheckIdle;
+  Result := CopyLayerPositionPreferences(FPositions[IndexOf(AName)]);
+end;
+
 function TNamedVoiceSession.CopyAcceptedSnapshot(
   const AProgress: TWorkProgressCallback): TVoiceAcceptedSnapshot;
 var
@@ -1201,6 +1206,10 @@ begin
   FBusy := True;
   try
     Result.Version := 1;
+    for LIndex := 0 to High(FCommittedPositions) do
+      if Length(FCommittedPositions[LIndex]) > 0 then Result.Version := 2;
+    if Result.Version = 2 then
+      SetLength(Result.PositionPreferences, Length(FNames));
     Result.Options := FOptions;
     Result.RoleNames := Copy(FNames, 2, Length(FNames) - 2);
     Result.Config := CopyWfcMusicVoicesGraphConfig(FConfig);
@@ -1221,6 +1230,8 @@ begin
       Inc(LTextUnits, Length(Result.Models[LIndex]));
       Result.Constraints[LIndex] := CopyVoiceTokenConstraints(FCommitted[LIndex], AProgress, LIndex + 1);
       Result.Preferences[LIndex] := CopyVoicePreferences(FCommittedPreferences[LIndex], AProgress, LIndex + 1);
+      if Result.Version = 2 then
+        Result.PositionPreferences[LIndex] := CopyLayerPositionPreferences(FCommittedPositions[LIndex]);
       Result.Contracts[LIndex] := CopyProviderContract(FContracts[LIndex]);
     end;
     LBridge := TWfcSolveProgressBridge.Create(AProgress);
@@ -1249,12 +1260,15 @@ var
 begin
   Result := nil;
   LCount := Length(ASnapshot.RoleNames) + 2;
-  if (ASnapshot.Version <> 1) or (LCount < 3) or (LCount > MaximumLearnedLayers) or
+  if not (ASnapshot.Version in [1, 2]) or (LCount < 3) or (LCount > MaximumLearnedLayers) or
     (Length(ASnapshot.Config.Voices) <> LCount - 2) or
     (Length(ASnapshot.Models) <> LCount) or (Length(ASnapshot.Constraints) <> LCount) or
     (Length(ASnapshot.Preferences) <> LCount) or (Length(ASnapshot.Contracts) <> LCount) or
     (ASnapshot.Config.HarmonyModel <> nil) or (ASnapshot.Config.RhythmModel <> nil) then
     raise EAudio.Create('Voice snapshot version, provider counts or model ownership differs');
+  if ((ASnapshot.Version = 1) and (Length(ASnapshot.PositionPreferences) <> 0)) or
+    ((ASnapshot.Version = 2) and (Length(ASnapshot.PositionPreferences) <> LCount)) then
+    raise EAudio.Create('Voice snapshot position-preference version or provider counts differ');
   for LIndex := 0 to High(ASnapshot.Config.Voices) do
     if ASnapshot.Config.Voices[LIndex].Model <> nil then
       raise EAudio.Create('Voice snapshots require saved model text without borrowed model pointers');
@@ -1287,6 +1301,9 @@ begin
     begin
       LCandidate.SetConstraints(LCandidate.ProviderName(LIndex), ASnapshot.Constraints[LIndex], AProgress);
       LCandidate.SetPreferences(LCandidate.ProviderName(LIndex), ASnapshot.Preferences[LIndex], AProgress);
+      if ASnapshot.Version = 2 then
+        LCandidate.SetPositionPreferences(LCandidate.ProviderName(LIndex),
+          ASnapshot.PositionPreferences[LIndex], AProgress);
       LCandidate.ApplyMask(LIndex, ASnapshot.Constraints[LIndex], AProgress);
       LActive[LIndex] := LIndex;
     end;

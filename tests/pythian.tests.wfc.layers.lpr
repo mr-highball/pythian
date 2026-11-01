@@ -483,6 +483,7 @@ var
   LOutput: TLayerSequences;
   LIndex: Integer;
   LRejected: Boolean;
+  LAcceptedState: Integer;
 begin
   SetLength(LLayers, 1);
   SetLength(LTokens, 256);
@@ -495,6 +496,15 @@ begin
     LLayers[0].Preferences := [MakeLayerTokenPreference('0', 2)];
     LOptions := DefaultLayerGenerationOptions;
     LOptions.CellCount := 1;
+    LOptions.Extent := wsePrefix;
+    Check(TryGenerateLayers(LLayers, nil, LOptions, LOutput, LReport),
+      'Sparse preferences resolve only requested public-token domains');
+    Check((Length(LOutput) = 1) and (LOutput[0].Tokens[0] = '0'),
+      'Sparse preparation admits the actual authored prefix without relaxing its path');
+    LAcceptedState := LOutput[0].StateIndices[0];
+    SetLength(LLayers[0].Preferences, Length(LTokens));
+    for LIndex := 0 to High(LTokens) do
+      LLayers[0].Preferences[LIndex] := MakeLayerTokenPreference(LTokens[LIndex], 2);
     LRejected := False;
     try
       TryGenerateLayers(LLayers, nil, LOptions, LOutput, LReport);
@@ -504,8 +514,10 @@ begin
         LRejected := Pos('preparation exceeds work budget', LException.Message) > 0;
       end;
     end;
-    Check(LRejected and (Length(LOutput) = 0), 'Preference work bound rejects before publication');
-    WriteLn('Preference public-domain preparation budget rejects before graph construction');
+    Check(LRejected and (Length(LOutput) = 1) and
+      (LOutput[0].StateIndices[0] = LAcceptedState),
+      'Actual dense preference work bound rejects before replacing accepted output');
+    WriteLn('Sparse preference lookup reuses primary mapping; dense work still rejects before construction');
   finally
     LLayers[0].Model.Free;
   end;

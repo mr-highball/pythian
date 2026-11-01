@@ -62,6 +62,7 @@ type
     MaxBacktracks: Integer;
     StateCellBudget: Integer;
     Preferences: TLayerTokenPreferences;
+    PositionPreferences: TLayerPositionPreferences;
   end;
 
 function DefaultSequenceSegmentOptions: TSequenceSegmentOptions;
@@ -247,12 +248,16 @@ var
   LSolve: TGraphSolveOptions;
   LFalsePosition: Integer;
   LPreferences: TSequencePreferenceScope;
+  LPositionPreferences: TSequencePositionPreferenceScope;
+  LPositionInputs: TLayerPositionPreferences;
 begin
   RequireGenerationBounds(AModel, AOptions.CellCount, AOptions.MaxBacktracks,
     AOptions.StateCellBudget);
   AReport := Default(TGraphSolveReport);
   LProgress := nil;
   LPreferences := nil;
+  LPositionPreferences := nil;
+  LPositionInputs := CopyLayerPositionPreferences(AOptions.PositionPreferences);
   LGraph := TGraph.Create;
   try
     LProgress := TWfcSolveProgressBridge.Create(AProgress);
@@ -265,6 +270,9 @@ begin
       LProgress.SequenceWorkObserver());
     LSolve := DefaultGraphSolveOptions;
     LSolve.MaxBacktracks := AOptions.MaxBacktracks;
+    if Length(LPositionInputs) > 0 then
+      LPositionPreferences := TSequencePositionPreferenceScope.Create(AModel, LGraph,
+        LPositionInputs, AOptions.Preferences, AProgress);
     LPreferences := TSequencePreferenceScope.Create(AModel, LGraph,
       AOptions.Preferences, AProgress);
     Result := LGraph.TrySolve(LSolve, AReport, LProgress.SolveObserver());
@@ -284,6 +292,7 @@ begin
     ASequence := LCandidate;
   finally
     LPreferences.Free;
+    LPositionPreferences.Free;
     LProgress.Free;
     LGraph.Free;
   end;

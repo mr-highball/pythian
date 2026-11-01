@@ -84,8 +84,12 @@ a raw effective graph-weight sum no larger than signed 32-bit maximum per pass.
 The sum includes position copies for fixed partitions. This conservative bound
 can reject weights that a later common-divisor normalization could reduce.
 Preference preparation has a separate aggregate limit of 16777216 work units:
-ordinary passes charge `states² × (order + 1) × (public tokens + 1)` for public
+ordinary passes charge `states² × (order + 1) × (preferences + 1)` for public
 domain resolution; position-compiled passes charge `states × cells × preferences`.
+The primary mapper resolves only requested token domains. Sparse preferences no
+longer pay to resolve the unused vocabulary; dense requests still reject at the
+same work limit before graph construction and preserve accepted output. Named
+voices reuse this mapper rather than maintaining their own latent-key/weight loop.
 Existing graph and projection bounds also apply. No token is silently ignored,
 weight rounded or budget raised.
 

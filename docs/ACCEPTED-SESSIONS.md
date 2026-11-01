@@ -50,7 +50,12 @@ unsupported versions and borrowed model pointers are rejected.
 Model text and assignment text each have a separate 16,777,216 string-unit budget;
 assignments also use the existing 262,144 state-cell limit. String units are an
 in-process bound, not an encoded file-byte size. Normal provider, vocabulary,
-projection and preparation budgets still apply. Snapshots currently use version1.
+projection and preparation budgets still apply. Voice snapshots use version2 when
+committed position preferences are present; they retain each provider's exact
+cell-relative rows with detached nested token preferences. Version1 has no such
+rows and remains the default otherwise. A version1 record containing positioned
+controls rejects rather than silently discarding them. Layer snapshots remain
+version1. These are bounded-session inputs, not an absolute full-track arrangement.
 
 Progress callbacks are borrowed for each call. Copy/decode and structural restore
 work are visible; phase counts are local work, not overall generation percentages.

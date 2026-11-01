@@ -48,6 +48,7 @@ type
       Zero retains a finite segment without an exit-support requirement. }
     MinimumFollowingCells: Integer;
     Preferences: TLayerTokenPreferences;
+    PositionPreferences: TLayerPositionPreferences;
   end;
 
   { Sequential owner of one authenticated latent boundary. Model is immutable,
@@ -163,6 +164,7 @@ begin
   LOptions.Seed := AOptions.Seed;
   LOptions.MaxBacktracks := AOptions.MaxBacktracks;
   LOptions.Preferences := AOptions.Preferences;
+  LOptions.PositionPreferences := CopyLayerPositionPreferences(AOptions.PositionPreferences);
   AReport := Default(TGraphSolveReport);
   FBusy := True;
   try

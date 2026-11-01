@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** Dependency-blocked
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,6 +22,10 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Positioned soft priors](NS-4_cell-priors_01.md) — different section density
+  preferences must reach actual future context/rhythm/drum choices inside one
+  bounded planning window; current shared value weights cannot express them.
+
 - [Known future domains — DONE](DONE/NS-4_future-domains_01.md) — original24cell
   guide and real8/16cell form now pass with native/pas2js and full CI/packages.
 
@@ -29,6 +33,16 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-10-31, Big Boss: energy479e1d5 completes all CI536 (41253996201) and is
+  now in the fixed stable slot. All fourteen deployed hashes match the actual
+  local consumer manifest; LAN HTTP/HTTPS return200. Existing private catalog,
+  TLS, executable paths and storage roots remain. Seventeen prior terminal jobs
+  were checked before the guarded idle restart. The rejected first process
+  ownership check compared slash variants; normalization repaired that guard
+  before any process stop. Density's new linked six-unit prerequisite grows
+  total scope to146;99 remain accepted (67.81%), seven open. Earlier140-unit
+  entries below are historical. Energy delivery is not full AC1 or form acceptance.
 
 - 2026-10-31, Big Boss SOLO: select the section-energy slice of AC1. Deliver
   an editable per-section performance control through the primary instrument

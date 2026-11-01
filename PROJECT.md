@@ -47,7 +47,17 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Current accepted WFC pin: `62c8597bc8add1d2e1956a9ed5cef3ddaf569d70`, on
+Candidate WFC integration: `448b2a3e25beded8503e94b5f4705b7156eca966`, on separate
+unmerged branch `codex/pythian-cell-priors`. It adds opt-in position-specific
+positive soft weights to the primary graph/numeric solver, including weighted
+entropy, restoration and negotiation. All five [upstream CI64 jobs](https://github.com/mr-highball/wfc/actions/runs/41257225759)
+pass. Native240/actual pas2js276 new checks, default741 and connectivity66 pass.
+The primary sequence/named-voice adapter integration and complete downstream
+acceptance remain in [cell priors](docs/TODO/NS-4_cell-priors_01.md); no task
+effort or musical-quality credit follows yet. Generic work occurred only in the
+separate repository, not as edits in this vendor checkout. No branch was merged.
+
+Last fully accepted WFC pin: `62c8597bc8add1d2e1956a9ed5cef3ddaf569d70`, on
 separate unmerged branch `codex/pythian-future-domains`. Its primary voice stream
 checks a bounded future window but publishes only the requested prefix. Native
 Win64/actual pas2js pass the generic ownership/domain/replay consumers and the

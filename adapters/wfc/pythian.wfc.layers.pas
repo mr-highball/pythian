@@ -57,6 +57,32 @@ type
     Multiplier: Integer;
   end;
   TLayerTokenPreferences = array of TLayerTokenPreference;
+  TLayerPositionPreference = record
+    Position: Integer;
+    Preferences: TLayerTokenPreferences;
+  end;
+  TLayerPositionPreferences = array of TLayerPositionPreference;
+  TSequencePositionWeightChange = record
+    Position: Integer;
+    Original: TGraphValueWeights;
+    Preferred: TGraphValueWeights;
+  end;
+  { Borrowed one-dimensional pass/model. Positive public-token multipliers
+    compose with global multipliers and existing cell priors, without changing
+    model/rule weights or hard domains. Dispose outside a running transaction,
+    before the graph. Destruction restores the original detached cell rows. }
+  TSequencePositionPreferenceScope = class
+  private
+    FGraph: TGraph;
+    FChanges: array of TSequencePositionWeightChange;
+    FApplied: Integer;
+  public
+    constructor Create(const AModel: TWfcSequenceModel; const AGraph: TGraph;
+      const APreferences: TLayerPositionPreferences;
+      const AGlobalPreferences: TLayerTokenPreferences = nil;
+      const AProgress: TWorkProgressCallback = nil);
+    destructor Destroy; override;
+  end;
   { Borrowed selected pass/model, including a child pass; dispose before its
     root graph. Reuses the
     primary layer preference validation, weight mapping and restoration.
@@ -70,6 +96,7 @@ type
       const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     procedure UseOriginal(const AProgress: TWorkProgressCallback = nil);
+    procedure UsePreferred(const AProgress: TWorkProgressCallback = nil);
   end;
   TLearnedLayer = record
     Model: TWfcSequenceModel;
@@ -232,6 +259,22 @@ function DescribeLayerGraph(const AGraph: TGraph; const ANames: array of String;
   const AModels: array of TWfcSequenceModel): TLayerGraphPasses;
 function MakeLayerTokenPreference(const AToken: String;
   const AMultiplier: Integer): TLayerTokenPreference;
+function MakeLayerPositionPreference(const APosition: Integer;
+  const APreferences: TLayerTokenPreferences): TLayerPositionPreference;
+{ Copy before callbacks; bounded aggregate positions/tokens. Validation reuses
+  the primary token/multiplier contract and returns a detached candidate. }
+function CopyLayerPositionPreferences(const APreferences: TLayerPositionPreferences): TLayerPositionPreferences;
+function ValidateSequencePositionPreferences(const AModel: TWfcSequenceModel;
+  const ACellCount: Integer; const APreferences: TLayerPositionPreferences;
+  const AProgress: TWorkProgressCallback = nil): TLayerPositionPreferences;
+{ Install graph-owned rows on a caller's private planning graph. The same scope
+  rolls back failed preparation/callbacks; success transfers the inputs to the
+  graph without retaining it. Useful for companion ConfigureSegment hooks whose
+  private graph is solved and destroyed by the companion after the hook returns. }
+procedure ApplySequencePositionPreferences(const AModel: TWfcSequenceModel;
+  const AGraph: TGraph; const APreferences: TLayerPositionPreferences;
+  const AGlobalPreferences: TLayerTokenPreferences = nil;
+  const AProgress: TWorkProgressCallback = nil);
 function MakeLayerScope(const ACellCount: Integer;
   const AExtent: TWfcSequenceExtent): TLayerScope;
 function MakeLayerTimeGrid(const AOriginTick, ATicksPerCell: Integer): TLayerTimeGrid;
@@ -396,7 +439,8 @@ end;
 function MakeLayerTokenPreference(const AToken: String;
   const AMultiplier: Integer): TLayerTokenPreference;
 begin
-  if (AMultiplier < 1) or (AMultiplier > MaximumLayerPreferenceMultiplier) then
+  if not ((AMultiplier >= 1) and (AMultiplier <= MaximumLayerPreferenceMultiplier) and
+    (AMultiplier = Trunc(AMultiplier))) then
   begin
     raise EAudio.Create('Layer preference multiplier must be in 1..1024');
   end;
@@ -427,7 +471,7 @@ begin
   if not APartitioned then
   begin
     Inc(AWork, Int64(ALayer.Model.StateCount) * ALayer.Model.StateCount *
-      (ALayer.Model.Order + 1) * (ALayer.Model.PublicTokenCount + 1));
+      (ALayer.Model.Order + 1) * (Length(ALayer.Preferences) + 1));
   end
   else
   begin
@@ -448,8 +492,9 @@ begin
   begin
     VisitLayer(APreparation);
     LToken := ALayer.Model.FindPublicToken(ALayer.Preferences[LIndex].Token);
-    if (LToken < 0) or (ALayer.Preferences[LIndex].Multiplier < 1) or
-      (ALayer.Preferences[LIndex].Multiplier > MaximumLayerPreferenceMultiplier) then
+    if (LToken < 0) or not ((ALayer.Preferences[LIndex].Multiplier >= 1) and
+      (ALayer.Preferences[LIndex].Multiplier <= MaximumLayerPreferenceMultiplier) and
+      (ALayer.Preferences[LIndex].Multiplier = Trunc(ALayer.Preferences[LIndex].Multiplier))) then
     begin
       raise EAudio.Create('Layer preference requires a known token and multiplier in 1..1024');
     end;
@@ -474,6 +519,82 @@ begin
     begin
       raise EAudio.Create('Preferred graph weight sum exceeds signed 32-bit budget');
     end;
+  end;
+end;
+
+function MakeLayerPositionPreference(const APosition: Integer;
+  const APreferences: TLayerTokenPreferences): TLayerPositionPreference;
+begin
+  Result.Position := APosition;
+  Result.Preferences := Copy(APreferences);
+end;
+
+function CopyLayerPositionPreferences(
+  const APreferences: TLayerPositionPreferences): TLayerPositionPreferences;
+var
+  LCandidate: TLayerPositionPreferences;
+  LTotal: Integer;
+  I: Integer;
+begin
+  if Length(APreferences) > MaximumLayerCells then
+    raise EAudio.Create('Position preference rows exceed the bounded cell limit');
+  LTotal := 0;
+  for I := 0 to High(APreferences) do
+  begin
+    if (Length(APreferences[I].Preferences) > MaximumLayerPreferences) or
+      (Length(APreferences[I].Preferences) > MaximumLayerPositionRequirements - LTotal) then
+      raise EAudio.Create('Position preference tokens exceed the preparation limit');
+    Inc(LTotal, Length(APreferences[I].Preferences));
+  end;
+  LCandidate := nil;
+  SetLength(LCandidate, Length(APreferences));
+  for I := 0 to High(APreferences) do
+    LCandidate[I] := MakeLayerPositionPreference(APreferences[I].Position,
+      APreferences[I].Preferences);
+  Result := LCandidate;
+end;
+
+function ValidateSequencePositionPreferences(const AModel: TWfcSequenceModel;
+  const ACellCount: Integer; const APreferences: TLayerPositionPreferences;
+  const AProgress: TWorkProgressCallback): TLayerPositionPreferences;
+var
+  LCandidate: TLayerPositionPreferences;
+  LLayer: TLearnedLayer;
+  LWork: Int64;
+  LPreparation: TLayerPreparation;
+  I, J: Integer;
+begin
+  if (AModel = nil) or (ACellCount < 1) or (ACellCount > MaximumLayerCells) then
+    raise EAudio.Create('Position preferences need a model and bounded one-dimensional cells');
+  LCandidate := CopyLayerPositionPreferences(APreferences);
+  LPreparation := TLayerPreparation.Create(AProgress, 'sequence_position_preference_visits');
+  try
+    LLayer := Default(TLearnedLayer);
+    LLayer.Model := AModel;
+    LWork := Int64(Length(LCandidate)) * Length(LCandidate);
+    if LWork > MaximumLayerPreferencePreparationWork then
+      raise EAudio.Create('Position preference preparation exceeds its work budget');
+    for I := 0 to High(LCandidate) do
+    begin
+      if not ((LCandidate[I].Position >= 0) and
+        (LCandidate[I].Position < ACellCount) and
+        (LCandidate[I].Position = Trunc(LCandidate[I].Position))) then
+        raise EAudio.Create('Position preference is outside the bounded graph');
+      for J := 0 to I - 1 do
+      begin
+        VisitLayer(LPreparation);
+        if LCandidate[J].Position = LCandidate[I].Position then
+          raise EAudio.Create('Duplicate position preference row');
+      end;
+      LLayer.Preferences := LCandidate[I].Preferences;
+      { Position rows share one latent-domain extraction; account for that once
+        in the scope, and validate each row with the primary nonexpanded weights. }
+      ValidatePreferences(LLayer, 1, True, LWork, LPreparation);
+    end;
+    LPreparation.Finish;
+    Result := LCandidate;
+  finally
+    LPreparation.Free;
   end;
 end;
 
@@ -1497,11 +1618,14 @@ begin
 end;
 
 function CopyTokenDomains(const AModel: TWfcSequenceModel;
-  const APass: TGraph; const APreparation: TLayerPreparation = nil): TLayerDomains;
+  const APass: TGraph; const APreparation: TLayerPreparation = nil;
+  const APreferences: TLayerTokenPreferences = nil): TLayerDomains;
 var
   LHadDomain: Boolean;
   LDomain: TGraphValues;
   LToken: Integer;
+  LPreference: Integer;
+  LRequested: Boolean;
   LMask: TWfcSequenceTokenConstraints;
 begin
   { Resolve latent graph keys only through the public sequence-domain API.
@@ -1517,6 +1641,17 @@ begin
     for LToken := 0 to AModel.PublicTokenCount - 1 do
     begin
       VisitLayer(APreparation);
+      if Length(APreferences) > 0 then
+      begin
+        LRequested := False;
+        for LPreference := 0 to High(APreferences) do
+        begin
+          VisitLayer(APreparation);
+          if APreferences[LPreference].Token = AModel.PublicTokenAt(LToken) then
+            LRequested := True;
+        end;
+        if not LRequested then Continue;
+      end;
       APass.ClearAllowedValues(0, 0, 0);
       LayerCheckpoint(APreparation);
       LMask[0].AllowedTokens[0] := AModel.PublicTokenAt(LToken);
@@ -1531,6 +1666,193 @@ begin
     begin
       APass.SetAllowedValues(0, 0, 0, LDomain);
     end;
+  end;
+end;
+
+constructor TSequencePositionPreferenceScope.Create(const AModel: TWfcSequenceModel;
+  const AGraph: TGraph; const APreferences: TLayerPositionPreferences;
+  const AGlobalPreferences: TLayerTokenPreferences;
+  const AProgress: TWorkProgressCallback);
+var
+  LRows: TLayerPositionPreferences;
+  LGlobal: TLayerTokenPreferences;
+  LRequested: TLayerTokenPreferences;
+  LRequestedFlags: array of Boolean;
+  LLayer: TLearnedLayer;
+  LDomains: TLayerDomains;
+  LValues: TGraphValues;
+  LPreparation: TLayerPreparation;
+  LWork: Int64;
+  LWeight, LTotal: Int64;
+  LBase, LGlobalMultiplier, LLocalMultiplier: Integer;
+  LIndex, LToken, LPreference, LOriginal, LOverride: Integer;
+  LValue: TGraphValue;
+  procedure RequestDomains(const APreferences: TLayerTokenPreferences);
+  var
+    LPreference: TLayerTokenPreference;
+    LTokenIndex: Integer;
+  begin
+    for LPreference in APreferences do
+    begin
+      VisitLayer(LPreparation);
+      if LPreference.Multiplier = 1 then Continue;
+      LTokenIndex := AModel.FindPublicToken(LPreference.Token);
+      if LTokenIndex < 0 then
+        raise EAudio.Create('Position weight mapping requires a known public token');
+      LRequestedFlags[LTokenIndex] := True;
+    end;
+  end;
+begin
+  inherited Create;
+  if (AModel = nil) or (AGraph = nil) then
+    raise EAudio.Create('Position preferences require a model and private graph');
+  FGraph := AGraph.PassGraph[AGraph.CurrentPassIndex];
+  if (FGraph.Dimension.Height <> 1) or (FGraph.Dimension.Depth <> 1) then
+    raise EAudio.Create('Sequence preferences require a one-dimensional pass');
+  if Length(APreferences) = 0 then Exit;
+  if Length(AGlobalPreferences) > MaximumLayerPreferences then
+    raise EAudio.Create('Global preference count exceeds its preparation limit');
+  LGlobal := Copy(AGlobalPreferences);
+  LRows := ValidateSequencePositionPreferences(AModel, FGraph.Dimension.Width,
+    APreferences, AProgress);
+  if Length(LRows) = 0 then Exit;
+  LPreparation := TLayerPreparation.Create(AProgress, 'sequence_position_weight_visits');
+  try
+    LLayer := Default(TLearnedLayer);
+    LLayer.Model := AModel;
+    LLayer.Preferences := LGlobal;
+    LWork := Int64(Length(LRows)) * AModel.StateCount * AModel.StateCount;
+    ValidatePreferences(LLayer, 1, False, LWork, LPreparation);
+    if LWork > MaximumLayerPreferencePreparationWork then
+      raise EAudio.Create('Position weight mapping exceeds its preparation work budget');
+    SetLength(LRequestedFlags, AModel.PublicTokenCount);
+    RequestDomains(LGlobal);
+    for LIndex := 0 to High(LRows) do RequestDomains(LRows[LIndex].Preferences);
+    LRequested := nil;
+    for LToken := 0 to High(LRequestedFlags) do
+      if LRequestedFlags[LToken] then
+      begin
+        LPreference := Length(LRequested);
+        SetLength(LRequested, LPreference + 1);
+        LRequested[LPreference] := MakeLayerTokenPreference(AModel.PublicTokenAt(LToken), 1);
+      end;
+    if Length(LRequested) > 0 then
+      Inc(LWork, Int64(AModel.StateCount) * AModel.StateCount *
+        (AModel.Order + 1) * (Length(LRequested) + 1));
+    if LWork > MaximumLayerPreferencePreparationWork then
+      raise EAudio.Create('Position weight mapping exceeds its preparation work budget');
+    if Length(LRequested) > 0 then
+      LDomains := CopyTokenDomains(AModel, FGraph, LPreparation, LRequested)
+    else
+      LDomains := nil;
+    LValues := FGraph.CopyRegisteredValues;
+    SetLength(FChanges, Length(LRows));
+    for LIndex := 0 to High(LRows) do
+    begin
+      FChanges[LIndex].Position := LRows[LIndex].Position;
+      FChanges[LIndex].Original := FGraph.CopyCellValueWeights(LRows[LIndex].Position, 0, 0);
+      FChanges[LIndex].Preferred := Copy(FChanges[LIndex].Original);
+      for LToken := 0 to AModel.PublicTokenCount - 1 do
+      begin
+        if not LRequestedFlags[LToken] then Continue;
+        LGlobalMultiplier := 1;
+        for LPreference := 0 to High(LGlobal) do
+        begin
+          VisitLayer(LPreparation);
+          if LGlobal[LPreference].Token = AModel.PublicTokenAt(LToken) then
+            LGlobalMultiplier := LGlobal[LPreference].Multiplier;
+        end;
+        LLocalMultiplier := 1;
+        for LPreference := 0 to High(LRows[LIndex].Preferences) do
+        begin
+          VisitLayer(LPreparation);
+          if LRows[LIndex].Preferences[LPreference].Token = AModel.PublicTokenAt(LToken) then
+            LLocalMultiplier := LRows[LIndex].Preferences[LPreference].Multiplier;
+        end;
+        if (LGlobalMultiplier = 1) and (LLocalMultiplier = 1) then Continue;
+        for LValue in LDomains[LToken] do
+        begin
+          LBase := FGraph.Rules[LValue].Weight;
+          LOverride := -1;
+          for LOriginal := 0 to High(FChanges[LIndex].Original) do
+          begin
+            VisitLayer(LPreparation);
+            if FChanges[LIndex].Original[LOriginal].Value = LValue then
+            begin
+              LBase := FChanges[LIndex].Original[LOriginal].Weight;
+              LOverride := LOriginal;
+            end;
+          end;
+          LWeight := Int64(LBase) * LGlobalMultiplier * LLocalMultiplier;
+          if LWeight > High(Integer) then
+            raise EAudio.Create('Position preferred weight exceeds its signed 32-bit budget');
+          if LOverride < 0 then
+          begin
+            LOverride := Length(FChanges[LIndex].Preferred);
+            SetLength(FChanges[LIndex].Preferred, LOverride + 1);
+          end;
+          FChanges[LIndex].Preferred[LOverride] := MakeGraphValueWeight(LValue, LWeight);
+          VisitLayer(LPreparation);
+        end;
+      end;
+      LTotal := 0;
+      for LValue in LValues do
+      begin
+        LBase := FGraph.Rules[LValue].Weight;
+        for LOverride := 0 to High(FChanges[LIndex].Preferred) do
+        begin
+          VisitLayer(LPreparation);
+          if FChanges[LIndex].Preferred[LOverride].Value = LValue then
+            LBase := FChanges[LIndex].Preferred[LOverride].Weight;
+        end;
+        Inc(LTotal, LBase);
+        if LTotal > High(Integer) then
+          raise EAudio.Create('Position preferred weight sum exceeds its signed 32-bit budget');
+      end;
+    end;
+    { All latent resolution and arithmetic precede publication. A failed setter
+      or observer unwinds through the ordinary detached-row restoration. }
+    for LIndex := 0 to High(FChanges) do
+    begin
+      Inc(FApplied);
+      FGraph.SetCellValueWeights(FChanges[LIndex].Position, 0, 0,
+        FChanges[LIndex].Preferred);
+      ReportWork(AProgress, 'sequence_position_weights_applied', wuItems,
+        LIndex + 1, Length(FChanges));
+      VisitLayer(LPreparation);
+    end;
+    LPreparation.Finish;
+  finally
+    LPreparation.Free;
+  end;
+end;
+
+destructor TSequencePositionPreferenceScope.Destroy;
+begin
+  while FApplied > 0 do
+  begin
+    Dec(FApplied);
+    FGraph.SetCellValueWeights(FChanges[FApplied].Position, 0, 0,
+      FChanges[FApplied].Original);
+  end;
+  inherited Destroy;
+end;
+
+procedure ApplySequencePositionPreferences(const AModel: TWfcSequenceModel;
+  const AGraph: TGraph; const APreferences: TLayerPositionPreferences;
+  const AGlobalPreferences: TLayerTokenPreferences;
+  const AProgress: TWorkProgressCallback);
+var
+  LScope: TSequencePositionPreferenceScope;
+begin
+  LScope := TSequencePositionPreferenceScope.Create(AModel, AGraph, APreferences,
+    AGlobalPreferences, AProgress);
+  try
+    { The generic setters already own detached rows. No callback or other
+      potentially failing work follows this explicit ownership transfer. }
+    LScope.FApplied := 0;
+  finally
+    LScope.Free;
   end;
 end;
 
@@ -1607,7 +1929,8 @@ begin
     end
     else
     begin
-      LDomains := CopyTokenDomains(ALayers[LLayer].Model, LPass, APreparation);
+      LDomains := CopyTokenDomains(ALayers[LLayer].Model, LPass, APreparation,
+        ALayers[LLayer].Preferences);
       for LPreference in ALayers[LLayer].Preferences do
       begin
         VisitLayer(APreparation);
@@ -1699,6 +2022,19 @@ begin
   LPreparation := TLayerPreparation.Create(AProgress, 'sequence_restore_weight_visits');
   try
     TLayerPreferenceScope(FInner).UseOriginal(LPreparation);
+    LPreparation.Finish;
+  finally
+    LPreparation.Free;
+  end;
+end;
+
+procedure TSequencePreferenceScope.UsePreferred(const AProgress: TWorkProgressCallback);
+var
+  LPreparation: TLayerPreparation;
+begin
+  LPreparation := TLayerPreparation.Create(AProgress, 'sequence_preferred_weight_visits');
+  try
+    TLayerPreferenceScope(FInner).UsePreferred(LPreparation);
     LPreparation.Finish;
   finally
     LPreparation.Free;
