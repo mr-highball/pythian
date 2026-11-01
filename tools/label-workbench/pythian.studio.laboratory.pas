@@ -105,7 +105,7 @@ begin
   FDialog := Add(AParent, 'dialog', ''); FDialog.id := 'laboratory-dialog';
   FDialog.setAttribute('aria-labelledby', 'laboratory-title');
   LHeader := Add(FDialog, 'header', ''); LHeader.className := 'dialog-heading';
-  Add(LHeader, 'h2', 'Musical laboratory').id := 'laboratory-title';
+  Add(LHeader, 'h2', 'Musical experiments').id := 'laboratory-title';
   Button(LHeader, 'lab-help', '?');
   LButton.setAttribute('aria-label', 'How this works');
   Button(LHeader, 'lab-close', 'Done');
@@ -309,8 +309,8 @@ begin
     FStatus.textContent := FStatus.textContent + ' Finish or stop the current track before generating.';
   if FMessage <> '' then FStatus.textContent := FMessage;
   TJSHTMLButtonElement(document.getElementById('lab-new')).disabled := FSaving or FLoading;
-  TJSHTMLButtonElement(document.getElementById('lab-copy')).disabled := FSaving or FLoading;
-  TJSHTMLButtonElement(document.getElementById('lab-retry')).disabled := FSaving or FLoading;
+  TJSHTMLButtonElement(document.getElementById('lab-copy')).disabled := not LValid or FSaving or FLoading;
+  TJSHTMLButtonElement(document.getElementById('lab-retry')).disabled := not LValid or FSaving or FLoading;
   if FPending = nil then document.getElementById('lab-retry').setAttribute('hidden', '')
   else document.getElementById('lab-retry').removeAttribute('hidden');
 end;
@@ -358,7 +358,9 @@ begin
     DrawSavedChoices;
     Result := not FDirty;
   except
-    on E: Exception do LFailure := E.Message + ' Retry save or save a copy.';
+    on E: Exception do
+      if FSaving then LFailure := E.Message + ' Retry save or save a copy.'
+      else LFailure := E.Message + ' Your draft is kept.';
   end;
   FSaving := False;
   Remember;

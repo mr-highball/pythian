@@ -112,6 +112,12 @@ type
     Body: String;
   end;
 
+  TPendingCatalogClient = record
+    Socket, Listener: Integer;
+    AcceptedAt: QWord;
+  end;
+  TPendingCatalogClients = array[0..31] of TPendingCatalogClient;
+
   TListeningReviewWorker = class(TThread)
   private
     FSocket: Integer;
@@ -1448,6 +1454,15 @@ begin
       LReport := ReadStudioProjectRevision(ACatalogRoot,
         QueryValue(ARequest.Query, 'id'), QueryInteger(ARequest.Query, 'revision'));
     end
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/saved-clips') then
+      LReport := ListStudioSavedClips(ACatalogRoot)
+    else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/songs') then
+      LReport := ListStudioSongs(ACatalogRoot)
+    else if (ARequest.Method = 'POST') and (ARequest.Path = '/api/studio/song') then
+    begin
+      LBody := ParseBodyObject(ARequest.Body);
+      LReport := SaveStudioSong(ACatalogRoot, LBody);
+    end
     else if (ARequest.Method = 'GET') and (ARequest.Path = '/api/studio/clips') then
     begin
       LClipReceipt := ReadStudioProjectRevision(ACatalogRoot,
@@ -1975,36 +1990,74 @@ begin
     '; enter it once per trusted browser origin.');
 end;
 
-function ReadyCatalogListener(const APrimary, ALoopback: Integer): Integer;
+function ReadyCatalogClient(const APrimary, ALoopback: Integer;
+  var APending: TPendingCatalogClients; out AListener: Integer): Integer;
 var
   LSet: TFDSet;
-  LReady: Integer;
-begin
-  if ALoopback < 0 then
+  LWait: TTimeVal;
+  LReady, LHighest, I, LSlot, LClient: Integer;
+  LNow: QWord;
+
+  procedure IncludeSocket(const ASocket: Integer);
   begin
-    Exit(APrimary);
+    if ASocket < 0 then Exit;
+    LHighest := Math.Max(LHighest, ASocket);
+    {$IFDEF MSWINDOWS}FD_SET(ASocket, LSet);{$ELSE}fpFD_SET(ASocket, LSet);{$ENDIF}
   end;
-  {$IFDEF MSWINDOWS}
-  FD_ZERO(LSet);
-  FD_SET(APrimary, LSet);
-  FD_SET(ALoopback, LSet);
-  LReady := WinSock2.select(0, @LSet, nil, nil, nil);
-  Need(LReady > 0, 'Catalog listener readiness failed');
-  if FD_ISSET(ALoopback, LSet) then
-  {$ELSE}
-  fpFD_ZERO(LSet);
-  fpFD_SET(APrimary, LSet);
-  fpFD_SET(ALoopback, LSet);
-  LReady := fpSelect(Math.Max(APrimary, ALoopback) + 1, @LSet, nil, nil, nil);
-  Need(LReady > 0, 'Catalog listener readiness failed');
-  if fpFD_ISSET(ALoopback, LSet) <> 0 then
-  {$ENDIF}
+
+  function IsReady(const ASocket: Integer): Boolean;
   begin
-    Result := ALoopback;
-  end
-  else
+    if ASocket < 0 then Exit(False);
+    {$IFDEF MSWINDOWS}Result := FD_ISSET(ASocket, LSet);
+    {$ELSE}Result := fpFD_ISSET(ASocket, LSet) <> 0;{$ENDIF}
+  end;
+begin
+  { Big Boss: browsers reserve connections before sending bytes. Keep these
+    bounded raw sockets outside TLS/routing until readable; one idle preconnect
+    must not serialize a five-second wait ahead of every page/API request. }
+  while True do
   begin
-    Result := APrimary;
+    {$IFDEF MSWINDOWS}FD_ZERO(LSet);{$ELSE}fpFD_ZERO(LSet);{$ENDIF}
+    LHighest := APrimary;
+    IncludeSocket(APrimary); IncludeSocket(ALoopback);
+    for I := 0 to High(APending) do IncludeSocket(APending[I].Socket);
+    LWait.tv_sec := 0; LWait.tv_usec := 200000;
+    {$IFDEF MSWINDOWS}LReady := WinSock2.select(0, @LSet, nil, nil, @LWait);
+    {$ELSE}LReady := fpSelect(LHighest + 1, @LSet, nil, nil, @LWait);{$ENDIF}
+    Need(LReady >= 0, 'Catalog listener readiness failed');
+    LNow := GetTickCount64;
+    for I := 0 to High(APending) do
+      if APending[I].Socket >= 0 then
+      begin
+        if (LReady > 0) and IsReady(APending[I].Socket) then
+        begin
+          Result := APending[I].Socket; AListener := APending[I].Listener;
+          APending[I].Socket := -1;
+          Exit;
+        end;
+        if LNow - APending[I].AcceptedAt >= CReceiveDeadlineMs then
+        begin CloseSocket(APending[I].Socket); APending[I].Socket := -1 end;
+      end;
+    if LReady = 0 then Continue;
+    AListener := -1;
+    if IsReady(ALoopback) then AListener := ALoopback
+    else if IsReady(APrimary) then AListener := APrimary;
+    if AListener < 0 then Continue;
+    LClient := fpAccept(AListener, nil, nil);
+    Need(LClient >= 0, 'HTTP listener accept failed');
+    LSlot := -1;
+    for I := 0 to High(APending) do
+      if APending[I].Socket < 0 then begin LSlot := I; Break end;
+    if LSlot < 0 then
+    begin
+      LSlot := 0;
+      for I := 1 to High(APending) do
+        if APending[I].AcceptedAt < APending[LSlot].AcceptedAt then LSlot := I;
+      CloseSocket(APending[LSlot].Socket);
+    end;
+    APending[LSlot].Socket := LClient;
+    APending[LSlot].Listener := AListener;
+    APending[LSlot].AcceptedAt := LNow;
   end;
 end;
 
@@ -2016,6 +2069,8 @@ var
   LLoopback: Integer;
   LReadyListener: Integer;
   LClient: Integer;
+  LPending: TPendingCatalogClients;
+  LIndex: Integer;
   LAddress: TInetSockAddr;
   LCount: Integer;
   LGuid: TGUID;
@@ -2026,6 +2081,7 @@ var
   LLibraryRoot: String;
   LTlsThumbprint: String;
 begin
+  for LIndex := 0 to High(LPending) do LPending[LIndex].Socket := -1;
   Need(ValidBindAddress(ABindAddress),
     'Bind address must be loopback or a private LAN IPv4 address');
   Need((not AOpenLan) or (ABindAddress <> '127.0.0.1'),
@@ -2109,9 +2165,7 @@ begin
     LCount := 0;
     while (AMaximumRequests = 0) or (LCount < AMaximumRequests) do
     begin
-      LReadyListener := ReadyCatalogListener(LListener, LLoopback);
-      LClient := fpAccept(LReadyListener, nil, nil);
-      Need(LClient >= 0, 'HTTP listener accept failed');
+      LClient := ReadyCatalogClient(LListener, LLoopback, LPending, LReadyListener);
       LHandedOff := False;
       try
         try
@@ -2138,6 +2192,8 @@ begin
       Inc(LCount);
     end;
   finally
+    for LIndex := 0 to High(LPending) do
+      if LPending[LIndex].Socket >= 0 then CloseSocket(LPending[LIndex].Socket);
     FreeAndNil(GStudioSupervisor);
     CloseSocket(LListener);
     if LLoopback >= 0 then

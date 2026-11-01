@@ -67,6 +67,10 @@ type
     FResumeAfterSeek: Boolean;
     FTracks: TJSArray;
     FSelections: TJSArray;
+    FSavedClips: TJSArray;
+    FClipsLoading: Boolean;
+    FSavedClipsReady: Boolean;
+    FClipBrowserKey: String;
     FTrack: TJSObject;
     FDisabled: Boolean;
     FEditing: Integer;
@@ -104,6 +108,9 @@ type
     procedure Analyze; async;
     procedure DrawWaveform;
     procedure DrawTracks;
+    function SavedClipCount(const AKey: String): Integer;
+    procedure OpenSavedClips(const AKey: String);
+    procedure UseSavedClip(const AIndex: Integer);
     function ReadRange(out AStart, AEnd: Double): Boolean;
     procedure SetRange(const AStart, AEnd: Double);
     procedure SaveSelection(const AWhole: Boolean);
@@ -134,6 +141,7 @@ type
     procedure SetDisabled(const ADisabled: Boolean);
     procedure Reset;
     procedure Search;
+    procedure RefreshSavedClips; async;
     function CurrentRange: TJSObject;
   end;
 
@@ -147,7 +155,7 @@ function ParseSourceTime(const AText: String; out ASeconds: Double): Boolean;
 
 implementation
 
-uses pythian.studio.progress, pythian.studio.observations;
+uses pythian.studio.progress, pythian.studio.observations, pythian.studio.requests;
 
 function StudioSourceKey(AObject: TJSObject): String;
 begin
@@ -258,6 +266,7 @@ begin
   FPlayEnd := -1;
   FTracks := TJSArray.new;
   FSelections := TJSArray.new;
+  FSavedClips := TJSArray.new;
   FPlayer := TJSHTMLAudioElement(El('source-audio'));
   FCanvas := TJSHTMLCanvasElement(El('source-waveform'));
   ReplacePlayer;
@@ -519,9 +528,129 @@ begin
   DrawTracks;
 end;
 
+procedure TStudioSourceEditor.RefreshSavedClips; async;
+var LData: TJSObject;
+begin
+  if FClipsLoading then Exit;
+  FClipsLoading := True;
+  try
+    LData := await(TJSObject, ReadStudioJSONResponse(FFetch('/api/studio/saved-clips', 'GET', '')));
+    if not isArray(LData['clips']) then raise Exception.Create('Saved clip list is unavailable.');
+    FSavedClips := TJSArray(LData['clips']);
+    FSavedClipsReady := True;
+    El('saved-clips-status').textContent := '';
+    if isArray(LData['errors']) and (TJSArray(LData['errors']).length > 0) then
+      El('saved-clips-status').textContent := IntToStr(TJSArray(LData['errors']).length) +
+        ' saved clip(s) need repair. Their originals were not substituted.';
+    DrawTracks;
+  except
+    on E: Exception do
+    begin
+      El('saved-clips-status').textContent := E.Message + ' Retry clips to refresh the list.';
+      DrawTracks;
+    end;
+  end;
+  FClipsLoading := False;
+end;
+
+function TStudioSourceEditor.SavedClipCount(const AKey: String): Integer;
+var I: Integer; LRecipe: TJSObject;
+begin
+  Result := 0;
+  for I := 0 to FSavedClips.length - 1 do
+  begin
+    LRecipe := TJSObject(TJSObject(FSavedClips[I])['recipe']);
+    if StudioText(LRecipe, 'parent_id') = AKey then Inc(Result);
+  end;
+end;
+
+procedure TStudioSourceEditor.OpenSavedClips(const AKey: String);
+var I, J: Integer; LRow, LRecipe, LTrack, LSelection: TJSObject;
+  LCard, LControl: TJSElement; LMedia: TJSNodeList; LCaption: String;
+  LSelected, LCompatible: Boolean;
+begin
+  FClipBrowserKey := AKey;
+  LMedia := El('saved-clips-list').querySelectorAll('audio');
+  for I := 0 to LMedia.length - 1 do TJSHTMLAudioElement(LMedia[I]).pause;
+  El('saved-clips-list').innerHTML := '';
+  LTrack := nil;
+  for I := 0 to FTracks.length - 1 do
+    if StudioSourceKey(TJSObject(FTracks[I])) = AKey then LTrack := TJSObject(FTracks[I]);
+  if LTrack = nil then Exit;
+  El('saved-clips-title').textContent := StudioText(LTrack, 'title') + ' · saved clips';
+  for I := 0 to FSavedClips.length - 1 do
+  begin
+    LRow := TJSObject(FSavedClips[I]); LRecipe := TJSObject(LRow['recipe']);
+    if StudioText(LRecipe, 'parent_id') <> AKey then Continue;
+    LCompatible := (StudioText(LRecipe, 'parent_snapshot_sha256') = StudioText(LTrack, 'entry_snapshot_sha256')) or
+      (StudioText(LRecipe, 'parent_snapshot_sha256') = StudioText(LTrack, 'metadata_sha256'));
+    LCard := Add(El('saved-clips-list'), 'article', '', 'track');
+    Add(LCard, 'h3', StudioTime(StudioNumber(LRecipe, 'start_frame') / StudioNumber(LRecipe, 'sample_rate')) +
+      ' – ' + StudioTime(StudioNumber(LRecipe, 'end_frame') / StudioNumber(LRecipe, 'sample_rate')), '');
+    if isArray(LRow['classifications']) then Add(LCard, 'p', TJSArray(LRow['classifications']).join(', '), 'hint');
+    LControl := Add(LCard, 'audio', '', ''); LControl.setAttribute('controls', '');
+    LControl.setAttribute('preload', 'none');
+    LControl.setAttribute('aria-label', 'Preview saved clip');
+    LControl.setAttribute('src', '/api/studio/clip-audio?id=' + StudioText(LRow, 'clip_id'));
+    LSelected := False;
+    for J := 0 to FSelections.length - 1 do
+    begin
+      LSelection := TJSObject(FSelections[J]);
+      if (StudioSourceKey(LSelection) = AKey) and
+        (StudioText(LSelection, 'selection') <> 'full') and
+        (StudioNumber(LSelection, 'start_frame') = StudioNumber(LRecipe, 'start_frame')) and
+        (StudioNumber(LSelection, 'end_frame') = StudioNumber(LRecipe, 'end_frame')) then
+        LSelected := StudioIncluded(LSelection);
+    end;
+    LCaption := '＋ Use this clip'; if LSelected then LCaption := '✓ In this playlist';
+    LControl := Button(LCard, LCaption, 'use-saved-clip', IntToStr(I));
+    TJSHTMLButtonElement(LControl).disabled := FDisabled or not LCompatible or LSelected;
+    if not LCompatible then Add(LCard, 'p', 'Original metadata changed. This saved audio can still be previewed.', 'hint');
+  end;
+  if (SavedClipCount(AKey) = 0) and FSavedClipsReady then
+    Add(El('saved-clips-list'), 'p', 'No saved clips yet. Choose a clip in Selection.', 'hint');
+  if not El('saved-clips-dialog').hasAttribute('open') then TStudioDialog(El('saved-clips-dialog')).showModal;
+end;
+
+procedure TStudioSourceEditor.UseSavedClip(const AIndex: Integer);
+var LReceipt, LRecipe, LRow, LTrack: TJSObject; I: Integer; LParent: Boolean;
+begin
+  if (AIndex < 0) or (AIndex >= FSavedClips.length) then Exit;
+  LReceipt := TJSObject(FSavedClips[AIndex]); LRecipe := TJSObject(LReceipt['recipe']);
+  LTrack := nil; LParent := False;
+  for I := 0 to FTracks.length - 1 do
+    if StudioSourceKey(TJSObject(FTracks[I])) = StudioText(LRecipe, 'parent_id') then LTrack := TJSObject(FTracks[I]);
+  if LTrack = nil then Exit;
+  for I := 0 to FSelections.length - 1 do
+  begin
+    LRow := TJSObject(FSelections[I]);
+    if StudioSourceKey(LRow) <> StudioSourceKey(LTrack) then Continue;
+    if StudioText(LRow, 'selection') = 'full' then LParent := True
+    else if (StudioNumber(LRow, 'start_frame') = StudioNumber(LRecipe, 'start_frame')) and
+      (StudioNumber(LRow, 'end_frame') = StudioNumber(LRecipe, 'end_frame')) then
+    begin SetIncluded(I, True); OpenSavedClips(FClipBrowserKey); Exit end;
+  end;
+  if not LParent then
+  begin
+    LRow := TJSObject(TJSJSON.parse(TJSJSON.stringify(LTrack)));
+    LRow['selection'] := 'full'; LRow['included'] := False; LRow['influence'] := 1;
+    LRow['classifications'] := TJSArray.new;
+    ApplySelection(LRow, -1);
+  end;
+  LRow := TJSObject(TJSJSON.parse(TJSJSON.stringify(LTrack)));
+  LRow['selection'] := 'range'; LRow['included'] := True;
+  LRow['start_frame'] := StudioNumber(LRecipe, 'start_frame');
+  LRow['end_frame'] := StudioNumber(LRecipe, 'end_frame');
+  LRow['classifications'] := LReceipt['classifications'];
+  LRow['clip_id'] := StudioText(LReceipt, 'clip_id');
+  LRow['clip_sha256'] := StudioText(TJSObject(LReceipt['audio']), 'sha256');
+  ApplySelection(LRow, -1);
+  OpenSavedClips(FClipBrowserKey);
+end;
+
 procedure TStudioSourceEditor.DrawTracks;
 var
-  LRoot, LCard, LBar, LRow, LText: TJSElement;
+  LRoot, LCard, LBar, LRow, LText, LChildren: TJSElement;
   LTrack, LSelection: TJSObject;
   LFilter: TJSHTMLSelectElement;
   LNames, LCollections, LClasses: TJSArray;
@@ -604,6 +733,9 @@ begin
       LUnavailable := (StudioText(LTrack, 'status') = 'missing') or
         (StudioText(LTrack, 'status') = 'unsupported') or
         (isBoolean(LTrack['original_available']) and not Boolean(LTrack['original_available']));
+      if FSavedClipsReady then
+        Button(LCard, IntToStr(SavedClipCount(LKey)) + ' clips', 'saved-clips', LKey)
+      else Button(LCard, 'Retry clips', 'refresh-saved-clips', LKey);
       if LUnavailable then
       begin
         Add(LCard, 'p', 'Original unavailable. Saved clip files can still play and teach.', 'hint');
@@ -630,12 +762,14 @@ begin
       else LCaption := 'Selected: ' + IntToStr(LCount) + ' clip(s)';
       if not LWholeIncluded and (LCount = 0) then LCaption := 'Not selected for learning';
       Add(LCard, 'p', LCaption, 'training-state');
+      if LWholeIncluded then Continue;
+      LChildren := Add(LCard, 'div', '', 'clip-children');
       for LOther := 0 to FSelections.length - 1 do
       begin
         LSelection := TJSObject(FSelections[LOther]);
         if (StudioSourceKey(LSelection) <> LKey) or
           (StudioText(LSelection, 'selection') = 'full') then Continue;
-        LRow := Add(LCard, 'div', '', 'selected-passage');
+        LRow := Add(LChildren, 'div', '', 'selected-passage');
         LCaption := StudioTime(StudioNumber(LSelection, 'start_frame') /
           StudioNumber(LTrack, 'sample_rate')) + ' – ' +
           StudioTime(StudioNumber(LSelection, 'end_frame') / StudioNumber(LTrack, 'sample_rate'));
@@ -653,7 +787,7 @@ begin
           LText.setAttribute('download', 'pythian-clip.wav');
         end;
         TJSHTMLButtonElement(Button(LBar, 'Edit', 'edit', IntToStr(LOther))).disabled := LUnavailable;
-        Button(LBar, 'Delete', 'remove', IntToStr(LOther));
+        Button(LBar, 'Remove from playlist', 'remove', IntToStr(LOther));
       end;
     end;
     if LShown = 0 then
@@ -1798,6 +1932,9 @@ begin
   LAction := LButton.getAttribute('data-action');
   LValue := LButton.getAttribute('data-value');
   case LAction of
+    'refresh-saved-clips': begin RefreshSavedClips; OpenSavedClips(LValue) end;
+    'saved-clips': OpenSavedClips(LValue);
+    'use-saved-clip': UseSavedClip(StrToInt(LValue));
     'collection':
       begin
         TJSHTMLSelectElement(El('collection-filter')).value := LValue;

@@ -3,7 +3,41 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: density library passes; native Studio consumer running — 2026-10-31
+## Current handoff: operator song/clip usability repairs — 2026-10-31
+
+Big Boss remains SOLO. New operator screenshots take priority over unfinished
+form listening: missing output saving, hard-to-find Stop, reconnect after a
+whole-track request, unexplained Lab, and previously saved clips absent from
+Library. [Songs](TODO/NS-6_song-library_01.md) adds five effort units;
+[reusable clip discovery](TODO/NS-6_clip-library_01.md) adds three. Accounting
+is105/156 (67.31%), nine open and22 current DONE. No new acceptance follows
+from scoping. [Connection admission](TODO/NS-6_connection-admission_01.md) adds
+two units for the reproduced idle-socket prerequisite. The density batch is interrupted, not closed or renamed; its
+nonclosing count remains0 while this required operator repair progresses.
+
+Criterion: find/reuse exact saved clips and generated music, and stop/reconnect
+without duplicate native work or lost choices. Deliver metadata-backed output
+playlists, clip-count/modal previews, parent/child selection, visible Stop and an
+explained optional experiment entry. Close with bounded native storage/identity
+checks and actual desktop/390px save/reload/playback/navigation. Stop after these
+usable paths and checked fixed-slot deployment; do not widen into another audit.
+
+Read-only diagnosis: stable service remained alive, loopback200, no active native
+worker and no newly persisted whole-track job. Do not claim a reproduced server
+crash. The operator's independent clip receipt is ready and retains its labels
+in a different saved playlist. Current Library does not discover it globally.
+Preserve all private recordings, choices, immutable jobs and answers.
+
+Previous density sessions are all terminal. Native Studio03 passes186 with a
+clean heap. CI538's fixture-order failure is preserved; replacement complete
+CI539 atc622db3 passes integration and extracted consumers. Browser density
+desktop/390px, reload, section playback, invalid draft/retry pass. A small help
+validation fix remains in source. All QA media were paused, owned tabs45/46 closed,
+viewport reset and fixed QA service34752 stopped. Stable was not redeployed.
+Current changes/builds live in studio-keep-20261031-boss under the dedicated
+E-drive roots. Treat older running-session/PID statements below as history.
+
+## Previous handoff: density library passes; native Studio consumer running — 2026-10-31
 
 Follow-up progress: native Studio03 now passes186 complete checks with a clean
 heap; session84460 is terminal0. Preserve failed native01/02 and CI538 at76ec662:

@@ -69,6 +69,11 @@ function EnqueueStudioJob(const ACatalogRoot: String;
 function ListStudioJobs(const ACatalogRoot: String): TJSONObject;
 function ReadStudioJob(const ACatalogRoot, AJobId: String): TJSONObject;
 function CancelStudioJob(const ACatalogRoot, AJobId: String): TJSONObject;
+{ Named output playlists reference completed jobs and their existing audio.
+  Listing never opens audio; saving changes metadata only, with idempotent retry. }
+function ListStudioSongs(const ACatalogRoot: String): TJSONObject;
+function SaveStudioSong(const ACatalogRoot: String;
+  const AWrite: TJSONObject): TJSONObject;
 
 { Worker/supervisor boundary. Recovery is permitted only after the supervisor
   has established that no worker for this catalog remains alive. }
@@ -1778,6 +1783,100 @@ begin
   end;
   ReleaseStudioWorker(ACatalogRoot);
   ReleaseStudioWorker(ACatalogRoot, True);
+end;
+
+function SongRecord(const ACatalogRoot: String; const AJob: TJSONObject): TJSONObject;
+var LPath: String; LResult, LAudio, LSaved: TJSONObject;
+begin
+  Result := nil;
+  if not IsStudioInstrumentalJob(AJob.Strings['kind']) or
+    (AJob.Strings['status'] <> 'completed') then Exit;
+  LResult := AJob.Objects['results'];
+  if (LResult = nil) or (LResult.Arrays['outputs'].Count <> 1) then Exit;
+  LAudio := LResult.Arrays['outputs'].Objects[0];
+  Need(ValidHash(LAudio.Strings['wav_sha256']) and
+    (LAudio.Int64s['frame_count'] > 0) and (LAudio.Integers['sample_rate'] > 0),
+    'Completed song audio metadata is invalid');
+  Result := TJSONObject.Create(['format', 'pythian.studio.song.v1',
+    'job_id', AJob.Strings['job_id'], 'project_id', AJob.Strings['project_id'],
+    'title', 'Track ' + AJob.Strings['job_id'], 'playlist', '', 'saved', False,
+    'wav_sha256', LAudio.Strings['wav_sha256'],
+    'frame_count', LAudio.Int64s['frame_count'],
+    'sample_rate', LAudio.Integers['sample_rate']]);
+  try
+    LPath := StudioJobDirectory(ACatalogRoot, AJob.Strings['job_id']) + PathDelim + 'song.json';
+    if not FileExists(LPath) then Exit;
+    LSaved := ReadStudioJSON(LPath);
+    try
+      Need((LSaved.Strings['format'] = 'pythian.studio.song.v1') and
+        (LSaved.Strings['job_id'] = AJob.Strings['job_id']) and
+        (LSaved.Strings['wav_sha256'] = LAudio.Strings['wav_sha256']),
+        'Saved song differs from its completed generation');
+      Result.Strings['title'] := LSaved.Strings['title'];
+      Result.Strings['playlist'] := LSaved.Strings['playlist'];
+      Result.Booleans['saved'] := True;
+    finally LSaved.Free end;
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
+function ListStudioSongs(const ACatalogRoot: String): TJSONObject;
+var LJob, LSong: TJSONObject; LRows: TJSONArray; LNames: TStringList; LName: String;
+begin
+  Result := TJSONObject.Create(['format', 'pythian.studio.songs.v1']);
+  try
+    LRows := TJSONArray.Create;
+    Result.Add('songs', LRows);
+    LNames := JobNames(ACatalogRoot);
+    try
+      for LName in LNames do
+      begin
+        LJob := ReadStudioJob(ACatalogRoot, LName);
+        try LSong := SongRecord(ACatalogRoot, LJob) finally LJob.Free end;
+        if LSong <> nil then LRows.Add(LSong);
+      end;
+    finally LNames.Free end;
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
+function SaveStudioSong(const ACatalogRoot: String;
+  const AWrite: TJSONObject): TJSONObject;
+const CNames: array[0..2] of String = ('job_id', 'title', 'playlist');
+var LJob: TJSONObject; LField, LValue, LPath: String; I: Integer;
+begin
+  Need((AWrite <> nil) and (AWrite.Count = 4) and
+    (AWrite.Get('format', '') = 'pythian.studio.song.write.v1'), 'Invalid song save');
+  for LField in CNames do
+  begin
+    Need((AWrite.Find(LField) <> nil) and (AWrite.Find(LField).JSONType = jtString),
+      'Song ' + LField + ' must be text');
+    LValue := Trim(AWrite.Strings[LField]);
+    Need((LValue <> '') and (Length(LValue) <= 160), 'Choose a short song title and playlist name');
+    for I := 1 to Length(LValue) do
+      Need(Ord(LValue[I]) >= 32, 'Song names cannot contain control characters');
+  end;
+  Result := nil;
+  LockJobs(ACatalogRoot);
+  try
+    LJob := ReadStudioJob(ACatalogRoot, AWrite.Strings['job_id']);
+    try Result := SongRecord(ACatalogRoot, LJob) finally LJob.Free end;
+    Need(Result <> nil, 'Only a completed instrumental track can be saved');
+    try
+      Result.Strings['title'] := Trim(AWrite.Strings['title']);
+      Result.Strings['playlist'] := Trim(AWrite.Strings['playlist']);
+      Result.Booleans['saved'] := True;
+      LPath := StudioJobDirectory(ACatalogRoot, AWrite.Strings['job_id']) + PathDelim + 'song.json';
+      ReplaceStudioJSON(LPath, Result);
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally UnlockJobs(ACatalogRoot) end;
 end;
 
 initialization

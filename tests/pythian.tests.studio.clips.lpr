@@ -282,6 +282,15 @@ begin
       LRead := PrepareStudioClip(LCatalog, LLibrary, 'clip-reuse', LItem, LClip, LProbe.Observe);
       Check(LRead.AsJSON = LReceipt.AsJSON, 'An existing clip reuses its immutable receipt without opening parent');
       FreeAndNil(LRead);
+      LCorrupt := TFileStream.Create(LAudio, fmOpenRead or fmShareExclusive);
+      try
+        LRead := ListStudioSavedClips(LCatalog);
+        Check((LRead.Arrays['clips'].Count = 1) and (LRead.Arrays['errors'].Count = 0),
+          'Clip library discovers independent audio while parent is unavailable and clip PCM is locked');
+        Check(LRead.Arrays['clips'].Objects[0].Strings['clip_id'] = LId,
+          'Global clip library preserves exact parent/range identity');
+        FreeAndNil(LRead);
+      finally FreeAndNil(LCorrupt) end;
       LClip.Add('classifications', TJSONArray.Create(['warm']));
       Check(StudioClipIdentity(LItem, LClip) = LId, 'Labels do not duplicate saved audio');
       LCorrupt := TFileStream.Create(LAudio, fmOpenReadWrite);
@@ -302,6 +311,10 @@ begin
       end;
       Check(RenameFile(LAudio, LAudio + '.held'), 'Temporarily hold independent clip');
       try
+        LRead := ListStudioSavedClips(LCatalog);
+        Check((LRead.Arrays['clips'].Count = 0) and (LRead.Arrays['errors'].Count = 1),
+          'Missing saved audio is reported as a library error, not replaced by the parent');
+        FreeAndNil(LRead);
         LRejected := False;
         try LRead := PrepareStudioClip(LCatalog, LLibrary, 'clip-missing', LItem, LClip);
         except on E: EAudio do LRejected := True end;

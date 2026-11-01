@@ -3,6 +3,17 @@
 [Goal](GOAL.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Task catalog](TODO/README.md) · [Workflow](TASKFLOW.MD) · [Work](WORK.md)
 
+## Operator usability gaps — 2026-10-31
+
+[Song management](TODO/NS-6_song-library_01.md) adds five units for saved output
+playlists, finding earlier music and visible Stop/reconnect. [Clip discovery](TODO/NS-6_clip-library_01.md)
+adds three units for reusable clips and clear parent/child selection. Existing
+clip audio and jobs are preserved; neither task is accepted by scoping it.
+
+[Idle-connection admission](TODO/NS-6_connection-admission_01.md) adds two units
+for a reproduced prerequisite: four empty sockets blocked a healthy server's
+next request beyond eight seconds. Preserve serialized routing and existing TLS.
+
 ## North-star assessment
 
 The 2026-10-29 goal is usable experimental instrumental synthesis through a rich,
@@ -11,7 +22,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 105 / 146 effort units accepted (71.92%); six open, twenty-two current-goal DONE.**
+**Current snapshot: 105 / 156 effort units accepted (67.31%); nine open, twenty-two current-goal DONE.**
 The six-unit [positioned-prior prerequisite — DONE](TODO/DONE/NS-4_cell-priors_01.md)
 adds actual per-position soft choices through primary WFC/sequence/named-voice
 adapters. All upstream CI64 and downstream CI537 integration/extracted gates
@@ -75,8 +86,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors and musical controls | 7 | 48 | 48 / 55 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 44 | 44 / 49 |
-| **Total** | **28 current-goal tasks** | **41** | **105** | **71.92%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 15 | 44 | 44 / 59 |
+| **Total** | **31 current-goal tasks** | **51** | **105** | **67.31%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -95,7 +106,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **105/146**; no partial effort or musical-quality credit follows.
+Accounting is **105/156**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -239,7 +250,7 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 6 open + 22 current DONE; legacy records: 53 retired +
+Current scoped records: 9 open + 22 current DONE; legacy records: 53 retired +
 97 historical DONE (119 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered

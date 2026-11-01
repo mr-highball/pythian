@@ -12,6 +12,11 @@ answers and generated music stay outside source control.
 Search tracks or styles, choose a collection, and press **Add** beside the music
 you want. The listing uses metadata and bounded WAV headers; it does not download
 or analyze entire tracks. Play/pause auditions a recording without adding it.
+Each track's **N clips** button opens its reusable saved clips, with original
+time ranges, labels, independent audio previews and **Use this clip**. These clips
+remain available across playlists. Whole-track selection collapses child rows;
+switch it off to choose individual clips. Removing a choice from a playlist does
+not delete the saved clip file.
 
 **Add music** imports a WAV. **Record** opens microphone recording directly.
 Stop recording, inspect it, then add it to a collection. Phone recording needs
@@ -55,6 +60,19 @@ collection/clip labels remain in immutable playlist snapshots. The original file
 is retained. Library discovery metadata is not claimed as a full audio digest.
 
 ## 3. Generate
+
+**Songs** in the header finds recent completed generations and named output
+playlists. **Save to playlist** names the exact current mix without rendering or
+copying audio. **Download WAV** saves a copy to the device. Output playlists are
+separate from the input playlists used to teach Pythian.
+
+While generation starts or runs, a visible status and **Stop generation** remain
+available across the three steps. Returning from background reconnects to the
+same job. Stop intent is retained when a submitted request loses its response;
+reconnecting does not silently submit that request again.
+
+**More music controls · optional** explains and opens authored musical experiments.
+It is not needed for ordinary Library → Selection → Generate.
 
 Choose **Track length** in seconds, minutes or hours, then press **Generate music**.
 The default is two minutes; plans from two seconds to24hours are supported.

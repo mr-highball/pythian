@@ -35,7 +35,7 @@ SOFTWARE.
 <header class="masthead">
   <a class="brand" href="studio.html" aria-label="Pythian Studio">◈ <strong>Pythian</strong> <span>Studio</span></a>
   <button type="button" data-dialog="playlists-dialog" class="quiet">Playlists</button>
-  <button id="open-laboratory" type="button" data-studio-action class="quiet" aria-label="Musical laboratory" disabled>♫ Lab</button>
+  <button id="open-songs" type="button" data-studio-action class="quiet">♫ Songs</button>
 </header>
 <main id="main-content">
   <nav class="steps" role="tablist" aria-label="Make music">
@@ -43,6 +43,10 @@ SOFTWARE.
     <button id="tab-selection" role="tab" aria-controls="step-selection" data-step="selection">2 <span>Selection</span> <b id="selection-count" class="badge">0</b></button>
     <button id="tab-generate" role="tab" aria-controls="step-generate" data-step="generate">3 <span>Generate</span></button>
   </nav>
+  <aside id="active-generation" class="active-generation" hidden aria-label="Active generation">
+    <p id="active-generation-status" role="status" aria-live="polite"></p>
+    <div class="row-actions"><button type="button" data-step="generate">View progress</button><button id="stop-active-generation" data-studio-action type="button">■ Stop generation</button></div>
+  </aside>
   <p id="connection-state" class="hint" role="status" aria-live="polite">Opening your music…</p>
   <button id="retry-connection" data-studio-action type="button" hidden>Reconnect</button>
   <section id="step-library" role="tabpanel" aria-labelledby="tab-library">
@@ -88,9 +92,11 @@ SOFTWARE.
     <button id="reconnect-generation" data-studio-action type="button" hidden>Reconnect to this run</button>
     <section id="generation-result" class="generation-result" hidden aria-label="Your generated music">
       <h2 id="generation-title">Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p>
+      <div class="library-actions"><button id="save-song" data-studio-action class="primary" type="button">＋ Save to playlist</button><a id="download-generated" class="button-link" download="pythian-track.wav">↓ Download WAV</a></div>
+      <p class="hint">Audio is kept on this computer. Save to a playlist to name it and find it in Songs.</p>
       <div id="version-comparison" class="version-comparison">
         <section id="generation-before" hidden aria-label="Before"><h3>Before</h3><audio id="generated-before-audio" controls preload="none"></audio></section>
-        <section aria-label="Current version"><h3 id="generation-after-label" hidden>After</h3><audio id="generated-audio" controls preload="none"></audio><a id="download-generated" download="pythian-track.wav">Save WAV</a></section>
+        <section aria-label="Current version"><h3 id="generation-after-label" hidden>After</h3><audio id="generated-audio" controls preload="none"></audio></section>
       </div>
       <div id="result-sections" hidden>
         <label for="result-section">Section<select id="result-section"></select></label>
@@ -109,6 +115,7 @@ SOFTWARE.
       <details id="generation-learning-panel"><summary>What Pythian learned from</summary><div id="generation-learning"></div></details>
     </section>
     <button id="previous-version" data-studio-action type="button" hidden>Back to previous version</button>
+    <details class="optional-experiments"><summary>More music controls · optional</summary><p class="hint">Try authored notes, key, tempo and song sections without learning from recordings. Your selected music stays saved.</p><button id="open-laboratory" type="button" data-studio-action disabled>Open musical experiments</button></details>
   </section>
   <div class="save-status"><span id="save-state" role="status" aria-live="polite">Changes save automatically</span><button id="retry-save" type="button" data-studio-action hidden>Retry save</button><button id="save-copy" type="button" data-studio-action hidden>Save a new copy</button></div>
 </main>
@@ -118,6 +125,9 @@ SOFTWARE.
   <input id="source-seek" type="range" min="0" max="0" step="0.01" value="0" aria-label="Position in track">
   <output id="source-time">0:00 / 0:00</output><p id="source-playback-status" class="hint" role="status"></p><button id="source-reconnect" type="button" hidden>Reconnect</button>
 </footer>
+<dialog id="songs-dialog" aria-labelledby="songs-title"><header class="dialog-heading"><h2 id="songs-title">Your generated songs</h2><button type="button" data-close="songs-dialog">Done</button></header><p class="hint">Saved playlists and recent finished tracks. Audio stays on this computer; Download WAV saves a copy to your device.</p><label for="song-filter">Playlist<select id="song-filter"><option value="">All songs</option></select></label><p id="songs-status" role="status"></p><button id="refresh-songs" data-studio-action type="button">Refresh songs</button><div id="songs-list" class="tracks"></div></dialog>
+<dialog id="save-song-dialog" aria-labelledby="save-song-title"><header class="dialog-heading"><h2 id="save-song-title">Save your song</h2><button id="save-song-close" type="button" data-close="save-song-dialog">Cancel</button></header><label for="song-name">Song name<input id="song-name" type="text" maxlength="160"></label><label for="song-playlist">Output playlist<input id="song-playlist" type="text" maxlength="160" list="song-playlist-names" value="My songs"></label><datalist id="song-playlist-names"></datalist><p class="hint">Keeps this exact generation. No new learning or audio copy.</p><p id="save-song-status" role="status"></p><button id="confirm-save-song" data-studio-action class="primary" type="button">Save song</button></dialog>
+<dialog id="saved-clips-dialog" aria-labelledby="saved-clips-title"><header class="dialog-heading"><h2 id="saved-clips-title">Saved clips</h2><button type="button" data-close="saved-clips-dialog">Done</button></header><p class="hint">Clips belong to this track and can be used in any playlist. Removing a clip from Selection keeps its saved audio here.</p><p id="saved-clips-status" role="status"></p><div id="saved-clips-list" class="tracks"></div></dialog>
 <dialog id="source-inspector" aria-labelledby="source-title" hidden>
   <header class="dialog-heading"><div><p class="eyebrow">CHOOSE A CLIP</p><h2 id="source-title" tabindex="-1"></h2></div><button id="source-close" type="button">Done</button></header>
   <canvas id="source-waveform" width="900" height="180" aria-label="Track waveform. Tap to seek, drag to choose a clip. Time fields are below."></canvas>

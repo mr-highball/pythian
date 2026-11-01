@@ -167,6 +167,8 @@ p {
 }
 
 .masthead {
+  gap:.5rem;
+  flex-wrap:wrap;
   max-width:1040px;
   margin:auto;
   padding:1rem 1.25rem;
@@ -192,6 +194,24 @@ p {
 .quiet {
   background:transparent
 }
+
+.active-generation {
+  position:sticky;
+  top:76px;
+  z-index:2;
+  background:var(--panel);
+  border:1px solid var(--accent);
+  border-radius:12px;
+  padding:.7rem;
+  margin:.5rem 0 1rem
+}
+.active-generation p { margin:0 0 .4rem }
+.active-generation .row-actions { display:flex; gap:.5rem; flex-wrap:wrap }
+.button-link { display:inline-flex; align-items:center; min-height:44px; padding:.6rem .8rem }
+.optional-experiments { margin-top:1.5rem }
+.clip-children { margin:.6rem 0 0 .5rem; padding-left:.75rem; border-left:2px solid var(--accent) }
+.clip-children .selected-passage { margin-top:.5rem }
+#songs-list audio,#saved-clips-list audio { width:100%; margin:.5rem 0 }
 
 main {
   max-width:1040px;

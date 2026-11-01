@@ -323,6 +323,72 @@ begin
   end;
 end;
 
+procedure CheckSongs(const ARoot: String);
+var LWrite, LSong, LRead, LJob: TJSONObject; LHash: String; LLock: TFileStream;
+  LRaised: Boolean; I, LCount, LTarget: Integer;
+begin
+  LJob := ReadStudioJob(ARoot, 'structure-run');
+  LHash := LJob.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
+  LJob.Free;
+  LWrite := TJSONObject.Create(['format', 'pythian.studio.song.write.v1',
+    'job_id', 'structure-run', 'title', 'Evening take', 'playlist', 'My songs']);
+  try
+    LLock := TFileStream.Create(ListeningAssetPath(ARoot, LHash), fmOpenRead or fmShareExclusive);
+    try
+      LSong := SaveStudioSong(ARoot, LWrite);
+      try
+        Check(LSong.Booleans['saved'] and (LSong.Strings['wav_sha256'] = LHash),
+          'Saved song binds actual completed mix without opening locked PCM');
+        LRead := SaveStudioSong(ARoot, LWrite);
+        try Check(LRead.AsJSON = LSong.AsJSON, 'Lost-response retry retains one exact song')
+        finally LRead.Free end;
+      finally LSong.Free end;
+      LRead := ListStudioSongs(ARoot);
+      try
+        LCount := LRead.Arrays['songs'].Count; LTarget := 0;
+        for I := 0 to LCount - 1 do
+          if LRead.Arrays['songs'].Objects[I].Strings['job_id'] = 'structure-run' then
+          begin
+            Inc(LTarget);
+            Check(LRead.Arrays['songs'].Objects[I].Strings['playlist'] = 'My songs',
+              'Saved output playlist reopens from disk');
+          end;
+        Check(LTarget = 1, 'Song retry retains one record among recent generations')
+      finally LRead.Free end;
+    finally LLock.Free end;
+    LWrite.Strings['title'] := 'Renamed take'; LWrite.Strings['playlist'] := 'Night playlist';
+    LSong := SaveStudioSong(ARoot, LWrite); LSong.Free;
+    LRead := ListStudioSongs(ARoot);
+    try
+      Check(LRead.Arrays['songs'].Count = LCount, 'Renaming creates no additional song');
+      for I := 0 to LCount - 1 do
+        if LRead.Arrays['songs'].Objects[I].Strings['job_id'] = 'structure-run' then
+          Check((LRead.Arrays['songs'].Objects[I].Strings['title'] = 'Renamed take') and
+            (LRead.Arrays['songs'].Objects[I].Strings['playlist'] = 'Night playlist'),
+            'Rename/move keeps the same job and audio')
+    finally LRead.Free end;
+    LWrite.Strings['job_id'] := '../structure-run'; LRaised := False;
+    try LSong := SaveStudioSong(ARoot, LWrite); LSong.Free
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'Song save rejects path-bearing job identities');
+    LWrite.Strings['job_id'] := 'not-a-completed-job'; LRaised := False;
+    try LSong := SaveStudioSong(ARoot, LWrite); LSong.Free
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'A missing generation cannot become a saved song');
+    LWrite.Strings['job_id'] := 'structure-run'; LWrite.Strings['title'] := ''; LRaised := False;
+    try LSong := SaveStudioSong(ARoot, LWrite); LSong.Free
+    except on E: EAudio do LRaised := True end;
+    Check(LRaised, 'An empty song name cannot replace the saved record');
+    LRead := ListStudioSongs(ARoot);
+    try
+      for I := 0 to LRead.Arrays['songs'].Count - 1 do
+        if LRead.Arrays['songs'].Objects[I].Strings['job_id'] = 'structure-run' then
+          Check(LRead.Arrays['songs'].Objects[I].Strings['title'] = 'Renamed take',
+            'Rejected writes preserve previously saved song metadata')
+    finally LRead.Free end;
+  finally LWrite.Free end;
+end;
+
 procedure Run(const ARoot: String);
 var
   LSettings, LWrite, LProject, LRead, LRequest, LJob, LMeta: TJSONObject;
@@ -456,7 +522,9 @@ end;
 
 begin
   try
-    if (ParamCount = 5) and (ParamStr(1) = '--repair-edit') then
+    if (ParamCount = 2) and (ParamStr(1) = '--songs-only') then
+      CheckSongs(ExpandFileName(ParamStr(2)))
+    else if (ParamCount = 5) and (ParamStr(1) = '--repair-edit') then
       RepairEdit(ExpandFileName(ParamStr(2)), ParamStr(3), ParamStr(4), ParamStr(5))
     else if (ParamCount = 3) and (ParamStr(1) = '--inspect-repeat') then
       InspectRepeat(ExpandFileName(ParamStr(2)), ParamStr(3))
@@ -468,6 +536,7 @@ begin
     begin
       if ParamCount <> 1 then raise EAudio.Create('Usage: Studio form checks FRESH_ROOT');
       Run(ExpandFileName(ParamStr(1)));
+      CheckSongs(ExpandFileName(ParamStr(1)));
       Followups(ExpandFileName(ParamStr(1)));
       InspectExpression(ExpandFileName(ParamStr(1)));
     end;

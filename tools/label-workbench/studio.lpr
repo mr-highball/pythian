@@ -28,7 +28,7 @@ program PythianStudio;
 uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
-  pythian.studio.laboratory,
+  pythian.studio.laboratory, pythian.studio.songs,
   pythian.wave.stream, pythian.music.selection;
 
 type
@@ -43,6 +43,7 @@ type
     FEffects: TStudioEffects;
     FLibraryRefresh: TStudioLibraryRefresh;
     FLaboratory: TStudioLaboratory;
+    FSongs: TStudioSongs;
     FResultProjectId: String;
     FToken, FProjectId, FName: String;
     FRevision, FChanges, FPendingVersion: Integer;
@@ -59,6 +60,7 @@ type
     FJobPolling: Boolean;
     FSubmitting: Boolean;
     FCancelling: Boolean;
+    FStopRequested: Boolean;
     FGenerateAfterSave: Boolean;
     FGenerationMessage: String;
     FFollowupParent: TJSObject;
@@ -105,6 +107,8 @@ type
     function SectionPlayback(AEvent: TEventListenerEvent): Boolean;
     function ResultDetails(AEvent: TEventListenerEvent): Boolean;
     procedure OpenPreviousVersion; async;
+    procedure OpenSavedGeneration(const AJobId: String); async;
+    function GenerationActive: Boolean;
     procedure PauseResult;
     procedure RestoreGeneration; async;
     procedure PollGeneration; async;
@@ -142,6 +146,8 @@ type
     function Playing(AEvent: TEventListenerEvent): Boolean;
     function Leaving(AEvent: TEventListenerEvent): Boolean;
     function CaptureClosed(AEvent: TEventListenerEvent): Boolean;
+    function DialogClosed(AEvent: TEventListenerEvent): Boolean;
+    function Reconnected(AEvent: TEventListenerEvent): Boolean;
     function TabKey(AEvent: TJSKeyboardEvent): Boolean;
     function UserInteraction(AEvent: TEventListenerEvent): Boolean;
   public
@@ -589,6 +595,8 @@ begin
     end;
   FSourceEditor.Bind(FTracks, FSelections, not FConnected or FLoading);
   DrawClips;
+  if (Num(AState, 'total') > 0) and (Num(AState, 'ready') = Num(AState, 'total')) then
+    FSourceEditor.RefreshSavedClips;
 end;
 
 procedure TStudio.RefreshClips; async;
@@ -678,6 +686,7 @@ begin
   FJobPolling := False;
   FSubmitting := False;
   FCancelling := False;
+  FStopRequested := False;
   FGenerateAfterSave := False;
   FGenerationMessage := '';
   PauseResult;
@@ -703,6 +712,7 @@ begin
   LState := TJSObject.new;
   LState['job_id'] := FJobId;
   LState['request'] := FJobWrite;
+  LState['stop_requested'] := FStopRequested;
   LState['duration'] := TJSHTMLInputElement(El('output-duration')).value;
   LState['duration_unit'] := TJSHTMLSelectElement(El('output-duration-unit')).value;
   try
@@ -725,6 +735,12 @@ begin
   else if LUnit = 'hours' then ASeconds := ASeconds * 3600
   else if LUnit <> 'seconds' then Exit(False);
   Result := (ASeconds >= 2) and (ASeconds <= 86400);
+end;
+
+function TStudio.GenerationActive: Boolean;
+begin
+  Result := FSubmitting or FGenerateAfterSave or (FJobWrite <> nil) or
+    (Str(FJob, 'status') = 'queued') or (Str(FJob, 'status') = 'running');
 end;
 
 procedure TStudio.DrawGeneration;
@@ -769,7 +785,17 @@ begin
       'Authored music · ' + FloatToStr(Num(LConfig, 'tempo_bpm')) + ' BPM · ' +
       FloatToStr(Num(LConfig, 'cells') / 8) + ' bar(s).';
   end;
-  LActive := (LState = 'queued') or (LState = 'running') or FSubmitting or FGenerateAfterSave;
+  LActive := GenerationActive;
+  El('active-generation').setAttribute('hidden', '');
+  if LActive then El('active-generation').removeAttribute('hidden');
+  El('active-generation-status').textContent := 'Generating music on this computer…';
+  if FSubmitting or FGenerateAfterSave then
+    El('active-generation-status').textContent := 'Starting generation…';
+  if (FJobWrite <> nil) and not FSubmitting then
+    El('active-generation-status').textContent := 'Checking your saved generation request…';
+  if FStopRequested then
+    El('active-generation-status').textContent := 'Stop requested. Checking the native job…';
+  TJSHTMLButtonElement(El('stop-active-generation')).disabled := FCancelling;
   TJSHTMLButtonElement(El('exit-experiment')).disabled := LActive;
   if FLaboratory <> nil then FLaboratory.SetGenerationAvailable(not LActive);
   El('previous-version').setAttribute('hidden', '');
@@ -783,7 +809,7 @@ begin
   if (FJob <> nil) and not FSubmitting and not FGenerateAfterSave then
     DrawStudioProgress(El('generation-progress'), FJob, True);
   El('cancel-generation').setAttribute('hidden', '');
-  if LActive and not FSubmitting and not FGenerateAfterSave then
+  if LActive then
     El('cancel-generation').removeAttribute('hidden');
   TJSHTMLButtonElement(El('cancel-generation')).disabled := FCancelling;
   El('reconnect-generation').setAttribute('hidden', '');
@@ -856,7 +882,7 @@ begin
     El('sound-availability').textContent := 'Try new notes or sounds without learning again.';
   end
   else if ResultProjectId <> FProjectId then
-    El('sound-availability').textContent := 'Change this experiment in Musical laboratory, then generate another version.'
+    El('sound-availability').textContent := 'Open More music controls to change this experiment, then generate another version.'
   else El('sound-availability').textContent := 'Generate a new track once to enable sound changes.';
   DrawPartComparison;
   LUrl := '/api/studio/instrumental-audio?job=' + encodeURIComponent(FJobId) + '&part=6';
@@ -1336,10 +1362,38 @@ begin
   end;
 end;
 
+procedure TStudio.OpenSavedGeneration(const AJobId: String); async;
+var LJob, LProject: TJSObject;
+begin
+  if GenerationActive then
+  begin El('songs-status').textContent := 'Stop the current generation before opening another result.'; Exit end;
+  if FDirty or FSaving or (FPendingWrite <> nil) then
+  begin El('songs-status').textContent := 'Wait for your selection to save before opening another result.'; Exit end;
+  try
+    LJob := await(TJSObject, Json('/api/studio/job?id=' + encodeURIComponent(AJobId), 'GET', ''));
+    if GenerationActive then Exit;
+    if (Str(LJob, 'status') <> 'completed') or (Str(LJob, 'job_id') <> AJobId) then
+      raise Exception.Create('This generated song is unavailable. Refresh songs.');
+    if Str(LJob, 'project_id') <> FProjectId then
+    begin
+      LProject := await(TJSObject, Json('/api/studio/project?id=' +
+        encodeURIComponent(Str(LJob, 'project_id')), 'GET', ''));
+      if GenerationActive or FDirty or FSaving then Exit;
+      if Obj(LProject['playlist']) <> nil then LoadProject(LProject);
+    end;
+    ClearGeneration;
+    FResultProjectId := Str(LJob, 'project_id'); FJobId := AJobId; FJob := LJob;
+    RememberGeneration;
+    TStudioDialog(El('songs-dialog')).close;
+    ShowStep('generate'); Draw;
+  except on E: Exception do El('songs-status').textContent := E.Message end;
+end;
+
 procedure TStudio.SubmitGeneration; async;
 var LJob: TJSObject; LEpoch: Integer;
 begin
   if FSubmitting or not FConnected or (FJobWrite = nil) then Exit;
+  if FStopRequested then begin PollGeneration; Exit end;
   FSubmitting := True;
   PauseResult;
   El('generation-result').setAttribute('hidden', '');
@@ -1360,13 +1414,22 @@ begin
     if not FCancelling then FGenerationMessage := '';
     RememberGeneration;
   except
-    on E: Exception do FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+    on E: Exception do
+    begin
+      FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+      if FStopRequested and (FJobWrite = nil) then
+      begin
+        FStopRequested := False;
+        FGenerationMessage := 'Stopped before generation started. Your music choices are kept.';
+      end;
+    end;
   end;
   if LEpoch = FJobEpoch then
   begin
     FSubmitting := False;
     DrawGeneration;
-    if FJob <> nil then PollGeneration;
+    if FStopRequested then CancelGeneration
+    else if FJob <> nil then PollGeneration;
   end;
 end;
 
@@ -1378,6 +1441,7 @@ var
   LEpoch: Integer;
 begin
   if FSubmitting or FLoading or not FConnected then Exit;
+  if FStopRequested then begin PollGeneration; Exit end;
   if FJobWrite <> nil then begin SubmitGeneration; Exit end;
   if (Str(FJob, 'status') = 'running') or (Str(FJob, 'status') = 'queued') then Exit;
   if FSaving or FDirty or (FPendingWrite <> nil) then
@@ -1407,6 +1471,12 @@ begin
       FResultProjectId := FProjectId;
       LProject := await(TJSObject, Json('/api/studio/project?id=' + encodeURIComponent(FProjectId), 'GET', ''));
       if LEpoch <> FJobEpoch then Exit;
+      if FStopRequested then
+      begin
+        FSubmitting := False; FStopRequested := False;
+        FGenerationMessage := 'Stopped before generation started. Your music choices are kept.';
+        DrawGeneration; Exit;
+      end;
       if (Num(LProject, 'revision') <> FRevision) or
         not SameStudioJSON(LProject['playlist'], Playlist) then
         raise Exception.Create('Your saved selection changed. Reopen this playlist before generating.');
@@ -1437,7 +1507,15 @@ begin
       RememberGeneration;
     end;
   except
-    on E: Exception do FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+    on E: Exception do
+    begin
+      FGenerationMessage := E.Message + ' Your request is kept for reconnecting.';
+      if FStopRequested and (FJobWrite = nil) then
+      begin
+        FStopRequested := False;
+        FGenerationMessage := 'Stopped before generation started. Your music choices are kept.';
+      end;
+    end;
   end;
   if LEpoch = FJobEpoch then
   begin
@@ -1460,7 +1538,10 @@ begin
       raise Exception.Create('This run belongs to a different playlist.');
     FJob := LJob;
     FJobWrite := nil;
-    if not FCancelling then FGenerationMessage := '';
+    if not FCancelling and not FStopRequested then FGenerationMessage := '';
+    if (Str(FJob, 'status') = 'completed') or (Str(FJob, 'status') = 'failed') or
+      (Str(FJob, 'status') = 'cancelled') then
+    begin FStopRequested := False; FGenerationMessage := '' end;
     RememberGeneration;
   except
     on E: Exception do
@@ -1470,6 +1551,9 @@ begin
   begin
     FJobPolling := False;
     DrawGeneration;
+    if FStopRequested and (FJob <> nil) and not FCancelling and
+      not (isBoolean(FJob['cancel_requested']) and Boolean(FJob['cancel_requested'])) then
+    begin CancelGeneration; Exit end;
     if (FJob = nil) or (Str(FJob, 'status') = 'queued') or (Str(FJob, 'status') = 'running') then
       FJobTimer := window.setTimeout(procedure begin PollGeneration end, 1500);
   end;
@@ -1489,6 +1573,7 @@ begin
       LState := Obj(TJSJSON.parse(LText));
       FJobId := Str(LState, 'job_id');
       FJobWrite := Obj(LState['request']);
+      FStopRequested := isBoolean(LState['stop_requested']) and Boolean(LState['stop_requested']);
       if Str(LState, 'duration') <> '' then
       begin
         if Str(LState, 'duration_unit') <> '' then
@@ -1530,7 +1615,20 @@ end;
 procedure TStudio.CancelGeneration; async;
 var LWrite, LJob: TJSObject; LEpoch: Integer;
 begin
-  if (FJobId = '') or FCancelling then Exit;
+  if FCancelling then Exit;
+  FGenerateAfterSave := False;
+  FStopRequested := True;
+  FGenerationMessage := 'Stop requested. Checking the native job…';
+  RememberGeneration;
+  if FSubmitting then begin DrawGeneration; Exit end;
+  if (FJobWrite = nil) and (Str(FJob, 'status') <> 'queued') and
+    (Str(FJob, 'status') <> 'running') then
+  begin
+    FStopRequested := False;
+    FGenerationMessage := 'Stopped before generation started. Your music choices are kept.';
+    RememberGeneration; DrawGeneration; Exit;
+  end;
+  if FJobId = '' then begin DrawGeneration; Exit end;
   LEpoch := FJobEpoch;
   FCancelling := True;
   FGenerationMessage := 'Stopping at the next checkpoint…';
@@ -1973,6 +2071,8 @@ end;
 procedure TStudio.OpenProject(const AId: String); async;
 var LProject: TJSObject;
 begin
+  if GenerationActive then
+  begin Notice('Stop generation before opening another playlist.', True); Exit end;
   if FLoading or FDirty or FSaving or (FPendingWrite <> nil) then
   begin
     Notice('Wait for Saved before opening another playlist. Your current edits are kept.', True);
@@ -2069,6 +2169,7 @@ begin
       end;
     end;
     FConnected := True;
+    FSourceEditor.RefreshSavedClips;
     FLibraryRefresh.SetConnected(True);
     FLibraryRefresh.Refresh;
     FCapture.Refresh;
@@ -2100,6 +2201,8 @@ begin
   if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
   case LButton.id of
     'generate-music': Generate;
+    'open-songs': FSongs.Open;
+    'save-song': FSongs.SaveJob(FJobId);
     'open-laboratory': FLaboratory.Open(FProjects);
     'edit-experiment':
       if FLaboratory.ProjectId = ResultProjectId then FLaboratory.Open(FProjects)
@@ -2124,11 +2227,12 @@ begin
     'change-section': ChangeSection;
     'apply-notes': ApplyNoteChoices;
     'previous-version': OpenPreviousVersion;
-    'cancel-generation': CancelGeneration;
+    'cancel-generation', 'stop-active-generation': CancelGeneration;
     'reconnect-generation':
       if FJobWrite <> nil then Generate else PollGeneration;
     'new-playlist':
       begin
+        if GenerationActive then begin Notice('Stop generation before starting another playlist.', True); Exit end;
         if FDirty or FSaving or (FPendingWrite <> nil) then Exit;
         NewPlaylist;
         Draw;
@@ -2227,6 +2331,24 @@ begin
   Result := False;
   FCapture.CloseEntry;
 end;
+function TStudio.DialogClosed(AEvent: TEventListenerEvent): Boolean;
+var LMedia: TJSNodeList; I: Integer;
+begin
+  Result := False;
+  LMedia := TJSElement(AEvent.currentTarget).querySelectorAll('audio');
+  for I := 0 to LMedia.length - 1 do TJSHTMLAudioElement(LMedia[I]).pause;
+end;
+function TStudio.Reconnected(AEvent: TEventListenerEvent): Boolean;
+begin
+  Result := False;
+  if (AEvent._type = 'visibilitychange') and document.hidden then Exit;
+  if not FConnected then Connect
+  else
+  begin
+    if FDirty or (FPendingWrite <> nil) then Save;
+    if FJobId <> '' then PollGeneration;
+  end;
+end;
 function TStudio.TabKey(AEvent: TJSKeyboardEvent): Boolean;
 var LName: String;
 begin
@@ -2262,6 +2384,7 @@ begin
   FLibraryRefresh := TStudioLibraryRefresh.Create(@FetchNavigation, @CatalogSaved);
   FLaboratory := TStudioLaboratory.Create(document.body, @FetchApi,
     @LaboratorySaved, @LaboratoryGenerate, @LaboratoryOpened);
+  FSongs := TStudioSongs.Create(@FetchApi, @OpenSavedGeneration);
   LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
   El('track-search').addEventListener('input', @Edit);
@@ -2283,6 +2406,8 @@ begin
   El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);
   El('capture-panel').addEventListener('close', @CaptureClosed);
+  El('songs-dialog').addEventListener('close', @DialogClosed);
+  El('saved-clips-dialog').addEventListener('close', @DialogClosed);
   El('tab-library').addEventListener('keydown', @TabKey);
   El('tab-selection').addEventListener('keydown', @TabKey);
   El('tab-generate').addEventListener('keydown', @TabKey);
@@ -2290,6 +2415,8 @@ begin
   document.addEventListener('pointerdown', @UserInteraction, True);
   document.addEventListener('keydown', @UserInteraction, True);
   window.addEventListener('pagehide', @Leaving);
+  window.addEventListener('online', @Reconnected);
+  document.addEventListener('visibilitychange', @Reconnected);
   ShowStep('library');
   if (window.location.hash = '#listen') or (window.location.hash = '#prepare') then
     ShowStep('generate');

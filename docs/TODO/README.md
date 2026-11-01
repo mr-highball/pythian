@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**6 open tasks · 146 total effort units · 22 current-goal DONE · 105 / 146 accepted (71.92%).**
+**9 open tasks · 156 total effort units · 22 current-goal DONE · 105 / 156 accepted (67.31%).**
 
 The optional [musical laboratory — DONE](DONE/NS-6_optional-lab_01.md) restores
 reachable authored key/tempo, per-role expression and editable affect controls
@@ -99,6 +99,9 @@ continuity experiments are selected.
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
 | [NS-5_musical-form_01](NS-5_musical-form_01.md) — phrases, sections and useful variation | 8 | In progress; positioned priors accepted; finish section density and actual operator listening |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | Style vocabulary + graph controls + sound design + instrumental Studio |
+| [NS-6_connection-admission_01](NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | In progress; reproduced prerequisite for song/clip review |
+| [NS-6_song-library_01](NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | In progress; existing jobs/artifacts |
+| [NS-6_clip-library_01](NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | In progress; independent clip storage accepted |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
 | [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
@@ -107,9 +110,9 @@ continuity experiments are selected.
 | [NS-4_context-continuation_01 — DONE](DONE/NS-4_context-continuation_01.md) — supported learned contexts across long output | 6 | Accepted; original failed provider/seed continues through14400cells and actual hour render |
 | [NS-6_instrumental-streams_01 — DONE](DONE/NS-6_instrumental-streams_01.md) — efficient long instrumental jobs | 8 | Accepted; one performance/seven outputs, duration estimates, actual browser long playback/reconnect/Stop |
 
-The two tables together are all 28 current-goal tasks (6 open, twenty-two DONE),
-totaling 146 units: 41 open and 105 accepted. Subtotals:
-NS-2 12, NS-3 15, NS-4 55, NS-5 15, NS-6 49. NS-1 remains a preserved core
+The two tables together are all 31 current-goal tasks (9 open, twenty-two DONE),
+totaling 156 units: 51 open and 105 accepted. Subtotals:
+NS-2 12, NS-3 15, NS-4 55, NS-5 15, NS-6 59. NS-1 remains a preserved core
 independence invariant, not an invented new baseline task.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

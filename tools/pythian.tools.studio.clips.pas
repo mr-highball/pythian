@@ -38,6 +38,9 @@ function StudioClipIdentity(const AItem, AClip: TJSONObject): String;
   never authorization to silently replace it from a parent recording. Metadata
   inspection does not read source or clip audio; learning uses Open below. }
 function ReadStudioClip(const ACatalogRoot, AClipId: String): TJSONObject;
+{ Metadata-only reusable library, independent of current playlist membership.
+  Labels are retained in new receipts and supplemented from saved projects. }
+function ListStudioSavedClips(const ACatalogRoot: String): TJSONObject;
 { Verifies just the independent clip, returning an owned seekable handle and
   receipt. It never opens the parent. Expected hash may be empty for status-free
   callers; accepted learning/reference callers bind their recorded hash.
@@ -143,6 +146,82 @@ begin
   end;
 end;
 
+function ListStudioSavedClips(const ACatalogRoot: String): TJSONObject;
+var
+  LSearch: TSearchRec;
+  LRoot, LId: String;
+  LRows, LErrors, LLabels, LItems, LClips: TJSONArray;
+  LReceipt, LProjects, LProject, LItem, LClip: TJSONObject;
+  I, J, K, N, M, P: Integer;
+  LFound: Boolean;
+begin
+  Result := TJSONObject.Create(['format', 'pythian.studio.saved-clips.v1']);
+  LProjects := nil;
+  try
+    LRows := TJSONArray.Create;
+    LErrors := TJSONArray.Create;
+    Result.Add('clips', LRows);
+    Result.Add('errors', LErrors);
+    LRoot := ListeningAssetDirectory(ACatalogRoot) + PathDelim + 'clips';
+    if FindFirst(LRoot + PathDelim + '*.json', faAnyFile, LSearch) = 0 then
+    try
+      repeat
+        if LSearch.Attr and faDirectory <> 0 then Continue;
+        Need(LRows.Count + LErrors.Count < 4096, 'Saved clip library exceeds listing bound');
+        LId := ChangeFileExt(LSearch.Name, '');
+        try
+          LReceipt := ReadStudioClip(ACatalogRoot, LId);
+          if LReceipt <> nil then
+          begin
+            if LReceipt.Find('classifications') = nil then
+              LReceipt.Add('classifications', TJSONArray.Create);
+            LRows.Add(LReceipt);
+          end;
+        except
+          on E: Exception do LErrors.Add(TJSONObject.Create(['clip_id', LId, 'error', E.Message]));
+        end;
+      until FindNext(LSearch) <> 0;
+    finally FindClose(LSearch) end;
+    LProjects := ListStudioProjects(ACatalogRoot);
+    try
+    for I := 0 to LProjects.Arrays['projects'].Count - 1 do
+    begin
+      LProject := ReadStudioProject(ACatalogRoot, LProjects.Arrays['projects'].Objects[I].Strings['project_id']);
+      try
+        if LProject.Find('playlist') = nil then Continue;
+        LItems := LProject.Objects['playlist'].Arrays['items'];
+        for J := 0 to LItems.Count - 1 do
+        begin
+          LItem := LItems.Objects[J];
+          LClips := LItem.Arrays['clips'];
+          for K := 0 to LClips.Count - 1 do
+          begin
+            LClip := LClips.Objects[K];
+            LId := StudioClipIdentity(LItem, LClip);
+            for N := 0 to LRows.Count - 1 do
+              if LRows.Objects[N].Strings['clip_id'] = LId then
+              begin
+                LLabels := LRows.Objects[N].Arrays['classifications'];
+                for M := 0 to LClip.Arrays['classifications'].Count - 1 do
+                begin
+                  LFound := False;
+                  for P := 0 to LLabels.Count - 1 do
+                    if LLabels.Strings[P] = LClip.Arrays['classifications'].Strings[M] then LFound := True;
+                  if not LFound then LLabels.Add(LClip.Arrays['classifications'].Strings[M]);
+                end;
+                Break;
+              end;
+          end;
+        end;
+      finally LProject.Free end;
+    end;
+    finally LProjects.Free end;
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
 function OpenStudioClip(const ACatalogRoot, AClipId, AExpectedHash: String;
   out AReceipt: TJSONObject; const AProgress: TWorkProgressCallback;
   const AVerifyContent: Boolean): TFileStream;
@@ -241,6 +320,8 @@ begin
       'sample_encoding', 'unchanged_source_sample_bytes']);
     Result.Add('recipe', LRecipe.Clone);
     Result.Add('parent_metadata', LMetadata.Clone);
+    if AClip.Find('classifications') <> nil then
+      Result.Add('classifications', AClip.Arrays['classifications'].Clone);
     Result.Add('audio', LStored.Clone);
     ReportWork(AProgress, 'clip_ready', wuItems, 1, 1);
     { Big Boss: primary audio publication precedes the immutable origin receipt.
