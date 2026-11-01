@@ -3,7 +3,58 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: generic composition prerequisite selected — 2026-11-01
+## Current handoff: known-domain prerequisite after retained joint failure — 2026-11-01
+
+Big Boss SOLO. The joint instrumental candidate reaches its stop condition:
+native and actual pas2js both complete the guided48second/six-part control
+(digest b6796894ad28666fb455d48a8c9224bc00cb284db6abc077cc9a07bd84750ece),
+then free generation exhausts the unchanged16-retry allowance at64/lead pass4.
+Keep192cells, sixteen-cell prefixes,256lookahead and seed1704297163. No further
+model variants are selected. The entire candidate and corrected performed-cell
+fixture, source hashes and patch are preserved under E/unguided-joint-20261101-boss/
+candidate01; patch SHA dfed7ddd9df8e303c4fcc19ccdb10bcce3fdb4245e413769d7b087437e2a581a.
+All unpublished runtime/starter/percussion/Studio edits and the untracked fixture
+are removed from source pending repair. No candidate was deployed or accepted.
+
+A WFC-only64cell probe on80772b6 isolates the missing preparation capability:
+the declared target C supports source `a`, yet the free memoryless `a`/`b`
+source uses sixteen whole-assignment retries and fails. The same models,
+seed1704297163 and256/16 limits with the known feasible source domain prove
+all64cells with zero retries and a clean heap. Existing primary reference
+InitializeDomains/Propagate logic is private; expose/reuse it rather than copy a
+propagator into Pythian. [Projected domains](TODO/NS-4_projected-domains_01.md)
+adds six units and is the real prerequisite for the retained unguided task.
+The operator was notified of the new separate WFC branch
+codex/pythian-projected-domains from80772b6 before new upstream edits.
+Preserve both existing worktrees and the original expansion checkout.
+
+The [composition prerequisite](TODO/NS-4_context-composition_01.md) remains open.
+Its source37c2755 passed all five CI65 jobs and Pythian0426149 passes complete
+CI542. The clean Win64 archive verifies180 owned units and309 content hashes;
+SHA929e6f1d7417d5055846b13c30285a937e0d874e216a0dc96cea1111fca3052b.
+Its typed context44 consumer passes native/actual pas2js and both extracted
+targets. The actual instrumental candidate then catches the missing CopyFrames
+endpoint: total model count was mistaken for pitched count. This is repaired in
+separate WFC source80772b6; native/actual pas2js144 and all five CI66 jobs pass.
+The initial source37 successes do not accept that defective endpoint.
+
+Pythian's local candidate pin is80772b6, and its maintained context consumer now
+also calls CopyFrames. Updated native/actual pas2js48 checks pass with a clean
+native heap. Extracted qualification and a new downstream source CI remain
+pending. Source is otherwise restored to published
+0426149. Do not stage or publish the preserved failed musical candidate. No
+branch is merged, no dependency source is edited here, no operator answer is
+invented and the stable cc45248 service/review are unchanged.
+
+Accounting118/175 (67.43%): nine open/26 current DONE,57 open units. The failed
+musical batch carries a conservative nonclosing count1; task/branch creation
+does not reset it. Stop and reassess before a third consecutive nonclosing
+batch if the next batch closes no criterion. Complete the actual frame-copy
+qualification before accepting composition. Then prepare bounded known-domain
+propagation in the new upstream branch; use the preserved musical candidate
+after that capability is available, not another local compatibility filter.
+
+## Previous handoff: generic composition prerequisite selected — 2026-11-01
 
 The notified separate WFC branch now publishes source37c2755. New generic
 composition136 checks pass on native and actual pas2js; no-composition signatures

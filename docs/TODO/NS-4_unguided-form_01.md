@@ -32,6 +32,10 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Blockers**
 
+- [Projected known domains](NS-4_projected-domains_01.md) — the actual shared
+  candidate still exhausts the original limit; use known future restrictions
+  before selecting upstream assignments rather than trying another model filter.
+
 - [Verified context composition](NS-4_context-composition_01.md) — context must
   negotiate with the actual free voice graph rather than commit independently.
 
@@ -39,6 +43,30 @@ workbench owns interactive diagnostics; this task owns usable generation.
 - [Bounded future domains — DONE](DONE/NS-4_future-domains_01.md)
 
 **Dev Notes:**
+
+- Shared candidate01 reaches the declared stop condition: native and actual
+  pas2js agree on the completed guided witness, then the free request exhausts
+  its unchanged16-retry allowance at64/lead pass4. Preserve both full failures.
+  The first earlier run found a frame-copy defect, now repaired upstream80772b6;
+  that was distinct from this retained planning failure. The linked generic
+  known-domain proof isolates a further prerequisite. All candidate runtime,
+  authored-context and Studio edits plus the corrected fixture are saved in E
+  candidate01 and removed from source pending repair. No candidate is deployed
+  or accepted, and no further model variant is selected.
+
+- 2026-11-01, Big Boss: next AC2 batch uses the published37c2755 composition
+  candidate (upstream CI65 all five jobs passed; native/pas2js/extracted Pythian
+  consumers pass while downstream CI542 is running). Replace separate context,
+  voice and drum commits with one primary graph/frontier. Preserve the original
+  192cell/seed1704297163, sixteen-cell prefixes, 256cell lookahead and256/16 search
+  limits. Authored paired H/R context has driven role -1; no hidden voice guide.
+  Remove superseded stream pending/cursor/filter code. The retained fixture must
+  compare actual performed decision cells, since a whole journal hash can differ
+  merely from provider metadata. Close with actual six-part Studio output and
+  relevant replay/retention/cancellation checks. If the shared primary transaction
+  still fails, preserve that exact failure and reassess before another model
+  variant. Current runtime changes are unpublished/unvalidated WIP; no effort
+  or musical criterion accepted and stable remains unchanged.
 
 - 2026-11-01, Big Boss: preserve the exact baseline and guided witness. Paired
   H/R-only context removes the initial failure but still fails at64; retained

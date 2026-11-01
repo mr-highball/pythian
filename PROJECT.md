@@ -47,14 +47,16 @@ either precursor source directory. Phanes was removed after the
 [extraction and consumer audit](docs/REFERENCE-REMOVAL.md); its application assets
 are not library inputs. WFC and Athena remain pinned submodules.
 
-Candidate checkout pin: `37c2755ac261faf4022b354c98dbe4fea7934a22`, on separate
+Candidate checkout pin: `80772b648e183dd1201696954dd427529942700e`, on separate
 unmerged branch `codex/pythian-context-composition`. It adds caller-declared
 symbolic sequence passes and projections to the primary independent-voice graph
 and stream, with one negotiated transaction and shared prefix frontier. Generic
-native/actual pas2js136 and typed Pythian context-consumer44 checks pass on both
-targets. Existing native graph/projection/stream/preparation checks pass with
-clean heaps. [Upstream CI65](https://github.com/mr-highball/wfc/actions/runs/41277896792),
-downstream CI and extracted consumers remain acceptance gates for the
+native/actual pas2js144 checks pass on both targets. Source37c2755 passed all
+five [CI65 jobs](https://github.com/mr-highball/wfc/actions/runs/41277896792), but
+the first instrumental consumer exposed an untested frame-copy endpoint that
+mistook auxiliary tokens for pitched voices. The candidate repairs that endpoint.
+[Upstream CI66](https://github.com/mr-highball/wfc/actions/runs/41279626754) passes
+all five jobs at the repair. Updated downstream CI and extracted consumers remain acceptance gates for the
 [six-unit prerequisite](docs/TODO/NS-4_context-composition_01.md). Ordinary Studio
 free-form repair remains with its linked task. This candidate is not yet accepted
 or deployed, and no source was edited in this submodule checkout.

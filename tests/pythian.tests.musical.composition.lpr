@@ -130,6 +130,8 @@ begin
               begin
                 Check(Stream.Next(Segment, Report) = wmaspProduced, 'shared musical context prefix');
                 try
+                  Check(Length(Segment.CopyFrames[0].Voices) = 1,
+                    'actual instrumental frame copy excludes context tokens');
                   Check(Segment.CopyGenerated(3).Tokens[0] = ContextTokens[0], 'source context remains inspectable');
                   Check(Segment.CopyGenerated(2).Tokens[0] = VoiceTokens[1], 'independent octave is genuinely free');
                   Check(Stream.CopyFrontier.EndTick = 2 * (I + 1), 'one shared musical clock');

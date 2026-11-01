@@ -43,6 +43,29 @@ separate WFC repository; Pythian keeps musical token mappings and audio adaptati
 
 **Dev Notes:**
 
+- The repaired80772b6 source now passes all five upstream CI66 jobs. The expanded
+  Pythian typed-context/frame consumer passes48 checks on native and actual
+  pas2js, with a clean native heap. The source37/0426149 archive and complete
+  CI542 also pass, retained as exact historical evidence. Updated80772b6
+  downstream CI/extraction remain the final gates. The separate
+  [known-domain preparation task](NS-4_projected-domains_01.md) owns the further
+  bounded-search capability exposed by the actual musical candidate; that
+  failure does not disappear merely because composition's source/proof API
+  works. Preserve both facts and keep this task open until repair gates finish.
+
+- The first actual joint instrumental stream exposes a further acceptance defect
+  at37c2755: CopyFrames derives pitched count from total model count and attempts
+  to decode an auxiliary percussion token as an ensemble frame. The initial
+  generated-layer consumers missed this endpoint despite green CI65. Do not
+  accept that source from those tests. The same separate branch now publishes
+  80772b6, retaining actual declared pitched count for detached frame copies.
+  Expanded native/actual pas2js144 checks pass, including default replay and
+  auxiliary frame-copy ownership. CI66 is running at the repair. Pythian's
+  consumer now also calls CopyFrames; its candidate pin is80772b6 while the
+  original CI542 at0426149/37c2755 continues unaltered. First failure and revised
+  regressions are preserved under the E composition/joint packets. No task is
+  accepted, and the stable review service is unchanged.
+
 - 2026-11-01, Big Boss: upstream source37c2755 is published on the notified
   [separate branch](https://github.com/mr-highball/wfc/tree/codex/pythian-context-composition).
   The primary graph accepts explicitly named auxiliary models and token maps;

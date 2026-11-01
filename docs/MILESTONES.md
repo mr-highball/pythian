@@ -22,7 +22,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 118 / 169 effort units accepted (69.82%); eight open, twenty-six current-goal DONE.**
+**Current snapshot: 118 / 175 effort units accepted (67.43%); nine open, twenty-six current-goal DONE.**
+The six-unit [projected-domain prerequisite](TODO/NS-4_projected-domains_01.md)
+follows the actual shared candidate's remaining64cell search failure. A pure
+WFC64cell proof shows that a known target restriction is not used before source
+assignment: sixteen retries fail, while the unchanged explicit witness proves
+with zero. Reuse primary propagation in the notified separate WFC branch; keep
+the failed musical candidate for repair. No additional task or music is accepted.
 The six-unit [context-composition prerequisite](TODO/NS-4_context-composition_01.md)
 adds a demonstrated primary API gap: generic projected-source graphs solve, but
 the closed voice verifier rejects their extra declared source. A proper shared
@@ -99,10 +105,10 @@ per-task percentages or north-star weights apply.
 | [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 6 | 6 | 6 / 12 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
-| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition and usable unguided form | 17 | 48 | 48 / 65 |
+| [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 23 | 48 | 48 / 71 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 57 | 57 / 62 |
-| **Total** | **34 current-goal tasks** | **51** | **118** | **69.82%** |
+| **Total** | **35 current-goal tasks** | **57** | **118** | **67.43%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
