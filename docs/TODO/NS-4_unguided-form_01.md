@@ -37,6 +37,13 @@ workbench owns interactive diagnostics; this task owns usable generation.
 
 **Dev Notes:**
 
+- The same-seed explicit guided alternative completes. Its model SHA is the same
+  `dd7eae4dcde7a165a901376e44783a04512056bc5bee8c6ab6f021f675a9b33e`
+  as the failed unguided job. Guided domains add restrictions rather than extend
+  the vocabulary. This is a concrete feasible-path witness to examine when
+  diagnosing the unguided search failure; do not relabel exhausted negotiation
+  as proven incompatible music. The native journals and both requests remain.
+
 - 2026-11-01, Big Boss: the first actual form listening preparation fails at
   cell0, negotiation3 (pass-backtrack limit), failed pass2. Job
   `music-1793506844373-563263`, seed1704297163, request SHA

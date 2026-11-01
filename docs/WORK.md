@@ -3,7 +3,46 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: sustained form prepared; listening writer repaired locally — 2026-11-01
+## Current handoff: form review live; complete CI pending — 2026-11-01
+
+Big Boss remains SOLO. The actual review **Returning melody · Experimental** is
+published as `form-lead-return-20261101`. It asks whether the returning lead at
+32seconds connects the ending to the opening. The authored guided48second
+performance and one-second tail are playable; six stems, exact section audition,
+saved settings and primary decision journal remain on its ordinary native job
+`form-guided-20261101-1704297163`. Songs / Musical experiments retains its named
+output. Saving a response will not train or regenerate. No operator answer is
+invented; [form](TODO/NS-5_musical-form_01.md) awaits actual listening judgment.
+
+The [listening UTF-8 repair](TODO/NS-6_listening-utf8_01.md) is deployed from
+sourcecc45248 with unchanged browser3e42723. Fixed stable PID10284 runs from the
+same approved executable/TLS paths. Fourteen deployed hashes match checked
+artifacts; trusted LAN HTTP/HTTPS passes133 checks with a clean heap (optional
+media fixtures not run). Complete native listening tests pass Unicode notes,
+idempotent Save, exact export/replay, malformed-byte preservation and historical
+ASCII fingerprints. Isolated desktop/390px Save/reopen preserves the exact note.
+Actual live phone-width review playback/readiness and empty answer controls pass.
+Seven prior completed response fingerprints/revisions remain unchanged after the
+guarded queue recovery and final publication. All23 native jobs are terminal.
+
+Complete [CI541](https://github.com/mr-highball/pythian/actions/runs/41273822026)
+is running atcc45248; keep the repair task open until that outstanding check
+finishes. Accounting remains115/163 (70.55%), eight open/25 current DONE, with
+no partial form or musical-quality credit. This handoff is one nonclosing batch:
+counter1 carries forward. The two discovered prerequisites did not reset it.
+Next inspect that exact CI run, accepting the three repair units only if its
+checks pass; then use the actual form response or follow the retained unguided
+planning gap. Do not resubmit music merely because an observation timed out.
+
+The exact raw rejected queue, original valid prepared packet, guarded native
+recovery, failures/fixed checks, actual job/decision receipts, fourteen-file
+manifest, startup/deployment receipt and screenshots stay in
+form-listening-20261101-boss under the dedicated E-drive workspace. Native QA
+PID54012 is stopped, port18129 absent; owned browser tabs54–56 are closed,
+viewport overrides reset and all inspected media paused with no loops. User tabs
+are preserved. Stable alone remains live. No helper or WFC-source edit occurred.
+
+## Previous handoff: sustained form prepared; listening writer repaired locally — 2026-11-01
 
 Big Boss SOLO. The guided48second A/B/A native job completes with the original
 seed1704297163, six stems and a one-second tail. Primary form/journal validation

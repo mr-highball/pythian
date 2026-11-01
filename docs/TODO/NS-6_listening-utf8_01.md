@@ -32,6 +32,16 @@ NS-6. Repair this concrete review blocker without another serialization framewor
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: checked sourcecc45248 is now live in the fixed stable
+  slot with all fourteen hashes matched and existing LAN/TLS approval preserved.
+  Trusted HTTP/HTTPS133 passes cleanly; optional media fixtures are explicitly
+  outside that check. The original Unicode review packet publishes successfully;
+  its front-facing brief is shortened through guarded ordinary publication,
+  before any response. Seven historical completed hashes/revisions remain exact.
+  The actual review's49second playback and answer controls work at390px. QA is
+  stopped, owned tabs closed and playback paused. Complete CI541 atcc45248 is
+  the outstanding check; keep this task open until its result is known.
+
 - Fixed-slot loopback QA passes actual desktop Save and390px reload with the
   exact note `Big Boss QA only: mélodie 🎵 音 stays exact.` Two synthetic answers
   remain in that isolated fixture only. All inspected playback is paused. Keep

@@ -173,6 +173,14 @@ The linked [unguided-form task](TODO/NS-4_unguided-form_01.md) owns that actual
 generation gap. Explicit guided listening may proceed with the same seed,
 disclosing that hard starter rhythm/chord domains constrain density preferences.
 
+The actual guided review now uses three64cell sections with only Lead retained
+on the return. Primary form validation accepts its192cell journal and actual
+Studio audition seeks32seconds and stops48seconds; the full mix includes a
+one-second tail. The saved six-part result is named in Songs / Musical experiments.
+Its prepared review asks one question about the returning lead, with explicit
+authored origin and guide limits. Actual operator judgment remains required;
+successful rendering/publication does not establish useful musical form.
+
 [`TInstrumentalPassageStream`](../adapters/wfc/pythian.wfc.instrumental.edit.stream.pas)
 borrows immutable models and a fresh primary decision reader. It calls the same
 finite musical graph editor over a bounded window, returns only the next original

@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress
+**Status:** Awaiting operator feedback
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -36,6 +36,17 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: actual guided job `form-guided-20261101-1704297163`
+  completes with the same seed as the retained unguided failure. Three64cell
+  sections at120BPM cover0–16,16–32,32–48seconds, plus a one-second tail. Only
+  Lead is retained. The primary form/journal validator verifies192cells,
+  1152000music frames and12chunks with a clean heap. Real Studio seeks32 and
+  stops48 for the return; Lead solo is49seconds. The output is named in Songs /
+  Musical experiments. Review `form-lead-return-20261101` is live with one
+  question and explicit authored/guide limits. Full mix playback/readiness and
+  answer controls pass at390px; no answer was submitted. Its actual musical
+  judgment remains open, and all eight units remain unaccepted.
 
 - 2026-11-01, Big Boss: the first deliberately unguided A/B/A request fails
   before audio at the pass-backtrack limit. Linked [unguided form](NS-4_unguided-form_01.md)
