@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Thirty-two current-goal tasks are accepted: **146 / 194 effort units (75.26%)**. Their
+Thirty-four current-goal tasks are accepted: **152 / 194 effort units (78.35%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -18,11 +18,15 @@ known later restrictions before committing a prefix. Saved clips/song playlists,
 Unicode listening feedback, positioned priors, composed/projected domains and
 usable unguided form are accepted through their actual consumers. Complete sound
 recipes, editable layers/envelopes/movement and shared effect racks now drive
-retained-score Studio versions and saved private setups. There are129 DONE files: thirty-two current,
+retained-score Studio versions and saved private setups. Complete corpus archives
+and lossless native cache paths now pass ordinary consumers and complete CI556.
+There are131 DONE files: thirty-four current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-5_style-corpus-capacity_01](NS-5_style-corpus-capacity_01.md) | 2026-11-01 | 4/10 | Complete supported corpus/models/clocks/recipes, ordinary native style candidates, native/JS replay and complete CI556 |
+| [NS-6_native-cache-path_01](NS-6_native-cache-path_01.md) | 2026-11-01 | 2/10 | Long Unicode/atomic native I/O, actual playlist/clip consumers and repaired extracted WFC package, CI556 |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) | 2026-11-01 | 8/10 | Primary instrument/effect recipes, actual desktop/390px saved-score editing/audition, no-learning setup persistence, CI550 and checked deployment |
 | [NS-4_unguided-form_01](NS-4_unguided-form_01.md) | 2026-11-01 | 4/10 | Original192cell free arrangement at unchanged seed/limits, native/pas2js, actual Studio/browser and CI547 deployment |
 | [NS-6_native-reuse_01](NS-6_native-reuse_01.md) | 2026-11-01 | 3/10 | Fresh safe compiler contexts retain every consumer and finish full CI547 inside the unchanged budget |

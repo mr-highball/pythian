@@ -1,10 +1,10 @@
 # NS-6_native-cache-path_01 - Preserve native cache I/O across supported Windows path lengths
 
-[Active tasks](README.md) · [Corpus styles](NS-5_style-corpus-capacity_01.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Corpus styles](NS-5_style-corpus-capacity_01.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 2/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -18,6 +18,15 @@ bounded atomic publication and private data unchanged; do not require a global
 Windows configuration change or hide the issue by shortening caller paths.
 
 Primary attribution: NS-6. This distinct platform gap adds two effort units.
+
+Delivered on 2026-11-01 at `0235194d51b8125b9dfba4198618fef64a3b7e20`.
+Shared native I/O preserves long Windows paths and exact Unicode names, atomic
+publication and explicit byte limits. The original long-root playlist and clip
+consumers pass; rejected writes preserve accepted bytes. Complete
+[CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967) passes
+maintained integration and both extracted packages. Local Win64 checks include
+the independent wide-path assertion; Linux CI exercises the portable boundary.
+No machine setting or service/browser change is required.
 
 **Acceptance Criteria:**
 
@@ -36,6 +45,14 @@ Primary attribution: NS-6. This distinct platform gap adds two effort units.
 - None.
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria pass. Complete CI556 at the exact source
+  above verifies core123/WFC186 units and137/316 content hashes after extraction;
+  the missing shared helper is present. Retained logs and packages match their
+  GitHub artifact digests. Win64 paths9, playlist2,016,325 and clips39 have clean
+  heaps; CI passes paths8 (Windows-only assertion excluded), playlist and clips.
+  Evidence: E/runs/style-capacity-20261101-boss/ci556-logs and native-consumers03.
+  Preserve the original long-path, fixture code-page and package omissions below.
 
 - 2026-11-01, Big Boss: repaired actual ZIP consumers now pass on Win64 from
   fresh E-drive roots. Core verifies123 units/137 content hashes; WFC verifies

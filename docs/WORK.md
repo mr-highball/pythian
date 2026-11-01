@@ -3,7 +3,60 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Active continuation: CI555 package omission repair and shared performance binding - 2026-11-01
+## Current handoff: corpus/path prerequisites accepted; Studio styles next - 2026-11-01
+
+Big Boss SOLO. Previous goal turns were verified waits on the same live CI556
+job, not new implementation batches. Complete [CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967)
+now succeeds at0235194d51b8125b9dfba4198618fef64a3b7e20: maintained integration,
+both clean extracted packages, retained source packages and logs. Core verifies
+123 units/137 content hashes; WFC verifies186 units/316 hashes, including the
+shared path helper. Downloaded retained logs/packages match GitHub's digests.
+No acceptance is inferred from CI555's earlier partial success.
+
+All criteria/prerequisites pass for [complete corpus persistence](TODO/DONE/NS-5_style-corpus-capacity_01.md)
+and [native cache paths](TODO/DONE/NS-6_native-cache-path_01.md). Both move to DONE;
+links, catalog and milestones update together. Native Windows paths9,
+playlist2,016,325 and saved clips39 pass with clean heaps. Linux CI passes the
+corresponding consumers (paths8 excludes the Windows-only assertion). Complete
+native/actual JS suites pass7,799,668 instrumental checks, generic styles/blends
+and native385 progress checks. Actual jobs retain/reload the candidate, reproduce
+mix/six stems, preserve cancellation, report optional corruption without losing a
+song, and learn/save clips while their full parent is absent.
+
+The complete64-source/1024-run/65536-weighted-cell corpus remains3,665,780 bytes,
+identity654f0172c845378ea1455ab2d47677181c8e59545cd59b1d68ec6f30bb15da6a
+on native and JS. Its authored symbolic16,384 model-used seconds are4.55 hours;
+selected source hours are not all learned and no WAV-accuracy claim follows.
+The shared saved-style performance factory is also qualified: caller options,
+score sink and borrowed mixer reuse the primary runtime with unchanged archive
+identity and correct ownership. This is a parent component, not a delivered
+Studio naming/blending interface.
+
+Accounting:41 current tasks,34 DONE/seven open,152/194 (78.35%),42 open units;
+NS-5 accepted4/open15 and NS-6 accepted63/open8. The consecutive nonclosing count
+resets from3 to0 because these two actual prerequisite outcomes now close all
+criteria at the exact fully qualified source. Preserve CI553 precision, CI555
+package, path/Unicode and capacity/profile failures; handoffs never erased them.
+
+Next is the seven-unit [instrumental style task](TODO/NS-5_instrumental-styles_01.md).
+Criterion: the operator can name a finished job's learned style and generate
+from it again through ordinary Studio without rereading/reanalyzing recordings.
+Deliverable: private named references, native saved-style job binding and simple
+contextual Save/Use controls, then selective blend/reblend and comparison.
+Reuse metadata-only listing, existing jobs/output/score/player contracts and the
+primary factory. Keep Library → Selection → Generate simple. Evidence must
+include actual native jobs and desktop/phone-width browser use, model/source
+lineage, requested duration and cancellation. Stop at that usable slice or a
+demonstrated distinct prerequisite; no silent retraining on save or feedback.
+
+No service deployment, operator-data write, browser/audio playback or dependency
+source change occurred in this closure. The live Studio remains on its reviewed
+deployment while its new style interface is implemented. Goal active; no operator
+input needed now. Evidence is E/runs/style-capacity-20261101-boss, its verified
+ci556-logs/packages ZIPs and the cited E/tests packets. This closure is
+documentation/accounting only; do not restart services or rerun unrelated tests.
+
+## Previous handoff: CI555 package omission repair and shared performance binding - 2026-11-01
 
 Big Boss SOLO. The previous goal turn made progress: published e88ac445cf9f8558f4deb849848e5350459423ca
 matches the remote. Exact CI555/run41348029976 is now terminal failure: maintained
@@ -58,7 +111,7 @@ this boundary before another Studio/storage component. Counts remain41 tasks,
 32 DONE/nine open,146/194 (75.26%); no deployment, operator write, browser/audio
 playback or dependency-source change occurred. The goal remains active.
 
-## Current handoff: complete corpus/native candidates locally qualified; full CI required - 2026-11-01
+## Previous handoff: complete corpus/native candidates locally qualified; full CI required - 2026-11-01
 
 Big Boss SOLO. Prior turn made concrete progress: CI553's precision regression
 was reproduced/repaired/published. Exact replacement CI554/run41338389222 at
@@ -112,7 +165,7 @@ The two long-root consumers01/02 fail earlier during proposal-cache publication.
 The second executable identifies a261-character hashed .pmp target and OS error3;
 the192-character parent exists, while the shorter control passes. This is a
 distinct genuine platform gap, now linked as the two-unit
-[native cache path prerequisite](TODO/NS-6_native-cache-path_01.md). Preserve both
+[native cache path prerequisite](TODO/DONE/NS-6_native-cache-path_01.md). Preserve both
 failures. Follow this prerequisite rather than shortening the actual caller path.
 
 The shared native file helper now prepares Windows extended filesystem paths at
@@ -210,7 +263,7 @@ task effort is claimed from a handoff, added ticket or green parent run.
 Stop scope expansion before the next implementation batch.
 
 The concrete changed next action is now
-[full corpus persistence](TODO/NS-5_style-corpus-capacity_01.md), effort4. Inspection
+[full corpus persistence](TODO/DONE/NS-5_style-corpus-capacity_01.md), effort4. Inspection
 of actual producer/caller constants shows64 sources/1024 runs/65536 observations
 versus the inherited style path's32/256/4096 plus an observation-squared work
 heuristic. Thus current small complete snapshots/blends do not prove an ordinary

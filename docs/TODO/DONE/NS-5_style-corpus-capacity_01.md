@@ -1,10 +1,10 @@
 # NS-5_style-corpus-capacity_01 - Save the complete supported musical corpus as a reusable style
 
-[Active tasks](README.md) · [Styles](NS-5_instrumental-styles_01.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Styles](../NS-5_instrumental-styles_01.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,6 +22,17 @@ at most4096 observations with an additional observation-count-squared estimate.
 These are structural/work limits, not inference-quality or musical acceptance
 gates. The existing seven-unit parent task keeps its original outcome/estimate;
 this distinct capacity outcome adds four units to current scope.
+
+Delivered on 2026-11-01 at `0235194d51b8125b9dfba4198618fef64a3b7e20`.
+V4 persists the complete supported corpus and its actual models, coverage,
+original clocks and performed recipes. Native/actual pas2js consumers retain
+64 sources,1024 runs and65536 weighted cells in a3,665,780-byte archive, with the
+same identity and detached mix/six-stem replay. Ordinary jobs retain usable style
+candidates; optional snapshot failure and cancellation preserve their distinct
+semantics. Complete [CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967)
+and both extracted packages pass. The large fixture uses authored symbolic
+observations, not WAV-accuracy evidence. Studio naming/blending and operator
+usefulness remain in the parent task; no musical-quality claim follows.
 
 **Acceptance Criteria:**
 
@@ -52,11 +63,23 @@ this distinct capacity outcome adds four units to current scope.
 **Blockers**
 
 - [Native cache path boundary](NS-6_native-cache-path_01.md)
-- [Coarse corpus providers](DONE/NS-3_style-vocabulary_01.md)
-- [Primary sound recipes](DONE/NS-2_sound-design_01.md)
-- [Ordinary instrumental jobs](DONE/NS-6_instrumental-studio_01.md)
+- [Coarse corpus providers](NS-3_style-vocabulary_01.md)
+- [Primary sound recipes](NS-2_sound-design_01.md)
+- [Ordinary instrumental jobs](NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria and prerequisites pass. CI556 is fully
+  successful at the exact source above; its clean source packages and retained
+  logs are verified. Full native/actual JS suites pass7,799,668 instrumental
+  checks, generic styles/blends and native385 progress checks; native heaps are
+  clean. The complete corpus identity remains
+  654f0172c845378ea1455ab2d47677181c8e59545cd59b1d68ec6f30bb15da6a.
+  Actual native playlist/clip consumers verify candidate model/origin identities,
+  mix/six stems, corrupt-artifact unavailability, cancellation and absent parents.
+  Source used16,384 seconds (4.55 hours); selected source hours are not all learned.
+  Preserve capacity/profile, Windows path and CI555 package failure evidence.
+  This accepts the bounded persistence/native-candidate outcome only.
 
 - 2026-11-01, Big Boss: exact CI555 passes maintained integration but fails the
   WFC extracted consumer because the new shared native-path unit was omitted

@@ -22,12 +22,16 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 146 / 194 effort units accepted (75.26%); nine open, thirty-two current-goal DONE.**
+**Current snapshot: 152 / 194 effort units accepted (78.35%); seven open, thirty-four current-goal DONE.**
 
-The two-unit [native cache path prerequisite](TODO/NS-6_native-cache-path_01.md)
-records the actual261-character Windows target that blocks complete ordinary
-corpus-style qualification. The shorter-root control passes; no accepted outcome
-or musical quality is removed or added by identifying this platform gap.
+[Complete corpus persistence — DONE](TODO/DONE/NS-5_style-corpus-capacity_01.md)
+and [native cache paths — DONE](TODO/DONE/NS-6_native-cache-path_01.md) close six
+units after complete [CI556](https://github.com/mr-highball/pythian/actions/runs/41351329967),
+native/actual JS replay and actual ordinary playlist/clip consumers. V4 retains
+the complete supported models, coverage, original clocks and performed recipes;
+shared native I/O preserves long Unicode filenames and atomic byte limits.
+Clean extracted core/WFC packages pass with the shared path helper included.
+Studio's named-style/blend interface and musical usefulness remain open.
 [Sound design — DONE](TODO/DONE/NS-2_sound-design_01.md) accepts8 units after
 complete CI550, native/actual pas2js, actual desktop/390px editing/audition and
 checked stable deployment. Primary recipes, key/velocity layers, envelopes,
@@ -135,9 +139,9 @@ per-task percentages or north-star weights apply.
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 64 | 64 / 71 |
-| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 19 | 0 | 0 / 19 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 10 | 61 | 61 / 71 |
-| **Total** | **41 current-goal tasks** | **48** | **146** | **75.26%** |
+| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 4 | 4 / 19 |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 63 | 63 / 71 |
+| **Total** | **41 current-goal tasks** | **42** | **152** | **78.35%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -256,17 +260,17 @@ downstream and extracted delivery gates pass. Density mapping is now qualified/d
 [Musical form](TODO/NS-5_musical-form_01.md) adds editable phrase/section continuity,
 variation and repetition. [Instrumental styles](TODO/NS-5_instrumental-styles_01.md)
 save real provider/control/sound recipes and exercise selective blends and reblends.
-[Full corpus persistence](TODO/NS-5_style-corpus-capacity_01.md) adds four units
-after finding that inherited archive/work limits are below the actual accepted
-producer. Align those limits before ordinary Studio style saving; a successful
-short snapshot is not evidence for a full long-recording corpus. No accepted
-effort changes.
+[Full corpus persistence — DONE](TODO/DONE/NS-5_style-corpus-capacity_01.md) accepts
+four units after complete producer-capacity/native-job consumers and CI556 pass.
+The archive preserves every admitted source/run/provider with its actual coverage,
+original clock and recipe; it never substitutes a short snapshot for a full
+supported corpus. Its authored symbolic fixture is not WAV-accuracy evidence.
 Its complete nine-provider source/corpus snapshot now replays the ordinary
 instrumental stream on native and pas2js with primary sound/mix/form controls.
 Selective musical-vocabulary and independent sound/expression blends/reblends
-also pass on both targets. The integrated component still requires complete
-publication qualification; ordinary Studio style saving/blending remains open. No task
-effort is accepted by the persistence component alone.
+also pass on both targets. The integrated library component passes complete
+CI556 and extracted consumers. Ordinary Studio style saving/blending remains in
+the separate seven-unit parent task; its effort is not accepted by this component.
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other
 parts vary. It uses real context/voice/drum domains and one continuous performance.
@@ -278,7 +282,8 @@ with native/pas2js and browser evidence; complete CI535 and fixed-slot deploymen
 pass. Per-section energy now changes actual instrument attack strength while
 retaining logical graph choices and exact replay. Its local native/pas2js and
 desktop/phone consumers, complete CI536 and checked fixed-slot deployment pass.
-Density is qualified/deployed through CI539/540. The actual form experiment and operator listening remain open. No NS-5 effort accepted.
+Density is qualified/deployed through CI539/540. The actual form experiment and
+operator listening remain open; the musical-form task's effort is unaccepted.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge

@@ -22,13 +22,22 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-5_style-corpus-capacity_01](NS-5_style-corpus-capacity_01.md) — match the actual supported corpus before ordinary Studio style saving
+- [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
 - [NS-2_sound-design_01](DONE/NS-2_sound-design_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: complete CI556 at0235194d51b8125b9dfba4198618fef64a3b7e20
+  passes maintained integration and both clean extracted packages. The linked
+  complete-corpus/native-path prerequisites are accepted; the shared performance
+  binding is qualified too. Next deliverable is actual Studio naming and reuse
+  through the existing native jobs, then selective blends/reblends and operator
+  comparison. Keep Library → Selection → Generate simple and preserve frozen
+  learned evidence, actual sound choices, source lineage and saved responses.
+  This parent remains In progress with no partial effort credit.
 
 - 2026-11-01, Big Boss: complete new native/actual pas2js suites pass7,799,668
   instrumental checks with unchanged archive identities, including the complete
