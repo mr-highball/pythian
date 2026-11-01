@@ -22,12 +22,20 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [NS-5_style-corpus-capacity_01](NS-5_style-corpus-capacity_01.md) — match the actual supported corpus before ordinary Studio style saving
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
 - [NS-2_sound-design_01](DONE/NS-2_sound-design_01.md)
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: real-consumer assessment found that the inherited archive
+  source/run/work ceilings are below the accepted ordinary corpus producer's
+  capacities. Linked capacity work before expanding Studio scope. The new
+  four-unit task owns complete long-corpus persistence and useful limit handling;
+  this task keeps its original seven-unit estimate and all four outcomes. No
+  criterion/task effort or musical-quality credit is awarded by that discovery.
 
 - 2026-11-01, Big Boss: AC2 library consumer now selects actual per-provider
   musical weights, intact primary instruments, part/master effect routing,

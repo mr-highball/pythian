@@ -22,7 +22,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 146 / 188 effort units accepted (77.66%); seven open, thirty-two current-goal DONE.**
+**Current snapshot: 146 / 192 effort units accepted (76.04%); eight open, thirty-two current-goal DONE.**
 [Sound design — DONE](TODO/DONE/NS-2_sound-design_01.md) accepts8 units after
 complete CI550, native/actual pas2js, actual desktop/390px editing/audition and
 checked stable deployment. Primary recipes, key/velocity layers, envelopes,
@@ -130,9 +130,9 @@ per-task percentages or north-star weights apply.
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 64 | 64 / 71 |
-| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
+| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 19 | 0 | 0 / 19 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 61 | 61 / 69 |
-| **Total** | **39 current-goal tasks** | **42** | **146** | **77.66%** |
+| **Total** | **40 current-goal tasks** | **46** | **146** | **76.04%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -251,6 +251,11 @@ downstream and extracted delivery gates pass. Density mapping is now qualified/d
 [Musical form](TODO/NS-5_musical-form_01.md) adds editable phrase/section continuity,
 variation and repetition. [Instrumental styles](TODO/NS-5_instrumental-styles_01.md)
 save real provider/control/sound recipes and exercise selective blends and reblends.
+[Full corpus persistence](TODO/NS-5_style-corpus-capacity_01.md) adds four units
+after finding that inherited archive/work limits are below the actual accepted
+producer. Align those limits before ordinary Studio style saving; a successful
+short snapshot is not evidence for a full long-recording corpus. No accepted
+effort changes.
 Its complete nine-provider source/corpus snapshot now replays the ordinary
 instrumental stream on native and pas2js with primary sound/mix/form controls.
 Selective musical-vocabulary and independent sound/expression blends/reblends

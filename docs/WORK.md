@@ -3,7 +3,44 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: instrumental blends and unsigned seed repair ready to publish - 2026-11-01
+## Current handoff: blends/seed repair published; full-corpus prerequisite scoped - 2026-11-01
+
+Big Boss SOLO. Current sourceaff2b3590f53945b07931d8e6e1913b8b93ce74a is
+committed/pushed with exact remote agreement. Exact CI553/run41335302377 is
+confirmed live. Preserve its full gate; do not cancel it with a source push.
+All native/actual JS local runs below finished. No new deployment, browser,
+recording, feedback or operator-data write occurred.
+
+Reassessment: the initial portability component closed no full criterion; the
+published snapshot's later unsigned-seed defect prevented accepting AC1 from
+CI552 alone. Carry two consecutive nonclosing batches, rather than leaving the
+earlier count1 indefinitely while qualification was pending. The subsequent
+blend/repair implementation passes locally and is awaiting CI553; no reset or
+task effort is claimed from a handoff, added ticket or green parent run.
+Stop scope expansion before the next implementation batch.
+
+The concrete changed next action is now
+[full corpus persistence](TODO/NS-5_style-corpus-capacity_01.md), effort4. Inspection
+of actual producer/caller constants shows64 sources/1024 runs/65536 observations
+versus the inherited style path's32/256/4096 plus an observation-squared work
+heuristic. Thus current small complete snapshots/blends do not prove an ordinary
+long corpus can be saved. The new linked prerequisite owns shared bounded
+capacity/validation and an actual native generation style-candidate artifact;
+the seven-unit parent retains all original save/blend/UI/operator outcomes.
+No benchmark gate, microclip work, extra comparison framework or second renderer
+is selected. A generic WFC change is not yet demonstrated; reuse its existing
+observer/learner before considering a separate-repository gap.
+
+Task/catalog/milestone/DONE totals are reconciled locally:40 tasks,32 accepted,
+eight open,146/192 (76.04%),46 open units; NS-5 open effort19. This adds identified
+required work, not lost accepted work or planning credit. The new prerequisite
+has accepted producer/sound/native-job blockers and no parent dependency cycle.
+After CI553 finishes, audit its exact source/gates, record any real criterion
+closure supported by that scope, then follow the capacity prerequisite. Keep the
+counter across that transition; only an actual criterion closure resets it.
+The broader goal stays active and needs no operator input.
+
+## Previous handoff: instrumental blends and unsigned seed repair ready to publish - 2026-11-01
 
 Big Boss SOLO. Previous turn was concrete progress: complete nine-provider
 instrumental/corpus snapshots were published at e130527. Exact CI552/
