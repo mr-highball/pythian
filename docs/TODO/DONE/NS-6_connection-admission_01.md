@@ -2,7 +2,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 2/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -17,7 +17,7 @@ Keep routing serialized and TLS/HTTP policies intact, with bounded admission.
 - AC1: Several idle connections cannot delay a ready Studio/session request until
   the browser times out. Accepted idle sockets have bounded count and expiry.
 - AC2: Normal HTTP, configured HTTPS, native job reconnection/cancellation and
-  actual desktop/phone browser paths continue to work. No new listeners, firewall
+  actual desktop/phone-width browser paths continue to work. No new listeners, firewall
   approvals, certificate bypass or concurrent mutation of route state.
 - AC3: Preserve the failing reproduction, exercise real socket admission through
   a maintained Pascal consumer, and verify service/process cleanup.
@@ -27,6 +27,15 @@ Keep routing serialized and TLS/HTTP policies intact, with bounded admission.
 - None. Required by [song management](NS-6_song-library_01.md) AC3–4.
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria and prerequisites pass. Complete [CI540](https://github.com/mr-highball/pythian/actions/runs/41269241100)
+  qualifies native backend8a88eac, including integration/extracted consumers.
+  Full pas2js08 and actual desktop/390px consumers qualify browser3e42723.
+  Fourteen deployed hashes match; native OS-trusted HTTPS133 passes with a clean
+  heap. Native clip35/song10 (clean heaps) and HTTP admission103 retain their scoped
+  evidence. Owned QA tabs/media and the QA service are closed. Existing operator
+  projects, answers and recordings remain. Packet: studio-keep-20261031-boss on E.
+  This accepts usability/storage/transport scope, not musical quality.
 
 - 2026-10-31, Big Boss: bounded first-byte admission keeps32 raw sockets under
   the existing five-second deadline, then hands ready connections to unchanged

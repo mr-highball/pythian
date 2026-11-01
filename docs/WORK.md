@@ -3,7 +3,44 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: operator song/clip usability repairs — 2026-10-31
+## Current handoff: song/clip workflow accepted and live — 2026-11-01
+
+Big Boss remains SOLO. [Songs](TODO/DONE/NS-6_song-library_01.md),
+[clip discovery](TODO/DONE/NS-6_clip-library_01.md) and
+[connection admission](TODO/DONE/NS-6_connection-admission_01.md) close their
+criteria after native/browser consumers, complete [CI540](https://github.com/mr-highball/pythian/actions/runs/41269241100)
+and checked fixed-slot deployment. Accounting changes together:115/156 (73.72%),
+six open,25 current DONE. The batch closes real usability/storage/transport
+outcomes; consecutive nonclosing count0. No musical quality credit follows.
+
+Native backend8a88eac passes integration/extracted consumers. Browser-only
+whole-to-clip fix2027d0c and readable titles3e42723 pass full pas2js08 and actual
+desktop/390px use;
+unchanged native code did not need another CI run. Fourteen deployed hashes
+match the release manifest. Native clip35/song10 pass with clean heaps; the
+maintained HTTP client fails on the old idle-socket path, then passes103 checks
+with4/40 idle sockets and expiry. Existing approved LAN TLS passes133 native
+checks after deployment, with a clean heap. No new approval setup was needed.
+
+The live library exposes saved clips across playlists. Two older saved ranges
+were restored through ordinary Studio into a separate recovery playlist with
+exact ranges/labels and independent audio; original snapshots remain. Recovery
+created only clip-save jobs. The actual recovered long clip plays with its proper
+duration; it is paused afterward. Named output playlists, exact WAV download,
+prior results, global Stop, immediate reload and service restart are exercised.
+All created browser tabs are closed, viewport reset, all inspected media paused
+with no looping, and the fixed QA service is stopped. Stable alone remains live.
+Private source/lineage, fourteen hashes, startup/deployment receipts and screenshots
+are in studio-keep-20261031-boss under the dedicated E-drive workspace.
+
+Section-density implementation is also qualified/deployed, but
+[musical form](TODO/NS-5_musical-form_01.md) still needs its deliberate sustained
+form experiment and actual operator listening (AC3); its eight units remain open.
+Resume that musical outcome without another general UI audit. Reusable styles
+also have the real [sound-design prerequisite](TODO/NS-2_sound-design_01.md).
+The overall goal remains active; six tasks/41 effort remain. No helpers started.
+
+## Previous handoff: operator song/clip usability repairs — 2026-10-31
 
 Published native/backend source8a88eac is under CI540 (41269241100). Native35 clip,
 10 song and103 HTTP-admission checks pass; clip/song heaps are clean. Actual
@@ -19,10 +56,10 @@ repeat after checked deployment. Gate acceptance remains open while CI runs.
 Big Boss remains SOLO. New operator screenshots take priority over unfinished
 form listening: missing output saving, hard-to-find Stop, reconnect after a
 whole-track request, unexplained Lab, and previously saved clips absent from
-Library. [Songs](TODO/NS-6_song-library_01.md) adds five effort units;
-[reusable clip discovery](TODO/NS-6_clip-library_01.md) adds three. Accounting
+Library. [Songs](TODO/DONE/NS-6_song-library_01.md) adds five effort units;
+[reusable clip discovery](TODO/DONE/NS-6_clip-library_01.md) adds three. Accounting
 is105/156 (67.31%), nine open and22 current DONE. No new acceptance follows
-from scoping. [Connection admission](TODO/NS-6_connection-admission_01.md) adds
+from scoping. [Connection admission](TODO/DONE/NS-6_connection-admission_01.md) adds
 two units for the reproduced idle-socket prerequisite. The density batch is interrupted, not closed or renamed; its
 nonclosing count remains0 while this required operator repair progresses.
 

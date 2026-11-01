@@ -2,7 +2,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 5/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -24,17 +24,26 @@ NS-6. Reuse existing native jobs and audio artifacts; do not duplicate renders.
   and Generate. Stop handles pending requests without silently starting them on
   refresh. Reload/reconnect restores the same native job rather than duplicating it.
 - AC4: Simplify the unexplained header Lab entry into an optional, explained
-  experiment action beside Generate. Exercise actual desktop/phone save/reopen,
+  experiment action beside Generate. Exercise actual desktop and phone-width save/reopen,
   playback/download, navigation/Stop and reconnect; report any unconfirmed crash
   cause honestly. Maintain bounded native identity/storage failure checks.
 
 **Blockers**
 
-- [Connection admission](NS-6_connection-admission_01.md) — reproduced idle-socket starvation.
-- [Simple Studio — DONE](DONE/NS-6_simple-studio_01.md).
-- [Canonical artifacts — DONE](DONE/NS-6_instrumental-artifacts_01.md).
+- [Connection admission — DONE](NS-6_connection-admission_01.md) — reproduced idle-socket starvation.
+- [Simple Studio — DONE](NS-6_simple-studio_01.md).
+- [Canonical artifacts — DONE](NS-6_instrumental-artifacts_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria and prerequisites pass. Complete [CI540](https://github.com/mr-highball/pythian/actions/runs/41269241100)
+  qualifies native backend8a88eac, including integration/extracted consumers.
+  Full pas2js08 and actual desktop/390px consumers qualify browser3e42723.
+  Fourteen deployed hashes match; native OS-trusted HTTPS133 passes with a clean
+  heap. Native clip35/song10 (clean heaps) and HTTP admission103 retain their scoped
+  evidence. Owned QA tabs/media and the QA service are closed. Existing operator
+  projects, answers and recordings remain. Packet: studio-keep-20261031-boss on E.
+  This accepts usability/storage/transport scope, not musical quality.
 
 - 2026-10-31, Big Boss: native save/reopen/retry/rename and locked-audio listing
   pass10 checks with a clean heap. Actual desktop/390px jobs exercise Stop from

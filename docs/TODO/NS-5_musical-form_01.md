@@ -34,6 +34,18 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-10-31, Big Boss: section density is qualified and deployed. Native Studio03
+  passes186 with a clean heap; native/actual pas2js density323 checks agree on
+  actual pitched/drum attack changes, hard constraints, cancellation and replay.
+  Neutral form3075695 retains its original digest. Desktop/390px Structure
+  save/reopen, independent density/energy, invalid draft correction and exact
+  section audition pass. Complete CI539 repairs the retained fixture-order
+  failures; complete CI540 also passes integration/extracted consumers. Checked
+  backend8a88eac/browser2027d0c is live in the fixed stable slot. Musical experiments
+  are reached through explained optional controls beside Generate. Evidence stays
+  in form-density-20261031-boss and studio-keep-20261031-boss on E. These close
+  implementation slices, not full task acceptance: AC3's sustained deliberate
+  form experiment and actual operator judgment remain. No eight-unit credit.
 - 2026-10-31, Big Boss: retain native `studio-form01/02` and CI538 at76ec662.
   Both raw-JSON assertions compared probe-mutated field ordering rather than
   the canonical arrangement. Actual stored controls were correct. Compare the

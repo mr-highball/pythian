@@ -3,16 +3,16 @@
 [Goal](GOAL.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Task catalog](TODO/README.md) · [Workflow](TASKFLOW.MD) · [Work](WORK.md)
 
-## Operator usability gaps — 2026-10-31
+## Operator usability delivery — 2026-11-01
 
-[Song management](TODO/NS-6_song-library_01.md) adds five units for saved output
-playlists, finding earlier music and visible Stop/reconnect. [Clip discovery](TODO/NS-6_clip-library_01.md)
-adds three units for reusable clips and clear parent/child selection. Existing
-clip audio and jobs are preserved; neither task is accepted by scoping it.
-
-[Idle-connection admission](TODO/NS-6_connection-admission_01.md) adds two units
-for a reproduced prerequisite: four empty sockets blocked a healthy server's
-next request beyond eight seconds. Preserve serialized routing and existing TLS.
+[Song management](TODO/DONE/NS-6_song-library_01.md), [clip discovery](TODO/DONE/NS-6_clip-library_01.md)
+and [idle-connection admission](TODO/DONE/NS-6_connection-admission_01.md) accept ten
+effort units after native and desktop/390px browser consumers, complete CI540 and checked
+fixed-slot deployment. Named output playlists reuse existing audio; saved clips
+are discoverable across playlists; whole-track choice collapses children; Stop
+stays visible across steps. Idle preconnections no longer block page/API traffic.
+The existing approved LAN/TLS identity is reused. This is implementation scope,
+with no musical-quality or universal learning claim.
 
 ## North-star assessment
 
@@ -22,12 +22,12 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 105 / 156 effort units accepted (67.31%); nine open, twenty-two current-goal DONE.**
+**Current snapshot: 115 / 156 effort units accepted (73.72%); six open, twenty-five current-goal DONE.**
 The six-unit [positioned-prior prerequisite — DONE](TODO/DONE/NS-4_cell-priors_01.md)
 adds actual per-position soft choices through primary WFC/sequence/named-voice
 adapters. All upstream CI64 and downstream CI537 integration/extracted gates
 pass, plus fresh Win64/actual pas2js package consumers. It closes six units;
-section-density form mapping and operator listening retain the form task's eight
+section-density form mapping is now implemented/deployed; the actual form experiment and operator listening retain its eight
 open units. The separate WFC branch remains unmerged and core stays independent.
 The five-unit [future-domain prerequisite — DONE](TODO/DONE/NS-4_future-domains_01.md)
 repairs the original feasible24cell guide's dead end after two8cell commits.
@@ -86,8 +86,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors and musical controls | 7 | 48 | 48 / 55 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 0 | 0 / 15 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 15 | 44 | 44 / 59 |
-| **Total** | **31 current-goal tasks** | **51** | **105** | **67.31%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 5 | 54 | 54 / 59 |
+| **Total** | **31 current-goal tasks** | **41** | **115** | **73.72%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -106,7 +106,7 @@ criteria now pass; both tasks are accepted. Storage/access and long output are a
 The hour-request trial exposed a six-unit
 [learned-context continuation prerequisite — DONE](TODO/DONE/NS-4_context-continuation_01.md)
 at cell656; its repair now completes that exact hour with original provider/seed.
-Accounting is **105/156**; no partial effort or musical-quality credit follows.
+Accounting is **115/156**; no partial effort or musical-quality credit follows.
 
 1. [Instrumental runtime — DONE](TODO/DONE/NS-4_instrumental-runtime_01.md), effort 7:
    actual coupled musical WFC passes drive existing Pythian instruments; source-free caller delivered.
@@ -198,7 +198,7 @@ phrase guide and existing form/default consumers pass all affected gates.
 The accepted [positioned-prior adapters](TODO/DONE/NS-4_cell-priors_01.md) add
 different positive choices at actual positions without changing hard constraints
 or source-model frequencies. Saved named sessions retain them. Full upstream,
-downstream and extracted delivery gates pass; section-density form mapping follows.
+downstream and extracted delivery gates pass. Density mapping is now qualified/deployed; the actual form experiment/listening remains separate.
 
 <a id="ns-5"></a>
 ### NS-5 — Music that develops and styles that remain reusable
@@ -217,7 +217,7 @@ with native/pas2js and browser evidence; complete CI535 and fixed-slot deploymen
 pass. Per-section energy now changes actual instrument attack strength while
 retaining logical graph choices and exact replay. Its local native/pas2js and
 desktop/phone consumers, complete CI536 and checked fixed-slot deployment pass.
-Section density and operator listening remain open. No NS-5 effort accepted.
+Density is qualified/deployed through CI539/540. The actual form experiment and operator listening remain open. No NS-5 effort accepted.
 
 <a id="ns-6"></a>
 ### NS-6 — A useful operator bridge
@@ -250,8 +250,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 9 open + 22 current DONE; legacy records: 53 retired +
-97 historical DONE (119 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 6 open + 25 current DONE; legacy records: 53 retired +
+97 historical DONE (122 total DONE files). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
@@ -261,7 +261,7 @@ criteria and changes the carried nonclosing count from two to zero; WORK records
 the event. Percussion, Studio and its concrete cancellation repair also close
 their criteria. The optional authored/affect laboratory and broader musical
 controls are accepted, including retained note/sound follow-ups. Current open work
-is positioned soft priors, graph inspection, recording-proposal correction,
+is graph inspection, recording-proposal correction,
 deeper sound recipes, musical form/styles and guided synthesis reviews.
 Independent clips, corpus vocabulary and long instrumental streams are accepted.
 Actual operator listening remains part of musical form; implementation checks

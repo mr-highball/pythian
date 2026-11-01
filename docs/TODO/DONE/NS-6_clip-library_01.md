@@ -2,7 +2,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 3/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -21,14 +21,23 @@ Primary attribution: NS-6. Reuse existing clip receipts, range identity and play
   and adding existing clips to the current playlist without copying audio.
 - AC3: Selection supports clear child clip inclusion, creating/editing/removing
   choices, with whole-track selection collapsing child rows. Saved clips remain
-  reusable after removing them from a playlist. Reload and actual desktop/phone
+  reusable after removing them from a playlist. Reload and actual desktop/phone-width
   checks protect inclusion and parent/child lineage.
 
 **Blockers**
 
-- [Independent clip files — DONE](DONE/NS-6_saved-clips_01.md).
+- [Independent clip files — DONE](NS-6_saved-clips_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria and prerequisites pass. Complete [CI540](https://github.com/mr-highball/pythian/actions/runs/41269241100)
+  qualifies native backend8a88eac, including integration/extracted consumers.
+  Full pas2js08 and actual desktop/390px consumers qualify browser3e42723.
+  Fourteen deployed hashes match; native OS-trusted HTTPS133 passes with a clean
+  heap. Native clip35/song10 (clean heaps) and HTTP admission103 retain their scoped
+  evidence. Owned QA tabs/media and the QA service are closed. Existing operator
+  projects, answers and recordings remain. Packet: studio-keep-20261031-boss on E.
+  This accepts usability/storage/transport scope, not musical quality.
 
 - 2026-10-31, Big Boss: the final phone check found a stored child was disabled
   in the clip browser while Whole track dominated it. The browser now distinguishes
