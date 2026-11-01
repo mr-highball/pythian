@@ -26,6 +26,13 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-01, Big Boss: reuse the current form experiment and prepared-listening
+  factory. Native Unicode review publication/response/replay is repaired under
+  [listening UTF-8](NS-6_listening-utf8_01.md), not a new comparison framework.
+  The390px saved-note view keeps exact Unicode, but its narrow Remove button
+  wraps one word over several lines. AC2 should give that note action enough
+  width. This does not block the current question or justify another broad audit.
+
 - 2026-10-29, Big Boss: Current listening projection, prepared comparisons, review lineage, navigation, source playback and saved responses are reusable. Current answers concern reconstruction only and do not establish instrumental feasibility.
 - Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

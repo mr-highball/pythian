@@ -121,7 +121,7 @@ begin
 end;
 
 function TextField(const AObject: TJSONObject; const AName: String;
-  const AMaximum: Integer): String;
+  const AMaximum: Integer): TJSONStringType;
 var
   LValue: TJSONData;
 begin
@@ -134,7 +134,7 @@ begin
 end;
 
 function StringField(const AObject: TJSONObject; const AName: String;
-  const AMaximum: Integer): String;
+  const AMaximum: Integer): TJSONStringType;
 var
   LValue: TJSONData;
 begin
@@ -195,7 +195,7 @@ end;
 function ReadObject(const APath: String; const AMaximum: Integer): TJSONObject;
 var
   LStream: TFileStream;
-  LText: String;
+  LText: RawByteString;
   LData: TJSONData;
 begin
   LStream := TFileStream.Create(APath, fmOpenRead or fmShareDenyWrite);
@@ -306,7 +306,7 @@ begin
   Result := ATarget + '.' + GUIDToString(LGuid) + '.partial';
 end;
 
-procedure WriteNewText(const APath, AText: String);
+procedure WriteNewText(const APath: String; const AText: RawByteString);
 var
   LStream: TFileStream;
 begin
@@ -332,17 +332,11 @@ begin
 end;
 
 function HashJson(const AObject: TJSONObject): String;
-var
-  LText: String;
-  LStream: TStringStream;
 begin
-  LText := AObject.AsJSON;
-  LStream := TStringStream.Create(LText);
-  try
-    Result := Sha256Stream(LStream, LStream.Size);
-  finally
-    LStream.Free;
-  end;
+  { Big Boss: the reader, signed identity and stored bytes share the primary
+    UTF-8 writer. A host String assignment can transcode fpjson.AsJSON before
+    publication, leaving a queue that cannot read its own Unicode content. }
+  Result := HashNativeText(WriteNativeJSON(AObject, CMaximumPacketBytes));
 end;
 
 function StageListeningAsset(const ACatalogRoot, AInputPath: String): TJSONObject;
@@ -1355,7 +1349,7 @@ begin
     CheckNotLink(LTarget);
     LStage := NewStagePath(LTarget);
     try
-      WriteNewText(LStage, LQueue.AsJSON + LineEnding);
+      WriteNewText(LStage, WriteNativeJSON(LQueue, CMaximumQueueBytes) + LineEnding);
       ReplaceFile(LStage, LTarget);
     finally
       if FileExists(LStage) then
@@ -1395,7 +1389,7 @@ var
   LExisting: TJSONObject;
   LRequest: TJSONObject;
   LStage: String;
-  LText: String;
+  LText: RawByteString;
   LIndex: Integer;
 begin
   CheckStorage(ACatalogRoot);
@@ -1426,7 +1420,7 @@ begin
         LQueue.Arrays['items'].Add(LRequest.Clone);
       end;
     end;
-    LText := LQueue.AsJSON + LineEnding;
+    LText := WriteNativeJSON(LQueue, CMaximumQueueBytes) + LineEnding;
     Need(Length(LText) <= CMaximumQueueBytes, 'appended listening queue exceeds byte bound');
     CheckNotLink(QueuePath(ACatalogRoot));
     LStage := NewStagePath(QueuePath(ACatalogRoot));
@@ -1788,7 +1782,7 @@ var
   LFinal: String;
 begin
   Need((ATransaction <> nil) and
-    (Length(ATransaction.AsJSON) <= CMaximumTransactionBytes),
+    (Length(WriteNativeJSON(ATransaction, CMaximumTransactionBytes)) <= CMaximumTransactionBytes),
     'listening transaction exceeds size bound');
   LQueue := ReadQueueManifest(ACatalogRoot);
   try
@@ -1831,7 +1825,7 @@ begin
           Need(not FileExists(LFinal), 'listening event already exists');
           LStage := NewStagePath(LFinal);
           try
-            WriteNewText(LStage, LEvent.AsJSON + LineEnding);
+            WriteNewText(LStage, WriteNativeJSON(LEvent, CMaximumTransactionBytes) + LineEnding);
             Need(RenameFile(LStage, LFinal),
               'cannot publish listening review event');
           finally
@@ -2106,7 +2100,7 @@ begin
       LHistory.Add(LGroup);
       LGroup := nil;
     end;
-    Need(Length(Result.AsJSON) <= CMaximumPacketBytes,
+    Need(Length(WriteNativeJSON(Result, CMaximumPacketBytes)) <= CMaximumPacketBytes,
       'listening export exceeds size bound');
   except
     LEvent.Free;
@@ -2127,7 +2121,7 @@ begin
   try
     LStage := NewStagePath(ExpandFileName(AOutputPath));
     try
-      WriteNewText(LStage, LPacket.AsJSON + LineEnding);
+      WriteNewText(LStage, WriteNativeJSON(LPacket, CMaximumPacketBytes) + LineEnding);
       Need(not FileExists(AOutputPath),
         'listening export output already exists');
       Need(RenameFile(LStage, AOutputPath),
@@ -2394,12 +2388,12 @@ begin
             begin
               LEvent := TJSONObject(LEvents.Items[J]);
               WriteNewText(LDirectory + RevisionName(J + 1),
-                LEvent.AsJSON + LineEnding);
+                WriteNativeJSON(LEvent, CMaximumTransactionBytes) + LineEnding);
               Inc(LCount);
             end;
           end;
           WriteNewText(LStage + PathDelim + 'queue.json',
-            LQueue.AsJSON + LineEnding);
+            WriteNativeJSON(LQueue, CMaximumQueueBytes) + LineEnding);
           Need(RenameFile(LStageReviews, LFinalReviews),
             'cannot publish replayed listening reviews');
           LPromoted := True;

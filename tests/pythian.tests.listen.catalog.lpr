@@ -35,7 +35,8 @@ uses
   pythian.hash,
   pythian.wave.stream,
   pythian.tools.annotations.catalog,
-  pythian.tools.listen.catalog;
+  pythian.tools.listen.catalog,
+  pythian.tools.json;
 
 const
   CLegacyExportSha256 =
@@ -52,9 +53,9 @@ end;
 procedure WriteJson(const APath: String; const AData: TJSONObject);
 var
   LStream: TFileStream;
-  LText: String;
+  LText: TJSONStringType;
 begin
-  LText := AData.AsJSON + LineEnding;
+  LText := WriteNativeJSON(AData, 4194304) + LineEnding;
   LStream := TFileStream.Create(APath, fmCreate);
   try
     LStream.WriteBuffer(LText[1], Length(LText));
@@ -648,6 +649,7 @@ begin
 end;
 
 {$I pythian.tests.listen.feedback.inc}
+{$I pythian.tests.listen.unicode.inc}
 
 var
   LRoot: String;
@@ -734,6 +736,7 @@ begin
     FileBytes(LSourcePath), 48000, LSourceHash);
   LGenerated := Asset('generated', 'listening', LGeneratedHash,
     'generated', FileBytes(LGeneratedPath), 5760000, LSourceHash);
+  CheckUnicodeListening(LRoot, LInbox, LSourceHash, LGeneratedPath, LGenerated);
   CheckPreparedSingles(LRoot, LInbox, LSourceHash, LGeneratedPath, LSource, LGenerated);
   CheckReviewedFeedback(LRoot, LInbox, LSourceHash, LGeneratedPath, LSource, LGenerated);
   LQueue := TJSONObject.Create;

@@ -22,6 +22,9 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Listening UTF-8](NS-6_listening-utf8_01.md) — actual deliberate review
+  publication exposes invalid host-code-page queue bytes; preserve/recover it.
+
 - [Positioned soft priors — DONE](DONE/NS-4_cell-priors_01.md) — primary WFC and
   sequence/named-voice adapters now support different preferences inside the
   actual future planning window; all upstream/downstream/extracted gates pass.
@@ -33,6 +36,22 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: the first deliberately unguided A/B/A request fails
+  before audio at the pass-backtrack limit. Linked [unguided form](NS-4_unguided-form_01.md)
+  retains exact seed/models/request and owns diagnosis; no seed sweep or
+  proof of incompatibility is claimed. Continue AC3 preparation using an explicit
+  starter guide and the same seed. Disclose narrower rhythmic freedom;
+  this does not qualify unconstrained form generation or close that linked task.
+
+- 2026-11-01, Big Boss SOLO: select AC3's deliberate sustained experiment.
+  Prepare authored A/B/A through ordinary Studio with a retained returning lead,
+  explicit section controls and six actual synthesized parts. Ask one question:
+  does the returning lead connect the final section to the opening? Retain the
+  initial outcome, native replay/settings and exact section audition evidence;
+  no seed sweep or claimed WAV learning. Reuse the existing prepared-listening
+  factory and Save/Next. Stop when the review is usable; actual operator judgment
+  remains the acceptance gate, without automatic effort credit.
 
 - 2026-10-31, Big Boss: section density is qualified and deployed. Native Studio03
   passes186 with a clean heap; native/actual pas2js density323 checks agree on

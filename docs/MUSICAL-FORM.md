@@ -8,8 +8,9 @@ through one continuous Pythian stream. This is a library capability under active
 development. The optional Studio laboratory now saves editable arrangements,
 generates them through the bounded performer and auditions exact sections.
 Per-section energy changes actual instrument attack strength. Section density
-is being connected to positioned musical choices; its complete Studio checks
-and actual operator listening remain required before task acceptance.
+weights actual positioned musical choices. Both controls are qualified through
+the native/pas2js and Studio consumers; actual operator listening remains required
+before full form acceptance.
 
 ## Explicit musical inputs
 
@@ -131,7 +132,8 @@ bytes; saved historical performances remain readable.
 
 ## Rejection and current limits
 
-Studio's **Lab → Structure** arranges named sections. Choose new material or
+Open **Generate → More music controls → Open musical experiments → Structure**
+to arrange named sections. Choose new material or
 repeat an earlier section, then choose which providers to keep. Length is in
 four-beat bars; a repeat uses its source length. Moving a source after its repeat
 is invalid, and deleting a referenced source is refused. Invalid edits survive
@@ -148,9 +150,9 @@ No context model is invented for authored material that has none.
 Current structured jobs require neutral global activity/chord preferences and
 100% global note strength/length. Section energy is independently editable from
 0 soft through50 neutral to100 strong. Pitch bounds, instruments and mix remain
-editable. The candidate Structure editor also saves density from0 sparse
-through50 neutral to100 busy; its full native/browser qualification is still
-in progress. Ordinary unstructured experiments retain their existing
+editable. The Structure editor saves density from0 sparse through50 neutral
+to100 busy; complete native/browser qualification and CI539/540 pass. Ordinary
+unstructured experiments retain their existing
 expression/preference controls. Neutral density is omitted from canonical JSON
 to preserve existing signed neutral form identities and operator history.
 
@@ -164,7 +166,12 @@ editor now checks known future accompaniment before publishing each original
 journal prefix. That exact original request/seed completes and changes24 actual
 Lead cells; all five unselected PCM stems remain identical. The failed child and
 its original playable parent remain preserved. No seed sweep or relaxed Keep is
-used. Full form acceptance remains open.
+used. Full form acceptance remains open. The first deliberate unguided48second
+form review failed at cell0's pass-backtrack limit; the original request, models
+and seed remain preserved in the private job. This does not prove incompatibility.
+The linked [unguided-form task](TODO/NS-4_unguided-form_01.md) owns that actual
+generation gap. Explicit guided listening may proceed with the same seed,
+disclosing that hard starter rhythm/chord domains constrain density preferences.
 
 [`TInstrumentalPassageStream`](../adapters/wfc/pythian.wfc.instrumental.edit.stream.pas)
 borrows immutable models and a fresh primary decision reader. It calls the same

@@ -3,7 +3,61 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: song/clip workflow accepted and live — 2026-11-01
+## Current handoff: sustained form prepared; listening writer repaired locally — 2026-11-01
+
+Big Boss SOLO. The guided48second A/B/A native job completes with the original
+seed1704297163, six stems and a one-second tail. Primary form/journal validation
+passes192cells/1152000 music frames/12chunks with a clean heap. Actual Studio
+section audition seeks32seconds and stops48; Lead solo is49seconds and paused.
+The authored origin and guide limits remain explicit. Save to Songs names it
+Lead return / guided A/B/A in Musical experiments, without learning or copying.
+
+The first unguided request fails before audio at its configured pass-negotiation
+limit; [unguided form](TODO/NS-4_unguided-form_01.md) owns the retained request.
+Review publication then exposes a distinct Unicode writer defect. The guarded
+native rollback restores every prior request hash; eight pending/seven completed
+responses validate unchanged. New [listening UTF-8](TODO/NS-6_listening-utf8_01.md)
+reuses the primary native writer for publication, fingerprints, feedback and
+export/replay. The complete focused suite now passes with a clean heap, including
+Unicode content, idempotent Save, exact replay and the legacy ASCII export hash.
+The fixed QA service passes desktop Save and390px reload with exact accented,
+supplementary and CJK notes, no competing playback or horizontal overflow.
+Native service/worker candidates are checked in the fixed QA slot. Publication,
+checked stable deployment and complete CI remain pending; no new task accepted.
+Accounting115/163 (70.55%): eight open/25 current DONE. Counter0 is carried from
+the accepted usability batch while this actual review prerequisite is repaired.
+
+Evidence is in form-listening-20261101-boss under E build/tests/cache/runs.
+Production remains the prior healthy service after rollback; no operator answer
+was fabricated. The only new saved QA answer is in the isolated synthetic catalog.
+
+## Previous handoff: song/clip workflow accepted and live — 2026-11-01
+
+Current prerequisite: guided form completes and primary journal/form validation
+passes192cells/12chunks with a clean heap. Publication exposes a legacy listening
+writer that publishes invalid UTF-8. [Listening repair](TODO/NS-6_listening-utf8_01.md)
+adds three units, accounting115/163 (70.55%), eight open/25 current DONE.
+Preserve the failed bytes and original answers; repair primary JSON publication,
+recover the queue and finish the usable review before unrelated implementation.
+
+Current experiment update: the first unguided A/B/A fails at cell0, negotiated
+pass-backtrack limit. Preserve job music-1793506844373-563263 and seed1704297163.
+[Unguided form](TODO/NS-4_unguided-form_01.md) adds four required units:
+115/160 (71.88%), seven open,25 current DONE. This is not evidence of impossible
+music and does not justify seed sweeps. Continue the deliberate form question
+with an explicit starter guide and the same seed; disclose reduced rhythmic
+freedom. The linked gap remains open independently of guided listening.
+
+Next batch, Big Boss SOLO: advance musical-form AC3 with one sustained authored
+instrumental experiment through ordinary Studio. Use an explicit A/B/A arrangement,
+retain the lead on its return, and keep all six synthesized parts available for
+audition. Deliver the actual saved job and one prepared listening question about
+whether that return connects to the opening. Close preparation with the native
+result's clocks/retention/settings and desktop/phone playback, section audition,
+and the existing Save/Next path. Preserve the first weak result or contradiction;
+do not search seeds for a flattering example. Stop at a usable published review.
+Actual operator judgment remains required for AC3; publication earns no form
+effort. Counter0 carries forward from the accepted usability batch.
 
 Big Boss remains SOLO. [Songs](TODO/DONE/NS-6_song-library_01.md),
 [clip discovery](TODO/DONE/NS-6_clip-library_01.md) and
