@@ -22,7 +22,14 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 177 / 216 effort units accepted (81.94%); eight open, forty-two current-goal DONE.**
+**Current snapshot: 177 / 217 effort units accepted (81.57%); nine open, forty-two current-goal DONE.**
+
+[Native CI headroom](TODO/NS-6_ci-headroom_01.md) adds one required delivery unit.
+CI568 is cancelled at the30minute native deadline despite green step labels.
+Recording-idea restoration passes local/native/pas2js/browser consumers; its eight
+units remain open until complete exact-source CI and matching delivery. Native
+CI gets40minutes plus an explicit completion marker; packages retain30minutes.
+Every check stays. Nonclosing count0→1; no musical-quality acceptance.
 
 [Visible generation retry](TODO/NS-6_generation-retry_01.md) adds one open
 consumer unit after actual current Studio restores a failed blend without a
@@ -164,10 +171,11 @@ The separately notified WFC branch now checks bounded future domains before
 publishing a prefix. Native/pas2js, all five upstream CI63 jobs and Pythian CI533
 with extracted core/WFC packages pass. Musical form resumes; its Studio and
 musical criteria retain their separate eight open units. No quality credit follows.
-The [recording-proposal editor](TODO/NS-3_experimental-learning_01.md) is reopened:
-its earlier correction/bypass UI is unreachable after the simple Studio rewrite.
-Eight units return to open effort; native analysis/providers and automatic corpus
-learning remain implemented. No new denominator or duplicate repair credit.
+The [recording-proposal editor](TODO/NS-3_experimental-learning_01.md) was reopened
+after the simple Studio rewrite orphaned its correction/bypass UI. Its current
+optional consumer is now implemented and locally qualified; the native CI
+deadline blocks complete delivery. Eight units remain open, without duplicate
+repair credit. Native analysis/providers and automatic corpus learning still work.
 The [optional musical laboratory — DONE](TODO/DONE/NS-6_optional-lab_01.md) restores
 authored key/tempo/expression and editable affect in tabbed contextual controls.
 Actual saved settings, paired native audio and desktop/phone recovery pass.
@@ -215,8 +223,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 14 | 14 / 29 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 5 | 73 | 73 / 78 |
-| **Total** | **50 current-goal tasks** | **39** | **177** | **81.94%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 6 | 73 | 73 / 79 |
+| **Total** | **51 current-goal tasks** | **40** | **177** | **81.57%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -280,8 +288,9 @@ analysis to editable musical proposals; [style vocabulary](TODO/DONE/NS-3_style-
 uses coarse classifications and selected material across long private recordings.
 Native contextual accept/correct/manual/bypass choices drive symbolic providers
 and instrument cutoff/sustain, with Original references and saved lineage. The
-optional correction UI is currently unreachable and its task is reopened;
-historical browser proof is not current delivery. Observations remain
+optional correction UI is restored and locally qualified; full-source CI and
+matching delivery remain pending. Historical browser proof alone is not current
+delivery. Observations remain
 bounded Experimental proposals, not automatic source-instrument identification
 or whole-corpus learning. The new bounded corpus consumer now learns weighted,
 source/run-aware musical providers and reloads them into actual six-part synthesis.
@@ -397,8 +406,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 8 open + 35 current DONE; legacy records: 53 retired +
-97 historical DONE (132 total DONE files). No implementation, saved feedback or license is discarded.
+Current scoped records: 9 open + 42 current DONE; legacy records: 53 retired +
+97 historical DONE (139 total DONE task records). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
@@ -408,8 +417,9 @@ criteria and changes the carried nonclosing count from two to zero; WORK records
 the event. Percussion, Studio and its concrete cancellation repair also close
 their criteria. The optional authored/affect laboratory and broader musical
 controls are accepted, including retained note/sound follow-ups. Current open work
-is graph inspection, recording-proposal correction,
-deeper sound recipes, musical form/styles and guided synthesis reviews.
+is graph inspection, recording-idea delivery, streamed articulation and generation
+consolidation, musical form/style judgment, direct review navigation, visible
+generation retry and native CI headroom.
 Independent clips, corpus vocabulary and long instrumental streams are accepted.
 Actual operator listening remains part of musical form; implementation checks
 alone do not establish musical preference or quality.

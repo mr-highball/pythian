@@ -3,7 +3,14 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 216 total effort units · 42 current-goal DONE · 177 / 216 accepted (81.94%).**
+**9 open tasks · 217 total effort units · 42 current-goal DONE · 177 / 217 accepted (81.57%).**
+
+[Native CI headroom](NS-6_ci-headroom_01.md) adds one required delivery unit.
+CI568 reaches the30minute native deadline despite green step labels; the entire
+run is cancelled. Recording-idea restoration passes local/native/pas2js/browser
+checks but remains unaccepted and undeployed. Preserve every check, allow native
+CI40minutes and require its final completion marker; packages retain30minutes.
+Count0→1. No musical credit follows from changing a CI resource budget.
 
 [Visible generation retry](NS-6_generation-retry_01.md) adds one open unit: the
 current client restores a failure without a direct retry of its retained choices.
@@ -133,11 +140,11 @@ Stop, reconnect and previous-version recovery pass. The seven-unit
 its four-unit laboratory prerequisite; sound and passage follow-ups preserve
 accepted models/states, unrelated parts and actual Before/After lineage.
 
-The eight-unit [recording-proposal editor](NS-3_experimental-learning_01.md) is
-reopened because the simpler UI orphaned correction/bypass/part/sound choices.
-Its native providers and automatic corpus learning remain available, but the
-optional correction consumer is still missing. Historical acceptance is preserved;
-no duplicate repair credit or denominator is added.
+The eight-unit [recording-proposal editor](NS-3_experimental-learning_01.md) was
+reopened after the simpler UI orphaned correction/bypass/part/sound choices.
+Its optional current consumer is now implemented and locally qualified; complete
+CI and matched delivery remain blocked by the linked native deadline. Historical
+acceptance is preserved; the editor still earns no duplicate repair credit.
 
 [Independent saved clip files — DONE](DONE/NS-6_saved-clips_01.md) provide durable
 lossless excerpts with original-time metadata. Learning and reference playback
@@ -159,7 +166,7 @@ unblocks evolving musical form. The original24cell guide now performs through
 three8cell commits; all upstream and downstream gates pass. These five units
 repair the primary companion stream, not Studio form controls. Saved
 styles/blends now have their accepted reusable sound recipes. Graph inspection,
-recording proposal corrections and useful synthesis reviews retain their own
+recording-idea delivery and direct review navigation retain their own
 open tasks. Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
@@ -194,7 +201,7 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Nine later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
@@ -216,7 +223,8 @@ continuity experiments are selected.
 | [NS-4_assignment-restore_01 — DONE](DONE/NS-4_assignment-restore_01.md) — preserve accepted assignment ownership across jobs | 3 | Accepted; actual named-voice/layer restored state, controls and authorized regeneration |
 | [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — retain harmony/rhythm coupling | 4 | Accepted; actual paired context and conditional six-part motif generation |
 | [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — preserve selected pitch/context relationships | 5 | Accepted; actual selected-role context, repaired melody and role/correction variants |
-| [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Reopened; restore the optional recording-proposal correction consumer after the laboratory |
+| [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) — WAV proposals into musical providers | 8 | Implemented/local consumers pass; complete CI and matched delivery pending native headroom |
+| [NS-6_ci-headroom_01](NS-6_ci-headroom_01.md) — honest complete native delivery | 1 | Preserve all checks; native40minute headroom and completion marker; full CI and matched deployment |
 | [NS-3_style-vocabulary_01 — DONE](DONE/NS-3_style-vocabulary_01.md) — coarse long-recording corpus learning | 7 | Accepted; weighted providers, source-bound ancestry, explicit classification selection and real instrumental output |
 | [NS-4_future-domains_01 — DONE](DONE/NS-4_future-domains_01.md) — bounded future-aware voice planning | 5 | Accepted; original guide, actual form/default consumers, upstream CI63 and downstream CI533/packages |
 | [NS-4_cell-priors_01 — DONE](DONE/NS-4_cell-priors_01.md) — different soft preferences inside one bounded graph | 6 | Accepted; actual positioned choices, hard constraints, source ownership/replay and full upstream/downstream/extracted gates |
@@ -248,9 +256,9 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all47 current-goal tasks (8 open, thirty-nine DONE),
-totaling210 units:44 open and166 accepted. Subtotals:
-NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 76. The NS-1 task repairs
+The two tables together are all51 current-goal tasks (9 open, forty-two DONE),
+totaling217 units:40 open and177 accepted. Subtotals:
+NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 29, NS-6 79. The NS-1 task repairs
 an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

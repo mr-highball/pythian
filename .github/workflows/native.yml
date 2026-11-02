@@ -39,7 +39,9 @@ concurrency:
 jobs:
   native:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # CI568 finished integration at the old deadline; setup/cleanup still cancelled
+    # the whole job. Keep every consumer and give native qualification headroom.
+    timeout-minutes: 40
     steps:
       - name: Check out pinned companion sources
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -64,6 +66,9 @@ jobs:
           New-Item -ItemType Directory -Force build | Out-Null
           try {
             ./tools/build.ps1 -Compiler fpc *> build/ci-build.log
+            if (-not (Select-String -LiteralPath build/ci-build.log -SimpleMatch 'PYTHIAN_NATIVE_BUILD_COMPLETED: all selected consumers passed' -Quiet)) {
+              throw 'The maintained native build did not reach its completion marker'
+            }
           } catch {
             Get-Content -LiteralPath build/ci-build.log -Tail 100
             throw
@@ -79,7 +84,8 @@ jobs:
           retention-days: 14
 
   # Big Boss: these consumers use independent fresh checkouts already. Running
-  # them beside integration preserves every check and the30minute job budgets.
+  # them beside integration preserves every check. Packages retain30minutes;
+  # native's40minute resource headroom is documented in NS-6_ci-headroom_01.
   # Release still requires this entire exact-source workflow to succeed.
   packages:
     runs-on: ubuntu-24.04

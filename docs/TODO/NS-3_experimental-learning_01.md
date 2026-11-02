@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** In progress — restore optional recording ideas in current Studio
+**Status:** Dependency-blocked — implemented; complete delivery pending
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -49,6 +49,9 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - AC4: Saving corrections/feedback preserves lineage without silent training. Explicit Learn or Regenerate changes only the requested learning/model or generation scope. Keep known failed observations as evidence, not claims of established accuracy.
 
 **Blockers**
+
+- [CI headroom](NS-6_ci-headroom_01.md) — CI568 exceeds the native job resource
+  deadline; local consumers pass, but matching deployment requires a complete run.
 
 - [Optional laboratory](DONE/NS-6_optional-lab_01.md) — reuse its current form/job
   bridge for the optional recording-proposal consumer rather than resurrecting

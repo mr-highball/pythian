@@ -1648,6 +1648,7 @@ try {
     & (Join-Path $buildRoot "pythian.archive$executableSuffix") 'segments' (Join-Path $buildRoot 'demo.pyac') > (Join-Path $buildRoot 'demo-segments.json')
     if ($LASTEXITCODE -ne 0) { throw 'Activity segmentation smoke failed' }
   }
+  Write-Output 'PYTHIAN_NATIVE_BUILD_COMPLETED: all selected consumers passed'
 } finally {
   Pop-Location
 }

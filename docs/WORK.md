@@ -3,17 +3,37 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: real blend review is live; optional proposals are next - 2026-11-02
+## Current focus: recording ideas implemented; CI headroom prerequisite - 2026-11-02
 
-Active batch: restore NS-3's optional recording-proposal correction consumer.
-Big Boss SOLO; previous goal turn is progress, count0. Deliver the existing
-material editor through current analysis and experiment dialogs. Source/native
-observations and provider mapping already exist; current experiment snapshots
-and client ownership need integration. Preserve playlist learning as the simple
-default. Close with actual accept/correct/bypass/manual save/reload, explicit
-six-part synthesis and Original playback, relevant native/pas2js checks and
-matched delivery. Stop at that outcome or a distinct required prerequisite.
-No operator answer or extra segmentation is needed to implement this path.
+Big Boss SOLO. Sourcec8443e0 restores optional recording ideas in current Studio.
+Native choices59, actual generation110 and project128 pass, including Win32;
+actual pas2js pattern/observations/providers pass16/67/1439. Desktop/390px UI
+accept/correct/bypass/manual, save/reload, explicit six-part synthesis and
+Original/Before/After playback pass. Saving submits no jobs. Preserve the actual
+length-reset, stacked-modal and delayed-input failures and their repairs under
+E/runs/recording-ideas-qa01. Its owned IAB tab and QA service are closed, audio
+stopped and viewport reset; the user GitHub tab remains. The IAB exposes no OS
+profile control: this was a separate QA origin/catalog, not a claimed isolated
+OS profile, physical phone, real microphone test or independent review.
+
+CI568/run41452703709 is cancelled at the30minute native deadline. Native step
+13:24:46–13:54:42 reports success, but the job annotation explicitly records the
+30minute limit; whole-run cancellation blocks delivery. All three artifact
+digests verify. Packages pass, but neither that nor green step labels closes the
+gate. Stable PID75340 remains untouched with27 jobs/3 clips/3 styles and no active
+jobs; its current listening queue has six waiting/six completed answers.
+Recording ideas remain unaccepted/undeployed. Nonclosing count0→1.
+
+Required prerequisite: [native CI headroom](TODO/NS-6_ci-headroom_01.md), effort1.
+Criterion: complete unchanged checks without a resource-deadline cancellation.
+Deliver native40minute headroom and a final maintained-build completion marker;
+packages retain30minutes. Close only with whole exact-source CI success, verified
+packages and matching fixed-slot deployment preserving operator data. Stop on a
+distinct actual failure; carry count1 and reassess after another nonclosing batch.
+No tests, compiler flags, contexts or musical criteria are weakened. Source/UI
+candidate c8443e0 and private prepared release are preserved; its old CI568 guard
+must not be treated as a passing release. Scope51 tasks/42DONE/nine open,
+177/217(81.57%),40 open effort. No operator action or segmentation is needed.
 
 The repaired real blend is now live as a named song and saved reusable style,
 with one targeted Original/Before/After question. The native publisher protects
@@ -31,11 +51,13 @@ question/publication, screenshot and preservation receipts are private under
 E/runs/style-listen-20261102-01. The parent is Awaiting operator feedback; its
 seven units remain open. Scope177/216(81.94%), count0; no musical verdict.
 
-Next independent implementation: NS-3 recording-proposal correction consumer,
-the least-complete north star. Restore its optional current Studio path over
-existing Pascal analyses/providers, keeping ordinary Generate simple. Read its
-task and actual old/current consumers before naming that batch; do not ask the
-operator for exhaustive segmentation or wait idle for the listening answer.
+After this required delivery prerequisite, close recording ideas only if its
+entire acceptance passes. The next core assessment is explicit stream articulation
+before Studio generation consolidation. Current unknown held-note shortening is
+correctly rejected. Private preparation E/runs/next-stream-articulation-design.txt
+maps the primary stream, journal and committed-prefix clocks; no implementation
+or WFC dependency edit is selected by that assessment. Do not wait idle for a
+musical answer or create more source segmentation work.
 
 Big Boss SOLO. [Selective rhythm projections — DONE](TODO/DONE/NS-5_blend-projections_01.md)
 closes four units after exact original-seed real synthesis, native/actual pas2js,
