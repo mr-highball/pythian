@@ -58,10 +58,12 @@ type
     constructor Create(AParent: TJSElement);
     destructor Destroy; override;
     function ReadConfig: TJSObject;
+    procedure RestoreContext(AConfig: TJSObject);
     procedure RestoreConfig(AConfig: TJSObject);
     function ReadDraft: TJSObject;
     procedure RestoreDraft(ADraft: TJSObject);
     procedure SetEnabled(const AEnabled: Boolean);
+    function ContextPanel: TJSElement;
     property Root: TJSElement read FSettings;
   end;
 
@@ -72,6 +74,11 @@ uses pythian.studio.sources, pythian.studio.requests, pythian.music.controls,
 
 const
   CNames: array[0..5] of String = ('Bass', 'Harmony', 'Lead', 'Kick', 'Snare', 'Hat');
+function TStudioMusicalControls.ContextPanel: TJSElement;
+begin
+  Result := FPanels[0];
+end;
+
 function TStudioMusicalControls.Add(AParent: TJSElement; const ATag, AText: String): TJSElement;
 begin
   Result := document.createElement(ATag); Result.textContent := AText;
@@ -140,7 +147,7 @@ begin
   Add(LSelect, 'option', 'Major').setAttribute('value', 'major');
   Add(LSelect, 'option', 'Natural minor').setAttribute('value', 'natural_minor');
   Add(FPanels[0], 'p', 'Four beats per bar. Up to 32 bars here; the main Generate step supports long tracks learned from recordings.').className := 'hint';
-  Add(FPanels[0], 'p', 'Authored starter · WFC chooses musical events, then Pythian synthesizes all six parts. No recordings are learned in this experiment.').className := 'hint';
+  Add(FPanels[0], 'p', 'WFC chooses musical events, then Pythian synthesizes all six parts. Recording ideas can guide a part; the rest uses authored examples.').className := 'hint';
   FSoundStatus := Add(FPanels[1], 'p', 'Custom sound recipes stay saved. Use Sounds & effects on the generated track to edit them.');
   FSoundStatus.className := 'hint';
   FSoundStatus.setAttribute('hidden', '');
@@ -278,6 +285,18 @@ begin
   Result['controls'] := LControls;
 end;
 
+procedure TStudioMusicalControls.RestoreContext(AConfig: TJSObject);
+begin
+  TJSHTMLInputElement(document.getElementById('instrumental-tempo')).value :=
+    FloatToStr(StudioNumber(AConfig, 'tempo_bpm'));
+  TJSHTMLSelectElement(document.getElementById('instrumental-tonic')).value :=
+    FloatToStr(StudioNumber(AConfig, 'tonic'));
+  TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := 'major';
+  if StudioText(AConfig, 'mode') <> '' then
+    TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := StudioText(AConfig, 'mode');
+  SelectTab(0);
+end;
+
 procedure TStudioMusicalControls.RestoreConfig(AConfig: TJSObject);
 var I: Integer; LControls, LPart: TJSObject;
 begin
@@ -288,15 +307,9 @@ begin
   FSoundDesign := nil;
   if isObject(AConfig['sound_design']) and not isArray(AConfig['sound_design']) then
     FSoundDesign := TJSObject(TJSJSON.parse(TJSJSON.stringify(AConfig['sound_design'])));
-  TJSHTMLInputElement(document.getElementById('instrumental-tempo')).value :=
-    FloatToStr(StudioNumber(AConfig, 'tempo_bpm'));
+  RestoreContext(AConfig);
   TJSHTMLInputElement(document.getElementById('instrumental-bars')).value :=
     FloatToStr(StudioNumber(AConfig, 'cells') / 8);
-  TJSHTMLSelectElement(document.getElementById('instrumental-tonic')).value :=
-    FloatToStr(StudioNumber(AConfig, 'tonic'));
-  TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := 'major';
-  if StudioText(AConfig, 'mode') <> '' then
-    TJSHTMLSelectElement(document.getElementById('instrumental-mode')).value := StudioText(AConfig, 'mode');
   for I := 0 to 5 do
   begin
     if I < 3 then TJSHTMLSelectElement(document.getElementById('instrumental-sound-' +

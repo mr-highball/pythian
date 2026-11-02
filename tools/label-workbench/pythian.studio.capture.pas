@@ -1313,7 +1313,7 @@ begin
       ' · ' + IntToStr(Trunc(StudioNumber(LResult, 'sample_rate'))) + ' Hz · ' +
       IntToStr(Trunc(StudioNumber(LResult, 'channels'))) + ' channel(s) · peak ' +
       FormatFloat('0.00', StudioNumber(LResult, 'peak'));
-    DrawMusicalObservations(El('capture-musical-observations'), LResult);
+    DrawMusicalObservations(El('capture-musical-observations'), LResult, LId);
     Notice('Ready. Choose a collection and press Add to library.');
   end
   else if LKind = 'capture_pitch' then

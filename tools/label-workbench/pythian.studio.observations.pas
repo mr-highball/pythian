@@ -27,7 +27,8 @@ unit pythian.studio.observations;
 {$H+}
 interface
 uses JS, Web;
-procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject);
+procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject;
+  const AAnalysisJobId: String = '');
 implementation
 uses SysUtils, Math, pythian.studio.sources;
 
@@ -47,7 +48,8 @@ begin
     Result := Result + IntToStr(ANote div 12 - 1);
 end;
 
-procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject);
+procedure DrawMusicalObservations(AParent: TJSElement; AResult: TJSObject;
+  const AAnalysisJobId: String);
 var
   LProposal, LRow, LChannel, LSpan, LBeats: TJSObject;
   LRows, LChannels, LSpans: TJSArray;
@@ -64,6 +66,12 @@ begin
     Exit;
   end;
   Add(AParent, 'h4', 'Musical suggestions · Experimental');
+  if AAnalysisJobId <> '' then
+  begin
+    LBox := Add(AParent, 'button', 'Try these suggestions');
+    LBox.setAttribute('type', 'button');
+    LBox.setAttribute('data-musical-job', AAnalysisJobId);
+  end;
   LRate := StudioNumber(LProposal, 'sample_rate');
   LOrigin := StudioNumber(LProposal, 'start_frame') / LRate;
   Add(AParent, 'p', 'Analyzed ' + StudioTime(LOrigin) + '–' +

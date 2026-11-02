@@ -118,7 +118,7 @@ const
      Action: 'Open Generate, choose Track length and Unit, then Generate music. Track influence gives each recording more or less learning weight. Use a saved style skips new recording analysis.';
      Expectation: 'Experimental: Pythian learns musical proposals from the included audio, WFC arranges notes and percussion, and Pythian instruments perform them. This does not recover isolated instruments from a mix. The job runs on the computer if your phone page closes; return to reconnect or Stop generation.';
      DoneWhen: 'Your new track is ready. Press Play, or open Hear individual parts. Save to playlist names the result; Download WAV saves it to your device.';
-     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In an authored experiment, use Experiment settings or Back to playlist to return to Track length. Otherwise choose learning material or a saved style first.'),
+     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In a musical experiment, use Experiment settings or Back to playlist to return to Track length. Otherwise choose learning material or a saved style first.'),
     (Id: 'refine'; Title: 'Listen and change one thing';
      Action: 'Open a finished song and listen to its mix or individual parts. Change notes edits musical choices; Sounds & effects edits instruments while keeping the saved notes. Create a new version, then compare Before and After.';
      Expectation: 'Compare an original excerpt gives reference context, with its own timing. Save to playlist keeps this exact result. Listening reviews ask a specific development question; saving that answer does not retrain or generate.';
@@ -148,7 +148,7 @@ const
      Action: 'In Generate, set Track length and Unit to seconds, minutes or hours. Generate music starts a host job. Stop generation cancels it; leaving the phone page does not cancel. Return to reconnect.';
      Expectation: 'Experimental: requests support 2 seconds to 24 hours of music plus the sound tail. Work and disk use increase with duration. The saved mix and six parts use bounded native processing. A full 24-hour render has not been tested.';
      DoneWhen: 'Play the completed track, seek through it, and Save to playlist or Download WAV.';
-     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In an authored experiment, use Experiment settings or Back to playlist. Choose learning material or a saved style for ordinary generation.'),
+     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In a musical experiment, use Experiment settings or Back to playlist. Choose learning material or a saved style for ordinary generation.'),
     (Id: 'source-review'; Title: 'Check an observation in an original';
      Action: 'Open a question in Source reviews. Read what it asks, play the original, then answer that question. If a point or range is requested, use source time to place it and save. Choose uncertainty when you cannot tell.';
      Expectation: 'This checks an observation such as a note or beat in an original recording. It is separate from judging generated music. No pending question means no labeling is needed. Developer checks are optional app tests.';
@@ -160,9 +160,9 @@ const
      DoneWhen: 'Save moves the question to Completed reviews. Choose review opens that list so you can reopen your answer.';
      Page: 'listening'; Target: 'packet'; Prerequisite: 'Choose a review if no question is open. An empty queue means there are no assigned listening questions.'),
     (Id: 'settings'; Title: 'Understand generation settings';
-     Action: 'The main flow only needs music selection and track length. Track influence in Generate changes each recording''s learning weight. Use a saved style reuses its musical providers and sounds. More music controls opens optional authored experiments.';
-     Expectation: 'Authored experiments let you choose tempo, key, notes, sounds and sections without learning recordings. They keep your playlist saved. These controls describe actual instrumental choices, not chopped recording fragments.';
-     DoneWhen: 'You know whether the next track learns your selection, reuses a style or runs an authored experiment.';
+     Action: 'The main flow only needs music selection and track length. Track influence changes learning weight. Use a saved style reuses its providers and sounds. More music controls opens optional musical experiments. Analyze audio, then Try these suggestions to edit recording ideas.';
+     Expectation: 'Experiments use authored examples or your edited recording ideas. They keep your playlist saved. Use in experiment saves choices; only Generate experiment makes music. Recording ideas are Experimental and do not separate a mix into instruments.';
+     DoneWhen: 'You know whether the next track learns your selection, reuses a style or runs a musical experiment.';
      Page: 'studio'; Target: 'open-laboratory'; Prerequisite: 'Connect to Studio before opening More music controls in Generate.')
   );
 

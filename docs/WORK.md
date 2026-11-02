@@ -5,6 +5,16 @@
 
 ## Current focus: real blend review is live; optional proposals are next - 2026-11-02
 
+Active batch: restore NS-3's optional recording-proposal correction consumer.
+Big Boss SOLO; previous goal turn is progress, count0. Deliver the existing
+material editor through current analysis and experiment dialogs. Source/native
+observations and provider mapping already exist; current experiment snapshots
+and client ownership need integration. Preserve playlist learning as the simple
+default. Close with actual accept/correct/bypass/manual save/reload, explicit
+six-part synthesis and Original playback, relevant native/pas2js checks and
+matched delivery. Stop at that outcome or a distinct required prerequisite.
+No operator answer or extra segmentation is needed to implement this path.
+
 The repaired real blend is now live as a named song and saved reusable style,
 with one targeted Original/Before/After question. The native publisher protects
 all answered requests; its actual parent/reference bindings retain the lofi

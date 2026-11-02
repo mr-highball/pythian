@@ -186,7 +186,7 @@ procedure TStudio.LaboratorySaved(AProject: TJSObject);
 var LRow: TJSObject; I: Integer;
 begin
   LRow := CloneObject(AProject);
-  LRow['authored_experiment'] := True;
+  LRow['musical_experiment'] := True;
   for I := 0 to FProjects.length - 1 do
     if Str(Obj(FProjects[I]), 'project_id') = Str(AProject, 'project_id') then
     begin
@@ -803,7 +803,7 @@ begin
   if ResultProjectId <> FProjectId then
   begin
     El('generation-title').textContent := 'Your experiment';
-    El('generate-heading').textContent := 'Authored experiment';
+    El('generate-heading').textContent := 'Musical experiment';
     El('experiment-actions').removeAttribute('hidden');
     El('playlist-generation-controls').setAttribute('hidden', '');
     El('edit-experiment').removeAttribute('hidden');
@@ -811,9 +811,9 @@ begin
     if FJobWrite <> nil then LConfig := Obj(FJobWrite['instrumental']);
     if (LConfig = nil) and (FJob <> nil) and (Obj(FJob['request']) <> nil) then
       LConfig := Obj(Obj(FJob['request'])['instrumental']);
-    El('generate-summary').textContent := 'Authored music · no recordings are learned.';
+    El('generate-summary').textContent := 'Musical experiment · WFC notes and synthesized instruments.';
     if LConfig <> nil then El('generate-summary').textContent :=
-      'Authored music · ' + FloatToStr(Num(LConfig, 'tempo_bpm')) + ' BPM · ' +
+      'Musical experiment · ' + FloatToStr(Num(LConfig, 'tempo_bpm')) + ' BPM · ' +
       FloatToStr(Num(LConfig, 'cells') / 8) + ' bar(s).';
   end;
   LActive := GenerationActive;
@@ -937,9 +937,12 @@ begin
   if ResultProjectId <> FProjectId then
   begin
     if El('generation-revision-note').textContent = '' then
-      El('generation-revision-note').textContent := 'Authored experiment · no recordings were learned.'
-    else El('generation-revision-note').textContent :=
-      El('generation-revision-note').textContent + ' No recordings were learned.';
+    begin
+      El('generation-revision-note').textContent := 'Authored experiment · no recordings were learned.';
+      if Obj(LResult['musical_material']) <> nil then
+        El('generation-revision-note').textContent :=
+          'Experimental recording ideas or edited notes, with authored accompaniment.';
+    end;
     if (FLaboratory.ProjectId = ResultProjectId) and
       (FLaboratory.Revision > Num(LResult, 'project_revision')) then
       El('generation-revision-note').textContent :=
@@ -1823,8 +1826,8 @@ begin
   for I := 0 to FProjects.length - 1 do
   begin
     LName := Str(Obj(FProjects[I]), 'name');
-    if isBoolean(Obj(FProjects[I])['authored_experiment']) and
-      Boolean(Obj(FProjects[I])['authored_experiment']) then LName := 'Experiment · ' + LName;
+    if isBoolean(Obj(FProjects[I])['musical_experiment']) and
+      Boolean(Obj(FProjects[I])['musical_experiment']) then LName := 'Experiment · ' + LName;
     LButton := Add(El('playlist-list'), 'button', LName);
     LButton.setAttribute('type', 'button');
     LButton.setAttribute('data-project', Str(Obj(FProjects[I]), 'project_id'));

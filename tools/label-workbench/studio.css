@@ -769,3 +769,19 @@ code {
 .lab-footer { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: .4rem; }
 .lab-footer p { flex-basis: 100%; }
 .lab-footer, .lab-saved, #laboratory-dialog > .dialog-heading { flex-shrink: 0; }
+/* Big Boss: recording corrections reuse one optional editor in the current lab. */
+.recording-ideas { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: .6rem; }
+.recording-ideas button { margin: .3rem .3rem .3rem 0; }
+.material-dialog { width: min(48rem, calc(100% - 1rem)); }
+.material-dialog[open] { display: flex; flex-direction: column; max-height: calc(100dvh - 1rem); overflow: hidden; }
+.material-dialog > :not(section) { flex-shrink: 0; }
+.material-dialog > section:not([hidden]) { overflow: auto; min-height: 0; padding: .25rem; }
+.material-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin: .6rem 0; }
+.material-tabs button { min-width: 0; padding: .6rem .2rem; font-size: .85rem; }
+.material-tabs [aria-selected="true"], .material-grid [aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.material-dialog label { display: block; min-width: 0; }
+.material-dialog input, .material-dialog select, .material-dialog textarea { display: block; width: 100%; min-width: 0; margin-top: .3rem; }
+.material-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin: .6rem 0; }
+.material-grid button { min-width: 0; padding: .5rem .15rem; font-size: .8rem; }
+.material-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; margin-top: .5rem; }
+.material-dialog .source-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .6rem 0; }

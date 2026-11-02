@@ -36,8 +36,17 @@ begin
   Inc(Checks);
   if not ACondition then raise EAudio.Create(AMessage);
 end;
+function InstrumentalConfig: TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.Add('tempo_bpm', 120);
+  Result.Add('tonic', 0);
+  Result.Add('cells', 16);
+  Result.Add('instruments', TJSONArray.Create(['saw','triangle','square']));
+  Result.Add('levels', TJSONArray.Create([100,100,100,100,100,100]));
+end;
+
 function Generation(const AProject: TJSONObject; const AId: String): TJSONObject;
-var LConfig: TJSONObject;
 begin
   Result := TJSONObject.Create;
   Result.Add('format', StudioJobWriteFormat);
@@ -47,13 +56,9 @@ begin
   Result.Add('project_revision', AProject.Integers['revision']);
   Result.Add('project_snapshot_sha256', AProject.Strings['snapshot_sha256']);
   Result.Add('seeds', TJSONArray.Create([731]));
-  LConfig := TJSONObject.Create;
-  Result.Add('instrumental', LConfig);
-  LConfig.Add('tempo_bpm', 120);
-  LConfig.Add('tonic', 0);
-  LConfig.Add('cells', 16);
-  LConfig.Add('instruments', TJSONArray.Create(['saw','triangle','square']));
-  LConfig.Add('levels', TJSONArray.Create([100,100,100,100,100,100]));
+  if AProject.Find('instrumental') <> nil then
+    Result.Add('instrumental', AProject.Objects['instrumental'].Clone)
+  else Result.Add('instrumental', InstrumentalConfig);
 end;
 procedure Run(const ARoot: String);
 var
@@ -62,7 +67,7 @@ var
   LWave: TWaveFrameReader;
   LSourceHash, LHash, LFirstAudio, LFirstModel: String;
   LFixedModel, LFixedAudio, LSoundAudio, LOtherStem: String;
-  I, J: Integer;
+  I, J, LJobsBefore: Integer;
 begin
   Check(not DirectoryExists(ARoot), 'Use a fresh isolated root');
   Check(ForceDirectories(ARoot), 'Create synthetic catalog');
@@ -96,6 +101,7 @@ begin
     LWrite.Add('learning_mode', 'instrumental');
     LWrite.Add('sources', TJSONArray.Create);
     LWrite.Add('musical_material', LMaterial.Clone);
+    LWrite.Add('instrumental', InstrumentalConfig);
     for I := 1 to 5 do
     begin
       if I > 1 then LWrite.Integers['expected_revision'] := I - 1;
@@ -128,7 +134,27 @@ begin
         LWrite.Objects['musical_material'].Objects['sound'].Integers['part'] := -1;
       end;
       FreeAndNil(LProject);
+      LReply := ListStudioJobs(ARoot);
+      try LJobsBefore := LReply.Arrays['jobs'].Count finally LReply.Free end;
       LProject := SaveStudioProject(ARoot, LWrite);
+      Check((LProject.Find('instrumental') <> nil) and
+        (LProject.Find('musical_material') <> nil),
+        'Current experiment settings and recording choices must coexist in one snapshot');
+      if I = 1 then
+      begin
+        LReply := ListStudioProjects(ARoot);
+        try
+          Check((LReply.Strings['format'] = StudioProjectsFormat) and
+            LReply.Arrays['projects'].Objects[0].Booleans['musical_experiment'] and
+            (LReply.Arrays['projects'].Objects[0].Find('authored_experiment') = nil),
+            'Recording-derived experiments must not be advertised as authored-only');
+        finally LReply.Free end;
+      end;
+      LReply := ListStudioJobs(ARoot);
+      try
+        Check(LReply.Arrays['jobs'].Count = LJobsBefore,
+          'Saving current experiment recording choices silently queues work');
+      finally LReply.Free end;
       FreeAndNil(LRequest);
       LRequest := Generation(LProject, 'musical-generation-' + IntToStr(I));
       LReply := PrepareStudioJob(ARoot, LRequest);

@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Ready
+**Status:** In progress — restore optional recording ideas in current Studio
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -67,6 +67,42 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: current Studio again owns the primary recording-ideas
+  editor in its optional experiment dialog. Capture/import and source analysis
+  expose Try these suggestions; save snapshots bind material and instrumental
+  settings together while playlist training remains separate. Project-list v2
+  calls these musical experiments rather than falsely calling them all authored.
+  Native choices pass59 checks; combined real six-part generation passes110 with
+  clean heaps. Actual pas2js pattern/observations/provider consumers pass16/67/1439.
+  Desktop/390px QA preserves saved decisions and exact Original coordinates,
+  generates only on the explicit action and plays the mix, Lead and Original.
+  Native generation retains actual six-part recipes/provider and source hashes.
+  Complete source CI, final consumer cleanup and matched delivery remain pending;
+  no task/effort or musical-quality acceptance is claimed yet.
+- Preserved UI failures under private E/runs/recording-ideas-qa01: Apply initially
+  reset bars to0 and left the import modal underneath. Context restoration now
+  changes only tempo/key; explicit Apply closes its source dialog and Cancel
+  returns there. Numeric note/sound input formerly waited for blur; immediate
+  input now updates cells and invalid visible notes block Apply. Authored-only
+  wording is removed from recording-based results. The failed web06 string-set
+  compilation is retained; web07 uses ordinary string comparisons. One native
+  fixture mistakenly ran from the repo cwd; its nine new fallback files were
+  hash-verified and moved to E with a relocation receipt. Subsequent execution
+  uses E cwd. Existing historical D-drive build evidence remains untouched.
+
+- 2026-11-02, Big Boss: selected after delivered projection repair and real blend
+  review handoff; previous goal turn is progress, nonclosing count0. Criterion:
+  optional analyzed recording/import/capture ideas can be accepted, corrected,
+  bypassed and saved, then explicitly drive six-part musical generation. Deliver
+  the existing primary material editor inside the current experiment owner,
+  with reachable analysis actions and retained source/decision origins. Current
+  experiment snapshots forbid musical_material, so align that native binding
+  within this existing task; keep playlists separate. Reuse native material,
+  quantization, sound mapping and ordinary job transport. Close with relevant
+  native/pas2js consumers, actual desktop/390px save/reload/generate/original
+  comparison, complete matching delivery and preserved operator answers. Stop
+  at that usable outcome or a distinct required gap. No partial effort credit.
 
 - 2026-10-31, Big Boss: the authored laboratory prerequisite is accepted.
   This original eight-unit correction/bypass consumer is Ready, not accepted;

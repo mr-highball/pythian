@@ -35,7 +35,7 @@ uses
 
 const
   StudioSourcesFormat = 'pythian.studio.sources.v1';
-  StudioProjectsFormat = 'pythian.studio.projects.v1';
+  StudioProjectsFormat = 'pythian.studio.projects.v2';
   StudioProjectFormat = 'pythian.studio.project.v1';
   StudioProjectWriteFormat = 'pythian.studio.project.write.v1';
   StudioPlaylistFormat = 'pythian.studio.playlist.v1';
@@ -1114,8 +1114,8 @@ begin
   if AProject.Find('instrumental') <> nil then
   begin
     Need((LUsage = 'instrumental') and (LTotal = 0) and
-      (AProject.Find('playlist') = nil) and (AProject.Find('musical_material') = nil),
-      'Saved experiment settings must remain source-free');
+      (AProject.Find('playlist') = nil),
+      'Saved experiment settings must remain separate from playlist training');
     LValue := AProject.Find('instrumental');
     Need(LValue.JSONType = jtObject, 'Experiment settings must be an object');
     LMaterial := CanonicalStudioInstrumentalConfig(TJSONObject(LValue));
@@ -1267,7 +1267,7 @@ begin
               LSummary.Add('status', LProject.Strings['status']);
               LSummary.Add('training_status', LProject.Strings['training_status']);
               LSummary.Add('source_count', ArrayField(LProject, 'sources').Count);
-              LSummary.Add('authored_experiment', LProject.Find('instrumental') <> nil);
+              LSummary.Add('musical_experiment', LProject.Find('instrumental') <> nil);
             finally
               LProject.Free;
             end;
@@ -1415,8 +1415,8 @@ begin
     if AWrite.Find('instrumental') <> nil then
     begin
       Need((LMode = 'instrumental') and (LTotal = 0) and
-        (AWrite.Find('playlist') = nil) and (AWrite.Find('musical_material') = nil),
-        'An authored experiment keeps its settings separate from recording selections');
+        (AWrite.Find('playlist') = nil),
+        'An experiment keeps its musical settings separate from playlist training');
       Need(AWrite.Find('instrumental').JSONType = jtObject,
         'Experiment settings must be an object');
       Result.Add('instrumental', CanonicalStudioInstrumentalConfig(AWrite.Objects['instrumental']));

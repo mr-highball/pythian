@@ -37,6 +37,7 @@ type
     FChanged: TStudioChange;
     FValue, FDraft: TJSObject;
     FPanel, FSummary, FNotice, FGrid, FSource, FOrigin: TJSElement;
+    FEditButton, FClearButton, FHostDialog, FOriginDialog: TJSElement;
     FScrollX, FScrollY, FCell, FPage, FEpoch: Integer;
     FEnabled, FBusy, FEditedPattern: Boolean;
     function Add(AParent: TJSElement; const ATag, AText, AId: String): TJSElement;
@@ -61,15 +62,20 @@ type
     function Edit(AEvent: TEventListenerEvent): Boolean;
     function Cancel(AEvent: TEventListenerEvent): Boolean;
     function DialogClosed(AEvent: TEventListenerEvent): Boolean;
+    function TabKey(AEvent: TJSKeyboardEvent): Boolean;
   public
-    constructor Create(const AFetch: TStudioFetch; const AChanged: TStudioChange);
+    constructor Create(AParent: TJSElement; const AFetch: TStudioFetch;
+      const AChanged: TStudioChange);
+    destructor Destroy; override;
     procedure Restore(AValue: TJSObject);
     procedure SetEnabled(const AEnabled: Boolean);
+    procedure UpdateContext(AConfig: TJSObject);
     function Value: TJSObject;
   end;
 
 implementation
-uses pythian.studio.requests, pythian.music.pattern, pythian.pitch.track;
+uses pythian.studio.requests, pythian.music.pattern, pythian.pitch.track,
+  pythian.workspace.tabs;
 
 function CopyObject(AValue: TJSObject): TJSObject;
 begin
@@ -127,18 +133,21 @@ begin
   end;
 end;
 
-constructor TStudioMaterial.Create(const AFetch: TStudioFetch;
+constructor TStudioMaterial.Create(AParent: TJSElement; const AFetch: TStudioFetch;
   const AChanged: TStudioChange);
 var LRoot, LRow, LBox, LHeader: TJSElement;
 begin
   inherited Create;
   FFetch := AFetch;
   FChanged := AChanged;
-  LRoot := document.getElementById('musical-material');
-  Add(LRoot, 'h3', 'Musical starting points', '');
+  FHostDialog := AParent.closest('dialog');
+  LRoot := Add(AParent, 'section', '', 'musical-material');
+  LRoot.className := 'recording-ideas';
+  Add(LRoot, 'h3', 'Recording ideas · optional', '');
   FSummary := Add(LRoot, 'p', '', 'material-summary');
-  Button(LRoot, 'Edit musical choices', 'edit');
-  Add(LRoot, 'p', 'Analyze a passage or imported sound, then choose “Use or edit these suggestions”. Or write a motif yourself.', '').className := 'hint';
+  FEditButton := Button(LRoot, 'Edit recording ideas', 'edit');
+  FClearButton := Button(LRoot, 'Clear recording ideas', 'clear');
+  Add(LRoot, 'p', 'Analyze a clip or recording to try its suggestions here. You can also enter your own notes.', '').className := 'hint';
   FPanel := Add(document.body, 'dialog', '', 'material-dialog');
   FPanel.className := 'material-dialog';
   FPanel.setAttribute('aria-labelledby', 'material-title');
@@ -146,18 +155,19 @@ begin
   LHeader.className := 'material-heading';
   LRow := Add(LHeader, 'div', '', '');
   LRow.className := 'guide-dialog-header';
-  Add(LRow, 'h2', 'Choose the musical starting point', 'material-title');
+  Add(LRow, 'h2', 'Try recording ideas', 'material-title');
   Button(LRow, 'Cancel', 'cancel');
   Add(FPanel, 'p', 'Experimental · Editable pitch and sound with authored accompaniment. A mix is not separated into instruments.', '').className := 'hint';
   LRow := Add(LHeader, 'div', '', '');
   LRow.className := 'material-tabs';
   LRow.setAttribute('role', 'tablist');
+  LRow.addEventListener('keydown', @TabKey);
   Button(LRow, '1 Tempo & key', 'tab-context');
   Button(LRow, '2 Pitch & part', 'tab-pitch');
   Button(LRow, '3 Sound', 'tab-sound');
   Button(LRow, '4 Source', 'tab-source');
   LBox := Add(FPanel, 'section', '', 'material-context');
-  Add(LBox, 'p', 'These choices set the next experiment’s clock and accompaniment. You can still override them in Generate.', '');
+  Add(LBox, 'p', 'Tempo and key set the experiment’s clock and accompaniment.', '');
   LRow := Add(LBox, 'div', '', '');
   LRow.className := 'range-fields';
   Field(LRow, 'Tempo (BPM, 40–240)', 'tempo', 'number');
@@ -214,7 +224,7 @@ begin
   Button(LBox, 'Next: Source & notes →', 'tab-source');
   LBox := Add(FPanel, 'section', '', 'material-source');
   FSource := Add(LBox, 'p', '', 'material-source-details');
-  Add(LBox, 'p', 'The analysis and original source stay unchanged. Generation keeps the analyzed excerpt for Original/Synthesized comparison. Pitch coverage may be shorter than that excerpt.', '').className := 'hint';
+  Add(LBox, 'p', 'The analysis and original source stay unchanged. Recording-based experiments keep the analyzed excerpt for comparison; manual input has no original audio. Pitch coverage may be shorter than the excerpt.', '').className := 'hint';
   Button(LBox, 'Start fresh without this analysis', 'manual');
   LRow := Add(LBox, 'label', 'Notes (optional)', '');
   Add(LRow, 'textarea', '', 'material-notes').setAttribute('maxlength', '2048');
@@ -223,19 +233,33 @@ begin
   LRow := Add(FPanel, 'div', '', '');
   LRow.className := 'material-footer';
   Button(LRow, 'Cancel', 'cancel');
-  Button(LRow, 'Apply to draft', 'apply').className := 'primary';
-  Add(FPanel, 'p', 'Apply edits your draft. Save draft keeps it. Generate makes new audio. Neither Apply nor Save trains or generates.', '').className := 'hint';
+  Button(LRow, 'Use in experiment', 'apply').className := 'primary';
+  Add(FPanel, 'p', 'Choices save with the experiment. Only Generate experiment starts music.', '').className := 'hint';
   document.addEventListener('click', @Click);
+  FPanel.addEventListener('input', @Edit);
   FPanel.addEventListener('change', @Edit);
   FPanel.addEventListener('cancel', @Cancel);
   FPanel.addEventListener('close', @DialogClosed);
   DrawSummary;
 end;
 
+destructor TStudioMaterial.Destroy;
+begin
+  Inc(FEpoch);
+  document.removeEventListener('click', @Click);
+  FPanel.removeEventListener('input', @Edit);
+  FPanel.removeEventListener('change', @Edit);
+  FPanel.removeEventListener('cancel', @Cancel);
+  FPanel.removeEventListener('close', @DialogClosed);
+  if FPanel.parentNode <> nil then FPanel.parentNode.removeChild(FPanel);
+  inherited Destroy;
+end;
+
 procedure TStudioMaterial.SetEnabled(const AEnabled: Boolean);
 begin
   FEnabled := AEnabled;
-  TJSHTMLButtonElement(document.querySelector('[data-material-action="edit"]')).disabled := not AEnabled;
+  TJSHTMLButtonElement(FEditButton).disabled := not AEnabled;
+  TJSHTMLButtonElement(FClearButton).disabled := not AEnabled;
 end;
 
 procedure TStudioMaterial.Restore(AValue: TJSObject);
@@ -249,6 +273,32 @@ end;
 function TStudioMaterial.Value: TJSObject;
 begin
   Result := CopyObject(FValue);
+end;
+
+procedure TStudioMaterial.UpdateContext(AConfig: TJSObject);
+var
+  LDecision: String;
+  LTempoChanged: Boolean;
+begin
+  if (FValue = nil) or (AConfig = nil) then Exit;
+  LDecision := 'manual';
+  if StudioText(FValue, 'analysis_job_id') <> '' then LDecision := 'corrected';
+  LTempoChanged := StudioNumber(FValue, 'tempo_bpm') <> StudioNumber(AConfig, 'tempo_bpm');
+  if LTempoChanged then
+  begin
+    FValue['tempo_bpm'] := AConfig['tempo_bpm'];
+    FValue['tempo_decision'] := LDecision;
+    if (StudioNumber(FValue, 'part') >= 0) and
+      (TJSArray(FValue['pattern']).length > 0) then FValue['pitch_decision'] := LDecision;
+  end;
+  if (StudioNumber(FValue, 'tonic') <> StudioNumber(AConfig, 'tonic')) or
+    (StudioText(FValue, 'mode') <> StudioText(AConfig, 'mode')) then
+  begin
+    FValue['tonic'] := AConfig['tonic'];
+    FValue['mode'] := AConfig['mode'];
+    FValue['key_decision'] := LDecision;
+  end;
+  DrawSummary;
 end;
 
 procedure TStudioMaterial.DrawSummary;
@@ -275,12 +325,16 @@ begin
     else LText := LText + ' · manual input';
   end;
   FSummary.textContent := LText;
+  FClearButton.setAttribute('hidden', '');
+  if FValue <> nil then FClearButton.removeAttribute('hidden');
 end;
 
 procedure TStudioMaterial.Open;
 begin
   FBusy := False;
   FOrigin := document.activeElement;
+  FOriginDialog := nil;
+  if FOrigin <> nil then FOriginDialog := FOrigin.closest('dialog');
   FScrollX := window.scrollX;
   FScrollY := window.scrollY;
   FNotice.textContent := '';
@@ -326,9 +380,18 @@ begin
     LButton := FPanel.querySelector('.material-tabs [data-material-action="tab-' + LName + '"]');
     LButton.setAttribute('role', 'tab');
     LButton.setAttribute('aria-selected', BoolToStr(LName = ATab, 'true', 'false'));
+    LButton.id := 'material-tab-' + LName;
+    if LName = ATab then LButton.setAttribute('tabindex', '0')
+    else LButton.setAttribute('tabindex', '-1');
     LButton.setAttribute('aria-controls', 'material-' + LName);
     El(LName).setAttribute('role', 'tabpanel');
+    El(LName).setAttribute('aria-labelledby', LButton.id);
   end;
+end;
+
+function TStudioMaterial.TabKey(AEvent: TJSKeyboardEvent): Boolean;
+begin
+  Result := HandleWorkspaceTabKey(AEvent);
 end;
 
 function TStudioMaterial.Number(const AId: String; AMin, AMax: Integer): Integer;
@@ -517,9 +580,9 @@ begin
       FPage := 0;
     end;
     Draw;
-    FNotice.textContent := 'Choose a part to use pitch cells, or skip them. Apply keeps changes in your draft.';
+    FNotice.textContent := 'Choose a part for these notes, or skip them. Use in experiment saves your choices.';
     if ASoundOnly then
-      FNotice.textContent := 'Sound suggestion selected. Pitch, tempo and key are unchanged. Apply keeps it in your draft.';
+      FNotice.textContent := 'Sound suggestion selected. Use in experiment saves your choices.';
   except
     on E: Exception do
       if LEpoch = FEpoch then FNotice.textContent := E.Message;
@@ -537,6 +600,7 @@ begin
   if FBusy or (FDraft = nil) then Exit;
   LId := TJSElement(AEvent.target).id;
   try
+    FNotice.textContent := '';
     LDecision := 'manual';
     if StudioText(FDraft, 'analysis_job_id') <> '' then LDecision := 'corrected';
     if LId = 'material-tempo' then
@@ -631,6 +695,11 @@ begin
       Open;
       Load(LJob, False);
     end
+    else if LAction = 'clear' then
+    begin
+      Restore(nil);
+      FChanged;
+    end
     else if LAction = 'edit' then
     begin
       Open;
@@ -688,6 +757,13 @@ begin
       LSound['sustain_percent'] := Number('sustain', 0, 100);
       FDraft['notes'] := TJSHTMLTextAreaElement(El('notes')).value;
       LCells := TJSArray(FDraft['pattern']);
+      if (StudioNumber(FDraft, 'part') >= 0) and (LCells.length > 0) and
+        ((TJSHTMLSelectElement(El('kind')).value = 'note') or
+        (TJSHTMLSelectElement(El('kind')).value = 'hold')) then
+      begin
+        Number('note', 0, 127);
+        Number('velocity', 1, 127);
+      end;
       SetLength(LPattern, LCells.length);
       for I := 0 to LCells.length - 1 do
       begin
@@ -709,6 +785,8 @@ begin
       FValue := CopyObject(FDraft);
       DrawSummary;
       Finish;
+      if (FOriginDialog <> nil) and (FOriginDialog <> FHostDialog) and
+        FOriginDialog.hasAttribute('open') then TGuideDialog(FOriginDialog).close;
       FChanged;
     end
     else

@@ -28,18 +28,21 @@ unit pythian.studio.laboratory;
 
 interface
 
-uses JS, Web, SysUtils, pythian.studio.sources, pythian.studio.musical.controls;
+uses JS, Web, SysUtils, pythian.studio.sources, pythian.studio.musical.controls,
+  pythian.studio.material;
 
 type
   TStudioExperimentEvent = procedure(AProject: TJSObject) of object;
-  { Big Boss: optional authored draft/form only. Generation is handed to the
+  { Big Boss: optional musical draft/form only. Generation is handed to the
     ordinary Studio job controller; no second worker, player or polling loop. }
   TStudioLaboratory = class
   private
     FFetch: TStudioFetch;
     FSavedEvent, FGenerateEvent, FOpenedEvent: TStudioExperimentEvent;
     FDialog, FHelp, FStatus, FName, FSavedChoice, FGenerate: TJSElement;
+    FOrigin: TJSElement;
     FForm: TStudioMusicalControls;
+    FMaterial: TStudioMaterial;
     FDefaults, FSaved, FPending: TJSObject;
     FProjects: TJSArray;
     FScope, FId, FMessage: String;
@@ -55,6 +58,7 @@ type
     procedure DrawSavedChoices;
     procedure Draw;
     procedure NewExperiment(const ACopy: Boolean);
+    procedure MaterialChanged;
     procedure SelectSaved; async;
     procedure Generate; async;
   public
@@ -109,7 +113,8 @@ begin
   Button(LHeader, 'lab-help', '?');
   LButton.setAttribute('aria-label', 'How this works');
   Button(LHeader, 'lab-close', 'Done');
-  Add(FDialog, 'p', 'Try authored music. No recordings or labels required.').className := 'hint';
+  FOrigin := Add(FDialog, 'p', '');
+  FOrigin.className := 'hint';
   LRow := Add(FDialog, 'div', ''); LRow.className := 'lab-saved';
   FSavedChoice := Add(Add(LRow, 'label', 'Saved experiments'), 'select', '');
   FSavedChoice.id := 'lab-saved'; FSavedChoice.addEventListener('change', @SavedChoice);
@@ -121,6 +126,7 @@ begin
   FDefaults := FForm.ReadConfig;
   FForm.Root.addEventListener('input', @Edited);
   FForm.Root.addEventListener('change', @Edited);
+  FMaterial := TStudioMaterial.Create(FForm.ContextPanel, AFetch, @MaterialChanged);
   LRow := Add(FDialog, 'footer', ''); LRow.className := 'lab-footer';
   FStatus := Add(LRow, 'p', ''); FStatus.id := 'lab-status'; FStatus.className := 'hint';
   FStatus.setAttribute('role', 'status');
@@ -136,7 +142,8 @@ begin
   Add(FHelp, 'p', 'Music sets tempo, key and length. Parts changes note ranges, activity, note strength, note length and mix. Feel fills editable preferences. Structure arranges sections and repeats.');
   Add(FHelp, 'p', 'In Structure, choose an earlier section and the parts to keep. Other parts can vary. A repeat takes its source length; moving its source after it is invalid. Conflicting musical choices fail visibly.');
   Add(FHelp, 'p', 'Section energy makes new instrument attacks softer or stronger. 50 is neutral. Held notes keep ringing; a repeated part keeps its notes and rhythm while its new attacks use this section’s energy.');
-  Add(FHelp, 'p', 'The starter supplies the musical vocabulary. WFC chooses events; Pythian instruments synthesize bass, harmony, lead, kick, snare and hat. This is authored material, not learning from your collection.');
+  Add(FHelp, 'p', 'Without recording ideas, the starter supplies authored musical examples. With recording ideas, your selected notes drive one part with authored accompaniment. WFC chooses events and Pythian instruments synthesize all six parts.');
+  Add(FHelp, 'p', 'Analyze a passage or imported recording, then choose Try these suggestions. Edit tempo, key, pitch cells and sound, or skip them. Use in experiment saves the choices; Generate experiment is the separate action that makes music. These proposals are Experimental and do not separate a mix into instruments.');
   Add(FHelp, 'p', 'Follow the starter fixes chords and rhythm. Let WFC vary releases those choices; preferences cannot override a hard pitch limit. A conflict means the requested choices do not fit.');
   Add(FHelp, 'p', 'Settings save automatically. Only Generate experiment starts music. Listen in the normal Generate step, then return here to change a setting. Saving feedback never changes the model.');
   NewExperiment(False);
@@ -147,6 +154,7 @@ begin
   window.clearTimeout(FTimer);
   Remember;
   FDisposed := True;
+  FMaterial.Free;
   FForm.Free;
   if FDialog.parentNode <> nil then FDialog.parentNode.removeChild(FDialog);
   if FHelp.parentNode <> nil then FHelp.parentNode.removeChild(FHelp);
@@ -166,6 +174,7 @@ begin
   LState['id'] := FId; LState['revision'] := FRevision;
   LState['name'] := TJSHTMLInputElement(FName).value;
   LState['draft'] := FForm.ReadDraft; LState['saved'] := FSaved;
+  LState['material'] := FMaterial.Value;
   LState['pending'] := FPending; LState['dirty'] := FDirty;
   LState['changes'] := FChanges; LState['pending_changes'] := FPendingChanges;
   try
@@ -190,6 +199,7 @@ begin
     FRevision := Trunc(StudioNumber(LState, 'revision'));
     TJSHTMLInputElement(FName).value := StudioText(LState, 'name');
     FForm.RestoreDraft(ObjectValue(LState['draft']));
+    FMaterial.Restore(ObjectValue(LState['material']));
     FSaved := ObjectValue(LState['saved']); FPending := ObjectValue(LState['pending']);
     FDirty := isBoolean(LState['dirty']) and Boolean(LState['dirty']);
     FChanges := Trunc(StudioNumber(LState, 'changes'));
@@ -213,6 +223,7 @@ begin
   begin
     TJSHTMLInputElement(FName).value := 'My experiment';
     FForm.RestoreConfig(FDefaults);
+    FMaterial.Restore(nil);
   end;
   Remember;
   Draw;
@@ -244,8 +255,8 @@ begin
     for I := 0 to FProjects.length - 1 do
     begin
       LRow := ObjectValue(FProjects[I]);
-      if (LRow = nil) or not isBoolean(LRow['authored_experiment']) or
-        not Boolean(LRow['authored_experiment']) then Continue;
+      if (LRow = nil) or not isBoolean(LRow['musical_experiment']) or
+        not Boolean(LRow['musical_experiment']) then Continue;
       AddChoice(LRow);
     end;
   if not LFound and (FSaved <> nil) then AddChoice(FSaved);
@@ -257,9 +268,10 @@ procedure TStudioLaboratory.OpenProject(AProject: TJSObject);
 begin
   if FSaving then raise Exception.Create('Wait for the current experiment to save.');
   if ObjectValue(AProject['instrumental']) = nil then
-    raise Exception.Create('This saved item is not an authored experiment.');
+    raise Exception.Create('This saved item is not a musical experiment.');
   window.clearTimeout(FTimer);
   FForm.RestoreConfig(ObjectValue(AProject['instrumental']));
+  FMaterial.Restore(ObjectValue(AProject['musical_material']));
   FId := StudioText(AProject, 'project_id');
   FRevision := Trunc(StudioNumber(AProject, 'revision'));
   TJSHTMLInputElement(FName).value := StudioText(AProject, 'name');
@@ -275,10 +287,33 @@ end;
 function TStudioLaboratory.Edited(AEvent: TEventListenerEvent): Boolean;
 begin
   Result := False;
+  try
+    FMaterial.UpdateContext(FForm.ReadConfig);
+  except
+    { Big Boss: retain invalid partial form input; Draw explains it and Save
+      validates before publication. Do not rewrite recording choices from it. }
+  end;
   Inc(FChanges); FDirty := True;
   FMessage := '';
   Remember;
   Draw;
+  window.clearTimeout(FTimer);
+  FTimer := window.setTimeout(procedure begin Save end, 500);
+end;
+
+procedure TStudioLaboratory.MaterialChanged;
+var
+  LMaterial: TJSObject;
+begin
+  LMaterial := FMaterial.Value;
+  if LMaterial <> nil then
+    FForm.RestoreContext(LMaterial);
+  Inc(FChanges);
+  FDirty := True;
+  FMessage := '';
+  Remember;
+  Draw;
+  if not FDialog.hasAttribute('open') then TStudioDialog(FDialog).showModal;
   window.clearTimeout(FTimer);
   FTimer := window.setTimeout(procedure begin Save end, 500);
 end;
@@ -288,6 +323,10 @@ var LValid: Boolean;
 begin
   if FDisposed then Exit;
   FForm.SetEnabled(not FLoading);
+  FMaterial.SetEnabled(not FLoading);
+  FOrigin.textContent := 'Authored music · recordings are optional.';
+  if FMaterial.Value <> nil then
+    FOrigin.textContent := 'Experimental recording ideas or edited notes, with authored accompaniment. A mix is not separated into instruments.';
   TJSHTMLInputElement(FName).disabled := FLoading;
   TJSHTMLSelectElement(FSavedChoice).disabled := FLoading or FSaving;
   LValid := False;
@@ -322,7 +361,7 @@ begin
 end;
 
 function TStudioLaboratory.Save: Boolean; async;
-var LSaved, LWrite, LConfig: TJSObject; LVersion: Integer; LCompleted: Boolean; LFailure: String;
+var LSaved, LWrite, LConfig, LMaterial: TJSObject; LVersion: Integer; LCompleted: Boolean; LFailure: String;
 begin
   Result := False;
   if FDisposed or FSaving or FLoading or (FScope = '') then Exit;
@@ -341,6 +380,8 @@ begin
       LWrite['name'] := Trim(TJSHTMLInputElement(FName).value);
       LWrite['style_intent'] := ''; LWrite['learning_mode'] := 'instrumental';
       LWrite['sources'] := TJSArray.new; LWrite['instrumental'] := LConfig;
+      LMaterial := FMaterial.Value;
+      if LMaterial <> nil then LWrite['musical_material'] := LMaterial;
       FPending := LWrite; FPendingChanges := FChanges;
     end;
     FSaving := True; Remember; Draw;
@@ -348,7 +389,8 @@ begin
     LSaved := await(TJSObject, Json('/api/studio/project', 'POST', TJSJSON.stringify(FPending)));
     if FDisposed then Exit;
     if (StudioText(LSaved, 'project_id') <> FId) or
-      not SameStudioJSON(LSaved['instrumental'], FPending['instrumental']) then
+      not SameStudioJSON(LSaved['instrumental'], FPending['instrumental']) or
+      not SameStudioJSON(LSaved['musical_material'], FPending['musical_material']) then
       raise Exception.Create('Saved experiment differs. Your requested settings are kept.');
     FRevision := Trunc(StudioNumber(LSaved, 'revision'));
     FSaved := LSaved; FPending := nil;

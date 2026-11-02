@@ -112,7 +112,7 @@ available across the three steps. Returning from background reconnects to the
 same job. Stop intent is retained when a submitted request loses its response;
 reconnecting does not silently submit that request again.
 
-**More music controls · optional** explains and opens authored musical experiments.
+**More music controls · optional** explains and opens musical experiments.
 It is not needed for ordinary Library → Selection → Generate.
 
 Choose **Track length** in seconds, minutes or hours, then press **Generate music**.
@@ -171,10 +171,24 @@ part Before/After; collapsing playback tools pauses their audio.
 
 ## Optional: Musical laboratory
 
-Press **Lab** in the header to try authored music without recordings. The main
+In Generate, open **More music controls · optional**, then **Open musical
+experiments** to try authored music or edited recording ideas. The main
 Library → Selection → Generate flow remains the place to learn from your music.
-The laboratory uses an authored symbolic starter, actual WFC decisions and the
-same native six-part synthesis, progress, Stop and playback as ordinary jobs.
+The laboratory uses authored examples, optionally guided by your recording
+ideas, with actual WFC decisions and the same native six-part synthesis,
+progress, Stop and playback as ordinary jobs.
+
+Analyze a recording in Choose clip, or an imported/captured input under
+Earlier inputs & analysis, then press **Try these suggestions**. The optional
+editor has Tempo & key, Pitch & part, Sound and Source tabs. Choose which part
+uses a pitch line, correct notes/channel/context, bypass suggestions or enter
+your own motif. **Use in experiment** saves the choices into the experiment;
+it starts no learning or generation. Music-tab tempo/key edits retain their
+actual correction origin. Clear recording ideas returns to authored input.
+Only **Generate experiment** starts synthesis. Save/reopen retains the source
+range, analysis identity, corrections and notes. These ideas are Experimental;
+mixed audio is not separated into individual instruments. Ordinary playlist
+generation continues without this optional step.
 
 **Music** sets key, tempo and length, from one to32 four-beat bars. **Parts**
 sets each part's sound or mix, plus pitched note ranges, activity, strength and
@@ -200,7 +214,8 @@ parts. **Back to previous version** recovers it after a conflict or Stop. Closin
 the page leaves native work running; returning reconnects to that same run.
 **Experiment settings** returns to the form, and **Back to playlist** returns to
 your recording-based choices. Contextual **?** help closes back to the form.
-These settings are authored/operator choices, never claimed as WAV learning.
+Settings retain their authored, recording-proposed and operator-corrected origins;
+successful synthesis does not establish transcription accuracy.
 
 ## Current experimental limits
 
