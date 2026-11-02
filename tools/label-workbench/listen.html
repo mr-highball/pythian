@@ -26,14 +26,14 @@ SOFTWARE.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pythian · Full-output listening</title>
+  <title>Pythian · Listening reviews</title>
   <link rel="stylesheet" href="listen.css">
   <link rel="stylesheet" href="workspace-nav.css">
 </head>
-<body>
+<body class="listening-page">
   <header>
-    <div><p class="eyebrow">PYTHIAN / YOUR REVIEW QUEUE</p><h1>Listening reviews</h1>
-      <p>Listen to a prepared experiment. Your answer guides the next core improvement.</p></div>
+    <div><h1>Listening reviews</h1></div>
+    <button type="button" class="guide-context" data-guide-topic="listening-review">Help</button>
   </header>
   <div id="workspace-navigation"></div>
   <div id="workspace-next-action"></div>
@@ -43,12 +43,8 @@ SOFTWARE.
   </div>
   <button id="retry" type="button" hidden>Retry connection</button>
   <main id="workspace" hidden>
-    <section class="panel queue-overview" aria-labelledby="queue-title">
-      <p class="eyebrow">LISTENING REVIEWS</p>
-      <h2 id="queue-title" tabindex="-1">Checking your listening reviews…</h2>
-      <button type="button" class="guide-context" data-guide-topic="listening-review">How to review a result</button>
-      <p id="progress" class="progress" role="status">Loading queue…</p>
-        <p class="muted">Each experiment asks one listening question. No setup or labeling is needed.</p>
+    <section class="review-toolbar" aria-label="Your review queue">
+      <button id="open-review-queue" type="button" aria-haspopup="dialog" aria-controls="review-queue-dialog">Choose review</button>
     </section>
     <section class="panel work">
       <p id="empty">No listening review is selected.</p>
@@ -56,8 +52,10 @@ SOFTWARE.
         <p id="task" class="eyebrow"></p>
         <h2 id="packet-title" tabindex="-1"></h2>
         <p id="question" class="packet-question"></p>
-        <div id="experiment-brief" class="experiment-brief" hidden></div>
-        <details class="request-details"><summary>Request details</summary><p id="identity" class="muted"></p></details>
+        <details id="experiment-brief" class="experiment-brief" hidden>
+          <summary>What changed?</summary>
+          <div id="experiment-context"></div>
+        </details>
         <div id="assets" class="assets"></div>
         <div id="ranges" class="ranges"></div>
         <p id="media-gate" class="muted" role="status" aria-live="polite">Play each WAV before answering.</p>
@@ -66,27 +64,31 @@ SOFTWARE.
           <div id="choices" class="dimensions"></div>
           <div id="scores" class="dimensions"></div>
           <details id="note-details"><summary>Optional note</summary>
-          <p class="muted">Pause at a moment you want to comment on, choose the recording, then add your note.</p>
+          <p class="muted">Pause at the moment you mean, then add a note.</p>
           <div class="comment-entry"><select id="comment-asset" aria-label="Recording to comment on"></select>
             <input id="comment-text" type="text" maxlength="512" placeholder="What happened at this moment?">
-            <button id="add-comment" type="button">Add at playhead</button></div>
+            <button id="add-comment" type="button">Add note here</button></div>
           <div id="comments" class="comments"></div>
           </details>
           <div class="actions"><button id="save" type="button" class="primary">Save &amp; next</button>
             <button id="reset" type="button">Reload saved answer</button></div>
           <p id="feedback" role="status" aria-live="polite"></p>
         </section>
+        <details class="request-details"><summary>Technical details</summary><p id="identity" class="muted"></p></details>
       </div>
     </section>
-    <aside class="panel queue-panel">
-      <div class="queue-head"><h2>Choose a review</h2><button id="reload" type="button">Refresh</button></div>
+  </main>
+  <dialog id="review-queue-dialog" class="review-queue-dialog" aria-labelledby="queue-title">
+      <div class="queue-head"><h2 id="queue-title" tabindex="-1">Your reviews</h2><button id="close-review-queue" type="button">Close</button></div>
+      <p id="progress" class="progress" role="status">Loading queue…</p>
+      <p id="queue-status" class="muted" role="status"></p>
+      <div class="queue-head"><p>Choose one question to review.</p><button id="reload" type="button">Refresh</button></div>
       <div id="pending" class="queue"></div>
       <details id="completed-group" class="completed-group">
         <summary>Completed reviews</summary>
         <div id="completed" class="queue"></div>
       </details>
-    </aside>
-  </main>
+  </dialog>
   <script src="listen.js"></script>
   <script>rtl.run();</script>
 </body>

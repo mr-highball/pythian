@@ -6,6 +6,28 @@ listening ranges, question, and finite answer dimensions; the operator hears the
 assets and explicitly saves a response. Playback and signal measurements never
 create an answer.
 
+## Instrumental review controls
+
+The question and player lead the page. **Choose review** opens the pending and
+completed lists; refreshing that list keeps the current unsaved answer and notes.
+**Help** opens in place. **What changed?** explains the intended experiment.
+**Save & next** saves only feedback and advances; the URL keeps the current
+question so reloading does not silently choose a different one.
+
+For a completed instrumental performance, **Hear** selects the full mix or Bass,
+Harmony, Lead, Kick, Snare or Hat. Before/After keep the same part and position;
+press Play after switching. Original context retains its own recording clock.
+Notes display musical playback time while responses retain exact source frames.
+Older reviews without retained parts keep their ordinary audio player.
+
+`GET /api/listen-performance?request=ID&asset=ID` returns
+`pythian.listening.performance.v1`. A ready view binds the voting WAV to its
+completed job, request, model, plan, seed and actual graph, then exposes seven
+clock-matched part URLs through the existing instrumental-audio endpoint. A
+review without that exact binding reports unavailable instead of substituting
+unrelated music. Blind-comparison details remain hidden until submission.
+Reading this view and choosing a part never train, generate or save feedback.
+
 ## Prepare and publish
 
 Use the checked `pythian.label.catalog` executable for the target platform.

@@ -5,6 +5,40 @@
 
 ## Current focus: make the instrumental question/player immediate - 2026-11-02
 
+Current batch, Big Boss SOLO: exact-performance candidate is integrated and
+listening task In progress. Criterion/deliverable: show the question and real
+mix/part player before secondary queue navigation on desktop/390px; use queue/
+Help dialogs, readable time, retained Before/After clocks and explicit Save/Next.
+Close with actual interaction/reload/lineage, relevant native checks and matching
+complete delivery. Stop at that usable workflow or a distinct required gap.
+Final source07/browser08 passes actual1280px/390px layout and retained-part
+playback: both versions keep Bass at21.271284seconds, paused with no errors or
+loops. Help opens/closes at the same position. An externally appended question
+appears on queue refresh without replacing the unsaved answer/note; Save/Next
+updates the URL, reload retains that question and Completed reopens the exact
+unknown answer/note at canonical frame653093 (displayed0:27.212). All378 durable
+QA job JSON files remain unchanged. QA-only answers are not musical verdicts.
+The maintained listener bridge finds optional missing-part controls and absent
+legacy provenance; repaired both paths, retaining original failures. All29
+bridge checks pass. Idle unloaded audio now asks for Play instead of claiming
+loading. Actual Studio section Pause reports0:37.646; natural end retains its
+finished message. Native suite02 passes9,408,558 with zero unfreed blocks.
+All416 native inputs remain exact; final browser build passes. Owned tabs25–27
+close, viewport override resets and both QA04/05 services stop/handles collect.
+Only the user's original tab remains; no QA listener, worker or audio remains.
+Complete source CI and matching stable delivery remain before acceptance.
+The broader shared guide actually still teaches retired grain settings and dead
+targets: linked [two-unit guide follow-up](TODO/NS-6_current-studio-guide_01.md)
+before scope expands. It follows this review delivery, not a new prerequisite.
+Current scope47 tasks/39 DONE/eight open,166/210(79.05%),44 open effort; count0.
+No partial review or guide effort is accepted. Stable remains accepted CI565.
+
+Actual operator response studio_bb-instrumental-20261030-first_0 revision1 says
+instrumental_fit=yes. Concrete decision: continue real instrumental generation
+and deliberate retained-score experiments; do not return to full-mix grain
+reconstruction. It is not a style-quality/blend/form verdict. The separate
+returning-lead question remains available for actual operator judgment.
+
 Big Boss SOLO. [Complete CI fanout — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)
 accepts two units after complete
 [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216) at

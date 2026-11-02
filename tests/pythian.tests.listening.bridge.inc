@@ -209,6 +209,7 @@ begin
     document.body.setAttribute('data-test-result', 'PASS ' + IntToStr(BridgeChecks) + ' listening bridge checks');
   except
     on E: Exception do document.body.setAttribute('data-test-result', 'FAIL ' + E.Message);
-  else document.body.setAttribute('data-test-result', 'FAIL unhandled listener exception');
+  else document.body.setAttribute('data-test-result',
+    'FAIL listener JavaScript exception: ' + String(JSExceptValue));
   end;
 end;

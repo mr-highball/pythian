@@ -22,7 +22,12 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 166 / 208 effort units accepted (79.81%); seven open, thirty-nine current-goal DONE.**
+**Current snapshot: 166 / 210 effort units accepted (79.05%); eight open, thirty-nine current-goal DONE.**
+
+The [current Studio guide](TODO/NS-6_current-studio-guide_01.md) adds two open
+units after actual Help review finds retired grain-setting instructions and
+removed targets. Finish the narrow listening controls first, then align the
+broader guide with the current workflow. No partial/planning effort is accepted.
 
 The two-unit [CI fanout prerequisite — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)
 closes after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216):
@@ -178,8 +183,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 8 | 66 | 66 / 74 |
-| **Total** | **46 current-goal tasks** | **42** | **166** | **79.81%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 10 | 66 | 66 / 76 |
+| **Total** | **47 current-goal tasks** | **44** | **166** | **79.05%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

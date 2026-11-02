@@ -1598,6 +1598,12 @@ begin
       LReport := ReadReviewQueue(ACatalogRoot);
     end
     else if (ARequest.Method = 'GET') and
+      (ARequest.Path = '/api/listen-performance') then
+    begin
+      LReport := ReadListeningPerformance(ACatalogRoot,
+        QueryValue(ARequest.Query, 'request'), QueryValue(ARequest.Query, 'asset'));
+    end
+    else if (ARequest.Method = 'GET') and
       (ARequest.Path = '/api/listen-references') then
     begin
       LReport := ReadListeningSourceReferences(ACatalogRoot,

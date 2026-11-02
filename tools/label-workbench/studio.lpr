@@ -108,6 +108,7 @@ type
     procedure HearSection(const AWholeTrack: Boolean); async;
     procedure ChangeSection;
     function SectionPlayback(AEvent: TEventListenerEvent): Boolean;
+    function SectionTransport(AEvent: TEventListenerEvent): Boolean;
     function ResultDetails(AEvent: TEventListenerEvent): Boolean;
     procedure OpenPreviousVersion; async;
     procedure OpenSavedGeneration(const AJobId: String); async;
@@ -1147,6 +1148,21 @@ begin
     FSectionEnd := 0;
     El('result-section-status').textContent := 'Playing from the position you chose.';
   end;
+end;
+
+function TStudio.SectionTransport(AEvent: TEventListenerEvent): Boolean;
+var
+  LPlayer: TJSHTMLAudioElement;
+begin
+  Result := False;
+  LPlayer := TJSHTMLAudioElement(El('generated-audio'));
+  if AEvent._type = 'pause' then
+  begin
+    if Pos('Playing ', El('result-section-status').textContent) = 1 then
+      El('result-section-status').textContent := 'Paused at ' + StudioTime(LPlayer.currentTime) + '.';
+  end
+  else if FSectionEnd > 0 then
+    El('result-section-status').textContent := 'Playing this section.';
 end;
 
 procedure TStudio.ChangeSection;
@@ -2517,6 +2533,8 @@ begin
   El('generation-original').addEventListener('toggle', @ResultDetails);
   El('result-section').addEventListener('change', @Edit);
   El('generated-audio').addEventListener('timeupdate', @SectionPlayback);
+  El('generated-audio').addEventListener('pause', @SectionTransport);
+  El('generated-audio').addEventListener('playing', @SectionTransport);
   El('generated-audio').addEventListener('seeking', @SectionPlayback);
   El('learning-label-choice').addEventListener('change', @Edit);
   El('source-reconnect').addEventListener('click', @Click);

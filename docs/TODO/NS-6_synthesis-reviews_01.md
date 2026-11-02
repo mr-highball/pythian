@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 5/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -27,6 +27,41 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
   and matching delivery close the serial-timeout prerequisite
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: source07/browser08 passes actual1280px/390px consumers.
+  Queue refresh keeps an unsaved uncertainty answer and timestamp note while a
+  separately published question arrives. Save/Next changes the URL; reload and
+  Completed recover the exact request/answer/note. All378 durable QA job JSON
+  files stay unchanged. Bass stays at21.271284seconds across both versions;
+  other five stems retain their exact hashes. Help returns in place and section
+  Pause/end announcements follow the actual transport. No looping/errors remain.
+  Native suite02 passes9,408,558 with a clean heap; all29 maintained listener
+  bridge checks pass. That bridge exposed missing optional part controls and
+  legacy provenance, both repaired without weakening it; preserve failure logs.
+  Idle audio asks for Play instead of claiming loading. E/runs/synthesis-review-
+  qa04/05 holds screenshots, exact response and cleanup; source07 binds all416
+  native inputs to the checked build. Full source CI/deployment still pending.
+- Actual operator response studio_bb-instrumental-20261030-first_0 revision1
+  has instrumental_fit=yes. Decision: develop real instrumental output through
+  deliberate musical changes while retaining useful parts. No more reconstruction
+  variants are selected. This answer does not establish learned style quality,
+  blend usefulness or form; the returning-lead question retains its own judgment.
+
+- 2026-11-02, Big Boss: actual Help review finds stale broad Studio lessons
+  describing retired grain controls and removed targets. Linked the separate
+  [current-guide task](NS-6_current-studio-guide_01.md) before expanding scope.
+  It follows this task; it does not block the current experiment. This batch
+  repairs only its own listening lesson/target and contextual controls. Count0.
+
+- 2026-11-02, Big Boss: resumed after actual CI/delivery closure, counter0.
+  Criterion: a question and real mix/part player visible before secondary queue
+  navigation on desktop/390px, with contextual help/queue and ordinary timestamp
+  wording. Deliver the existing exact-performance candidate through that view;
+  close with actual playback/selection, note Save/Next/reload, retained lineage,
+  complete changed native consumer/source delivery and a deliberate question.
+  Stop at this usable workflow or a distinct required gap. No automatic training,
+  new comparison framework or new task/effort. Verified six candidate files are
+  integrated against their exact base; primary musical algorithms are unchanged.
 
 - 2026-11-02, Big Boss: E/tests/synthesis-review-source02 stages a read-only
   exact performance/mix/part binding and listening controls without integrating

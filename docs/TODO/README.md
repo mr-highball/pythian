@@ -3,7 +3,12 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 208 total effort units · 39 current-goal DONE · 166 / 208 accepted (79.81%).**
+**8 open tasks · 210 total effort units · 39 current-goal DONE · 166 / 210 accepted (79.05%).**
+
+[Current Studio guide](NS-6_current-studio-guide_01.md) adds two open units:
+actual review found lessons for retired grain settings and removed targets.
+The narrow listening target is repaired in its existing task; broader current-
+workflow instruction follows that delivery. No planning or partial credit.
 
 [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) closes two units
 after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216),
@@ -200,6 +205,7 @@ continuity experiments are selected.
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Exact mix/parts/clock/Save candidate passes; finish concise desktop/phone layout and complete delivery |
+| [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Depends on listening controls; retire stale grain/project lessons without adding mandatory setup |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
@@ -213,9 +219,9 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all46 current-goal tasks (7 open, thirty-nine DONE),
-totaling208 units:42 open and166 accepted. Subtotals:
-NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 74. The NS-1 task repairs
+The two tables together are all47 current-goal tasks (8 open, thirty-nine DONE),
+totaling210 units:44 open and166 accepted. Subtotals:
+NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 76. The NS-1 task repairs
 an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

@@ -27,7 +27,8 @@ program PythianFullOutputListener;
 {$H+}
 {$modeswitch externalclass}
 
-uses JS, Web, SysUtils, pythian.workspace.navigation, pythian.listening.references;
+uses JS, Web, SysUtils, Math, pythian.workspace.navigation,
+  pythian.listening.references, pythian.studio.sources;
 
 type
   TListenerWindow = class external name 'Window' (TJSWindow)
@@ -59,6 +60,10 @@ type
     FAudioPlayers: TJSArray;
     FAudioFailures: TJSArray;
     FAudioReady: TJSArray;
+    FPerformances: TJSArray;
+    FPendingMediaTimes: TJSArray;
+    FPerformanceEpoch: Integer;
+    FRefreshingQueue: Boolean;
     FReferences: array of TListeningReference;
     FSelectedId: String;
     FSelectedPending: Boolean;
@@ -89,6 +94,8 @@ type
       const AText, AValue: String);
     procedure DrawQueue;
     procedure DrawPacket;
+    procedure LoadPerformance(const AIndex, AEpoch: Integer;
+      const ARequestId, AAssetId, ARequestHash: String); async;
     procedure DrawComments;
     procedure ApplyQueue(const AData: TJSObject;
       const APreferred: String; const AAdvance: Boolean);
@@ -99,16 +106,19 @@ type
     function FrameAllowed(const AAssetId: String; const AFrame: Int64): Boolean;
     procedure Connect; async;
     procedure LoadQueue(const APreferred: String = ''; const AAdvance: Boolean = False); async;
+    procedure RefreshQueue; async;
     procedure Save; async;
     function HandlePageShow(AEvent: TEventListenerEvent): Boolean;
     function HandleRetry(AEvent: TJSMouseEvent): Boolean;
     function HandleReload(AEvent: TJSMouseEvent): Boolean;
     function HandleSelect(AEvent: TJSMouseEvent): Boolean;
+    function HandleQueue(AEvent: TJSMouseEvent): Boolean;
     function HandleRange(AEvent: TJSMouseEvent): Boolean;
     function HandleAddComment(AEvent: TJSMouseEvent): Boolean;
     function HandleRemoveComment(AEvent: TJSMouseEvent): Boolean;
     function HandleSave(AEvent: TJSMouseEvent): Boolean;
     function HandleSampleTab(AEvent: TJSMouseEvent): Boolean;
+    function HandlePart(AEvent: TEventListenerEvent): Boolean;
     function HandlePageHide(AEvent: TEventListenerEvent): Boolean;
     function HandleReset(AEvent: TJSMouseEvent): Boolean;
     function HandleAudioMetadata(AEvent: TEventListenerEvent): Boolean;
@@ -169,13 +179,13 @@ begin
   case AValue of
     'style_fit': Result := 'Style match';
     'does_not_fit': Result := 'Does not fit';
-    'unknown': Result := 'I can’t tell';
+    'unknown': Result := 'Unsure';
     'continuity_preference': Result := 'Your pick';
     'listening_answer': Result := 'Your answer';
     'before': Result := 'Before';
     'after': Result := 'After';
-    'same': Result := 'About the same';
-    'neither': Result := 'Neither works';
+    'same': Result := 'Same';
+    'neither': Result := 'Neither';
   else
     Result := StringReplace(AValue, '_', ' ', [rfReplaceAll]);
     if Result <> '' then Result[1] := UpCase(Result[1]);
@@ -477,12 +487,24 @@ begin
       'muted');
   if FCompleted.length = 0 then
     AddText(El('completed'), 'p', 'No saved responses yet.', 'muted');
+  if FRequest <> nil then
+  begin
+    if not FSelectedPending then
+      El('task').textContent := 'COMPLETED LISTENING REVIEW'
+    else if (FSelectedIndex >= 0) and (FSelectedIndex < FPending.length) and
+      (Str(Obj(FPending[FSelectedIndex]), 'id') = FSelectedId) then
+      El('task').textContent := 'LISTENING REVIEW ' +
+        IntToStr(FSelectedIndex + 1) + ' OF ' + IntToStr(FPending.length)
+    else El('task').textContent := 'REVIEW IN PROGRESS';
+  end;
 end;
 
 procedure TListener.DrawComments;
 var
-  I: Integer;
-  LRow: TJSObject;
+  I, J: Integer;
+  LRow, LAsset: TJSObject;
+  LAssets: TJSArray;
+  LCaption, LTime: String;
   LWrap: TJSElement;
   LButton: TJSHTMLButtonElement;
 begin
@@ -490,10 +512,26 @@ begin
   for I := 0 to FComments.length - 1 do
   begin
     LRow := Obj(FComments[I]);
-    LWrap := AddText(El('comments'), 'div',
-      Str(LRow, 'asset_id') + ' @ frame ' +
-      IntToStr(Trunc(Num(LRow, 'frame'))) + ': ' + Str(LRow, 'text'),
-      'comment');
+    LCaption := Str(LRow, 'asset_id');
+    LTime := 'position unavailable';
+    LAssets := Arr(FRequest, 'assets');
+    for J := 0 to LAssets.length - 1 do
+    begin
+      LAsset := Obj(LAssets[J]);
+      if Str(LAsset, 'id') <> Str(LRow, 'asset_id') then Continue;
+      if Num(LAsset, 'sample_rate') > 0 then
+        LTime := StudioTime(Num(LRow, 'frame') / Num(LAsset, 'sample_rate'));
+      if isObject(FRequest['experiment']) then
+      begin
+        if LAssets.length = 1 then LCaption := 'Generated'
+        else if J = 0 then LCaption := 'Before'
+        else LCaption := 'After';
+      end
+      else LCaption := AssetName(LAsset);
+      Break;
+    end;
+    LWrap := AddText(El('comments'), 'div', '', 'comment');
+    AddText(LWrap, 'span', LCaption + ' · ' + LTime + ': ' + Str(LRow, 'text'), '');
     LButton := TJSHTMLButtonElement(document.createElement('button'));
     LButton.setAttribute('type', 'button');
     LButton.setAttribute('data-index', IntToStr(I));
@@ -523,11 +561,14 @@ var
   I, J, K: Integer;
 begin
   PauseAudioPlayers;
+  Inc(FPerformanceEpoch);
   for I := 0 to High(FReferences) do FReferences[I].Free;
   SetLength(FReferences, 0);
   FAudioPlayers := TJSArray.new;
   FAudioFailures := TJSArray.new;
   FAudioReady := TJSArray.new;
+  FPerformances := TJSArray.new;
+  FPendingMediaTimes := TJSArray.new;
   if FRequest = nil then
   begin
     El('packet').setAttribute('hidden', '');
@@ -536,11 +577,6 @@ begin
   end;
   El('empty').setAttribute('hidden', '');
   El('packet').removeAttribute('hidden');
-  if FSelectedPending then
-    El('task').textContent := 'LISTENING REVIEW ' +
-      IntToStr(FSelectedIndex + 1) + ' OF ' + IntToStr(FPending.length)
-  else
-    El('task').textContent := 'COMPLETED LISTENING REVIEW';
   El('packet-title').textContent := PacketTitle(FRequest);
   El('question').textContent := Str(FRequest, 'question');
   El('identity').textContent := 'Task ' + Str(FRequest, 'task_id') +
@@ -548,7 +584,8 @@ begin
     ' · revision ' + IntToStr(Trunc(Num(FRequest, 'revision'))) +
     ' · exact request ' + Copy(Str(FRequest, 'request_sha256'), 1, 12);
   Clear('assets'); Clear('ranges'); Clear('choices'); Clear('scores');
-  Clear('experiment-brief');
+  Clear('experiment-context');
+  El('experiment-brief').removeAttribute('open');
   LExperimental := isObject(FRequest['experiment']);
   LAssets := Arr(FRequest, 'assets');
   LHasSampleTabs := False;
@@ -557,13 +594,16 @@ begin
   begin
     LExperiment := Obj(FRequest['experiment']);
     El('experiment-brief').removeAttribute('hidden');
-    AddText(El('experiment-brief'), 'p', 'What changed: ' + Str(LExperiment, 'change'), '');
-    AddText(El('experiment-brief'), 'p', Str(LExperiment, 'decision'), 'muted');
+    AddText(El('experiment-context'), 'p', 'What changed: ' + Str(LExperiment, 'change'), '');
+    AddText(El('experiment-context'), 'p', Str(LExperiment, 'decision'), 'muted');
     LHasSampleTabs := isObject(LExperiment['reference']) or (LAssets.length > 1);
     if LHasSampleTabs then
     begin
       LTabs := AddText(El('assets'), 'nav', '', 'sample-switch');
       LTabs.setAttribute('aria-label', 'Compare recordings');
+      AddText(El('assets'), 'p',
+        'Switch versions at the same position. Press Play to listen.',
+        'muted');
     end;
     if isObject(LExperiment['reference']) then
     begin
@@ -662,22 +702,30 @@ begin
     LAudio.onplay := @HandleAudioPlay;
     LCard.appendChild(LAudio);
     LSelect := AddText(LCard, 'a', 'Download WAV', '');
+    LSelect.id := 'download-' + IntToStr(I);
     LSelect.setAttribute('href', LAudio.src);
     LSelect.setAttribute('download', LId + '.wav');
     FAudioPlayers.push(LAudio);
     FAudioFailures.push(False);
     FAudioReady.push(False);
+    FPerformances.push(nil);
+    FPendingMediaTimes.push(-1);
     LSelect := AddText(LCard, 'span', 'Tap Play to load this WAV.',
       'media-state');
     LSelect.id := 'media-state-' + IntToStr(I);
     LSelect.setAttribute('role', 'status');
     LSelect.setAttribute('aria-live', 'polite');
+    LCard.appendChild(LDetails);
     AddOption(TJSHTMLSelectElement(El('comment-asset')), LAssetName, LId);
+    if ((Str(LAsset, 'role') = 'generated') or (Str(LAsset, 'role') = 'edited')) and
+      isObject(LAsset['provenance']) then
+      LoadPerformance(I, FPerformanceEpoch, Str(FRequest, 'id'), LId,
+        Str(FRequest, 'request_sha256'));
     if (Str(LAsset, 'role') = 'generated') and
       (not LExperimental or not isObject(LExperiment['reference'])) and (I = 0) then
     begin
       LProvenance := Obj(LAsset['provenance']);
-      if Str(LProvenance, 'material_origin') <> '' then
+      if isObject(LProvenance) and (Str(LProvenance, 'material_origin') <> '') then
         AddText(LCard, 'p', 'Experimental', 'muted')
       else
       begin
@@ -794,9 +842,109 @@ begin
   UpdateReviewGate;
 end;
 
+procedure TListener.LoadPerformance(const AIndex, AEpoch: Integer;
+  const ARequestId, AAssetId, ARequestHash: String); async;
+var
+  LResponse: TJSResponse;
+  LData, LPart, LGraph: TJSObject;
+  LParts, LGraphs: TJSArray;
+  LCard, LLabel, LDetails: TJSElement;
+  LSelect: TJSHTMLSelectElement;
+  I: Integer;
+begin
+  try
+    LResponse := await(TJSResponse, FetchApi('/api/listen-performance?request=' +
+      encodeURIComponent(ARequestId) + '&asset=' + encodeURIComponent(AAssetId), 'GET', ''));
+    if (AEpoch <> FPerformanceEpoch) or (FRequest = nil) then Exit;
+    if LResponse.status <> 200 then Exit;
+    LData := await(TJSObject, LResponse.json());
+    if (AEpoch <> FPerformanceEpoch) or (FRequest = nil) then Exit;
+    if (Str(LData, 'format') <> 'pythian.listening.performance.v1') or
+      (Str(LData, 'status') <> 'ready') or
+      (Str(LData, 'request_id') <> ARequestId) or
+      (Str(LData, 'asset_id') <> AAssetId) or
+      (Str(LData, 'request_sha256') <> ARequestHash) then Exit;
+    LParts := Arr(LData, 'parts');
+    if (LParts = nil) or (LParts.length <> 7) then Exit;
+    FPerformances[AIndex] := LData;
+    LCard := El('sample-card-' + IntToStr(AIndex));
+    LLabel := AddText(LCard, 'label', 'Hear', '');
+    LSelect := TJSHTMLSelectElement(AddText(LLabel, 'select', '', ''));
+    LSelect.id := 'listen-part-' + IntToStr(AIndex);
+    LSelect.setAttribute('data-index', IntToStr(AIndex));
+    AddOption(LSelect, 'Full mix', '6');
+    for I := 0 to LParts.length - 1 do
+    begin
+      LPart := Obj(LParts[I]);
+      if Num(LPart, 'part_index') <> 6 then
+        AddOption(LSelect, Str(LPart, 'name') + ' only',
+          IntToStr(Trunc(Num(LPart, 'part_index'))));
+    end;
+    LSelect.value := '6';
+    LSelect.addEventListener('change', @HandlePart);
+    LCard.insertBefore(LLabel, El('audio-' + IntToStr(AIndex)));
+    AddText(LCard, 'small', 'Parts keep the same position. Your answer refers to this musical experiment.', 'muted');
+    LDetails := AddText(LCard, 'details', '', 'asset-technical');
+    AddText(LDetails, 'summary', 'How this music was made', '');
+    AddText(LDetails, 'p', 'Experimental · ' + Str(LData, 'material_origin'), '');
+    LGraphs := Arr(LData, 'graph');
+    for I := 0 to LGraphs.length - 1 do
+    begin
+      LGraph := Obj(LGraphs[I]);
+      AddText(LDetails, 'p', Str(LGraph, 'name') + ': up to ' +
+        IntToStr(Trunc(Num(LGraph, 'maximum_width'))) + ' × ' +
+        IntToStr(Trunc(Num(LGraph, 'height'))) + ' × ' +
+        IntToStr(Trunc(Num(LGraph, 'depth'))) + ' cells per graph window.', 'muted');
+    end;
+    AddText(LDetails, 'p', 'Seed ' + IntToStr(Trunc(Num(LData, 'seed'))) +
+      ' · plan ' + Copy(Str(LData, 'plan_sha256'), 1, 12) +
+      ' · model ' + Copy(Str(LData, 'model_sha256'), 1, 12), 'muted');
+  except
+    { Mix playback and saving remain usable if optional part details cannot load. }
+  end;
+end;
+
+function TListener.HandlePart(AEvent: TEventListenerEvent): Boolean;
+var
+  LSelect: TJSHTMLSelectElement;
+  LIndex, LPartIndex, I: Integer;
+  LParts: TJSArray;
+  LPart: TJSObject;
+  LPlayer: TJSHTMLAudioElement;
+begin
+  Result := False;
+  LSelect := TJSHTMLSelectElement(AEvent.currentTarget);
+  LIndex := StrToInt(LSelect.getAttribute('data-index'));
+  LPartIndex := StrToInt(LSelect.value);
+  LParts := Arr(Obj(FPerformances[LIndex]), 'parts');
+  for I := 0 to LParts.length - 1 do
+  begin
+    LPart := Obj(LParts[I]);
+    if Trunc(Num(LPart, 'part_index')) <> LPartIndex then Continue;
+    LPlayer := TJSHTMLAudioElement(El('audio-' + IntToStr(LIndex)));
+    FPendingMediaTimes[LIndex] := LPlayer.currentTime;
+    PauseAudioPlayers;
+    FAudioReady[LIndex] := False;
+    FAudioFailures[LIndex] := False;
+    LPlayer.src := Str(LPart, 'audio_url');
+    El('download-' + IntToStr(LIndex)).setAttribute('href', LPlayer.src);
+    El('download-' + IntToStr(LIndex)).setAttribute('download',
+      Str(Obj(Arr(FRequest, 'assets')[LIndex]), 'id') + '-part-' +
+      IntToStr(LPartIndex) + '.wav');
+    El('download-' + IntToStr(LIndex)).textContent := 'Download ' +
+      Str(LPart, 'name') + ' WAV';
+    LPlayer.load;
+    UpdateReviewGate;
+    El('media-state-' + IntToStr(LIndex)).textContent :=
+      Str(LPart, 'name') + ' selected. Press Play; your position is kept.';
+    Exit;
+  end;
+end;
+
 procedure TListener.SelectRow(const AId: String);
 var
   I: Integer;
+  LQuery: TJSURLSearchParams;
 begin
   FRequest := FindRow(FPending, AId);
   FSelectedPending := FRequest <> nil;
@@ -810,6 +958,10 @@ begin
   if FRequest <> nil then
   begin
     FSelectedId := AId;
+    LQuery := TJSURLSearchParams.new(window.location.search);
+    LQuery.set_('request', AId);
+    window.history.replaceState(nil, '', window.location.pathname + '?' +
+      LQuery.toString + window.location.hash);
     if Arr(FRequest, 'current_comments') <> nil then
       FComments := TJSArray(Cloned(Arr(FRequest, 'current_comments')));
   end;
@@ -1040,6 +1192,65 @@ begin
   end;
 end;
 
+procedure TListener.RefreshQueue; async;
+var
+  LResponse: TJSResponse;
+  LData: TJSObject;
+  LPending: TJSArray;
+  LCompleted: TJSArray;
+  LEpoch: Integer;
+  I: Integer;
+begin
+  if FRefreshingQueue or FSaving then Exit;
+  FRefreshingQueue := True;
+  LEpoch := FPerformanceEpoch;
+  TJSHTMLButtonElement(El('reload')).disabled := True;
+  El('queue-status').textContent := 'Refreshing reviews…';
+  try
+    try
+      LResponse := await(TJSResponse, FetchApi('/api/listen-queue', 'GET', ''));
+      if LResponse.status <> 200 then
+      begin
+        raise Exception.Create('Review list is unavailable.');
+      end;
+      LData := await(TJSObject, LResponse.json());
+      if LEpoch <> FPerformanceEpoch then
+      begin
+        Exit;
+      end;
+      LPending := Arr(LData, 'items');
+      LCompleted := Arr(LData, 'completed');
+      if (LPending = nil) or (LCompleted = nil) then
+      begin
+        raise Exception.Create('Review list could not be read.');
+      end;
+      { Big Boss: refresh only the queue. The current packet, radio choices and
+        staged notes keep their exact snapshot until an explicit selection/save. }
+      FPending := LPending;
+      FCompleted := LCompleted;
+      if FSelectedPending then
+      begin
+        for I := 0 to FPending.length - 1 do
+        begin
+          if Str(Obj(FPending[I]), 'id') = FSelectedId then
+          begin
+            FSelectedIndex := I;
+          end;
+        end;
+      end;
+      DrawQueue;
+      El('queue-status').textContent := '';
+    except
+      on E: Exception do
+        El('queue-status').textContent := 'Could not refresh. Try Refresh again.';
+    end;
+  finally
+    FRefreshingQueue := False;
+    TJSHTMLButtonElement(El('reload')).disabled := False;
+    if LEpoch <> FPerformanceEpoch then El('queue-status').textContent := '';
+  end;
+end;
+
 function TListener.HandlePageShow(AEvent: TEventListenerEvent): Boolean;
 begin
   Result := False;
@@ -1131,16 +1342,30 @@ function TListener.HandleRetry(AEvent: TJSMouseEvent): Boolean;
 begin Connect; Result := False; end;
 
 function TListener.HandleReload(AEvent: TJSMouseEvent): Boolean;
-begin if not FSaving then LoadQueue(FSelectedId); Result := False; end;
+begin RefreshQueue; Result := False; end;
 
 function TListener.HandleSelect(AEvent: TJSMouseEvent): Boolean;
 begin
   if not FSaving then
   begin
     SelectRow(TJSElement(AEvent.currentTarget).getAttribute('data-id'));
+    TStudioDialog(El('review-queue-dialog')).close;
     TJSHTMLElement(El('packet-title')).focus;
   end;
   Result := False;
+end;
+
+function TListener.HandleQueue(AEvent: TJSMouseEvent): Boolean;
+begin
+  Result := False;
+  if TJSElement(AEvent.currentTarget).id = 'open-review-queue' then
+  begin
+    PauseAudioPlayers;
+    RefreshQueue;
+    if not El('review-queue-dialog').hasAttribute('open') then
+      TStudioDialog(El('review-queue-dialog')).showModal;
+  end
+  else TStudioDialog(El('review-queue-dialog')).close;
 end;
 
 function TListener.HandleRange(AEvent: TJSMouseEvent): Boolean;
@@ -1196,7 +1421,7 @@ begin
       FComments.push(LRow);
       TJSHTMLInputElement(El('comment-text')).value := '';
       DrawComments;
-      Feedback('Timestamped comment staged. Save response to keep it.');
+  Feedback('Note added. Save & next to keep it.');
       Exit(False);
     end;
   Feedback('Choose a recording for your comment.', True);
@@ -1225,11 +1450,55 @@ function TListener.HandleSampleTab(AEvent: TJSMouseEvent): Boolean;
 var
   LNodes: TJSNodeList;
   LId: String;
-  I: Integer;
+  I, LIndex, LCurrentIndex: Integer;
+  LCurrent: TJSElement;
+  LPlayer: TJSHTMLAudioElement;
+  LPreviousPart, LNextPart: TJSElement;
+  LRole: String;
+  LTime: Double;
 begin
   Result := False;
+  LTime := -1;
+  LCurrent := El('assets').querySelector('.asset:not([hidden]) audio[id^="audio-"]');
+  LPreviousPart := nil;
+  if LCurrent <> nil then
+  begin
+    LCurrentIndex := StrToInt(Copy(LCurrent.id, 7, MaxInt));
+    LRole := Str(Obj(Arr(FRequest, 'assets')[LCurrentIndex]), 'role');
+    if (LRole = 'generated') or (LRole = 'edited') then
+    begin
+      LTime := TJSHTMLAudioElement(LCurrent).currentTime;
+      if Double(FPendingMediaTimes[LCurrentIndex]) >= 0 then
+        LTime := Double(FPendingMediaTimes[LCurrentIndex]);
+      LPreviousPart := document.getElementById('listen-part-' + IntToStr(LCurrentIndex));
+    end;
+  end;
   PauseAudioPlayers;
   LId := TJSElement(AEvent.currentTarget).getAttribute('data-panel');
+  if (LTime >= 0) and (Pos('sample-card-', LId) = 1) then
+  begin
+    LIndex := StrToInt(Copy(LId, 13, MaxInt));
+    LPlayer := TJSHTMLAudioElement(El('audio-' + IntToStr(LIndex)));
+    LRole := Str(Obj(Arr(FRequest, 'assets')[LIndex]), 'role');
+    LNextPart := document.getElementById('listen-part-' + IntToStr(LIndex));
+    if (LPreviousPart <> nil) and (LNextPart <> nil) and
+      (TJSHTMLSelectElement(LPreviousPart).value <> TJSHTMLSelectElement(LNextPart).value) then
+    begin
+      TJSHTMLSelectElement(LNextPart).value := TJSHTMLSelectElement(LPreviousPart).value;
+      LNextPart.dispatchEvent(TJSEvent.new('change'));
+    end;
+    if (LRole = 'generated') or (LRole = 'edited') then
+    begin
+      FPendingMediaTimes[LIndex] := LTime;
+      if LPlayer.readyState > 0 then
+      begin
+        LPlayer.currentTime := Min(LTime,
+          (Num(Obj(Arr(FRequest, 'assets')[LIndex]), 'frames') - 1) /
+          Num(Obj(Arr(FRequest, 'assets')[LIndex]), 'sample_rate'));
+        FPendingMediaTimes[LIndex] := -1;
+      end;
+    end;
+  end;
   LNodes := El('assets').querySelectorAll('.asset');
   for I := 0 to LNodes.length - 1 do
     if TJSElement(LNodes[I]).id = LId then TJSElement(LNodes[I]).removeAttribute('hidden')
@@ -1246,6 +1515,7 @@ var
   I: Integer;
 begin
   Result := False;
+  Inc(FPerformanceEpoch);
   PauseAudioPlayers;
   LNodes := document.querySelectorAll('audio');
   for I := 0 to LNodes.length - 1 do
@@ -1266,6 +1536,14 @@ begin
   LAudio := TJSHTMLAudioElement(AEvent.currentTarget);
   LIndex := CurrentAudioIndex(LAudio);
   if LIndex < 0 then Exit(False);
+  if (FPendingMediaTimes <> nil) and
+    (Double(FPendingMediaTimes[LIndex]) >= 0) then
+  begin
+    LAudio.currentTime := Min(Double(FPendingMediaTimes[LIndex]),
+      (Num(Obj(Arr(FRequest, 'assets')[LIndex]), 'frames') - 1) /
+      Num(Obj(Arr(FRequest, 'assets')[LIndex]), 'sample_rate'));
+    FPendingMediaTimes[LIndex] := -1;
+  end;
   if (LIndex >= 0) and (LIndex < FAudioFailures.length) then
   begin
     FAudioFailures[LIndex] := False;
@@ -1286,6 +1564,14 @@ var
 begin
   LAudio := TJSHTMLAudioElement(AEvent.currentTarget);
   if CurrentAudioIndex(LAudio) < 0 then Exit(False);
+  if LAudio.paused and (LAudio.preload = 'none') then
+  begin
+    El('media-state-' + Copy(LAudio.id, 7, MaxInt)).textContent :=
+      'Press Play to load this recording.';
+    El('media-state-' + Copy(LAudio.id, 7, MaxInt)).setAttribute(
+      'class', 'media-state');
+    Exit(False);
+  end;
   El('media-state-' + Copy(LAudio.id, 7, MaxInt)).textContent :=
     'Loading WAV audio…';
   El('media-state-' + Copy(LAudio.id, 7, MaxInt)).setAttribute(
@@ -1398,6 +1684,7 @@ procedure TListener.Run;
 var
   LRequested: JSValue;
 begin
+  LRequested := TJSURLSearchParams.new(window.location.search).get('request');
   FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'listening');
   FPending := TJSArray.new;
   FCompleted := TJSArray.new;
@@ -1406,10 +1693,11 @@ begin
   FAudioFailures := TJSArray.new;
   FAudioReady := TJSArray.new;
   FSelectedIndex := -1;
-  LRequested := TJSURLSearchParams.new(window.location.search).get('request');
   if isString(LRequested) then FSelectedId := String(LRequested);
   TJSHTMLButtonElement(El('retry')).onclick := @HandleRetry;
   TJSHTMLButtonElement(El('reload')).onclick := @HandleReload;
+  TJSHTMLButtonElement(El('open-review-queue')).onclick := @HandleQueue;
+  TJSHTMLButtonElement(El('close-review-queue')).onclick := @HandleQueue;
   TJSHTMLButtonElement(El('save')).onclick := @HandleSave;
   TJSHTMLButtonElement(El('reset')).onclick := @HandleReset;
   TJSHTMLButtonElement(El('add-comment')).onclick := @HandleAddComment;

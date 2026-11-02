@@ -156,8 +156,8 @@ const
     (Id: 'listening-review'; Title: 'Review a saved musical result';
      Action: 'Read the one listening question. For a prepared comparison, switch between Before and After; Original gives source context. Choose Before, After, Same, Neither or Unsure, then Save & next. A note is optional.';
      Expectation: 'Each prepared experiment explains what changed and which core decision your answer guides. No new recording, segmentation or generation setup is needed. Saving records your judgment for the next development step. It does not automatically train a preference model.';
-     DoneWhen: 'The review moves to Completed reviews and your saved response can be reopened.';
-     Page: 'listening'; Target: 'pending'; Prerequisite: 'Wait for the queue to connect. An empty queue means there are no assigned listening questions.'),
+     DoneWhen: 'Save moves the question to Completed reviews. Choose review opens that list so you can reopen your answer.';
+     Page: 'listening'; Target: 'packet'; Prerequisite: 'Choose a review if no question is open. An empty queue means there are no assigned listening questions.'),
     (Id: 'settings'; Title: 'Understand generation settings';
      Action: 'In Generate, open Settings for source weights and generation controls. A source weight changes a recording''s relative influence. Keep the seed to repeat a setup, or change it for a different take. Adjust one setting at a time.';
      Expectation: 'Sound examples to keep limits the types of short recorded pieces available. Neighboring pieces sets how much local sequence context the model considers. These controls do not specify instruments, notes, tempo or song sections.';

@@ -40,6 +40,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.studio.style.candidate,
   pythian.tools.studio.styles,
   pythian.tools.studio.blend,
+  pythian.tools.studio.references,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -692,6 +693,7 @@ begin
 end;
 
 procedure CheckStyleTailEstimates(const ACatalog, ALibrary: String); forward;
+procedure CheckReviewPerformance(const ACatalog, AJobId: String); forward;
 
 procedure CheckBlendedStyles(const ACatalog, ALibrary: String);
 var
@@ -1033,6 +1035,8 @@ begin
     'Changing only the teaching classification changes learned models and actual synthesized music');
   CheckBlendedStyles(ACatalog, ALibrary);
   CheckStyleTailEstimates(ACatalog, ALibrary);
+  CheckReviewPerformance(ACatalog, 'tail-blend-0');
+  CheckReviewPerformance(ACatalog, 'tail-blend-1');
 
   LPlaylist := TJSONObject(APlaylist.Clone);
   LReceipt := nil;
@@ -1338,6 +1342,114 @@ begin
     LState.Free;
     LWrite.Free;
     LParent.Free;
+  end;
+end;
+
+procedure CheckReviewPerformance(const ACatalog, AJobId: String);
+var
+  LJob, LOutput, LView, LPart, LDefinition, LPacket, LPublished,
+    LQueue, LBefore, LAfter, LOriginal, LVoting: TJSONObject;
+  LRequestId, LPreparedId, LPacketPath: String;
+  I: Integer;
+begin
+  LJob := ReadStudioJob(ACatalog, AJobId);
+  try
+    LOutput := LJob.Objects['results'].Arrays['outputs'].Objects[0];
+    LRequestId := LOutput.Strings['listening_request_id'];
+    LBefore := ReadListeningQueue(ACatalog);
+    try
+      LView := ReadListeningPerformance(ACatalog, LRequestId, 'audition');
+      try
+        Check((LView.Strings['status'] = 'ready') and
+          (LView.Strings['job_id'] = AJobId) and
+          (LView.Strings['source_request_sha256'] = LJob.Strings['request_sha256']) and
+          (LView.Strings['plan_sha256'] = LJob.Objects['results'].Strings['plan_sha256']),
+          'Review parts bind the exact actual saved-style performance');
+        Check(LView.Arrays['parts'].Count = 7, 'Review exposes mix and six actual retained parts');
+        for I := 0 to 6 do
+        begin
+          LPart := LView.Arrays['parts'].Objects[I];
+          Check((LPart.Integers['part_index'] = I) and
+            (LPart.Int64s['frame_count'] = LOutput.Int64s['frame_count']) and
+            (LPart.Integers['sample_rate'] = LOutput.Integers['sample_rate']) and
+            (LPart.Strings['audio_url'] = '/api/studio/instrumental-audio?job=' +
+              AJobId + '&part=' + IntToStr(I)), 'Every part keeps the exact reviewed mix clock and owner');
+        end;
+      finally
+        LView.Free;
+      end;
+      LAfter := ReadListeningQueue(ACatalog);
+      try
+        Check(LBefore.AsJSON = LAfter.AsJSON, 'Opening parts does not write feedback or alter the queue');
+      finally
+        LAfter.Free;
+      end;
+    finally
+      LBefore.Free;
+    end;
+    LDefinition := TJSONObject.Create;
+    LPreparedId := 'review-parts-' + AJobId;
+    try
+      { Ordinary playlist publications also carry Original context. Keep only
+        the generated voting WAV in the comparison; never weaken the factory. }
+      LQueue := ReadListeningQueue(ACatalog);
+      try
+        LOriginal := nil;
+        for I := 0 to LQueue.Arrays['items'].Count - 1 do
+          if LQueue.Arrays['items'].Objects[I].Strings['id'] = LRequestId then
+            LOriginal := LQueue.Arrays['items'].Objects[I];
+        Check(LOriginal <> nil, 'Actual saved-style listening request exists');
+        LVoting := TJSONObject.Create;
+        LPacket := TJSONObject.Create;
+        try
+          LPacket.Add('version', 1);
+          LPacket.Add('items', TJSONArray.Create([LVoting]));
+          LVoting.Add('id', 'parts-voting-' + AJobId);
+          LVoting.Add('task_id', 'NS-6_synthesis-reviews_01');
+          LVoting.Add('kind', 'single');
+          LVoting.Add('question', 'Synthetic generated-only voting fixture');
+          LVoting.Add('assets', TJSONArray.Create([LOriginal.Arrays['assets'].Objects[0].Clone]));
+          LVoting.Add('ranges', TJSONArray.Create([LOriginal.Arrays['ranges'].Objects[0].Clone]));
+          LVoting.Add('answer_spec', LOriginal.Objects['answer_spec'].Clone);
+          LPacketPath := StudioJobDirectory(ACatalog, AJobId) + PathDelim + 'parts-voting-fixture.json';
+          WriteStudioJSONNew(LPacketPath, LPacket);
+          LPublished := AppendListeningQueue(ACatalog, LPacketPath);
+          LPublished.Free;
+        finally
+          LPacket.Free;
+        end;
+      finally
+        LQueue.Free;
+      end;
+      LDefinition.Add('id', LPreparedId);
+      LDefinition.Add('task_id', 'NS-6_synthesis-reviews_01');
+      LDefinition.Add('comparison_id', 'parts-voting-' + AJobId);
+      LDefinition.Add('title', 'Synthetic review binding fixture');
+      LDefinition.Add('question', 'Do these instrumental parts fit together?');
+      LDefinition.Add('change', 'Read the existing performed style without generating or learning.');
+      LDefinition.Add('decision', 'Engineering fixture only; no operator judgment is inferred.');
+      LPacket := PrepareListeningExperiment(ACatalog, LDefinition);
+      try
+        LPacketPath := StudioJobDirectory(ACatalog, AJobId) + PathDelim + 'parts-review-fixture.json';
+        WriteStudioJSONNew(LPacketPath, LPacket);
+        LPublished := AppendListeningQueue(ACatalog, LPacketPath);
+        LPublished.Free;
+      finally
+        LPacket.Free;
+      end;
+      LView := ReadListeningPerformance(ACatalog, LPreparedId, 'audition');
+      try
+        Check((LView.Strings['status'] = 'ready') and
+          (LView.Strings['job_id'] = AJobId) and (LView.Arrays['parts'].Count = 7),
+          'Prepared one-question reviews reuse the same performance, not new audio');
+      finally
+        LView.Free;
+      end;
+    finally
+      LDefinition.Free;
+    end;
+  finally
+    LJob.Free;
   end;
 end;
 
