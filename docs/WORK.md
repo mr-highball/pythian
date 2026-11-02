@@ -3,7 +3,42 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current gate: complete source/delivery for truthful sound estimates - 2026-11-02
+## Current prerequisite: complete independent CI jobs - 2026-11-02
+
+Big Boss SOLO. CI563/run41411531132 at8b9cc74 is terminal cancelled, not a
+complete pass. Integration succeeds08:14:44–08:43:33 UTC(28m49s); extracted core
+124 owned units/138 content hashes succeeds; WFC checks are cut off08:44:22 at
+the shared30minute deadline. E/runs/style-tail-ci563 retains digest-checked
+native-fpc-logs, raw run logs and partial package evidence. Stable72148 remains
+the prior accepted delivery; do not run its prepared CI563 release wrapper.
+The sound-tail batch is nonclosing1, not accepted by partial CI.
+
+Linked [two-unit CI fanout](TODO/NS-6_ci-consumer-fanout_01.md) before scope
+expands. Criterion/deliverable: run unchanged complete integration and extracted
+packages in separate isolated jobs at one source, with30minutes per job. Close
+with both jobs successful, verified extracted ZIPs and matching fixed-slot
+delivery/preserved metadata. Stop at that gate or a distinct failure. Do not
+drop consumers, relax assertions/options or extend timeouts. Whole-workflow
+success remains the deployment condition. Scope46 tasks/38 DONE/eight open,
+164/208(78.85%),44 open effort; count1.
+
+The next review batch was staged on E without changing this checkout. Its
+criterion is one useful instrumental question with actual mix/part audition,
+same-position Before/After, optional notes and Save/Next. Native/browser
+candidate uses the existing completed performance and answer store; no new
+comparison framework or auto-training. Actual QA metadata and Bass playback
+pass; its authored48second six-part QA job completes. New native suite01
+correctly rejects a fixture that treated generated+Original as generated-only;
+heap is clean. Source02 repairs only that fixture by publishing the existing
+generated voting WAV separately before the prepared factory. Suite02 passes
+9,408,558 checks with zero unfreed blocks; handle73505 is terminal/collected.
+Source01/failure evidence and source02 remain under E/tests/
+synthesis-review-*. QA tab23 and fixed QA service under handle23502 remain owned;
+finish or clean them up before ending. Do not accept the review task or claim
+operator usefulness; the actual returning-lead question is still unanswered.
+Follow the CI prerequisite before more implementation. No generic WFC gap.
+
+## Earlier gate: complete source/delivery for truthful sound estimates - 2026-11-02
 
 Big Boss SOLO. Final E/tests/style-tail-source03 freezes671 inputs. All416 native
 inputs match the normal checked runtime01 built from source01; source02 repairs

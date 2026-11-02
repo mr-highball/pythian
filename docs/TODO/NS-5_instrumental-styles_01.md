@@ -22,6 +22,8 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Complete CI fanout](NS-6_ci-consumer-fanout_01.md) — CI563 passes integration
+  but expires during serial extracted-package checks; require the complete gate
 - [Saved-style job retry — DONE](DONE/NS-6_style-job-retry_01.md) — identical named/blend requests preserve their bound job/hash/event; native/browser/CI562/deployment pass
 - [Usable edited-style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) — actual edited input and complete corpus now blend/reblend with shared payloads; CI561 and checked deployment pass
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
@@ -32,6 +34,12 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: complete CI563 is cancelled at its30minute deadline:
+  integration passes28m49s and extracted core passes; WFC qualification is cut
+  short. Stable remains the previous accepted delivery. Linked the distinct
+  two-unit CI prerequisite before scope expands. The tail batch is nonclosing1;
+  tests and a partial pipeline do not accept the estimate criterion or parent.
 
 - 2026-11-02, Big Boss: estimate correction passes the actual ordinary native
   suite9,408,534 with zero unfreed blocks. Win32/Win64/actual JS each pass4,369,893

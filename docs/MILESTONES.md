@@ -22,7 +22,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 164 / 206 effort units accepted (79.61%); seven open, thirty-eight current-goal DONE.**
+**Current snapshot: 164 / 208 effort units accepted (78.85%); eight open, thirty-eight current-goal DONE.**
+
+The new two-unit [CI fanout prerequisite](TODO/NS-6_ci-consumer-fanout_01.md)
+addresses CI563's actual serial timeout. Complete integration passes28m49s and
+the extracted core passes, but WFC package verification is cancelled. Keep all
+checks and30minute job limits in independent jobs, and require whole-workflow
+success before deployment. No new effort is accepted; nonclosing count1.
 
 [Saved-style retry — DONE](TODO/DONE/NS-6_style-job-retry_01.md) closes one unit
 after native/browser/API retry, complete
@@ -30,7 +36,8 @@ after native/browser/API retry, complete
 consumers and matching fixed-slot deployment. Ordinary blend/save/reblend/reuse
 is now live; all23 jobs,3 clips and7,143 existing metadata hashes are preserved.
 The parent keeps its seven open units for its default-tail estimate presentation
-and actual operator usefulness. Consecutive nonclosing count remains0.
+and actual operator usefulness. That closure carried nonclosing count0; the
+current timeout above carries1.
 
 [Shared style ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md) and
 [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
@@ -169,8 +176,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 64 | 64 / 72 |
-| **Total** | **45 current-goal tasks** | **42** | **164** | **79.61%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 10 | 64 | 64 / 74 |
+| **Total** | **46 current-goal tasks** | **44** | **164** | **78.85%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

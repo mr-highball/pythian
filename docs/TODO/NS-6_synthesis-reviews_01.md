@@ -23,6 +23,8 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 **Blockers**
 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
+- [Complete CI fanout](NS-6_ci-consumer-fanout_01.md) — actual prerequisite to
+  publishing/deploying further review changes after CI563's serial timeout
 
 **Dev Notes:**
 
