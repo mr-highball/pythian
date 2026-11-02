@@ -47,7 +47,7 @@ type
       const ALabels, AValues: array of String): TJSElement;
     function El(const AId: String): TJSElement;
     function Number(const AId: String; AMin, AMax: Integer): Integer;
-    procedure Open;
+    procedure Open(AOrigin: TJSElement);
     procedure Finish;
     procedure Draw;
     procedure DrawCells;
@@ -329,10 +329,12 @@ begin
   if FValue <> nil then FClearButton.removeAttribute('hidden');
 end;
 
-procedure TStudioMaterial.Open;
+procedure TStudioMaterial.Open(AOrigin: TJSElement);
 begin
   FBusy := False;
-  FOrigin := document.activeElement;
+  { Big Boss: activation need not move keyboard focus, especially on touch.
+    The actual control owns the dialog handoff and the Cancel return target. }
+  FOrigin := AOrigin;
   FOriginDialog := nil;
   if FOrigin <> nil then FOriginDialog := FOrigin.closest('dialog');
   FScrollX := window.scrollX;
@@ -692,7 +694,7 @@ begin
     if LButton.hasAttribute('data-musical-job') then
     begin
       if TGuideDialog(FPanel).open then Exit;
-      Open;
+      Open(LButton);
       Load(LJob, False);
     end
     else if LAction = 'clear' then
@@ -702,7 +704,7 @@ begin
     end
     else if LAction = 'edit' then
     begin
-      Open;
+      Open(LButton);
       FDraft := CopyObject(FValue);
       { A saved bypass can retain edited cells. Only a fresh analysis proposal
         may be promoted to accepted without re-checking its pitch observation. }

@@ -71,6 +71,25 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-02, Big Boss: fresh Edge profile on E exposes a focus-dependent
+  source-dialog handoff missed by the earlier IAB pointer check. Open now uses
+  the actual activating control, preserving both Apply ownership and Cancel's
+  return target. Web09 compiles all four browser consumers. Its new-profile
+  analysis, immediate/invalid pitch edits, accepted sound and save pass; one
+  explicit generation completes after the browser closes. Reopening that exact
+  profile reconnects to the same job without resubmission and plays mix, Original
+  and Lead, then reloads saved source lineage. Cancel returns to the source with
+  focus and no project/generation write. All driver heaps and owned process-tree
+  cleanup pass. Preserve the failed old handoff and test-plan/encoding/transport
+  diagnostics under E/runs/recording-ideas-clean-profile01. Headless audio was
+  muted; this is not a physical phone, real microphone or musical verdict.
+- Complete CI569 succeeds at de3f185 with its final completion marker and all
+  three digest-verified artifacts; both packages'138/320 content hashes verify.
+  Reuse that qualification for unchanged native implementation/commands. The
+  remaining repair is a pas2js-only presentation unit with its own actual
+  consumers; retain separate native CI, compiled-native and frontend identities.
+  Matched deployment remains pending; no eight-unit acceptance yet.
+
 - 2026-11-02, Big Boss: current Studio again owns the primary recording-ideas
   editor in its optional experiment dialog. Capture/import and source analysis
   expose Try these suggestions; save snapshots bind material and instrumental

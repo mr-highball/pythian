@@ -5,6 +5,38 @@
 
 ## Current focus: recording ideas implemented; CI headroom prerequisite - 2026-11-02
 
+Fresh-profile reassessment,2026-11-02: the legacy Pascal CDP driver now supplies
+an actual new Edge profile on E and closes its exact owned process tree. After
+repairing two endpoint expectations and using ASCII escapes for Unicode plan
+strings, it passes analysis, immediate/invalid note editing, sound and save, then
+exposes a real focus-dependent handoff failure: synthetic activation does not
+necessarily focus the source button, leaving the source dialog under the lab.
+Prior IAB pointer activation passed; it did not cover this boundary. Preserve
+E/runs/recording-ideas-clean-profile01/pass04 evidence. The delivery batch cannot
+close: count1→2 triggers reassessment before more work; no task/effort acceptance.
+
+Reassessed bounded repair: same NS-3 correction consumer, no new capability or
+task split. Criterion is a correct source-dialog handoff independent of keyboard
+focus. Pass the actual activating control into the existing editor Open method;
+retain Cancel context and host-dialog ownership. Close with fresh-profile
+analysis/edit/save/reload, explicit six-part generation and Original/part playback,
+zero owned browser processes/audio, and matched delivery. Stop on a distinct
+required gap. Keep CI569 alive until authoritative terminal state; this UI fix
+does not demonstrate a native CI/library failure. Counter2 remains until a real
+criterion closes; the reassessment itself resets nothing.
+
+CI569 is now authoritatively successful: native125321864413 runs14:05:47–14:29:55
+UTC, packages125321864585 runs14:06:00–14:07:56. The final maintained-build marker
+is present; all three downloaded artifact digests and138/320 extracted package
+content hashes verify at sourcede3f185. This closes headroom AC1's actual complete
+gate, resetting consecutive nonclosing count2→0 without accepting any task effort.
+AC2/matched delivery still waits for the focus-independent browser handoff repair.
+The native implementation remains exactly c8443e0; the repair changes only the
+pas2js presentation unit. Reuse this full native qualification with explicitly
+separate frontend source/manifest and fresh actual browser consumers, as for the
+earlier current-guide delivery. Do not claim native CI ran the frontend or repeat
+unchanged native tests as a substitute for testing the actual handler.
+
 Big Boss SOLO. Sourcec8443e0 restores optional recording ideas in current Studio.
 Native choices59, actual generation110 and project128 pass, including Win32;
 actual pas2js pattern/observations/providers pass16/67/1439. Desktop/390px UI
