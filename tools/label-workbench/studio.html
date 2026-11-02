@@ -28,7 +28,7 @@ SOFTWARE.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101719">
   <title>Pythian · Studio</title>
-  <link rel="stylesheet" href="studio.css?v=styles-20261101">
+  <link rel="stylesheet" href="studio.css?v=reviews-20261102">
   <link rel="stylesheet" href="workspace-nav.css">
 </head>
 <body class="studio-page">
@@ -46,6 +46,7 @@ SOFTWARE.
     <button id="tab-selection" role="tab" aria-controls="step-selection" data-step="selection">2 <span>Selection</span> <b id="selection-count" class="badge">0</b></button>
     <button id="tab-generate" role="tab" aria-controls="step-generate" data-step="generate">3 <span>Generate</span></button>
   </nav>
+  <aside id="workspace-next-action" aria-label="Listening questions"></aside>
   <aside id="active-generation" class="active-generation" hidden aria-label="Active generation">
     <p id="active-generation-status" role="status" aria-live="polite"></p>
     <div class="row-actions"><button type="button" data-step="generate">View progress</button><button id="stop-active-generation" data-studio-action type="button">■ Stop generation</button></div>
@@ -95,8 +96,11 @@ SOFTWARE.
     <div id="generation-progress"></div>
     <button id="cancel-generation" data-studio-action type="button" hidden>Stop generation</button>
     <button id="reconnect-generation" data-studio-action type="button" hidden>Reconnect to this run</button>
+    <button id="retry-generation" data-studio-action type="button" hidden>Retry these settings</button>
+    <p id="retry-generation-note" class="hint" hidden>Uses this run’s saved music, seed and settings. Your newer playlist choices are kept for a separate Generate.</p>
     <section id="generation-result" class="generation-result" hidden aria-label="Your generated music">
       <h2 id="generation-title">Your new track</h2><p id="generation-revision-note" class="hint" role="status"></p>
+      <a id="result-review" class="button-link" hidden>Give feedback on this track →</a>
       <div class="library-actions"><button id="save-song" data-studio-action class="primary" type="button">＋ Save to playlist</button><a id="download-generated" class="button-link" download="pythian-track.wav">↓ Download WAV</a></div>
       <button id="save-style" data-studio-action type="button" hidden>Save style</button><p id="save-style-availability" class="hint"></p>
       <p class="hint">Audio is kept on this computer. Save to a playlist to name it and find it in Songs.</p>
@@ -229,6 +233,6 @@ SOFTWARE.
   <p id="note-choice-status" class="hint" role="status"></p>
   <button id="apply-notes" data-studio-action class="primary" type="button" disabled>Create new version</button>
 </dialog>
-<script src="studio.js?v=styles-20261101"></script><script>rtl.run();</script>
+<script src="studio.js?v=reviews-20261102"></script><script>rtl.run();</script>
 </body>
 </html>

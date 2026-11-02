@@ -28,13 +28,50 @@ unit pythian.studio.requests;
 
 interface
 
-uses JS, Web, SysUtils, Types;
+uses JS, Web, SysUtils, Types, pythian.tools.studio.schema;
 
 function AwaitStudioPromise(APromise: TJSPromise; ASeconds: Integer): JSValue; async;
 function ReadStudioJSONResponse(APromise: TJSPromise): TJSObject; async;
 function SameStudioJSON(const ALeft, ARight: JSValue): Boolean;
+function StudioRetryWrite(const AJob: TJSObject; const AJobId: String): TJSObject;
 
 implementation
+
+function StudioRetryWrite(const AJob: TJSObject; const AJobId: String): TJSObject;
+var
+  LRequest: TJSObject;
+  LFields: String;
+  LKey: String;
+begin
+  if (AJob = nil) or ((AJob['status'] <> 'failed') and (AJob['status'] <> 'cancelled')) or
+    not isObject(AJob['request']) or isArray(AJob['request']) or (AJob['request'] = nil) then
+  begin
+    raise Exception.Create('Open a failed or stopped run before retrying.');
+  end;
+  LRequest := TJSObject(AJob['request']);
+  LFields := StudioInstrumentalWriteFields(String(LRequest['kind']));
+  if (LFields = '') or (LRequest['format'] <> StudioJobWriteFormat) or
+    not isString(AJob['job_id']) or (String(AJob['job_id']) = '') or
+    (LRequest['job_id'] <> AJob['job_id']) or (LRequest['kind'] <> AJob['kind']) or
+    (LRequest['project_id'] <> AJob['project_id']) or
+    not isString(LRequest['project_snapshot_sha256']) or
+    (String(LRequest['project_snapshot_sha256']) = '') or
+    (AJobId = '') or (AJobId = String(AJob['job_id'])) then
+  begin
+    raise Exception.Create('These saved settings cannot be retried. Your old run is kept.');
+  end;
+  Result := TJSObject.new;
+  for LKey in TJSObject.keys(LRequest) do
+  begin
+    if Pos('|' + LKey + '|', LFields) > 0 then
+    begin
+      Result[LKey] := LRequest[LKey];
+    end;
+  end;
+  Result := TJSObject(TJSJSON.parse(TJSJSON.stringify(Result)));
+  Result['job_id'] := AJobId;
+  Result['retry_of'] := AJob['job_id'];
+end;
 
 function ReadStudioJSONResponse(APromise: TJSPromise): TJSObject; async;
 var LResponse: TJSResponse;

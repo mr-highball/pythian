@@ -71,7 +71,7 @@ $scriptPath = Join-Path $webRoot 'app.js'
 Remove-Item -LiteralPath $scriptPath -Force -ErrorAction SilentlyContinue
 $compilerArguments = @(
   '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
-  "-Fu$RtlSource", "-FU$unitRoot", "-FE$webRoot", $program
+  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'tools')", "-FU$unitRoot", "-FE$webRoot", $program
 )
 & $Compiler @compilerArguments
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -83,7 +83,7 @@ $listenScriptPath = Join-Path $webRoot 'listen.js'
 Remove-Item -LiteralPath $listenScriptPath -Force -ErrorAction SilentlyContinue
 $listenCompilerArguments = @(
   '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
-  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-FU$unitRoot", "-FE$webRoot", $listenProgram
+  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-Fu$(Join-Path $repositoryRoot 'tools')", "-FU$unitRoot", "-FE$webRoot", $listenProgram
 )
 & $Compiler @listenCompilerArguments
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -95,7 +95,7 @@ $studioScriptPath = Join-Path $webRoot 'studio.js'
 Remove-Item -LiteralPath $studioScriptPath -Force -ErrorAction SilentlyContinue
 $studioCompilerArguments = @(
   '-B', '-Tbrowser', '-Mdelphi', '-Jc', "-Ji$RtlJavascript",
-  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-FU$unitRoot", "-FE$webRoot", $studioProgram
+  "-Fu$RtlSource", "-Fu$(Join-Path $repositoryRoot 'src')", "-Fu$(Join-Path $repositoryRoot 'tools')", "-FU$unitRoot", "-FE$webRoot", $studioProgram
 )
 & $Compiler @studioCompilerArguments
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -141,9 +141,15 @@ if ($VerifyCodec) {
   & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.progress.portable.js')
   if ($LASTEXITCODE -ne 0) { throw 'Portable progress checks failed' }
   & $Compiler '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
-    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'src')" "-Fu$sourceRoot" "-FE$codecRoot" `
+    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'src')" "-Fu$(Join-Path $repositoryRoot 'tools')" "-Fu$sourceRoot" "-FE$codecRoot" `
     (Join-Path $repositoryRoot 'tests/pythian.tests.studio.progress.ui.lpr')
   if ($LASTEXITCODE -ne 0) { throw 'Studio progress presentation compilation failed' }
   & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.studio.progress.ui.js')
   if ($LASTEXITCODE -ne 0) { throw 'Studio progress presentation checks failed' }
+  & $Compiler '-B' '-Tnodejs' '-Mdelphi' '-Jc' "-Ji$RtlJavascript" `
+    "-Fu$RtlSource" "-Fu$(Join-Path $repositoryRoot 'tools')" "-Fu$sourceRoot" "-FE$codecRoot" `
+    (Join-Path $repositoryRoot 'tests/pythian.tests.studio.retry.ui.lpr')
+  if ($LASTEXITCODE -ne 0) { throw 'Studio retry projection compilation failed' }
+  & $nodeCommand.Source (Join-Path $codecRoot 'pythian.tests.studio.retry.ui.js')
+  if ($LASTEXITCODE -ne 0) { throw 'Studio retry projection checks failed' }
 }

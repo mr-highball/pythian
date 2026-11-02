@@ -31,10 +31,10 @@ interface
 uses
   Classes,
   fpjson, pythian.tools.json,
-  pythian.audio;
+  pythian.audio, pythian.tools.studio.schema;
 
 const
-  StudioJobWriteFormat = 'pythian.studio.job.write.v1';
+  StudioJobWriteFormat = pythian.tools.studio.schema.StudioJobWriteFormat;
   StudioJobFormat = 'pythian.studio.job.v1';
   StudioJobsFormat = 'pythian.studio.jobs.v1';
   StudioTimeoutMessage = 'Time limit reached. Try a shorter selection or smaller operation.';
@@ -141,8 +141,7 @@ var
 
 function IsStudioInstrumentalJob(const AKind: String): Boolean;
 begin
-  Result := (AKind = 'instrumental_generate') or (AKind = 'instrumental_style') or
-    IsStudioInstrumentalFollowup(AKind);
+  Result := StudioInstrumentalWriteFields(AKind) <> '';
 end;
 
 function IsStudioInstrumentalFollowup(const AKind: String): Boolean;
@@ -768,8 +767,7 @@ begin
     end
     else if LKind = 'instrumental_style' then
     begin
-      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'style_id|style_blend|duration_ms|seeds|retry_of|');
+      Keys(AWrite, StudioInstrumentalWriteFields(LKind));
       Need((Number(AWrite, 'duration_ms') >= 2000) and
         (Number(AWrite, 'duration_ms') <= 86400000), 'Track length must be2seconds to24hours');
       Need((AWrite.Find('seeds') <> nil) and (AWrite.Find('seeds').JSONType = jtArray) and
@@ -823,8 +821,7 @@ begin
     end
     else if LKind = 'instrumental_generate' then
     begin
-      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'seeds|instrumental|duration_ms|parent_job_id|retry_of|');
+      Keys(AWrite, StudioInstrumentalWriteFields(LKind));
       Need((AWrite.Find('instrumental') <> nil) and
         (AWrite.Find('instrumental').JSONType = jtObject), 'Instrumental settings are required');
       ValidateStudioInstrumentalConfig(AWrite.Objects['instrumental']);
@@ -893,8 +890,7 @@ begin
     end
     else if IsStudioInstrumentalFollowup(LKind) then
     begin
-      Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'parent_job_id|parent_plan_sha256|instruments|note_edit|retry_of|sound_design|');
+      Keys(AWrite, StudioInstrumentalWriteFields(LKind));
       LExisting := ReadStudioInstrumentalParent(ACatalogRoot, AWrite);
       try
         LParentResult := LExisting.Objects['results'];

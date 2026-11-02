@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 1/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -30,6 +30,17 @@ NS-6. Reuse existing queue/count/session contracts and same-origin links.
 - [Current shared Help — DONE](DONE/NS-6_current-studio-guide_01.md).
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: select with the existing generation-retry consumer after
+  delivered recording ideas/headroom; nonclosing count0. Criterion: an operator
+  can find waiting musical questions and the current result's question without
+  hunting through Help, while retained failure recovery stays explicit. Deliver
+  a compact waiting-count action and same-origin result links using the shared
+  queue contract; keep the three main steps. Close with actual desktop/390px
+  pending/empty/unavailable counts, intended request/return, preserved result/
+  playlist state and zero implicit jobs/answers/audio. Reuse qualified unchanged
+  native code; check the actual pas2js/browser boundary. Stop at both tickets'
+  complete outcomes or a distinct required native gap, linked before expansion.
 
 - 2026-11-02, Big Boss: final consumer check finds listen.html only in the shared
   guide, with no ordinary Studio link/count in studio.html, studio.lpr, Songs or

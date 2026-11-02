@@ -29,7 +29,8 @@ uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
   pythian.studio.laboratory, pythian.studio.songs, pythian.studio.sounds, pythian.studio.styles,
-  pythian.wave.stream, pythian.music.selection, pythian.workspace.guide;
+  pythian.wave.stream, pythian.music.selection, pythian.workspace.guide,
+  pythian.workspace.navigation, pythian.tools.studio.schema;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -47,6 +48,7 @@ type
     FSounds: TStudioSounds;
     FStyles: TStudioStyles;
     FGuide: TWorkspaceGuide;
+    FNavigation: TWorkspaceNavigation;
     FSelectedStyle: TJSObject;
     FResultProjectId: String;
     FToken, FProjectId, FName: String;
@@ -94,6 +96,7 @@ type
     procedure Generate; async;
     procedure ChooseStyle(const AStyle: TJSObject);
     procedure SubmitGeneration; async;
+    procedure RetryGeneration;
     procedure OpenSoundChoices;
     procedure ApplySoundDesign(ADesign: TJSObject);
     function CaptureFollowupParent: Boolean;
@@ -767,6 +770,10 @@ var
   LMusicFrames: Int64;
   I: Integer;
 begin
+  El('result-review').setAttribute('hidden', '');
+  El('result-review').removeAttribute('href');
+  El('retry-generation').setAttribute('hidden', '');
+  El('retry-generation-note').setAttribute('hidden', '');
   if OutputSeconds(LSeconds) then
   begin
     LTailFrames := 24000;
@@ -817,6 +824,14 @@ begin
       FloatToStr(Num(LConfig, 'cells') / 8) + ' bar(s).';
   end;
   LActive := GenerationActive;
+  if not LActive and ((LState = 'failed') or (LState = 'cancelled')) and
+    (StudioInstrumentalWriteFields(Str(FJob, 'kind')) <> '') then
+  begin
+    El('retry-generation').removeAttribute('hidden');
+    El('retry-generation-note').removeAttribute('hidden');
+  end;
+  TJSHTMLButtonElement(El('retry-generation')).disabled := not FConnected or FLoading or
+    LActive or FJobPolling;
   El('active-generation').setAttribute('hidden', '');
   if LActive then El('active-generation').removeAttribute('hidden');
   El('active-generation-status').textContent := 'Generating music on this computer…';
@@ -908,6 +923,16 @@ begin
   end;
   if (LState <> 'completed') or (Obj(FJob['results']) = nil) then Exit;
   LResult := Obj(FJob['results']);
+  LRows := Arr(LResult, 'outputs');
+  if (LRows <> nil) and (LRows.length > 0) then
+  begin
+    LUrl := Str(Obj(LRows[0]), 'listening_request_id');
+    if LUrl <> '' then
+    begin
+      El('result-review').setAttribute('href', '/listen.html?request=' + encodeURIComponent(LUrl));
+      El('result-review').removeAttribute('hidden');
+    end;
+  end;
   El('save-style').setAttribute('hidden', '');
   El('save-style-availability').textContent := '';
   if Str(Obj(LResult['style_candidate']), 'status') = 'ready' then
@@ -1488,6 +1513,33 @@ begin
   except on E: Exception do El('songs-status').textContent := E.Message end;
 end;
 
+procedure TStudio.RetryGeneration;
+var
+  LWrite: TJSObject;
+begin
+  if GenerationActive or FJobPolling or FLoading or not FConnected then
+  begin
+    Exit;
+  end;
+  try
+    LWrite := StudioRetryWrite(FJob, 'music-' + IntToStr(Trunc(TJSDate.now)) + '-' +
+      IntToStr(Random(1000000)));
+    ClearGeneration;
+    FResultProjectId := Str(LWrite, 'project_id');
+    FJobId := Str(LWrite, 'job_id');
+    FJobWrite := LWrite;
+    RememberGeneration;
+    ShowStep('generate');
+    SubmitGeneration;
+  except
+    on E: Exception do
+    begin
+      FGenerationMessage := E.Message;
+      DrawGeneration;
+    end;
+  end;
+end;
+
 procedure TStudio.SubmitGeneration; async;
 var LJob: TJSObject; LEpoch: Integer;
 begin
@@ -1727,10 +1779,7 @@ begin
       if LRows <> nil then
         for I := LRows.length - 1 downto 0 do
           if (Str(Obj(LRows[I]), 'project_id') = ResultProjectId) and
-            ((Str(Obj(LRows[I]), 'kind') = 'instrumental_generate') or
-             (Str(Obj(LRows[I]), 'kind') = 'instrumental_style') or
-             (Str(Obj(LRows[I]), 'kind') = 'instrumental_reperform') or
-             (Str(Obj(LRows[I]), 'kind') = 'instrumental_regenerate')) then
+            (StudioInstrumentalWriteFields(Str(Obj(LRows[I]), 'kind')) <> '') then
           begin FJobId := Str(Obj(LRows[I]), 'job_id'); Break end;
     end;
     if FJobId <> '' then
@@ -2306,6 +2355,7 @@ begin
       end;
     end;
     FConnected := True;
+    FNavigation.Start;
     FSourceEditor.RefreshSavedClips;
     FLibraryRefresh.SetConnected(True);
     FLibraryRefresh.Refresh;
@@ -2316,6 +2366,7 @@ begin
     on E: Exception do
     begin
       Notice(E.Message + ' Your playlist is kept.', True);
+      FNavigation.ConnectionFailed;
       El('retry-connection').removeAttribute('hidden');
     end;
   end;
@@ -2373,6 +2424,7 @@ begin
     'apply-notes': ApplyNoteChoices;
     'previous-version': OpenPreviousVersion;
     'cancel-generation', 'stop-active-generation': CancelGeneration;
+    'retry-generation': RetryGeneration;
     'reconnect-generation':
       if FJobWrite <> nil then Generate else PollGeneration;
     'new-playlist':
@@ -2462,9 +2514,17 @@ begin
     if LPlayers[I] <> AEvent.target then TJSHTMLAudioElement(LPlayers[I]).pause;
 end;
 function TStudio.Leaving(AEvent: TEventListenerEvent): Boolean;
+var
+  LPlayers: TJSNodeList;
+  I: Integer;
 begin
   Result := False;
   Remember;
+  LPlayers := document.querySelectorAll('audio');
+  for I := 0 to LPlayers.length - 1 do
+  begin
+    TJSHTMLAudioElement(LPlayers[I]).pause;
+  end;
 end;
 function TStudio.CaptureClosed(AEvent: TEventListenerEvent): Boolean;
 begin
@@ -2528,6 +2588,7 @@ begin
   FSounds := TStudioSounds.Create(document.body, @FetchApi, @ApplySoundDesign);
   FStyles := TStudioStyles.Create(@FetchApi, @ChooseStyle);
   FGuide := TWorkspaceGuide.Create('studio');
+  FNavigation := TWorkspaceNavigation.Create(@FetchNavigation, 'studio', True);
   El('studio-help').addEventListener('click', @Click);
   LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);

@@ -68,6 +68,7 @@ type
     FFetch: TWorkspaceFetch;
     FGuide: TWorkspaceGuide;
     FCurrentPage: String;
+    FListeningOnly: Boolean;
     FStarted: Boolean;
     FConnected: Boolean;
     FPaused: Boolean;
@@ -83,6 +84,7 @@ type
     function Add(AParent: TJSElement; const ATag, AText, AClass: String): TJSElement;
     procedure Layout;
     procedure Draw;
+    procedure DrawListening;
     procedure Schedule;
     procedure CancelRoute(const ARoute: Integer; const AUnavailable: Boolean);
     procedure ReadCount(const ARoute: Integer; AData: TJSObject);
@@ -92,7 +94,8 @@ type
     function Returning(AEvent: TEventListenerEvent): Boolean;
     function Click(AEvent: TJSMouseEvent): Boolean;
   public
-    constructor Create(const AFetch: TWorkspaceFetch; const ACurrentPage: String);
+    constructor Create(const AFetch: TWorkspaceFetch; const ACurrentPage: String;
+      const AListeningOnly: Boolean = False);
     destructor Destroy; override;
     procedure Start;
     procedure Refresh;
@@ -140,7 +143,7 @@ begin
 end;
 
 constructor TWorkspaceNavigation.Create(const AFetch: TWorkspaceFetch;
-  const ACurrentPage: String);
+  const ACurrentPage: String; const AListeningOnly: Boolean);
 var
   LIndex: Integer;
 begin
@@ -156,6 +159,7 @@ begin
   end;
   FFetch := AFetch;
   FCurrentPage := ACurrentPage;
+  FListeningOnly := AListeningOnly;
   for LIndex := 0 to 2 do
   begin
     FCounts[LIndex].State := 'loading';
@@ -168,7 +172,10 @@ begin
     FCounts[LIndex].Controller := nil;
   end;
   Layout;
-  FGuide := TWorkspaceGuide.Create(FCurrentPage);
+  if not FListeningOnly then
+  begin
+    FGuide := TWorkspaceGuide.Create(FCurrentPage);
+  end;
   Draw;
 end;
 
@@ -221,7 +228,7 @@ var
   LIndex: Integer;
 begin
   LRoot := document.getElementById('workspace-navigation');
-  if LRoot <> nil then
+  if (LRoot <> nil) and not FListeningOnly then
   begin
     LRoot.textContent := '';
     LNav := Add(LRoot, 'nav', '', 'workspace-tabs');
@@ -260,7 +267,52 @@ begin
     FRefreshButton := Add(LRoot, 'button', 'Refresh counts', 'workspace-refresh');
     FRefreshButton.setAttribute('type', 'button');
     FRefreshButton.addEventListener('click', @Click);
+    if FListeningOnly then
+    begin
+      LRoot.classList.add('listening-entry');
+      FRefreshButton.textContent := 'Refresh';
+      FRefreshButton.setAttribute('aria-label', 'Refresh listening questions');
+    end;
   end;
+end;
+
+procedure TWorkspaceNavigation.DrawListening;
+var
+  LText: String;
+begin
+  if FNextText = nil then
+  begin
+    Exit;
+  end;
+  LText := 'Checking listening questions…';
+  if FCounts[2].State = 'ready' then
+  begin
+    if FCounts[2].Count = 0 then
+    begin
+      LText := 'No listening questions waiting.';
+    end
+    else if FCounts[2].Count = 1 then
+    begin
+      LText := '1 listening question waiting.';
+    end
+    else
+    begin
+      LText := IntToStr(FCounts[2].Count) + ' listening questions waiting.';
+    end;
+  end
+  else if not FConnected or (FCounts[2].State = 'unavailable') then
+  begin
+    LText := 'Listening questions unavailable. Your music is still here.';
+  end;
+  if FNextText.textContent <> LText then
+  begin
+    FNextText.textContent := LText;
+  end;
+  FNextLink.textContent := 'Listening reviews';
+  FNextLink.setAttribute('href', '/listen.html');
+  FNextLink.setAttribute('data-count-state', FCounts[2].State);
+  FNextLink.setAttribute('data-count', IntToStr(FCounts[2].Count));
+  TJSObject(FRefreshButton)['disabled'] := not FConnected;
 end;
 
 procedure TWorkspaceNavigation.Draw;
@@ -275,6 +327,11 @@ var
   LAllReady: Boolean;
   LLoading: Boolean;
 begin
+  if FListeningOnly then
+  begin
+    DrawListening;
+    Exit;
+  end;
   LAllReady := True;
   LLoading := False;
   for LIndex := 0 to 2 do
@@ -620,6 +677,10 @@ begin
   end;
   for LIndex := 0 to 2 do
   begin
+    if FListeningOnly and (LIndex <> 2) then
+    begin
+      Continue;
+    end;
     if FCounts[LIndex].InFlight then
     begin
       FCounts[LIndex].Again := True;

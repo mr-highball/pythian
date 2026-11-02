@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 1/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -29,6 +29,15 @@ Primary attribution: NS-6. Reuse the existing native retry and retained request.
 - [Native identical saved-style retry — DONE](DONE/NS-6_style-job-retry_01.md).
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: same bounded bridge batch as review entry; count0 after
+  real prior gate closure. Deliver Retry these settings from the retained failed/
+  cancelled request, using the existing native retry lineage and idempotent
+  submission/reconnect transport. Seed, source/style/blend, duration and settings
+  stay frozen; current playlist Generate is separate. Close with actual desktop/
+  390px failure/retry/reload/cancel/Stop and no duplicate jobs, plus matched UI
+  delivery over qualified unchanged native code. Preserve the earlier failure.
+  Stop on a missing required native contract; link that gap before expanding.
 
 - 2026-11-02, Big Boss: actual isolated current Studio restores the failed blend
   with its generic failure message and Back to previous version. It has no

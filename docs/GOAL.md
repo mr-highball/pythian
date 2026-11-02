@@ -24,9 +24,11 @@ actual saved-score editing/audition and checked deployment. The
 [listening workbench](TODO/DONE/NS-6_synthesis-reviews_01.md) now provides exact
 mix/part comparisons, one question and durable feedback. The shared
 [current guide](TODO/DONE/NS-6_current-studio-guide_01.md) provides contextual
-instruction in the three-step workflow and its tools. Graph inspection,
-recording-proposal corrections, articulation, generation consolidation, direct
-Studio review entry and
+instruction in the three-step workflow and its tools. Optional
+[recording-proposal corrections](TODO/DONE/NS-3_experimental-learning_01.md)
+are restored and delivered with current fresh-profile consumers and saved source
+lineage. Graph inspection, articulation, generation consolidation, direct
+Studio review entry, visible generation retry and
 form/style musical judgments remain unfinished. Musical
 preference is not inferred from implementation acceptance.
 

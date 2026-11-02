@@ -5,6 +5,28 @@
 
 ## Current focus: recording ideas delivered; feedback bridge next - 2026-11-02
 
+Active bridge batch: NS-6 review-entry and generation-retry, one unit each.
+Local implementation candidate: compact listening-only mode reuses workspace
+navigation/session polling; exact result links remain same-origin. Retry projects
+the retained request through one Pascal write schema shared by native admission
+and pas2js, then reuses durable submission/reconnect/Stop. Native jobs113 and
+instrumental91 checks pass with clean heaps; all four browser programs and actual
+JS retry45/progress12/portable codec checks pass. The schema extraction changes
+native inputs, so full current-source CI is required rather than reusing569.
+Fresh-profile browser qualification and delivery remain open; no effort accepted.
+Preserve the initial harness assumptions (automatic empty-playlist save is not
+generation; listening page uses workspace/question) in E/runs/review-retry-browser01.
+Big Boss SOLO; count0. Criterion: reach the actual waiting listening question
+and recover a failed generation from its frozen choices. Deliver a compact
+waiting-count/result-question action plus explicit Retry these settings, using
+existing shared queue/session/retry contracts and keeping the three main steps.
+Evidence: actual pas2js and desktop/390px pending/empty/unavailable navigation,
+same-origin return with saved playlist/result, failed/cancelled retry, reconnect,
+Stop and no duplicate jobs or implicit answers/learning/audio. Stop at both
+complete delivered outcomes or a distinct required native gap; create/link it
+before scope grows. Reuse complete CI569 only for unchanged native code; do not
+pretend it validates changed frontend behavior. No new effort is accepted yet.
+
 Big Boss SOLO. [Recording ideas — DONE](TODO/DONE/NS-3_experimental-learning_01.md)
 and [CI headroom — DONE](TODO/DONE/NS-6_ci-headroom_01.md) close nine effort units.
 Current optional analysis→edit/bypass/manual→save→explicit instrumental generation
