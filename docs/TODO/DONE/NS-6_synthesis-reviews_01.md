@@ -55,10 +55,10 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
   Idle audio asks for Play instead of claiming loading. E/runs/synthesis-review-
   qa04/05 holds screenshots, exact response and cleanup; source07 binds all416
   native inputs to the checked build. Full source CI/deployment still pending.
-- Actual operator response studio_bb-instrumental-20261030-first_0 revision1
-  has instrumental_fit=yes. Decision: develop real instrumental output through
+- The actual operator response was read privately. Decision: develop real instrumental output through
   deliberate musical changes while retaining useful parts. No more reconstruction
-  variants are selected. This answer does not establish learned style quality,
+  variants are selected. Keep the response itself outside source control. This
+  decision does not establish learned style quality,
   blend usefulness or form; the returning-lead question retains its own judgment.
 
 - 2026-11-02, Big Boss: actual Help review finds stale broad Studio lessons

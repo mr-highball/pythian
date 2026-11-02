@@ -83,6 +83,7 @@ type
   public
     constructor Create(const APage: String);
     destructor Destroy; override;
+    procedure OpenTopic(const AId: String);
   end;
 
 implementation
@@ -103,66 +104,66 @@ const
   CPlace = 'pythian.guide.place.v1';
 
   CLessons: array[0..11] of TGuideLesson = (
-    (Id: 'choose'; Title: 'Choose what to carry forward';
-     Action: 'Name a project and choose Synthesized instruments, then Save draft. You can start without recordings. Collection and Import / record let you explore references separately.';
-     Expectation: 'Start with authored music, write a motif in Musical starting points, or analyze audio and choose Use or edit these suggestions. Assign one pitch line to Bass, Harmony or Lead. Other parts use authored accompaniment. Labels and your listening goal do not yet control the graph.';
-     DoneWhen: 'Your saved project lists the intended recordings, ranges and descriptions.';
-     Page: 'studio'; Target: 'style-name'; Prerequisite: 'Wait for the catalog to connect before naming or saving a project.'),
-    (Id: 'generate'; Title: 'Make a small first experiment';
-     Action: 'With a saved instrumental project, open Generate. Choose tempo, key, bars and seed. Expand Sounds and mix to change instruments or levels. Check setup, then Generate instruments.';
-     Expectation: 'Experimental: WFC arranges your saved musical choices with authored accompaniment, then Pythian synthesizes six parts. Recording-linked choices retain an Original reference excerpt for comparison. The job runs on the computer even when your phone page is closed.';
-     DoneWhen: 'Open Jobs to play the mix, mute or solo its parts, then follow Listen and give feedback. Change one control for another experiment.';
-     Page: 'studio'; Target: 'instrumental-tempo'; Prerequisite: 'Save an instrumental project first; no recordings are required.'),
-    (Id: 'listen'; Title: 'Tell Pythian what you hear';
-     Action: 'In Review → Choose auditions, select your finished auditions and Start listening. Judge style fit, flow, repetition and sound quality. Choose what you would keep, or neither. Add a note at a useful moment, then Save feedback.';
-     Expectation: 'A useful answer can be: the texture fits, but the join at 0:12 clicks. Use Cannot judge yet when unsure. Hide sample identities for a comparison without knowing which settings made each take.';
-     DoneWhen: 'Reload saved feedback and see your answers again. A bad result is useful feedback too.';
-     Page: 'studio'; Target: 'review-output-a'; Prerequisite: 'Generate saved auditions first, then select them for a comparison.'),
-    (Id: 'refine'; Title: 'Change one thing and listen again';
-     Action: 'After saving feedback, choose Use these settings for next batch. Change one source weight, source selection or generation setting. Check setup and Generate auditions, then compare with the earlier result.';
-     Expectation: 'Saving feedback records your judgment; it does not automatically retrain. The next-batch action copies the reviewed setup and links the new experiment to it. A new seed makes another take; it does not add knowledge. Pin useful results to find them again.';
-     DoneWhen: 'You can say what changed and whether it helped. Keep the earlier feedback, even when neither result works.';
-     Page: 'studio'; Target: 'review-current'; Prerequisite: 'Open a comparison and Save feedback first; its next-batch buttons appear beside the samples.'),
+    (Id: 'choose'; Title: 'Find music in Library';
+     Action: 'Search your music or choose a collection. Play previews a track. Add puts it in your playlist. Add music imports a WAV; Record opens microphone recording. Music folder shows where to put your private tracks.';
+     Expectation: 'Playing does not select music for learning. The clips button lists saved excerpts from that track, including clips made in other playlists. Your recordings stay on this computer.';
+     DoneWhen: 'Open Selection to choose which whole tracks or clips will teach Pythian.';
+     Page: 'studio'; Target: 'tracks'; Prerequisite: 'Connect to Studio and add or import a recording first.'),
+    (Id: 'select'; Title: 'Choose whole tracks or clips';
+     Action: 'In Selection, leave Whole track checked or switch it off and choose clips. Choose clip creates a new passage. Each included clip appears under its parent track. Use the track''s clips button in Library to find an older saved clip.';
+     Expectation: 'Everything marked for learning teaches the next track. Whole track takes priority and hides its clip rows. Removing a clip from this playlist keeps its saved file. Choices save automatically.';
+     DoneWhen: 'The selected duration and included tracks or clips match what you want to learn from.';
+     Page: 'studio'; Target: 'playlist-tracks'; Prerequisite: 'Add music in Library before choosing whole tracks or clips.'),
+    (Id: 'generate'; Title: 'Generate your first track';
+     Action: 'Open Generate, choose Track length and Unit, then Generate music. Track influence gives each recording more or less learning weight. Use a saved style skips new recording analysis.';
+     Expectation: 'Experimental: Pythian learns musical proposals from the included audio, WFC arranges notes and percussion, and Pythian instruments perform them. This does not recover isolated instruments from a mix. The job runs on the computer if your phone page closes; return to reconnect or Stop generation.';
+     DoneWhen: 'Your new track is ready. Press Play, or open Hear individual parts. Save to playlist names the result; Download WAV saves it to your device.';
+     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In an authored experiment, use Experiment settings or Back to playlist to return to Track length. Otherwise choose learning material or a saved style first.'),
+    (Id: 'refine'; Title: 'Listen and change one thing';
+     Action: 'Open a finished song and listen to its mix or individual parts. Change notes edits musical choices; Sounds & effects edits instruments while keeping the saved notes. Create a new version, then compare Before and After.';
+     Expectation: 'Compare an original excerpt gives reference context, with its own timing. Save to playlist keeps this exact result. Listening reviews ask a specific development question; saving that answer does not retrain or generate.';
+     DoneWhen: 'You know what changed and whether it helped. Keep the earlier version and feedback too.';
+     Page: 'studio'; Target: 'generation-result'; Prerequisite: 'Generate a track, or open Songs and choose Open result first.'),
     (Id: 'record'; Title: 'Bring in a sound';
-     Action: 'Choose Record audio or Import WAV. For recording, Start microphone, allow access, then Stop recording. Analyze audio and play the preview. Save to collection only when you want to keep the input.';
-     Expectation: 'A phone microphone needs a secure HTTPS page. Importing or recording prepares an input for exploration; saving it to a collection makes it available to projects. Your original stays intact.';
+     Action: 'In Library, choose Add music or Record. Choose a WAV, or Start microphone then Stop recording. Add to library keeps the recording. Earlier inputs & analysis contains the optional Inspect audio tools.';
+     Expectation: 'A phone microphone needs the local HTTPS page. Adding music to a collection makes it available in Library; it does not automatically include it in your learning selection. Your original stays intact.';
      DoneWhen: 'You can hear the input, see its analysis and find any saved copy in your collection.';
-     Page: 'studio'; Target: 'start-record'; Prerequisite: 'Connect to Studio before importing or recording.'),
-    (Id: 'select'; Title: 'Find and describe a passage';
-     Action: 'Open a recording with Choose a passage. Tap the waveform to seek, drag to select, or enter Start and End times. Zoom or change View length to see more. Save passage & include, then Save draft. Return to Collection to check or uncheck saved passages.';
-     Expectation: 'The waveform view is a window onto the recording, not a duration limit. Train on whole recording includes the full track and unchecks its passages without deleting them. Preview browsing stays light; adding material prepares that recording for learning.';
-     DoneWhen: 'Play the selected passage and check its start and end. Your saved project shows that range and its labels.';
-     Page: 'studio'; Target: 'source-position'; Prerequisite: 'Choose a recording and open Choose a passage first.'),
+     Page: 'studio'; Target: 'studio-capture'; Prerequisite: 'In Library, open Add music or Record first. Showing controls never starts your microphone.'),
+    (Id: 'clips'; Title: 'Make and reuse a clip';
+     Action: 'In Selection, choose Choose clip on a track. Tap the waveform to seek, drag a range, or enter Start and End. Hear clip previews the range. Use this clip saves and includes it. Labels are optional.';
+     Expectation: 'The waveform window does not limit clip length. Zoom, Whole track and View length reveal more. Each saved clip gets an independent WAV linked to its original time. Future learning reads that clip, without rescanning its entire parent.';
+     DoneWhen: 'The clip appears under its parent in Selection and in the track''s clips list in Library.';
+     Page: 'studio'; Target: 'source-start'; Prerequisite: 'In Selection, choose Choose clip or Edit clip on a track first.'),
     (Id: 'analysis'; Title: 'Explore what Pythian hears';
-     Action: 'Open a recording, expand Explore Pythian analysis and press Analyze from playhead. For imported or recorded audio, press Analyze audio. Inspect tempo, key alternatives, channel pitches and sound measurements. Try a note preview separately for audio/MIDI.';
+     Action: 'Open Choose clip, expand More tools, and choose Analyze at playhead. Inspect the suggestions and Beat overlay. Imported or recorded audio has its own Inspect audio tools and Experimental note/MIDI preview.';
      Expectation: 'Experimental suggestions can be wrong. Analysis covers up to 30 seconds; pitch suggestions use the first 8 seconds of that range and omit unmeasured edges. A mix is not separated into instruments. Suggestions do not change generation settings or train a style.';
      DoneWhen: 'You can compare the original with the preview and describe where the analysis agrees or fails.';
-     Page: 'studio'; Target: 'source-beat-layer'; Prerequisite: 'Open Choose a passage for a recording first. Recording preparation may be needed for analysis.'),
+     Page: 'studio'; Target: 'source-beat-layer'; Prerequisite: 'Open Choose clip on a recording first. Preparation may be needed before analysis.'),
     (Id: 'effects'; Title: 'Shape a sound without losing the original';
-     Action: 'Open a recording, prepare it for analysis & effects, and expand Shape this passage with effects. Add effects, adjust their order and settings, then preview. Save the result to your collection when useful.';
+     Action: 'Open Choose clip, expand More tools, prepare analysis & effects if requested, then open Effects. Add stages, adjust their order and settings, and preview. Save to collection when useful. To change generated instruments, use Sounds & effects on a finished song.';
      Expectation: 'Effects run in order, so changing their order can change the sound. Delay and reverb can add a tail after the passage. A saved version keeps its source connection; processing it does not make it an independent recording.';
-     DoneWhen: 'The preview matches your intention and the saved version appears in the collection. Add that version to a project explicitly if you want to learn from it.';
-     Page: 'studio'; Target: 'studio-effects'; Prerequisite: 'Open a recording with Choose a passage first, then prepare it for effects.'),
-    (Id: 'long'; Title: 'Listen as music is generated';
-     Action: 'Save a project, choose a Length and Time unit under Generate and play, then start. Pause or Stop whenever you want. Save next 20 seconds for review captures a short upcoming excerpt.';
-     Expectation: 'Experimental: output streams as it is made, up to 24 hours. Keep the page open. Only saved excerpts are retained as WAV files. Longer playback is not evidence of deeper learning or long-form musical quality.';
-     DoneWhen: 'Playback responds to Pause and Stop. A saved excerpt can be opened from Listening reviews for feedback.';
-     Page: 'studio'; Target: 'studio-live'; Prerequisite: 'Select your material and Save draft before starting live generation.'),
+     DoneWhen: 'You can hear the preview and find the saved version in Library. Add that version explicitly to learn from it.';
+     Page: 'studio'; Target: 'studio-effects'; Prerequisite: 'Open Choose clip first, then prepare the recording if Effects requests it.'),
+    (Id: 'long'; Title: 'Make a longer track';
+     Action: 'In Generate, set Track length and Unit to seconds, minutes or hours. Generate music starts a host job. Stop generation cancels it; leaving the phone page does not cancel. Return to reconnect.';
+     Expectation: 'Experimental: requests support 2 seconds to 24 hours of music plus the sound tail. Work and disk use increase with duration. The saved mix and six parts use bounded native processing. A full 24-hour render has not been tested.';
+     DoneWhen: 'Play the completed track, seek through it, and Save to playlist or Download WAV.';
+     Page: 'studio'; Target: 'output-duration'; Prerequisite: 'In an authored experiment, use Experiment settings or Back to playlist. Choose learning material or a saved style for ordinary generation.'),
     (Id: 'source-review'; Title: 'Check an observation in an original';
      Action: 'Open a question in Source reviews. Read what it asks, play the original, then answer that question. If a point or range is requested, use source time to place it and save. Choose uncertainty when you cannot tell.';
      Expectation: 'This checks an observation such as a note or beat in an original recording. It is separate from judging generated music. No pending question means no labeling is needed. Developer checks are optional app tests.';
      DoneWhen: 'The answer is shown as saved and the queue updates. You do not need to annotate every recording to use Studio.';
      Page: 'source'; Target: 'source-requests'; Prerequisite: 'Wait for the review queue to connect. Only assigned questions need an answer.'),
     (Id: 'listening-review'; Title: 'Review a saved musical result';
-     Action: 'Read the one listening question. For a prepared comparison, switch between Before and After; Original gives source context. Choose Before, After, Same, Neither or Unsure, then Save & next. A note is optional.';
+     Action: 'Read the one question. Compare Before and After at the same position; Hear selects the mix or an individual part. Press Play after switching. Original has its own source timing. Choose an answer or Unsure, then Save & next. A note is optional.';
      Expectation: 'Each prepared experiment explains what changed and which core decision your answer guides. No new recording, segmentation or generation setup is needed. Saving records your judgment for the next development step. It does not automatically train a preference model.';
      DoneWhen: 'Save moves the question to Completed reviews. Choose review opens that list so you can reopen your answer.';
      Page: 'listening'; Target: 'packet'; Prerequisite: 'Choose a review if no question is open. An empty queue means there are no assigned listening questions.'),
     (Id: 'settings'; Title: 'Understand generation settings';
-     Action: 'In Generate, open Settings for source weights and generation controls. A source weight changes a recording''s relative influence. Keep the seed to repeat a setup, or change it for a different take. Adjust one setting at a time.';
-     Expectation: 'Sound examples to keep limits the types of short recorded pieces available. Neighboring pieces sets how much local sequence context the model considers. These controls do not specify instruments, notes, tempo or song sections.';
-     DoneWhen: 'Before generating, you know which setting changed and what you want to listen for. Compare against an earlier saved audition.';
-     Page: 'studio'; Target: 'batch-palette'; Prerequisite: 'Select recordings and Save draft before adjusting generation settings.')
+     Action: 'The main flow only needs music selection and track length. Track influence in Generate changes each recording''s learning weight. Use a saved style reuses its musical providers and sounds. More music controls opens optional authored experiments.';
+     Expectation: 'Authored experiments let you choose tempo, key, notes, sounds and sections without learning recordings. They keep your playlist saved. These controls describe actual instrumental choices, not chopped recording fragments.';
+     DoneWhen: 'You know whether the next track learns your selection, reuses a style or runs an authored experiment.';
+     Page: 'studio'; Target: 'open-laboratory'; Prerequisite: 'Connect to Studio before opening More music controls in Generate.')
   );
 
 function TWorkspaceGuide.Add(AParent: TJSElement;
@@ -245,7 +246,7 @@ begin
   LIcon.appendChild(LPath);
   FToggle.appendChild(LIcon);
   Add(FToggle, 'span', 'Learn to teach Pythian', '');
-  Add(LBar, 'span', 'A guided project + help with each tool', 'guide-intro');
+  Add(LBar, 'span', 'A quick start + help with each tool', 'guide-intro');
   FPanel := Add(FRoot, 'dialog', '', 'guide-panel');
   FPanel.setAttribute('aria-modal', 'true');
   LRow := Add(FPanel, 'div', '', 'guide-dialog-header');
@@ -285,9 +286,10 @@ begin
   Button(LRow, 'Close guide', 'close');
   LRow := Add(FPanel, 'details', '', 'guide-more');
   Add(LRow, 'summary', 'About this guide', '');
-  Add(LRow, 'p', 'Your reading position is remembered on this browser when available. Reading a lesson does not complete a project or save feedback. Show me only reveals controls; you decide when to play, record, generate or save.', '');
-  Button(LRow, 'Restart first-project guide', 'restart');
+  Add(LRow, 'p', 'This browser remembers your reading position when available. Reading or showing controls never plays, records, generates or saves feedback. You choose when to start those actions.', '');
+  Button(LRow, 'Restart quick start', 'restart');
   FReturn := Button(FRoot, 'Back to guide', 'return');
+  FReturn.addEventListener('click', @Click);
   FReturn.classList.add('guide-return');
   FReturn.setAttribute('hidden', '');
   FRoot.addEventListener('click', @Click);
@@ -304,6 +306,8 @@ begin
   ClearHighlight;
   FRoot.removeEventListener('click', @Click);
   FRoot.removeEventListener('keydown', @Key);
+  FReturn.removeEventListener('click', @Click);
+  FReturn.remove;
   FTopics.removeEventListener('change', @SelectTopic);
   document.removeEventListener('click', @ContextHelp);
   FRoot.remove;
@@ -328,7 +332,7 @@ begin
   FDone.textContent := 'Ready to move on: ' + CLessons[FTopic].DoneWhen;
   if FTopic < 4 then
   begin
-    FProgress.textContent := 'FIRST PROJECT · LESSON ' + IntToStr(FTopic + 1) + ' OF 4';
+    FProgress.textContent := 'QUICK START · LESSON ' + IntToStr(FTopic + 1) + ' OF 4';
   end
   else
   begin
@@ -341,7 +345,7 @@ begin
   end
   else if FTopic >= 4 then
   begin
-    FNext.textContent := 'First-project guide';
+    FNext.textContent := 'Quick start';
   end
   else
   begin
@@ -450,15 +454,12 @@ begin
   LParent := LTarget;
   while LParent <> nil do
   begin
-    if LParent.hasAttribute('hidden') or LParent.hasAttribute('disabled') then
+    if LParent.hasAttribute('hidden') or LParent.hasAttribute('disabled') or
+      ((LowerCase(LParent.tagName) = 'dialog') and not LParent.hasAttribute('open')) then
     begin
       LUnavailable := True;
     end;
     LParent := LParent.parentElement;
-  end;
-  if (FTopic = 3) and (LTarget <> nil) then
-  begin
-    LUnavailable := LTarget.querySelector('[data-action="next"]') = nil;
   end;
   if LUnavailable then
   begin
@@ -497,6 +498,10 @@ begin
   FHighlight.classList.add('guide-highlight');
   TJSHTMLElement(LTarget).focus;
   TJSHTMLElement(LTarget).scrollIntoView;
+  { Big Boss: a return button outside an open tool dialog would be inert. }
+  LParent := LTarget.closest('dialog[open]');
+  if LParent = nil then LParent := FRoot;
+  LParent.appendChild(FReturn);
   FReturn.removeAttribute('hidden');
   FReturn.textContent := 'Back to guide';
 end;
@@ -507,6 +512,7 @@ var
   LAction: String;
 begin
   Result := True;
+  if AEvent.currentTarget = FReturn then AEvent.stopPropagation;
   LTarget := TJSElement(AEvent.target).closest('[data-guide-action]');
   if LTarget = nil then
   begin
@@ -549,7 +555,7 @@ begin
   begin
     if FTopic = 3 then
     begin
-      FNotice.textContent := 'Guide read. Try the cycle with your own music, or choose a tool lesson above. Your project and feedback still use their own Save buttons.';
+      FNotice.textContent := 'Try the cycle with your own music, or choose a tool lesson above. Playlist choices save automatically; listening answers need Save & next.';
       Exit;
     end
     else if FTopic >= 4 then
@@ -572,7 +578,6 @@ end;
 function TWorkspaceGuide.ContextHelp(AEvent: TJSMouseEvent): Boolean;
 var
   LTarget: TJSElement;
-  LIndex: Integer;
 begin
   Result := True;
   LTarget := TJSElement(AEvent.target).closest('[data-guide-topic]');
@@ -580,9 +585,16 @@ begin
   begin
     Exit;
   end;
+  OpenTopic(LTarget.getAttribute('data-guide-topic'));
+end;
+
+procedure TWorkspaceGuide.OpenTopic(const AId: String);
+var
+  LIndex: Integer;
+begin
   for LIndex := 0 to High(CLessons) do
   begin
-    if LTarget.getAttribute('data-guide-topic') = CLessons[LIndex].Id then
+    if AId = CLessons[LIndex].Id then
     begin
       FTopic := LIndex;
       FOpen := True;

@@ -29,7 +29,7 @@ uses JS, Web, SysUtils, Math,
   pythian.studio.sources, pythian.studio.capture, pythian.studio.effects,
   pythian.studio.requests, pythian.studio.&library.refresh, pythian.studio.progress,
   pythian.studio.laboratory, pythian.studio.songs, pythian.studio.sounds, pythian.studio.styles,
-  pythian.wave.stream, pythian.music.selection;
+  pythian.wave.stream, pythian.music.selection, pythian.workspace.guide;
 
 type
   TStudioWindow = class external name 'Window' (TJSWindow)
@@ -46,6 +46,7 @@ type
     FSongs: TStudioSongs;
     FSounds: TStudioSounds;
     FStyles: TStudioStyles;
+    FGuide: TWorkspaceGuide;
     FSelectedStyle: TJSObject;
     FResultProjectId: String;
     FToken, FProjectId, FName: String;
@@ -2333,6 +2334,10 @@ begin
     TStudioDialog(El(LButton.getAttribute('data-close'))).close;
   if LButton.hasAttribute('data-project') then OpenProject(LButton.getAttribute('data-project'));
   case LButton.id of
+    'studio-help':
+      if not El('step-generate').hasAttribute('hidden') then FGuide.OpenTopic('generate')
+      else if not El('step-selection').hasAttribute('hidden') then FGuide.OpenTopic('select')
+      else FGuide.OpenTopic('choose');
     'generate-music': Generate;
     'open-songs': FSongs.Open;
     'save-song': FSongs.SaveJob(FJobId);
@@ -2519,6 +2524,8 @@ begin
   FSongs := TStudioSongs.Create(@FetchApi, @OpenSavedGeneration);
   FSounds := TStudioSounds.Create(document.body, @FetchApi, @ApplySoundDesign);
   FStyles := TStudioStyles.Create(@FetchApi, @ChooseStyle);
+  FGuide := TWorkspaceGuide.Create('studio');
+  El('studio-help').addEventListener('click', @Click);
   LNodes := document.querySelectorAll('button[data-step],button[data-dialog],button[data-close],button[data-studio-action]');
   for I := 0 to LNodes.length - 1 do TJSElement(LNodes[I]).addEventListener('click', @Click);
   El('track-search').addEventListener('input', @Edit);

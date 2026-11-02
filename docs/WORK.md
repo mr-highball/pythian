@@ -19,8 +19,8 @@ verification is not independent review. All QA services/tabs/audio are closed an
 watcher93754/release41380 are terminal/collected. E/runs/synthesis-review-release566
 retains verified/rollback/process receipts. No TLS/firewall or WFC source change.
 
-Actual operator instrumental=yes supports continued instrumental synthesis and
-deliberate retained-score changes. The live returning-lead question now resolves
+The saved operator response was read privately. Decision: continue instrumental
+synthesis and deliberate retained-score changes. The live returning-lead question resolves
 all seven exact clock-matched parts. Form/style musical judgments remain open.
 Scope47 tasks/40 DONE/seven open,171/210(81.43%),39 open effort; nonclosing count0.
 
@@ -34,7 +34,11 @@ qualified checkout and stable remained untouched. Full pas2js build and listenin
 bridge29 pass. Actual Library/Selection/Generate and nested import/clip paths keep
 all415 QA metadata hashes and selected ranges. Return remains clickable inside
 the open tool dialog. Final prose uses Add to library and actual Track influence
-in Generate. No guide units accepted yet; integrate and deliver next.
+in Generate. Exactly four guide files are now integrated against their verified
+base. Native416 inputs remain unchanged. No guide units accepted yet; finish
+the served-assets check and delivery. Final source05/browser05 repairs the actual
+390px header wrap through CSS only: one header row,44px Help and no overflow;
+steps move up53px. Eleven other browser assets are byte-identical to browser04.
 
 ## Earlier listening batch, before CI566 closed - 2026-11-02
 
@@ -68,10 +72,10 @@ before scope expands. It follows this review delivery, not a new prerequisite.
 Current scope47 tasks/39 DONE/eight open,166/210(79.05%),44 open effort; count0.
 No partial review or guide effort is accepted. Stable remains accepted CI565.
 
-Actual operator response studio_bb-instrumental-20261030-first_0 revision1 says
-instrumental_fit=yes. Concrete decision: continue real instrumental generation
+The saved operator response was read privately. Concrete decision: continue real instrumental generation
 and deliberate retained-score experiments; do not return to full-mix grain
-reconstruction. It is not a style-quality/blend/form verdict. The separate
+reconstruction. The response remains outside source control; this decision is
+not a style-quality/blend/form verdict. The separate
 returning-lead question remains available for actual operator judgment.
 
 Big Boss SOLO. [Complete CI fanout — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)

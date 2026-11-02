@@ -37,6 +37,13 @@ quality or inference accuracy. Keep the current listening experiment moving.
 
 **Dev Notes:**
 
+- Final source05/browser05 changes only studio.css after source04: actual390px
+  screenshot caught Help wrapping onto its own header row. The narrow header now
+  keeps all controls on one row with44px Help and no overflow, recovering53px
+  before the steps. Eleven other browser assets remain byte-identical. All671
+  integrated inputs and416 unchanged native inputs verify; guide implementation
+  reuses CI566's exact native runtime. Deployment/served checks remain open.
+
 - 2026-11-02, Big Boss: the listening prerequisite now passes complete CI566 and
   matching delivery. Prepared isolated E/tests/current-guide-source04 while that
   gate ran; no candidate changed the qualified checkout or production service.

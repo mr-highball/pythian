@@ -29,14 +29,17 @@ SOFTWARE.
   <meta name="theme-color" content="#101719">
   <title>Pythian · Studio</title>
   <link rel="stylesheet" href="studio.css?v=styles-20261101">
+  <link rel="stylesheet" href="workspace-nav.css">
 </head>
-<body>
+<body class="studio-page">
 <a class="skip-link" href="#main-content">Skip to music</a>
 <header class="masthead">
   <a class="brand" href="studio.html" aria-label="Pythian Studio">◈ <strong>Pythian</strong> <span>Studio</span></a>
   <button type="button" data-dialog="playlists-dialog" class="quiet">Playlists</button>
   <button id="open-songs" type="button" data-studio-action class="quiet">♫ Songs</button>
+  <button id="studio-help" type="button" class="quiet" aria-label="Help" aria-haspopup="dialog" aria-controls="guide-panel">?</button>
 </header>
+<div id="workspace-navigation"></div>
 <main id="main-content">
   <nav class="steps" role="tablist" aria-label="Make music">
     <button id="tab-library" role="tab" aria-controls="step-library" data-step="library">1 <span>Library</span></button>
@@ -147,7 +150,7 @@ SOFTWARE.
 <dialog id="save-style-dialog" aria-labelledby="save-style-title"><header class="dialog-heading"><h2 id="save-style-title">Save this style</h2><button id="save-style-close" type="button" data-close="save-style-dialog">Cancel</button></header><label for="style-name">Style name<input id="style-name" type="text" maxlength="128"></label><p class="hint">Keeps the musical ideas, controls and sounds. Exact notes stay with this song. Saving does not learn or generate again.</p><p id="save-style-status" role="status"></p><button id="confirm-save-style" type="button" class="primary">Save style</button></dialog>
 <dialog id="saved-clips-dialog" aria-labelledby="saved-clips-title"><header class="dialog-heading"><h2 id="saved-clips-title">Saved clips</h2><button type="button" data-close="saved-clips-dialog">Done</button></header><p class="hint">Clips belong to this track and can be used in any playlist. Removing a clip from Selection keeps its saved audio here.</p><p id="saved-clips-status" role="status"></p><div id="saved-clips-list" class="tracks"></div></dialog>
 <dialog id="source-inspector" aria-labelledby="source-title" hidden>
-  <header class="dialog-heading"><div><p class="eyebrow">CHOOSE A CLIP</p><h2 id="source-title" tabindex="-1"></h2></div><button id="source-close" type="button">Done</button></header>
+  <header class="dialog-heading"><div><p class="eyebrow">CHOOSE A CLIP</p><h2 id="source-title" tabindex="-1"></h2></div><button type="button" data-guide-topic="clips">Help</button><button id="source-close" type="button">Done</button></header>
   <canvas id="source-waveform" width="900" height="180" aria-label="Track waveform. Tap to seek, drag to choose a clip. Time fields are below."></canvas>
   <p id="source-waveform-state" class="hint" role="status"></p><button id="source-waveform-retry" type="button" hidden>Retry waveform</button>
   <div class="source-toolbar view-controls" role="group" aria-label="Waveform view">
@@ -168,7 +171,7 @@ SOFTWARE.
     <details><summary>Effects</summary><div id="studio-effects"></div></details>
   </details>
 </dialog>
-<dialog id="capture-panel" aria-label="Add or record music"><header class="dialog-heading"><h2>Add a sound</h2><button type="button" data-close="capture-panel">Done</button></header><div id="studio-capture"></div></dialog>
+<dialog id="capture-panel" aria-label="Add or record music"><header class="dialog-heading"><h2>Add a sound</h2><button type="button" data-guide-topic="record">Help</button><button type="button" data-close="capture-panel">Done</button></header><div id="studio-capture"></div></dialog>
 <dialog id="folder-dialog" aria-labelledby="folder-title"><header class="dialog-heading"><h2 id="folder-title">Your music folder</h2><button type="button" data-close="folder-dialog">Done</button></header><p>Put WAV files in a folder for each style:</p><code>local-audio/collections/lofi/</code><p class="hint">Or use your configured audio-library folder. Folder names become collections. Your music stays local and outside Git.</p><div id="studio-library-refresh"></div><p class="hint">Refresh reads the track list and metadata. Adding to a playlist does not load the full audio.</p></dialog>
 <dialog id="playlists-dialog" aria-labelledby="playlists-title">
   <header class="dialog-heading"><h2 id="playlists-title">Your playlists</h2><button type="button" data-close="playlists-dialog">Done</button></header>

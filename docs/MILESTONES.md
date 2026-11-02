@@ -28,7 +28,7 @@ their criteria, including the discovered live-cancellation prerequisite.
 implementation units after actual mix/part playback, retained draft and feedback
 recovery, desktop/390px layout/Help, complete CI566 and matching fixed-slot
 delivery. All23 jobs,3 clips and7,143 metadata hashes stay exact. The operator's
-actual instrumental yes supports further instrumental experiments; form and
+saved instrumental feedback supports further instrumental experiments; form and
 style quality retain their separate judgments. Current-guide delivery remains
 open, without partial credit. Consecutive nonclosing count0.
 

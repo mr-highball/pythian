@@ -2,6 +2,11 @@
 
 [Goal](GOAL.md) · [Tasks](TODO/README.md) · [LAN setup](LAN-REVIEW-SERVICE.md) · [Work](WORK.md)
 
+**Help** opens the lesson for your current step. Clip and import dialogs have
+their own Help buttons. **Show me the controls** highlights the actual tool;
+**Back to guide** returns to its lesson. Close returns to your current work.
+Reading or showing controls does not play, record, generate or change choices.
+
 ## 1. Library
 
 Put private WAV recordings inside `local-audio/collections/<collection>/`, or

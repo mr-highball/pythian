@@ -34,6 +34,15 @@ SOFTWARE.
   font:16px/1.5 system-ui,sans-serif
 }
 
+/* Big Boss: the shared guide opens on demand; it adds no mandatory step. */
+.studio-page .workspace-guide { margin:0; border:0; background:transparent; }
+.studio-page .guide-bar { display:none; }
+#studio-help { min-width:44px; margin-left:auto; }
+@media (max-width:480px) {
+  .masthead .brand span { display:none; }
+  .masthead > button { padding:.6rem .65rem; }
+}
+
 * {
   box-sizing:border-box
 }
