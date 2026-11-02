@@ -20,8 +20,10 @@ Fresh WFC07 closes its earlier old occurrence-count fixture failure; registry,
 budget, model lineage, generation and saved-audio consumers all pass, including
 a clean caller-codec heap. Package07 session41009 is terminal/collected.
 
-Native corpus baseline04 session49488/PID40008, final native suite06 session16502/
-PID60980 and final actual JS corpus06 session91828 remain active. The checked
+Final actual JS corpus06 now passes2,690,223 checks, with the same source35f13b6a
+and further archive6b775537 (2,006,045 bytes) as baseline04, and502,553 actual
+callbacks. Its session91828 is terminal/collected. Native corpus baseline04
+session49488/PID40008 and final native suite06 session16502/PID60980 remain active. The checked
 native baseline has consumed over30 CPU minutes and roughly580MB; preserve its
 real resource evidence and do not report it passed until terminal. These are
 checked/heap-traced test costs, not release-worker timings. Source06 contains
