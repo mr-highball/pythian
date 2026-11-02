@@ -3,7 +3,78 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: repaired callbacks/ranges locally qualified; full CI retry next - 2026-11-01
+## Current handoff: shared ancestry and portable guards accepted/deployed - 2026-11-02
+
+Big Boss SOLO. [Shared ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md)
+and [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
+close seven effort units. All criteria/prerequisites now pass, including complete
+[CI561](https://github.com/mr-highball/pythian/actions/runs/41387074245)
+at0e16b99eb67a16267916656cdb325ff2d80687f2, extracted core/WFC packages and
+matching checked fixed-slot deployment. Scope is44 tasks,37 current DONE/seven
+open,163/205 accepted(79.51%),42 open effort. Consecutive nonclosing count0;
+this is real criterion/task closure, not a reset for a handoff. The goal remains
+active. Parent style/blend UI and musical usefulness are not accepted by this
+prerequisite.
+
+The actual preserved six-node edited input blends at7 unique nodes/46,853 bytes
+and reblends at8/47,241, retaining exact original/intermediate identities, models,
+scopes and independent sounds. Native/actual JS each compare240,000 mix/six-stem
+samples after input owners are freed. Complete actual JS corpus passes2,690,223;
+complete Windows source06 heap-traced instrumental suite passes19,228,909 with
+zero unfreed blocks. Final native08 guard/callback checks and complete final-source
+Linux CI561 pass. Ordinary native jobs pass7,392,406 with locked originals/no relearning.
+Native/actual JS focused4096-byte sharing/64-node boundary checks pass1,680,813
+each; common callback consumers pass52,150 checks/52,041 callbacks, including
+original exception identity and final-node cancellation before publication.
+Portable IEEE guards/overflow and caller-codec ownership checks remain intact.
+The source06 normal-flag full fixture passes in440.516811s; that is a complete
+test workload, not a single-job timing or controlled speed comparison.
+
+CI561 finishes maintained integration and extracted consumers in25m33s; both
+downloaded source ZIP digests match package logs. Final core has123 units/137
+hashes; WFC188/318. E/runs/ancestry-ci561 retains exact run/job, logs, source
+packages and digest receipts. CI560 remains a genuine common-hook failure after
+its native corpus pass; it is not successful CI. Preserve JS07 MaxSingle,
+JS08 StdErr and JS09 Halt compile failures, earlier fixture failures, and both
+deliberately stopped superseded baselines. Their stops are neither passes nor
+assertion failures. All old test/watcher handles are terminal and collected.
+
+Actual desktop/390px Studio selects the saved scoped style and completes
+music-1793595143851-693375: exact source/candidate3c3cbcda, six parts,
+learning_performed=false, workflow4/4. The3second mix ends cleanly. Screenshots,
+full job response and audio-state check remain under E/runs/ancestry-qa01.
+Copied QA artifact/host-bound receipt setup failures remain there too; fixture
+relocation uses primary retention and normal hash verification, with no integrity
+bypass or product changes. Owned result tab16 is closed, temporary viewport reset,
+all9 audio elements paused/no loops. Initial error tab15 loaded no audio and uses
+documented automatic temporary-tab cleanup at turn end. The exact QA server73112
+is stopped; session98980 is collected. Its wrapper exit1 follows that deliberate
+stop. No QA listener or native worker remains; user browser tabs are preserved.
+
+Runtime02 and web02 are deployed: server924ba0b2/worker043bbc0f, source0e16b99,
+454 runtime inputs verified, twelve assets. Normal checked runtime flags omit
+heap tracing; checked tests retain it. Existing fixed stable slot, LAN binding,
+TLS identity and private E-drive stores are reused. All23 jobs,3 clips and7,143
+existing JSON hashes remain unchanged; worker admission and LAN HTTPS return200.
+Service30400 remains live after its hidden launcher exits, independently of the
+agent terminal. E/runs/ancestry-release01 retains rollback, manifest, before/after
+state, verification and independent-service receipts. Do not rerun the one-shot
+release script or deploy obsolete runtime01. Current ledger:
+E/runs/scoped-controls-qa01/ancestry-qualification-current.json.
+
+Next return to [instrumental styles](TODO/NS-5_instrumental-styles_01.md):
+criterion is ordinary selective parent weighting, independent musical/control/
+sound choices, saved reblend and actual instrumental Before/After comparison.
+Deliver through existing primary factories/native jobs and the optional Studio
+style controls; keep Library → Selection → Generate simple. Reuse accepted
+naming/reuse, scoped controls and shared ancestry. Close with actual native/
+pas2js and desktop/phone blend/reblend consumers, immutable parents/lineage,
+cancellation/conflict behavior and relevant complete-source deployment gates.
+Stop at a distinct required gap, preserving its evidence and linking its task
+before scope expands. No new implementation from that next batch is selected
+inside this completed prerequisite batch.
+
+## Earlier handoff: repaired callbacks/ranges locally qualified; full CI retry next - 2026-11-01
 
 Big Boss SOLO. Native08/actual JS08 now pass the common ancestry cancellation
 consumer:52,150 checks/52,041 callbacks, exact original exception identity,
@@ -58,7 +129,7 @@ parent preservation and retry; its focused/generic consumers also pass.
 Actual JS07 reaches a distinct primary compile gap: synth.stream uses
 Math.MaxSingle, absent from pas2js. The existing IEEE unit already owns the
 exact portable ceiling. The linked one-unit
-[portable range task](TODO/NS-1_portable-sample-range_01.md) is the current
+[portable range task](TODO/DONE/NS-1_portable-sample-range_01.md) is the current
 prerequisite, created before scope expands. Reuse that constant for the four
 owned guard units and their existing overflow fixtures; do not add a second
 codec or a broad audit. Close with affected native consumers, actual JS ancestry
@@ -213,7 +284,7 @@ actual consumers and checked deployment; it was progress. This batch inherited
 count0; its prototype/full-corpus rejection closes no complete criterion, so the
 current consecutive nonclosing count is1. Another nonclosing batch requires
 reassessment before further implementation; a refactor/handoff does not reset it.
-Selected [style ancestry](TODO/NS-5_style-ancestry_01.md), with both prerequisites
+Selected [style ancestry](TODO/DONE/NS-5_style-ancestry_01.md), with both prerequisites
 accepted. Criterion/deliverable: the real six-node edited style and a complete
 supported corpus can blend, save/reload and blend again through one bounded,
 self-contained shared-node/payload archive and the ordinary native jobs. Preserve
@@ -270,7 +341,7 @@ E/tests/scope-n04, scope-n04-extra01, scoped-policy-js06 and scoped-full-js01.
 The task retains original declaration/fixture/source-isolation failures and the
 missing-example harness repair. No generic WFC gap or dependency edit occurs.
 
-Next select [style ancestry](TODO/NS-5_style-ancestry_01.md), now Ready. The real
+Next select [style ancestry](TODO/DONE/NS-5_style-ancestry_01.md), now Ready. The real
 six-node edited input blends once at eight and cannot be blended further.
 Shared parents/model/evidence payloads must remain bounded and self-contained;
 do not flatten lineage, relearn on save or merely raise the node limit. Read-only
@@ -346,7 +417,7 @@ source-isolation and fixture failures. No generic WFC gap is demonstrated.
 The actual twice-edited style has six ancestry nodes. Blending it with its original
 produces eight, then a further blend fails the retained eight-node limit. The
 primary API proof, actual artifacts and clean heap remain in ancestry-proof under
-the QA evidence folder. Linked [style ancestry](TODO/NS-5_style-ancestry_01.md)
+the QA evidence folder. Linked [style ancestry](TODO/DONE/NS-5_style-ancestry_01.md)
 before expanding scope: shared payloads and ancestry need a bounded representation,
 not an arbitrary limit increase. This is Pythian adaptation, not a generic WFC gap.
 

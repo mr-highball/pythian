@@ -22,7 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Usable edited-style ancestry](NS-5_style-ancestry_01.md) — the actual twice-edited input reaches the eight-node limit before its further blend
+- [Usable edited-style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) — actual edited input and complete corpus now blend/reblend with shared payloads; CI561 and checked deployment pass
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
@@ -31,6 +31,14 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: the linked ancestry and portable-range prerequisites
+  are accepted after native/actual JS, actual Studio, complete CI561/extracted
+  consumers and matching fixed-slot deployment. Models, scoped controls, sounds
+  and source identities survive further composition without repeated payloads.
+  Return to this parent's ordinary selective blend/reblend interface and its
+  instrumental comparison; naming/reuse are already delivered. No parent effort
+  is accepted by the prerequisite closure. Keep the main three-step flow simple.
 
 - 2026-11-01, Big Boss: naming/reuse, actual sound variants and scoped passage
   capture now pass complete source CI559 and checked stable deployment. A saved

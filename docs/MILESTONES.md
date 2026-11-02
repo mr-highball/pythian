@@ -22,18 +22,19 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 156 / 205 effort units accepted (76.10%); nine open, thirty-five current-goal DONE.**
+**Current snapshot: 163 / 205 effort units accepted (79.51%); seven open, thirty-seven current-goal DONE.**
 
-Actual saved edits expose a six-unit [ancestry prerequisite](TODO/NS-5_style-ancestry_01.md).
-The six-node Studio input blends with its original at eight, then a further blend
-fails that limit. Bounded shared ancestry must support this intended workflow;
-the addition earns no effort. Scoped controls are now qualified/deployed and
-accepted; their separate real closure resets the count. The current
-repair closes its actual-artifact AC1 through native/actual JS mix and six stems;
-that real criterion resets the later nonclosing count1→0. Shared ownership, full native/JS corpus and cancellation consumers
-now pass; the portable-range prerequisite and complete source/runtime
-qualification remain. No partial effort closes. Finish this prerequisite before ordinary
-selective blending.
+[Shared style ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md) and
+[portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
+close seven units after complete
+[CI561](https://github.com/mr-highball/pythian/actions/runs/41387074245),
+native/actual JS corpus and cancellation, extracted consumers, actual Studio
+saved-style generation and checked fixed-slot deployment. The real six-node
+edited input blends at seven unique nodes and reblends at eight, retaining
+frozen models, scopes and sounds through shared immutable payloads. All23 jobs,
+3 clips and7,143 existing metadata hashes survive unchanged. The parent
+selective blend/reblend interface and musical usefulness remain open; no partial
+parent effort or quality score is accepted. Consecutive nonclosing count stays0.
 
 The four-unit [scoped style-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md)
 closes after native/actual JS/Studio save/reuse/edit, complete
@@ -154,13 +155,13 @@ per-task percentages or north-star weights apply.
 
 | North star | Required outcome in this goal | Open effort | Accepted effort | Derived progress |
 | --- | --- | ---: | ---: | ---: |
-| [NS-1](#ns-1) | Preserve core independence and repair the actual portable sample-range consumer | 1 | 0 | 0 / 1 |
+| [NS-1](#ns-1) | Preserve core independence and repair the actual portable sample-range consumer | 0 | 1 | 1 / 1 |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
-| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 21 | 4 | 4 / 25 |
+| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 63 | 63 / 71 |
-| **Total** | **44 current-goal tasks** | **49** | **156** | **76.10%** |
+| **Total** | **44 current-goal tasks** | **42** | **163** | **79.51%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -204,9 +205,10 @@ inference accuracy, independent annotation and fixed corpus floors do not block 
 
 Keep the accepted portable core, notices and public-library ownership boundary.
 Every affected implementation protects this invariant; no synthetic baseline task
-earns new effort. The one-unit [portable sample-range repair](TODO/NS-1_portable-sample-range_01.md)
-addresses an actual pas2js caller compile failure using the existing IEEE contract.
-It is a required ancestry qualification prerequisite, not new baseline credit.
+earns new effort. The one-unit [portable sample-range repair — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
+closes an actual pas2js caller compile failure using the existing IEEE contract.
+Affected native/actual JS consumers, complete CI561/extracted packages and matching
+runtime deployment pass; this is the demonstrated repair, not baseline credit.
 
 <a id="ns-2"></a>
 ### NS-2 — Playable sound breadth
@@ -290,8 +292,11 @@ Its complete nine-provider source/corpus snapshot now replays the ordinary
 instrumental stream on native and pas2js with primary sound/mix/form controls.
 Selective musical-vocabulary and independent sound/expression blends/reblends
 also pass on both targets. The integrated library component passes complete
-CI556 and extracted consumers. Ordinary Studio style saving/blending remains in
-the separate seven-unit parent task; its effort is not accepted by this component.
+CI556 and extracted consumers. Ordinary Studio naming/reuse and scoped edits are
+now delivered. Shared ancestry also qualifies complete-corpus edit/blend/reblend
+through CI561 and matching deployment. Ordinary selective blend controls and
+musical usefulness remain in the separate seven-unit parent task; its effort is
+not accepted by these components.
 The [new shared form API](MUSICAL-FORM.md) now drives an actual80second six-part
 arrangement with exact motif returns and selective Lead/Hat retention while other
 parts vary. It uses real context/voice/drum domains and one continuous performance.

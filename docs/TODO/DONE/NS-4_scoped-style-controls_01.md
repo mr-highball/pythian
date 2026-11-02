@@ -75,7 +75,7 @@ inference benchmark is required. Sound-recipe-only saving can proceed separately
   media are paused, its tab/service closed and the operator service/data unchanged.
   Publication/full-source qualification remain required before acceptance.
   The demonstrated six-node style → eight-node blend → rejected further blend
-  is linked separately as [style ancestry](../NS-5_style-ancestry_01.md); it does not
+  is linked separately as [style ancestry](NS-5_style-ancestry_01.md); it does not
   invalidate scope save/reuse/edit or authorize unrelated implementation here.
 
 - 2026-11-01, Big Boss: the shared policy and ordinary capture/reuse paths are

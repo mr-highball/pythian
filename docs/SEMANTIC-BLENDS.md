@@ -249,8 +249,8 @@ ancestors including the root. `blend(A,B)` has3 nodes;
 retains4. A further diamond can retain5 without duplicating its source models
 and evidence. These are semantic artifact bounds, separate from PYS bounds.
 The bounded legacy importer preserves V4–V6 identities within their original
-eight-occurrence trees. The [ancestry task](TODO/NS-5_style-ancestry_01.md)
-records qualification/deployment status; ordinary blend selection remains the
+eight-occurrence trees. The [accepted ancestry task](TODO/DONE/NS-5_style-ancestry_01.md)
+records complete CI561, native/actual JS/Studio and deployment evidence; ordinary blend selection remains the
 [parent Studio task](TODO/NS-5_instrumental-styles_01.md).
 
 Limits remain explicit:32MiB per archive,15 archived providers,128 prepared sources,

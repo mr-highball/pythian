@@ -1,19 +1,24 @@
 # NS-5_style-ancestry_01 — Keep edited styles usable through further blends
 
-[Tasks](README.md) · [Parent styles](NS-5_instrumental-styles_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Parent styles](../NS-5_instrumental-styles_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
-A real Studio style containing a sound edit and two passage-control edits already
-has six retained nodes. Blending it with its original succeeds at eight; using
-that result in a further blend fails the fixed eight-node limit. Current trees
-also count shared ancestors repeatedly and repeat complete model/evidence bytes.
-This blocks the intended edit → save → blend → further blend workflow.
+A real Studio style containing a sound edit and two passage-control edits had
+six retained nodes. Blending it with its original succeeded at eight; using
+that result in a further blend failed the fixed eight-node limit. The old trees
+also counted shared ancestors repeatedly and repeated complete model/evidence
+bytes, blocking the intended edit → save → blend → further blend workflow.
+
+The accepted V7 archive shares immutable nodes and payloads, retaining the actual
+edited input through seven-node blend and eight-node reblend. Complete supported
+corpus composition, bounded admission, cancellation and ordinary saved-style
+generation pass. Old V4–V6 identities remain exact through bounded import.
 
 Primary NS-5 attribution. Deliver a bounded, self-contained ancestry representation
 that supports actual edited inputs and the complete supported corpus. Reuse the
@@ -43,12 +48,32 @@ blend selection UI and musical usefulness remain the parent task's outcomes.
 
 **Blockers**
 
-- [Portable sample range](NS-1_portable-sample-range_01.md) — actual JavaScript
-  cancellation/caller-codec qualification exposes a platform-only Single limit.
-- [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — complete CI559, actual native/JS/Studio consumers and checked deployment.
-- [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md).
+- [Portable sample range — DONE](NS-1_portable-sample-range_01.md) — native/actual JS callers, complete CI561 and matching deployment pass.
+- [Scoped style controls — DONE](NS-4_scoped-style-controls_01.md) — complete CI559, actual native/JS/Studio consumers and checked deployment.
+- [Complete corpus persistence — DONE](NS-5_style-corpus-capacity_01.md).
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: accepted; AC1/AC2 evidence below and AC3 now pass.
+  Complete [CI561](https://github.com/mr-highball/pythian/actions/runs/41387074245)
+  at0e16b99eb67a16267916656cdb325ff2d80687f2 passes integration and extracted
+  core/WFC consumers. Both downloaded source ZIPs match their package digests.
+  Complete Windows source06 heap-traced suite passes19,228,909 checks with zero unfreed blocks;
+  final native08 repairs retain their targeted guard/callback checks.
+  Actual JS full corpus passes2,690,223 and ordinary native jobs7,392,406.
+  Desktop/390px Studio generates from the saved scoped style, retaining its exact
+  archive identity, six parts and learning_performed=false; playback ends cleanly.
+  Copied QA artifact/host-receipt relocation failures are preserved and repaired
+  as fixture setup, without weakening product verification. Matching runtime02/
+  web02 are deployed through the fixed stable slot with normal worker flags.
+  LAN HTTPS and independent service lifetime pass; all23 jobs,3 clips and7,143
+  existing metadata hashes remain unchanged. E/runs/ancestry-{ci561,qa01,release01}
+  retain evidence. Six units close; ordinary selective blend UI and actual musical
+  usefulness remain the [parent task](../NS-5_instrumental-styles_01.md).
+  V7 bounds remain64 unique nodes/path64,32MiB archive/unique payload pool and
+  explicit charged-work limits, not a claim of unlimited ancestry or process RAM.
+  Preserve CI560's real callback failure, JS07/08/09 compile failures and the
+  deliberately stopped superseded baselines; none is recast as a pass.
 
 - 2026-11-01, Big Boss: AC2 mechanism now has complete native Linux and
   Windows normal-flag evidence (19,228,909 full instrumental checks each),
@@ -91,7 +116,7 @@ blend selection UI and musical usefulness remain the parent task's outcomes.
   Current codec/learning separation and private immutable owner are implemented,
   not yet broadly qualified or deployed. The live corpus04 baselines remain
   valid work; snapshot06 also removes repeated structural-reader hashing.
-  See [WORK](../WORK.md) for exact handles and stop condition.
+  See [WORK](../../WORK.md) for exact handles and stop condition.
 
 - 2026-11-01, Big Boss: corpus-focused actual JS now exposes a real prototype
   limit: the shared512MiB comparison budget is below the accumulated valid

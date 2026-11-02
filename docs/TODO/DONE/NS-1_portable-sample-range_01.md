@@ -1,16 +1,16 @@
 # NS-1_portable-sample-range_01 — Share the portable Single sample limit
 
-[Tasks](README.md) · [Ancestry consumer](NS-5_style-ancestry_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Ancestry consumer](NS-5_style-ancestry_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 1/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
-The actual JavaScript ancestry cancellation/caller-codec consumer cannot compile
-because the primary synth stream uses `Math.MaxSingle`, absent from pas2js.
+The actual JavaScript ancestry cancellation/caller-codec consumer could not compile
+because the primary synth stream used `Math.MaxSingle`, absent from pas2js.
 Pythian already owns the exact `MaximumFiniteFloat32` contract in
 `pythian.ieee754`. Reuse it for the synth stream, resampling, separation and
 onset-dynamics sample guards rather than retaining platform constants or a
@@ -35,6 +35,18 @@ portable consumer gap, not new credit for the existing core baseline.
   [shared style ancestry](NS-5_style-ancestry_01.md).
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: accepted after complete
+  [CI561](https://github.com/mr-highball/pythian/actions/runs/41387074245)
+  at0e16b99eb67a16267916656cdb325ff2d80687f2 passes maintained integration and
+  both extracted packages. AC1/AC2 native/actual JS checks below remain valid;
+  AC3 now closes with matching fixed-slot server/worker and twelve browser assets.
+  Workers use normal checked runtime flags without heap tracing; validation keeps
+  its clean-heap checks. LAN HTTPS, independent service lifetime and matching
+  worker availability pass. All23 jobs,3 saved clips and7,143 existing metadata
+  hashes remain unchanged. Evidence: E/runs/ancestry-ci561, ancestry-qa01 and
+  ancestry-release01; [WORK](../../WORK.md) records limits and retained failures.
+  This closes one implementation effort unit, not musical-quality credit.
 
 - 2026-11-01, Big Boss: AC1/AC2 local consumers pass. Four product units and
   their existing overflow fixtures now reuse the exact primary IEEE limit.

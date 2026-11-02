@@ -27,10 +27,12 @@ their original eight-occurrence bound. Their exact bytes, identities, model
 meaning and parent IDs remain intact when embedded in a newer graph. Regenerate
 V1–V3 development artifacts; those readers remain removed.
 
-The [ancestry task](TODO/NS-5_style-ancestry_01.md) records current qualification.
-The actual edited artifact and native/actual JS mix/stem replay pass; complete
-corpus, ordinary-job and source/extracted qualification remain pending. This
-working implementation has not replaced the accepted review service.
+The [accepted ancestry task](TODO/DONE/NS-5_style-ancestry_01.md) records native/
+actual JS edited-artifact and complete-corpus mix/stem replay, cancellation,
+ordinary jobs, actual Studio and complete CI561/extracted qualification. Matching
+server/worker bytes and browser assets are deployed to the fixed review slot.
+This qualifies the mechanism, not the parent Studio blend interface or musical
+usefulness.
 
 `TSemanticStyle.CreateInstrumentalVariant(Parent, Recipe)` replaces only the
 performed instrument, mix/effects, expression, form and performance options.
@@ -71,11 +73,11 @@ scope, conflicting hard domains and excessive combined weights reject. The
 128-scope, existing token/preparation-work, ancestry and byte limits are explicit.
 Callbacks preserve cancellation at validation and bounded window preparation.
 
-The accepted deployment still has the eight-occurrence limit that blocked an
-actual edited style. The current shared-ancestry implementation retains that
-six-node input, blends at seven unique nodes, then reblends at eight. The
-[ancestry task](TODO/NS-5_style-ancestry_01.md) owns remaining qualification and
-deployment; scope save/reuse/edit acceptance did not close this separate gap.
+The accepted shared-ancestry implementation removes the eight-occurrence limit
+that blocked an actual edited style. It retains that six-node input, blends at
+seven unique nodes, then reblends at eight. The
+[ancestry task](TODO/DONE/NS-5_style-ancestry_01.md) records complete qualification
+and deployment; ordinary selective blending remains the parent Studio outcome.
 
 Ordinary Studio capture uses the actual edited frame range and completed clock
 to retain musical ticks. If performed length/tempo/seed differs from the source
@@ -329,12 +331,12 @@ including contexts reachable only through unselected historical PYS parents.
 
 `CreateSource(Definition)` establishes frozen vocabulary hashes from the exact
 public tokens. `CreateDerived(Parent, Definition)` currently permits only changes
-to generation preferences and hard constraints. Complete parent bytes are
-retained, each vocabulary points to the actual parent identity, and every model,
-source contribution, observed relationship, sound binding and extraction policy
+to generation preferences and hard constraints. Complete parents are retained
+through the shared archive. Each vocabulary points to the actual parent identity;
+every model, source contribution, observed relationship, sound binding and extraction policy
 must remain unchanged. A second derivation may use the first as parent. This is
 reusable control derivation; `CreateBlend` and its independent contribution policy
-are described in the [blend extension](SEMANTIC-BLENDS.md), pending final QA.
+are described in the accepted [blend extension](SEMANTIC-BLENDS.md).
 
 ## Sound and ownership
 

@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Thirty-four current-goal tasks are accepted: **152 / 194 effort units (78.35%)**. Their
+Thirty-seven current-goal tasks are accepted: **163 / 205 effort units (79.51%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -20,11 +20,18 @@ usable unguided form are accepted through their actual consumers. Complete sound
 recipes, editable layers/envelopes/movement and shared effect racks now drive
 retained-score Studio versions and saved private setups. Complete corpus archives
 and lossless native cache paths now pass ordinary consumers and complete CI556.
-There are131 DONE files: thirty-four current,
+Scoped style controls retain actual passage positions. Shared immutable ancestry
+supports the actual edited style and complete corpus through further blends;
+native/actual JS, ordinary Studio, complete CI561/extracted consumers and matching
+deployment pass. The portable Single guard repair shares the existing IEEE limit.
+There are134 DONE task files: thirty-seven current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) | 2026-11-02 | 6/10 | Shared immutable ancestry, actual edited input/full corpus blend/reblend, native/JS/jobs/browser, complete CI561 and deployment |
+| [NS-1_portable-sample-range_01](NS-1_portable-sample-range_01.md) | 2026-11-02 | 1/10 | Primary IEEE Single guards, native/actual JS cancellation/overflow consumers, complete CI561 and normal-flag runtime deployment |
+| [NS-4_scoped-style-controls_01](NS-4_scoped-style-controls_01.md) | 2026-11-01 | 4/10 | Actual musical positions, independent hard/soft controls, frozen save/reuse/edit, complete CI559 and deployment |
 | [NS-5_style-corpus-capacity_01](NS-5_style-corpus-capacity_01.md) | 2026-11-01 | 4/10 | Complete supported corpus/models/clocks/recipes, ordinary native style candidates, native/JS replay and complete CI556 |
 | [NS-6_native-cache-path_01](NS-6_native-cache-path_01.md) | 2026-11-01 | 2/10 | Long Unicode/atomic native I/O, actual playlist/clip consumers and repaired extracted WFC package, CI556 |
 | [NS-2_sound-design_01](NS-2_sound-design_01.md) | 2026-11-01 | 8/10 | Primary instrument/effect recipes, actual desktop/390px saved-score editing/audition, no-learning setup persistence, CI550 and checked deployment |
