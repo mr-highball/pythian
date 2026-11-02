@@ -5,6 +5,15 @@
 
 ## Current prerequisite: complete independent CI jobs - 2026-11-02
 
+Reassessment, Big Boss: two consecutive nonclosing batches. CI564's new packages
+job at a21e43d fails before invoking any consumer: the fresh checkout has no
+build directory for its redirected log. E/runs/style-tail-ci564 retains exact
+job125180334054/logs. This is an avoidable orchestration defect, not a musical
+failure. Stop scope expansion and repair only directory setup, verify that
+fresh-root boundary locally, then require the unchanged full two-job workflow
+and matched delivery. Preserve count2 until an actual criterion closes. No
+extra task/effort, timeout increase, consumer removal or review-code integration.
+
 Big Boss SOLO. CI563/run41411531132 at8b9cc74 is terminal cancelled, not a
 complete pass. Integration succeeds08:14:44–08:43:33 UTC(28m49s); extracted core
 124 owned units/138 content hashes succeeds; WFC checks are cut off08:44:22 at

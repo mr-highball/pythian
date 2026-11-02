@@ -28,7 +28,10 @@ The new two-unit [CI fanout prerequisite](TODO/NS-6_ci-consumer-fanout_01.md)
 addresses CI563's actual serial timeout. Complete integration passes28m49s and
 the extracted core passes, but WFC package verification is cancelled. Keep all
 checks and30minute job limits in independent jobs, and require whole-workflow
-success before deployment. No new effort is accepted; nonclosing count1.
+success before deployment. CI564 then exposes absent fresh build-directory
+setup before log redirection; no consumer ran in that failed packages job.
+No new effort is accepted. Counter2 triggers reassessment and the bounded setup
+repair, followed by the same complete delivery gate.
 
 [Saved-style retry — DONE](TODO/DONE/NS-6_style-job-retry_01.md) closes one unit
 after native/browser/API retry, complete
@@ -37,7 +40,7 @@ consumers and matching fixed-slot deployment. Ordinary blend/save/reblend/reuse
 is now live; all23 jobs,3 clips and7,143 existing metadata hashes are preserved.
 The parent keeps its seven open units for its default-tail estimate presentation
 and actual operator usefulness. That closure carried nonclosing count0; the
-current timeout above carries1.
+current delivery reassessment above carries2.
 
 [Shared style ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md) and
 [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)

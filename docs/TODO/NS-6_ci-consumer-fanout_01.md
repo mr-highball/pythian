@@ -35,6 +35,13 @@ consumer. Primary attribution: NS-6; these are delivery units, not musical value
 
 **Dev Notes:**
 
+- 2026-11-02, Big Boss: CI564/source a21e43d exposes a fresh-checkout setup
+  defect: package log redirection fails before the first consumer because build
+  is absent. Exact job125180334054/logs are retained under E/runs/style-tail-ci564.
+  Explicit directory creation repairs the orchestration boundary. Counter2
+  triggers reassessment: stop unrelated scope; verify that boundary and finish
+  this same complete gate. No inferred musical failure or accepted effort.
+
 - 2026-11-02, Big Boss: source8b9cc74, CI563/run41411531132 completes integration
   08:14:44–08:43:33 UTC. Extracted core124 owned units/138 hashes passes; the
   WFC package is cancelled at08:44:22 under the30minute job limit. Run conclusion

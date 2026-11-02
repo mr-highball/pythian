@@ -9,7 +9,9 @@
 delivery prerequisite. CI563 passes all integration and the extracted core, but
 its30minute serial job cuts off WFC package verification. Separate independent
 jobs retain all checks and the same per-job limit; acceptance still requires
-the complete exact-source workflow and matching deployment. Nonclosing count1.
+the complete exact-source workflow and matching deployment. CI564 then exposes
+missing fresh build-directory setup before package logging. Nonclosing count2
+has triggered reassessment; repair only that boundary and finish this gate.
 
 [Saved-style retry — DONE](DONE/NS-6_style-job-retry_01.md) closes one unit after
 native/browser/API reconnect, complete
@@ -18,7 +20,7 @@ consumers and matching deployment. Ordinary blend/save/further-blend/frozen reus
 controls are now live, preserving all23 jobs,3 clips and7,143 existing metadata
 hashes. The parent retains its own seven open units: finish its default-tail
 estimate presentation and actual operator usefulness. That closure carried
-nonclosing count0; the current timeout above carries1. No
+nonclosing count0; the current delivery reassessment above carries2. No
 musical-quality credit follows from the retry closure.
 
 [Shared style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) and its
