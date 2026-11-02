@@ -5,6 +5,15 @@
 
 ## Current focus: repair actual selective blend projection - 2026-11-02
 
+The original real-parent request now synthesizes at seed727633233,32seconds plus
+one-second tail:792,000frames, all six parts nonzero,296 drum hits and a clean
+heap. Source4428d74 is pushed; complete CI567 is running and extracted consumers
+pass. Normal416-input runtime is built. An isolated ordinary native retry of the
+same failure is running; stable is unchanged. Current Studio also reveals a
+distinct [visible generation retry](TODO/NS-6_generation-retry_01.md) gap. Link its
+one unit before returning to this projection verification. Scope50 tasks/41 DONE,
+nine open,173/216(80.09%),43 open effort; no acceptance, count1.
+
 Candidate repair: inherited percussion hit whitelists now intersect the actual
 selected groove vocabulary in the primary adapter, preserving original rules
 and forbidding empty-overlap hits. Native04 and actual pas2js04 pass 1,126
