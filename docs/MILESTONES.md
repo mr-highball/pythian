@@ -22,20 +22,28 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 171 / 210 effort units accepted (81.43%); seven open, forty current-goal DONE.**
+**Current snapshot: 173 / 211 effort units accepted (81.99%); seven open, forty-one current-goal DONE.**
+
+[Studio review entry](TODO/NS-6_review-entry_01.md) adds one open unit. Help can
+reach the delivered queue; ordinary Studio still needs a direct waiting-question
+action. This distinct navigation outcome earns no planning or musical credit.
+
+[Current Studio guide — DONE](TODO/DONE/NS-6_current-studio-guide_01.md) closes two
+units after current shared lessons, main/tool/review modal consumers, unchanged
+choices/data and matched frontend delivery over CI566's unchanged native runtime.
+It adds contextual Help without another phone header row. No musical credit.
 
 [Synthesis reviews — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md) closes five
 implementation units after actual mix/part playback, retained draft and feedback
 recovery, desktop/390px layout/Help, complete CI566 and matching fixed-slot
 delivery. All23 jobs,3 clips and7,143 metadata hashes stay exact. The operator's
 saved instrumental feedback supports further instrumental experiments; form and
-style quality retain their separate judgments. Current-guide delivery remains
-open, without partial credit. Consecutive nonclosing count0.
+style quality retain their separate judgments. Current-guide delivery is now
+accepted above. Consecutive nonclosing count0.
 
-The [current Studio guide](TODO/NS-6_current-studio-guide_01.md) adds two open
-units after actual Help review finds retired grain-setting instructions and
-removed targets. Finish the narrow listening controls first, then align the
-broader guide with the current workflow. No partial/planning effort is accepted.
+The [current Studio guide](TODO/DONE/NS-6_current-studio-guide_01.md) replaces the
+retired grain-setting instructions and removed targets found in actual review.
+Both narrow listening help and the broader current workflow are now delivered.
 
 The two-unit [CI fanout prerequisite — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)
 closes after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216):
@@ -191,8 +199,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 5 | 71 | 71 / 76 |
-| **Total** | **47 current-goal tasks** | **39** | **171** | **81.43%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 4 | 73 | 73 / 77 |
+| **Total** | **48 current-goal tasks** | **38** | **173** | **81.99%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

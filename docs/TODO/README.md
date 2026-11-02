@@ -3,7 +3,17 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 210 total effort units · 40 current-goal DONE · 171 / 210 accepted (81.43%).**
+**7 open tasks · 211 total effort units · 41 current-goal DONE · 173 / 211 accepted (81.99%).**
+
+[Studio review entry](NS-6_review-entry_01.md) adds one open unit: current Help
+can reach the queue, but ordinary Studio lacks a direct waiting-question action.
+Reuse the existing queue and show the next action without another main step.
+
+[Current Studio guide — DONE](DONE/NS-6_current-studio-guide_01.md) closes two
+units after shared current lessons, actual main/tool/review Help/Show/Return/Close,
+pas2js/bridge consumers and matching UI delivery. It reuses all416 unchanged
+native inputs qualified by CI566. All operator data remain exact. The narrow
+phone header adds Help without another row. Consecutive nonclosing count0.
 
 [Synthesis reviews — DONE](DONE/NS-6_synthesis-reviews_01.md) closes five units
 after actual native/desktop/390px consumers, complete CI566, verified extracted
@@ -11,12 +21,11 @@ packages and matching fixed-slot delivery. Exact mix/part clocks, contextual
 question/Help/queue, retained draft refresh, Save/Next/reload and actual saved
 operator decision pass. All23 jobs/3 clips/7,143 metadata hashes survive. No form
 or style-quality credit follows. The broader current-guide candidate is prepared
-on E; its integration/delivery remains open. Consecutive nonclosing count0.
+on E; its completed integration/delivery is accepted above. Consecutive nonclosing count0.
 
-[Current Studio guide](NS-6_current-studio-guide_01.md) adds two open units:
-actual review found lessons for retired grain settings and removed targets.
-The narrow listening target is repaired in its existing task; broader current-
-workflow instruction follows that delivery. No planning or partial credit.
+[Current Studio guide — DONE](DONE/NS-6_current-studio-guide_01.md) replaces retired
+grain settings and removed targets. The narrow listening target and broader
+current-workflow instruction now both pass their actual consumers and delivery.
 
 [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) closes two units
 after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216),
@@ -213,7 +222,8 @@ continuity experiments are selected.
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
 | [NS-6_synthesis-reviews_01 — DONE](DONE/NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Accepted; exact mix/part clocks, contextual question/queue/Help, draft-safe refresh, Save/Next/reload, CI566 and delivery |
-| [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Prepared current shared lessons and modal-target consumers pass; final integration/delivery pending |
+| [NS-6_current-studio-guide_01 — DONE](DONE/NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Accepted; current shared lessons, main/tool/review modal navigation, preserved choices, compact phone header and matching UI delivery |
+| [NS-6_review-entry_01](NS-6_review-entry_01.md) — visible waiting questions from Studio | 1 | Ready; use the existing review queue and current result ID without another main step |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |

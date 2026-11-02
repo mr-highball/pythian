@@ -22,9 +22,12 @@ completion. That flow and its coarse-learning prerequisite were accepted on
 optional [sound editor](TODO/DONE/NS-2_sound-design_01.md) is also accepted after
 actual saved-score editing/audition and checked deployment. The
 [listening workbench](TODO/DONE/NS-6_synthesis-reviews_01.md) now provides exact
-mix/part comparisons, one question and durable feedback. Graph inspection,
-recording-proposal corrections, articulation, generation consolidation, current
-instruction and form/style musical judgments remain unfinished. Musical
+mix/part comparisons, one question and durable feedback. The shared
+[current guide](TODO/DONE/NS-6_current-studio-guide_01.md) provides contextual
+instruction in the three-step workflow and its tools. Graph inspection,
+recording-proposal corrections, articulation, generation consolidation, direct
+Studio review entry and
+form/style musical judgments remain unfinished. Musical
 preference is not inferred from implementation acceptance.
 
 - **Real instrumental output.** Generated musical events drive Pythian oscillators/noise, wavetable, additive/FM/PM and layered instrument recipes, envelopes, modulation, filters, buses and effects. Source recordings teach or provide comparison context. A deliberately selected sampler instrument is explicit; assembling windows from a full training mix is not the primary output path.

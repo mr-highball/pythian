@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Forty current-goal tasks are accepted: **171 / 210 effort units (81.43%)**. Their
+Forty-one current-goal tasks are accepted: **173 / 211 effort units (81.99%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -28,11 +28,12 @@ Saved-style retry now preserves the same immutable job through native/browser
 reconnect, complete CI562/extracted consumers and matching deployment.
 Complete CI fanout retains every consumer in independent30minute jobs; CI565,
 verified extracted ZIPs and matching sound-tail runtime/UI delivery pass.
-There are137 DONE task files: forty current,
+There are138 DONE task files: forty-one current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) | 2026-11-02 | 2/10 | Current shared lessons, main/tool/review contextual Help/Show/Return/Close, preserved choices/data, compact phone header and matched UI delivery over unchanged CI566 native inputs |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) | 2026-11-02 | 5/10 | Actual mix/parts, synchronized comparison, contextual question/Help/queue, retained draft and exact feedback, complete CI566 and preserved-data delivery |
 | [NS-6_ci-consumer-fanout_01](NS-6_ci-consumer-fanout_01.md) | 2026-11-02 | 2/10 | Complete native/package CI565, every check retained, verified source ZIPs and matching sound-tail delivery with all operator metadata preserved |
 | [NS-6_style-job-retry_01](NS-6_style-job-retry_01.md) | 2026-11-02 | 1/10 | Identical queued/completed named/blend retries, immutable request/event/Before, native/browser/CI562 and checked deployment |

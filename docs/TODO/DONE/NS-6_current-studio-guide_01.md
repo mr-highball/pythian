@@ -1,18 +1,17 @@
 # NS-6_current-studio-guide_01 — Teach the Studio that actually exists
 
-[Tasks](README.md) · [Goal](../GOAL.md) · [Listening workflow](DONE/NS-6_synthesis-reviews_01.md)
+[Tasks](../README.md) · [Goal](../../GOAL.md) · [Listening workflow](NS-6_synthesis-reviews_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 2/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-02
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
-The shared guide still teaches the former project/batch interface. Its Settings
-lesson describes short recorded pieces and neighboring-piece context, then
-targets the removed batch-palette control. Align the available lessons with
-Library → Selection → Generate, actual instrumental controls and saved music.
+Replace the former project/batch lessons and removed grain-setting targets with
+the current Library → Selection → Generate workflow, actual instrumental controls
+and saved music. Use the same contextual guide across Studio and review pages.
 Primary attribution: NS-6. This is usable operator instruction, not musical
 quality or inference accuracy. Keep the current listening experiment moving.
 
@@ -31,11 +30,25 @@ quality or inference accuracy. Keep the current listening experiment moving.
 
 **Blockers**
 
-- [Current listening controls](DONE/NS-6_synthesis-reviews_01.md) — its compact queue
+- [Current listening controls](NS-6_synthesis-reviews_01.md) — its compact queue
   and player define the actual Help targets that this broader guide must teach.
-- [Simple Studio — DONE](DONE/NS-6_simple-studio_01.md)
+- [Simple Studio — DONE](NS-6_simple-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: all criteria/prerequisites pass. Source05/browser05 is
+  deployed at194fbb9 with the unchanged CI566-qualified6023101 native runtime;
+  all416 native inputs remain exact. This is presentation-consumer qualification,
+  not a claim that194fbb9 ran a new native CI. Full pas2js, listening bridge29 and
+  actual desktop/390px main/tool/review consumers pass. All415 QA metadata files
+  and selected ranges remain; live Help and both actual saved lofi clips verify.
+  All23 production jobs,3 clips and7,143 metadata hashes survive. Twelve served
+  assets verify, including the existing phone template substitutions. Stable
+  PID75016 survives its hidden launcher; no QA tab/service/worker/audio remains.
+  E/runs/current-guide-release01 retains rollback, matched native/UI sources,
+  screenshots and process/data receipts. Wrapper36426 is terminal/collected.
+  This accepts two implementation units, retaining nonclosing count0. No musical
+  quality, inference accuracy or private-response content is added to this record.
 
 - Final source05/browser05 changes only studio.css after source04: actual390px
   screenshot caught Help wrapping onto its own header row. The narrow header now

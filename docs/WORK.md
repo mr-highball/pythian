@@ -3,7 +3,54 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: teach the current Studio controls - 2026-11-02
+## Current focus: real style/blend listening, after delivered review and Help - 2026-11-02
+
+Big Boss SOLO. [Current shared Help — DONE](TODO/DONE/NS-6_current-studio-guide_01.md)
+closes two units after the [listening workbench — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md).
+Current stable PID75016 serves source05/browser05 at194fbb9 over the unchanged
+6023101 native runtime qualified by complete CI566. All416 native inputs match;
+frontend compilation, maintained bridge29 and actual desktop/390px main/tool/
+review consumers pass. This does not claim a new full native CI at194fbb9.
+All23 jobs,3 independent clips and7,143 existing metadata hashes remain exact.
+Twelve served assets verify, including the intended phone template. The hidden
+OS launcher exits. All QA tabs/services/audio are closed and wrappers/watchers
+are terminal/collected. E/runs/current-guide-release01 retains rollback, matched
+source receipts and the actual two-lofi-clip screenshot. Stable binary hashes
+remain d75ef29f6e6aff509a92acabeda1515a71a56670b143e075b17b8e50d29a0ce3 /
+6a106258bc23dab8ed03b38744da9e9a1199b537e2a3898bbc8c2cc9744389c6.
+Existing Private LAN/TLS and fixed service paths remain. Solo is not independent QA.
+
+The lofi clip modal shows11.123–29.001 and666.660–822.831 seconds, with their
+saved labels and independent preview controls. Whole-track inclusion collapses
+children without deleting saved choices. Live Help opens the current step and
+closes in place. The narrow header keeps44px Help in one row; all415 QA metadata
+files and clip ranges survive main/tool Help/Show/Return/Close. No work starts.
+
+Final ordinary-Studio audit identifies a distinct gap: its review queue can be
+reached through Help, but it has no direct waiting-question/count action. Linked
+[one-unit review entry](TODO/NS-6_review-entry_01.md) before expanding scope. The
+review workbench and shared guide remain delivered; the new task is not a new
+queue framework or mandatory fourth step. Scope48 tasks/41 DONE/seven open,
+173/211(81.99%),38 open effort; consecutive nonclosing count0. Musical quality,
+form/style usefulness and private operator answers retain their actual limits.
+
+Next selection follows NS-5, the least-complete north star (10/25 accepted).
+Its [style task](TODO/NS-5_instrumental-styles_01.md) has delivered prerequisites
+and controls but still lacks the actual operator usefulness decision. Before the
+next batch, inspect the existing retained real recording-derived jobs; prepare
+one deliberate instrumental blend/reblend comparison and its concise question.
+Criterion: the operator can hear the actual retained parents and synthesized
+change, then save a decision without training. Close with native provenance,
+actual queue/playback and explicit settings, stopping at one usable question or
+a genuine prerequisite. Use the linked Studio-entry task for the discovered
+navigation scope. Do not start another paper qualification or reconstruction.
+The form question remains live; the recording-proposal editor is ready independent
+implementation work once the NS-5 listening batch waits for an answer. No further
+generation or publication has started in this selection record. Goal stays active.
+
+## Earlier shared-guide preparation, now delivered - 2026-11-02
+
+The following preparation record is superseded by the completed gate above.
 
 Big Boss SOLO. [Listening workbench — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md)
 closes five implementation units after complete
@@ -24,7 +71,7 @@ synthesis and deliberate retained-score changes. The live returning-lead questio
 all seven exact clock-matched parts. Form/style musical judgments remain open.
 Scope47 tasks/40 DONE/seven open,171/210(81.43%),39 open effort; nonclosing count0.
 
-Next [current guide](TODO/NS-6_current-studio-guide_01.md), effort2. Criterion:
+Next [current guide](TODO/DONE/NS-6_current-studio-guide_01.md), effort2. Criterion:
 current Library/Selection/Generate lessons, reachable contextual Help, Show,
 Return and Close without modifying choices or starting work. Deliver the existing
 shared guide inside current Studio, with tool-dialog context; close through
@@ -67,7 +114,7 @@ close, viewport override resets and both QA04/05 services stop/handles collect.
 Only the user's original tab remains; no QA listener, worker or audio remains.
 Complete source CI and matching stable delivery remain before acceptance.
 The broader shared guide actually still teaches retired grain settings and dead
-targets: linked [two-unit guide follow-up](TODO/NS-6_current-studio-guide_01.md)
+targets: linked [two-unit guide follow-up](TODO/DONE/NS-6_current-studio-guide_01.md)
 before scope expands. It follows this review delivery, not a new prerequisite.
 Current scope47 tasks/39 DONE/eight open,166/210(79.05%),44 open effort; count0.
 No partial review or guide effort is accepted. Stable remains accepted CI565.

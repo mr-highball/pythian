@@ -28,6 +28,12 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- Final ordinary-Studio entry audit finds the queue reachable through Help but
+  no direct pending-question action in the simplified product. Linked the
+  separate [Studio entry task](../NS-6_review-entry_01.md), effort1, before adding
+  scope. This accepted task owns the actual question/player/feedback workbench;
+  the new task owns navigation from ordinary Studio, not another queue framework.
+
 - 2026-11-02, Big Boss: all four criteria and prerequisites pass. Complete
   [CI566](https://github.com/mr-highball/pythian/actions/runs/41427821234) at
   6023101f03bb6232e2a0f0ce7623131b0c2087db passes native integration23m37s and both
@@ -63,7 +69,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 - 2026-11-02, Big Boss: actual Help review finds stale broad Studio lessons
   describing retired grain controls and removed targets. Linked the separate
-  [current-guide task](../NS-6_current-studio-guide_01.md) before expanding scope.
+  [current-guide task](NS-6_current-studio-guide_01.md) before expanding scope.
   It follows this task; it does not block the current experiment. This batch
   repairs only its own listening lesson/target and contextual controls. Count0.
 

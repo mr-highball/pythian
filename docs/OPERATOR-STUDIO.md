@@ -243,9 +243,9 @@ Notes show time; Save & next records feedback without retraining. Original conte
 is available when the experiment has a real recording reference.
 
 The [graph workbench](TODO/NS-4_graph-workbench_01.md) and operator usefulness of
-styles/blends remain open. The broader [current Studio guide](TODO/NS-6_current-studio-guide_01.md)
-is in progress. Existing library foundations do not imply that the simple Studio
-exposes every control.
+styles/blends remain open. The broader [current Studio guide](TODO/DONE/NS-6_current-studio-guide_01.md)
+is delivered. Existing library foundations do not imply that the simple Studio
+exposes every graph control.
 Optional correction/bypass of recording-derived musical proposals remains
 [open](TODO/NS-3_experimental-learning_01.md); importing/analyzing recordings and
 automatic playlist learning do not require that editor.
