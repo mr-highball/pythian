@@ -362,6 +362,7 @@ begin
     AbortAndRetry(opDecode, 'semantic_archive_input', 65536);
     AbortAndRetry(opDecode, 'semantic_archive_blob', 65536);
     AbortAndRetry(opDecode, 'semantic_ancestry_node', 1, False);
+    AbortAndRetry(opDecode, 'semantic_ancestry_node', GReblend.NodeCount, False);
     AbortAndRetry(opEncode, 'semantic_archive_copy', 65536);
     AbortAndRetry(opSession, 'semantic_load_providers', 1);
     AbortAndRetry(opSession, 'semantic_prepare_session', 2, False);

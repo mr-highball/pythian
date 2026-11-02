@@ -86,6 +86,7 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   pythian.fourier;
 
 type
@@ -332,14 +333,14 @@ begin
       LPosition := LSourceFrame * ASource.Channels + LChannel;
       LValue := LAccumulated[LPosition] / LWeights[LSourceFrame];
       RequireFinite(LValue, 'Separated harmonic sample');
-      if Abs(LValue) > MaxSingle then
+      if Abs(LValue) > MaximumFiniteFloat32 then
       begin
         raise EAudio.Create('Separated harmonic sample exceeds native clip headroom');
       end;
       LHarmonic[LPosition] := LValue;
       LResidual := ASource.SampleAt(LSourceFrame, LChannel);
       LResidual := LResidual - LHarmonic[LPosition];
-      if Abs(LResidual) > MaxSingle then
+      if Abs(LResidual) > MaximumFiniteFloat32 then
       begin
         raise EAudio.Create('Separated percussive sample exceeds native clip headroom');
       end;

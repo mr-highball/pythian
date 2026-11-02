@@ -3,7 +3,87 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: CI560 and final corpus qualification running - 2026-11-01
+## Current handoff: repaired callbacks/ranges locally qualified; full CI retry next - 2026-11-01
+
+Big Boss SOLO. Native08/actual JS08 now pass the common ancestry cancellation
+consumer:52,150 checks/52,041 callbacks, exact original exception identity,
+first-node and final-node cancellation before publication, retained parents and
+deterministic retry. Focused native/JS mix/six-stem/archive checks remain exact
+at1,680,813 each. Native08 wave/resample streams, separation, onset, effects and
+bus fixtures pass with clean heaps. Actual JS effects/bus and fresh native
+hosts pass under portable-range-{js,native}10. Every overflow assertion remains;
+only native-only test-console WriteLn(StdErr)/Halt entrypoints are adapted.
+The four affected guard units reuse existing MaximumFiniteFloat32. Preserve
+JS07 MaxSingle, JS08 StdErr and JS09 Halt failures and their frozen inputs.
+
+Ancestry AC2 evidence now closes: complete native Linux/Windows corpus and
+actual JS06 corpus pass, artifact6b775537/2,006,045 bytes and all sources/rows
+retained; focused native/JS ownership,64/65-node bounds, malformed references
+and restored cancellation pass. This is not whole-task acceptance: its portable
+range prerequisite and AC3 complete-source/extracted/deployment remain open.
+Scope stays156/205(76.10%),44 tasks/nine open/35 DONE; nonclosing count0.
+The previous turn was progress. This turn repairs observed failures and closes
+AC2 evidence; no partial effort is accepted or musical-quality claim made.
+
+CI560 is a preserved terminal failure despite its earlier native corpus pass.
+Run a new exact-source workflow only after publishing the current focused repair;
+do not rerun560 or reuse its failed conclusion as acceptance. Local core06/WFC07
+packages qualify the archive mechanism; the final complete workflow must cover
+the changed portable guards and callback consumer too. Runtime01/web01 are
+prepared but runtime01 predates these repairs and must not be deployed. Rebuild
+matching runtime bytes with normal flags and retain heap tracing in validation.
+
+Final source06 heap-traced native suite16502/PID60980 remains active; poll that
+exact handle without restart. Source04 baseline49488 is deliberately stopped/
+collected after newer native Linux/Windows/actual JS corpus passes; its exit1
+is the owned stop, not an assertion failure or pass. Source06 normal-flag full
+fixture passed19,228,909 checks in440.516811s; that is the entire test workload,
+not one job timing. Stable service/data/browser are unchanged.
+
+## Earlier handoff: callback repair and portable prerequisite - 2026-11-01
+
+Big Boss SOLO. CI560 is terminal failure, not a timeout: the new reader did
+not emit the primary semantic_ancestry_node hook. Its complete native Linux
+instrumental fixture already passes19,228,909 checks, full64-source/1024-run
+corpus, exact source35f13b6a and further6b775537/2,006,045 bytes. Actual JS06
+also passes the complete corpus, while ordinary jobs and local extracted packages
+pass. This evidence does not make CI560 successful. Its native-fpc-logs artifact
+matches digest8cd8599fcd072ffb6a8519f0e97f3528e2912652fb9b7e6dafe97da2bf74f1b8;
+the original callback failure and job log remain in E/runs/ancestry-ci560.
+
+The common hook is restored with actual validated-node counts and a final
+prepublication callback. Native07 passes52,150 progress checks/52,041 callbacks,
+including original exception identity, first-node/final-node cancellation,
+parent preservation and retry; its focused/generic consumers also pass.
+Actual JS07 reaches a distinct primary compile gap: synth.stream uses
+Math.MaxSingle, absent from pas2js. The existing IEEE unit already owns the
+exact portable ceiling. The linked one-unit
+[portable range task](TODO/NS-1_portable-sample-range_01.md) is the current
+prerequisite, created before scope expands. Reuse that constant for the four
+owned guard units and their existing overflow fixtures; do not add a second
+codec or a broad audit. Close with affected native consumers, actual JS ancestry
+progress/caller-codec checks, complete source/extracted qualification and the
+matching runtime delivery. Stop before additional feature work.
+
+New scope is44 tasks, nine open/35 DONE,156/205 accepted(76.10%). No partial
+effort closes. The inherited consecutive nonclosing count is0; this batch remains
+active. Callback/API and sample-range failures are implementation evidence, not
+musical rejection or a reason to remove tests.
+
+Runtime build inspection also finds heap tracing enabled in the prior deployed
+worker. The same complete source06 native fixture passes19,228,909 checks with
+normal runtime flags in440.516811s. This is the complete test workload, not one
+job timing. Preserve heap tracing in validation, remove it from deployed workers.
+Runtime01 binaries and matching web assets are prepared under E/build but are
+invalidated by the pending hook/core repairs; do not stage them. Production
+remains untouched. The source04 native baseline was deliberately stopped only
+after source06 native Linux/Windows and actual JS corpus passed; its verified
+owner/resource receipt is in ancestry-capacity-native04/stopped-superseded-baseline.json.
+Session49488 is terminal/collected; its wrapper exit1 is the deliberate stop,
+not a native04 assertion failure or pass. Final source06 heap-traced native
+suite16502/PID60980 remains active; poll its exact handle, never restart it.
+
+## Earlier handoff: CI560 qualification wait - 2026-11-01
 
 Implementation candidate1308e6e53a8043a4ce4434881b30e318466997ea is committed
 and pushed on hello-pythian. Exact [CI560](https://github.com/mr-highball/pythian/actions/runs/41382570241)

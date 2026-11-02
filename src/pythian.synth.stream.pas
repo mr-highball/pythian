@@ -95,6 +95,7 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   pythian.effects;
 
 procedure TFrameToneStream.SortEvents;
@@ -285,7 +286,7 @@ begin
           Inc(FEventIndex);
         end;
         FSynth.Process(LLeft, LRight);
-        if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+        if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
         begin
           raise EAudio.Create('Tone stream sample exceeds Single magnitude');
         end;

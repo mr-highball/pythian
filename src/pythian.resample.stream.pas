@@ -110,6 +110,7 @@ implementation
 
 uses
   Math,
+  pythian.ieee754,
   pythian.resample;
 
 function StreamResampleFrameCount(const AInputFrames: Int64;
@@ -249,7 +250,7 @@ begin
       LRight := LLeft;
     end;
     RequireFinite(LRight, 'Streaming PCM right');
-    if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) or
+    if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) or
       (FInputCount = High(Int64)) then
     begin
       raise EAudio.Create('Streaming PCM sample or frame count exceeds range');
@@ -389,7 +390,7 @@ begin
       end;
       RequireFinite(LLeft, 'Resampled stream left');
       RequireFinite(LRight, 'Resampled stream right');
-      if (Abs(LLeft) > MaxSingle) or (Abs(LRight) > MaxSingle) then
+      if (Abs(LLeft) > MaximumFiniteFloat32) or (Abs(LRight) > MaximumFiniteFloat32) then
       begin
         raise EAudio.Create('Resampled stream exceeds Single range');
       end;

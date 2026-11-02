@@ -22,7 +22,7 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 156 / 204 effort units accepted (76.47%); eight open, thirty-five current-goal DONE.**
+**Current snapshot: 156 / 205 effort units accepted (76.10%); nine open, thirty-five current-goal DONE.**
 
 Actual saved edits expose a six-unit [ancestry prerequisite](TODO/NS-5_style-ancestry_01.md).
 The six-node Studio input blends with its original at eight, then a further blend
@@ -30,9 +30,9 @@ fails that limit. Bounded shared ancestry must support this intended workflow;
 the addition earns no effort. Scoped controls are now qualified/deployed and
 accepted; their separate real closure resets the count. The current
 repair closes its actual-artifact AC1 through native/actual JS mix and six stems;
-that real criterion resets the later nonclosing count1→0. Shared payload ownership
-is implemented, with full-corpus, ordinary-job and source/extracted qualification
-still pending. No partial effort closes. Finish this prerequisite before ordinary
+that real criterion resets the later nonclosing count1→0. Shared ownership, full native/JS corpus and cancellation consumers
+now pass; the portable-range prerequisite and complete source/runtime
+qualification remain. No partial effort closes. Finish this prerequisite before ordinary
 selective blending.
 
 The four-unit [scoped style-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md)
@@ -154,13 +154,13 @@ per-task percentages or north-star weights apply.
 
 | North star | Required outcome in this goal | Open effort | Accepted effort | Derived progress |
 | --- | --- | ---: | ---: | ---: |
-| [NS-1](#ns-1) | Preserve portable core independence | 0 | 0 | Baseline invariant; no standalone current task |
+| [NS-1](#ns-1) | Preserve core independence and repair the actual portable sample-range consumer | 1 | 0 | 0 / 1 |
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 21 | 4 | 4 / 25 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 63 | 63 / 71 |
-| **Total** | **43 current-goal tasks** | **48** | **156** | **76.47%** |
+| **Total** | **44 current-goal tasks** | **49** | **156** | **76.10%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -204,7 +204,9 @@ inference accuracy, independent annotation and fixed corpus floors do not block 
 
 Keep the accepted portable core, notices and public-library ownership boundary.
 Every affected implementation protects this invariant; no synthetic baseline task
-earns new effort. Existing code did not become unimplemented because scope changed.
+earns new effort. The one-unit [portable sample-range repair](TODO/NS-1_portable-sample-range_01.md)
+addresses an actual pas2js caller compile failure using the existing IEEE contract.
+It is a required ancestry qualification prerequisite, not new baseline credit.
 
 <a id="ns-2"></a>
 ### NS-2 — Playable sound breadth

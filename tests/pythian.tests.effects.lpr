@@ -30,6 +30,7 @@ uses
   SysUtils,
   Math,
   pythian.audio,
+  pythian.ieee754,
   pythian.biquad,
   pythian.dynamics,
   pythian.effects,
@@ -538,7 +539,7 @@ var
   LRejected: Boolean;
 begin
   SetLength(LSamples, 1);
-  LSamples[0] := MaxSingle;
+  LSamples[0] := MaximumFiniteFloat32;
   LSource := TAudioClip.Create(8000, 1, LSamples);
   LOutput := LSource;
   LChain := TEffectChain.Create(8000);
@@ -577,8 +578,8 @@ begin
   except
     on LException: Exception do
     begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
+      WriteLn({$ifndef pas2js}StdErr, {$endif} LException.ClassName, ': ', LException.Message);
+      ExitCode := 1;
     end;
   end;
 end.

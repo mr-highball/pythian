@@ -67,7 +67,8 @@ function IntensityVelocity(const AVelocity, ABand: Integer): Integer;
 implementation
 
 uses
-  Math;
+  Math,
+  pythian.ieee754;
 
 procedure ObserveDynamics(const AProgress: TWorkProgressCallback;
   const AStage: String; const ADone, ATotal: Integer);
@@ -110,7 +111,7 @@ begin
   for LValue in AData.Rms do
   begin
     RequireFinite(LValue, 'Onset RMS');
-    if (LValue < 0) or (LValue > 3.4028234663852886e38) then
+    if (LValue < 0) or (LValue > MaximumFiniteFloat32) then
     begin
       raise EAudio.Create('Onset RMS outside finite source sample range');
     end;

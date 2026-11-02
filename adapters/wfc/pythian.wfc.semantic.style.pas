@@ -3623,7 +3623,7 @@ begin
   try
     for I := 0 to High(LNodes) do
     begin
-      ReportWork(AProgress, 'semantic_ancestry_validate_node', wuItems, I, Length(LNodes));
+      ReportWork(AProgress, 'semantic_ancestry_node', wuItems, I, Length(LNodes));
       LDefinitionBytes := LArchive.DefinitionBytes(I, AProgress);
       LDefinition := ReadDefinition(LDefinitionBytes, AProgress);
       LRecipe := Default(TSemanticBlendRecipe);
@@ -3647,6 +3647,7 @@ begin
         'Semantic ancestor digest differs from its complete validated parents and recipe');
       ReleaseParent(LNodes[I].Parent); ReleaseParent(LNodes[I].OtherParent);
     end;
+    ReportWork(AProgress, 'semantic_ancestry_node', wuItems, Length(LNodes), Length(LNodes));
     Result := LStyles[High(LStyles)]; LStyles[High(LStyles)] := nil;
     Result.FArchive.Free; Result.FArchive := LArchive; LArchive := nil;
   finally

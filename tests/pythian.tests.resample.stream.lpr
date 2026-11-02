@@ -31,6 +31,7 @@ uses
   SysUtils,
   Math,
   pythian.audio,
+  pythian.ieee754,
   pythian.wave,
   pythian.wave.read,
   pythian.wave.resample,
@@ -409,7 +410,7 @@ begin
           end
           else
           begin
-            LReader.InjectedValue := MaxSingle;
+            LReader.InjectedValue := MaximumFiniteFloat32;
             LReader.InjectedValue := LReader.InjectedValue * 2;
           end;
         end;

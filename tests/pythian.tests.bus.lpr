@@ -30,6 +30,7 @@ uses
   SysUtils,
   Math,
   pythian.audio,
+  pythian.ieee754,
   pythian.effects,
   pythian.echo,
   pythian.bus;
@@ -533,7 +534,7 @@ begin
     Check(LRejected and not LGraph.Failed and (LPart = LPrevious),
       'Render budget rejects without state/output mutation');
     SetLength(LSamples, 1);
-    LSamples[0] := MaxSingle;
+    LSamples[0] := MaximumFiniteFloat32;
     LOverflow := TAudioClip.Create(8000, 1, LSamples);
     LGraph.AddEffect(1, TGainEffect.Create(8000, 16, 0));
     LRejected := False;
@@ -569,8 +570,8 @@ begin
   except
     on LException: Exception do
     begin
-      WriteLn(StdErr, LException.ClassName, ': ', LException.Message);
-      Halt(1);
+      WriteLn({$ifndef pas2js}StdErr, {$endif} LException.ClassName, ': ', LException.Message);
+      ExitCode := 1;
     end;
   end;
 end.

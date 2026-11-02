@@ -43,10 +43,29 @@ blend selection UI and musical usefulness remain the parent task's outcomes.
 
 **Blockers**
 
+- [Portable sample range](NS-1_portable-sample-range_01.md) — actual JavaScript
+  cancellation/caller-codec qualification exposes a platform-only Single limit.
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — complete CI559, actual native/JS/Studio consumers and checked deployment.
 - [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: AC2 mechanism now has complete native Linux and
+  Windows normal-flag evidence (19,228,909 full instrumental checks each),
+  actual JS06 full corpus (2,690,223), the same eight-node2,006,045-byte artifact
+  6b775537 and detached mix/stems after freeing inputs. Native/actual JS08
+  cancellation passes52,150 checks/52,041 callbacks, including final-node
+  prepublication cancellation, exact exception identity, unchanged parents and
+  retry. This closes AC2 evidence; AC3 complete source and deployed consumer
+  still remain, with no task effort accepted. CI560 itself failed the missing
+  common semantic_ancestry_node hook; the repair restores it and adds a late
+  abort check without removing assertions. Its digest-verified logs are retained.
+  JS07 separately exposed MaxSingle in the primary synth stream; the linked
+  one-unit portable-range prerequisite owns that bounded repair. Native08
+  affected guards/fixtures and actual JS08/portable-range-js10 consumers pass.
+  Test-console StdErr/Halt assumptions are adapted to native stderr/portable
+  WriteLn plus failure ExitCode, preserving every overflow assertion. No new
+  algorithm or source-model changes are introduced.
 
 - 2026-11-01, Big Boss: full-corpus JS04 baseline passes2,690,221 checks
   without reducing sources/rows; final native06 suite and actual JS06 corpus

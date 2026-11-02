@@ -3,7 +3,7 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 204 total effort units · 35 current-goal DONE · 156 / 204 accepted (76.47%).**
+**9 open tasks · 205 total effort units · 35 current-goal DONE · 156 / 205 accepted (76.10%).**
 
 Actual edited-style use exposes a required [ancestry gap](NS-5_style-ancestry_01.md):
 the deployed six-node Studio input blends once at eight and cannot be blended further.
@@ -13,8 +13,9 @@ complete CI559, actual native/JS/Studio checks and checked deployment. Saved
 passage controls retain their musical positions and frozen learning; the real
 closure reset the count. The current ancestry AC1 now passes on the real edited
 artifact through native/actual JS mix and six stems, resetting the later count1→0.
-Persistent shared payload ownership is implemented; full-corpus, ordinary-job
-and complete source/extracted qualification remain. Finish those gates before
+Shared ownership and complete native/JS corpus/cancellation consumers now pass;
+the actual portable sample-range prerequisite and complete source/runtime
+qualification remain. Finish those gates before
 expanding the parent blend interface. No partial task effort is accepted.
 
 [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md) and
@@ -146,13 +147,14 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Nine later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
 
 | Task | Effort | Actual prerequisites |
 | --- | ---: | --- |
+| [NS-1_portable-sample-range_01](NS-1_portable-sample-range_01.md) — primary portable Single limit | 1 | In progress; native and actual JS guard/cancellation consumers pass; complete source/runtime gate pending |
 | [NS-6_native-cache-path_01 — DONE](DONE/NS-6_native-cache-path_01.md) — native long-path cache publication | 2 | Accepted; long Unicode/atomic budgets, actual playlist/clip consumers and complete CI556/extracted packages |
 | [NS-6_simple-studio_01 — DONE](DONE/NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Accepted; actual playlist learning, optional label selection, durable native output and browser playback |
 | [NS-6_generation-activity_01 — DONE](DONE/NS-6_generation-activity_01.md) — visible activity within Generate | 2 | Accepted; native callback details, actual desktop/phone progress, reconnect and checked stable assets |
@@ -175,7 +177,7 @@ continuity experiments are selected.
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; complete library snapshots/blends/reblends and caller performance binding qualify in CI556; ordinary Studio naming/use/blend workflow remains |
-| [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | In progress; AC1 actual native/JS mix/stem replay closes; shared payload owner implemented; corpus/jobs/full qualification pending |
+| [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | In progress; AC1/AC2 native/JS corpus/ownership/cancellation pass; complete source/runtime and portable prerequisite pending |
 | [NS-5_style-corpus-capacity_01 — DONE](DONE/NS-5_style-corpus-capacity_01.md) — save the complete supported corpus | 4 | Accepted; complete actual corpus/models/clocks/recipes, native candidate/replay, native/JS and complete CI556 |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
@@ -193,10 +195,10 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all 43 current-goal tasks (8 open, thirty-five DONE),
-totaling 204 units: 48 open and 156 accepted. Subtotals:
-NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 71. NS-1 remains a preserved core
-independence invariant, not an invented new baseline task.
+The two tables together are all44 current-goal tasks (9 open, thirty-five DONE),
+totaling205 units:49 open and156 accepted. Subtotals:
+NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 71. The NS-1 task repairs
+an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 
 The first milestone owns priority, not convenience. Later tasks have explicit
 real dependencies; their row order does not create extra prerequisite gates.
