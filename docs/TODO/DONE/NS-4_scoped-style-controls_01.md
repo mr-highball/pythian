@@ -1,18 +1,18 @@
 # NS-4_scoped-style-controls_01 — Preserve time-scoped controls in reusable styles
 
-[Tasks](README.md) · [Styles](NS-5_instrumental-styles_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Styles](../NS-5_instrumental-styles_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-01
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Keep a passage's soft musical preferences and hard limits at their actual times
-when saving/reusing a style and editing its score again. Existing positioned WFC
-priors work, but semantic styles retain only provider-wide preferences and sparse
-token locks; the retained editor does not consume that complete style policy.
+when saving/reusing a style and editing its score again. Before this change,
+semantic styles retained only provider-wide preferences and sparse token locks;
+the retained editor did not consume that complete style policy.
 Turning an excerpt's preference into a global weight or treating its generated
 notes as new learned evidence would change the operator's meaning.
 
@@ -40,11 +40,28 @@ inference benchmark is required. Sound-recipe-only saving can proceed separately
 
 **Blockers**
 
-- [Positioned priors — DONE](DONE/NS-4_cell-priors_01.md).
-- [Graph controls — DONE](DONE/NS-4_graph-controls_01.md).
-- [Instrumental streams — DONE](DONE/NS-6_instrumental-streams_01.md).
+- [Positioned priors — DONE](NS-4_cell-priors_01.md).
+- [Graph controls — DONE](NS-4_graph-controls_01.md).
+- [Instrumental streams — DONE](NS-6_instrumental-streams_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: all criteria and prerequisites pass. Exact source
+  bcf98d9c8bd49660ec65fe131f3312b62d80a53f passes complete
+  [CI559](https://github.com/mr-highball/pythian/actions/runs/41368598698), including
+  maintained integration and clean extracted core/WFC consumers (123/187 owned
+  units; 137/317 content hashes). Downloaded artifacts match GitHub digests and
+  both contained source ZIPs match their checked package logs. The previously
+  qualified native/actual JS/Studio consumers exercise the actual policy path.
+  Checked server, worker and 12 matching browser assets are deployed in the
+  existing fixed slot. HTTPS, worker availability, all 23 saved jobs, 3 clips
+  and 7,143 existing metadata hashes pass unchanged. Post-deployment desktop/
+  390px reconnect, clip discovery and style guidance pass; 11 media elements are
+  paused, owned tab14 is closed and viewport reset. QA service remains stopped.
+  Evidence: E/runs/scoped-controls-qa01/{ci559,release01,deployed-browser-smoke.json}
+  plus the native/JS packets below. Four effort units close; consecutive
+  nonclosing count resets from2 to0 through this real closure. Musical usefulness
+  and the separate ancestry/blend interface are not accepted by persistence.
 
 - 2026-11-01, Big Boss: final frozen source passes complete native and actual
   JavaScript instrumental consumers (15,867,347 checks each), native playlist
@@ -58,7 +75,7 @@ inference benchmark is required. Sound-recipe-only saving can proceed separately
   media are paused, its tab/service closed and the operator service/data unchanged.
   Publication/full-source qualification remain required before acceptance.
   The demonstrated six-node style → eight-node blend → rejected further blend
-  is linked separately as [style ancestry](NS-5_style-ancestry_01.md); it does not
+  is linked separately as [style ancestry](../NS-5_style-ancestry_01.md); it does not
   invalidate scope save/reuse/edit or authorize unrelated implementation here.
 
 - 2026-11-01, Big Boss: the shared policy and ordinary capture/reuse paths are

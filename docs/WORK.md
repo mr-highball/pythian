@@ -3,7 +3,58 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: scoped controls pass local consumers; publication next - 2026-11-01
+## Current handoff: scoped controls accepted and deployed; ancestry next - 2026-11-01
+
+Big Boss SOLO. The preceding goal turn was a verified wait on exact CI559 and
+its live watcher, not a restart or another implementation batch. Source
+bcf98d9c8bd49660ec65fe131f3312b62d80a53f now passes the complete
+[run](https://github.com/mr-highball/pythian/actions/runs/41368598698): maintained
+integration, extracted core/WFC consumers and retained artifacts. Both downloaded
+artifacts match GitHub digests; their contained ZIPs match checked package logs.
+Core verifies123 units/137 hashes and WFC187 units/317 hashes, including the new
+shared policy. The [scoped-control task — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md)
+meets every criterion and prerequisite; four effort units close. This real
+closure resets the inherited consecutive nonclosing count from2 to0.
+
+Actual native/JavaScript instrumental consumers pass15,867,347 checks each;
+native playlist7,392,406, retained editor1,533 and progress43,584 checks/43,478
+callbacks pass with clean native heaps. Ordinary isolated Studio saved the
+requested passage controls, reused them at longer duration, edited a further
+passage and restored the exact job. Actual artifacts retain both tick scopes,
+complete parents and unchanged learned models. Sound variants retain scopes too.
+No audition becomes new training or invented locks. The no-different-notes fixture
+outcome is preserved and is not a musical-usefulness claim.
+
+Checked server178d40e9/workerac4ee313 and12 matching assets are deployed into the
+existing fixed stable slot, using the same LAN/TLS settings and E cache/output
+roots. The routine restart changes no firewall rules. HTTPS, matching worker,
+23 saved jobs,3 independent clips and all7,143 existing metadata hashes pass.
+Post-deployment desktop/390px checks restore the saved run, show both earlier
+lofi clips and provide actual saved-style/old-song guidance. All11 media elements
+are paused; owned browser tab14 is closed, viewport reset and user tab2 retained.
+The isolated QA service remains stopped. No production generation, selection
+write, recording or operator response was changed. Machine-specific owner/binding,
+rollback bytes and exact hashes remain in the local release receipt, not source.
+
+Evidence: E/runs/scoped-controls-qa01/{ci559,release01,deployed-browser-smoke.json},
+E/tests/scope-n04, scope-n04-extra01, scoped-policy-js06 and scoped-full-js01.
+The task retains original declaration/fixture/source-isolation failures and the
+missing-example harness repair. No generic WFC gap or dependency edit occurs.
+
+Next select [style ancestry](TODO/NS-5_style-ancestry_01.md), now Ready. The real
+six-node edited input blends once at eight and cannot be blended further.
+Shared parents/model/evidence payloads must remain bounded and self-contained;
+do not flatten lineage, relearn on save or merely raise the node limit. Read-only
+assessment confirms that recursive parent bytes and archive-hash identity are
+coupled. No implementation of that task has begun. Before its batch record the
+actual blend/reblend criterion, consumer evidence and stop condition. The parent
+style task's save/reload path is delivered, while ordinary selective blending and
+usefulness judgment remain open.
+
+Current accounting:43 tasks,35 DONE/eight open,156/204 effort accepted(76.47%),
+48 open effort. Goal remains active; no operator input is needed to continue.
+
+## Previous handoff: scoped controls pass local consumers; publication next - 2026-11-01
 
 Big Boss SOLO. The preceding goal turn was progress: sound variants published at
 2ff54266fca16f9672f7d0a2765e18fbcb58bfa9 with real consumers and the scoped-control
@@ -12,7 +63,7 @@ now succeeds in full: maintained integration, both extracted packages and retain
 artifacts. Downloaded logs/packages match GitHub's recorded digests. This does
 not qualify the new uncommitted scoped source or change the
 operator service. After the two-batch reassessment, this batch delivers the linked
-[scoped-control task](TODO/NS-4_scoped-style-controls_01.md)'s actual save/reuse/edit
+[scoped-control task](TODO/DONE/NS-4_scoped-style-controls_01.md)'s actual save/reuse/edit
 consumer, rather than another archive-only slice. Count remains 2 until a complete
 criterion closes; no task effort is accepted yet.
 
@@ -119,7 +170,7 @@ E/runs/style-variants-qa01 (job lineage receipts and mobile/desktop screenshots)
 Reassessment: this is the second consecutive batch without closing a full parent
 criterion. Count is 2; neither this narrower deliverable nor a new linked task
 resets it. Stop archive/UI expansion before another batch. The actual prerequisite
-is [scoped controls](TODO/NS-4_scoped-style-controls_01.md): a passage's preferences
+is [scoped controls](TODO/DONE/NS-4_scoped-style-controls_01.md): a passage's preferences
 must retain their time scope, and the retained editor must consume complete saved
 provider policy. Globalizing that preference or learning the audition would change
 its meaning. Note-edited style saving remains explicitly unavailable, including

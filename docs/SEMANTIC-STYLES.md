@@ -34,7 +34,7 @@ generation, derived again and selected as a blend/reblend parent. Cancellation,
 incompatible recipes/clocks and the existing ancestry/byte limits still reject
 without changing the parent. V5 cannot silently carry a different node kind or
 rewrite frozen definition fields. Passage-scoped preferences require the linked
-[style-control consumer](TODO/NS-4_scoped-style-controls_01.md); a global token
+[style-control consumer](TODO/DONE/NS-4_scoped-style-controls_01.md); a global token
 preference does not represent a short excerpt's scope.
 
 ## Time-scoped instrumental controls
@@ -75,7 +75,7 @@ to retain musical ticks. If performed length/tempo/seed differs from the source
 artifact, its actual recipe variant remains a parent of the scoped derivation.
 Naming/reuse retain those ancestors and the original source context. Exact
 audition notes remain in the song's decision journal, separately from style
-policy. See [the scoped-control task](TODO/NS-4_scoped-style-controls_01.md) and
+policy. See [the scoped-control task](TODO/DONE/NS-4_scoped-style-controls_01.md) and
 [WORK](WORK.md) for qualification and deployment status; no musical-usefulness
 claim follows from persistence or a successful new performance.
 

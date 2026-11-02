@@ -23,7 +23,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 **Blockers**
 
 - [Usable edited-style ancestry](NS-5_style-ancestry_01.md) — the actual twice-edited input reaches the eight-node limit before its further blend
-- [Scoped style controls](NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy; sound-only variants can proceed
+- [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
 - [NS-4_graph-controls_01](DONE/NS-4_graph-controls_01.md)
@@ -31,6 +31,15 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: naming/reuse, actual sound variants and scoped passage
+  capture now pass complete source CI559 and checked stable deployment. A saved
+  style retains requested controls, models, source origins and actual performed
+  recipes without new learning; native/actual JS and ordinary Studio consumers
+  pass. This delivers the AC1 save/reload path. The parent stays In progress:
+  ordinary selective blend/reblend controls, its linked ancestry prerequisite
+  and actual usefulness judgment remain required. No partial parent effort is
+  awarded. WORK records the separate scoped-task closure and counter reset.
 
 - 2026-11-01, Big Boss: actual scoped Studio QA exposes a distinct AC2
   prerequisite. A sound-edited style followed by two passage edits has six

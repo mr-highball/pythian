@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** Dependency-blocked
+**Status:** Ready
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -43,10 +43,16 @@ blend selection UI and musical usefulness remain the parent task's outcomes.
 
 **Blockers**
 
-- [Scoped style controls](NS-4_scoped-style-controls_01.md) — actual edited input/policy consumer, qualification in progress.
+- [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — complete CI559, actual native/JS/Studio consumers and checked deployment.
 - [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: scoped controls now pass all qualification/deployment
+  gates and are accepted. Both prerequisites are complete; this task is Ready.
+  Read-only assessment confirms recursive parent bytes and archive-hash lineage
+  are coupled. Sharing must preserve actual parent/model identities and bound
+  aggregate decoding work; no implementation has begun or effort been accepted.
 
 - 2026-11-01, Big Boss: discovered while inspecting actual scoped Studio QA
   artifacts. The first saved passage style has four nodes; the further edit has

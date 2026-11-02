@@ -78,11 +78,11 @@ saved and reused too. Passage edits retain the requested limits/preferences at
 their musical positions when saved as a style. Longer tracks keep those
 positions; a track too short for them asks for a longer length. Exact audition
 notes stay with the song. Saving never treats them as new training or invented
-locks. The [scoped-control consumer](TODO/NS-4_scoped-style-controls_01.md) records
+locks. The [scoped-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md) records
 its qualification status. Selective
 blend controls remain under the [style task](TODO/NS-5_instrumental-styles_01.md).
-These controls are being qualified in the isolated QA slot; WORK records the
-live deployment separately.
+These controls are qualified and deployed after complete CI559 and actual
+native/JS/Studio checks; WORK records the live deployment and preserved data.
 
 While generation starts or runs, a visible status and **Stop generation** remain
 available across the three steps. Returning from background reconnects to the
