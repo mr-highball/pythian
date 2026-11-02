@@ -34,7 +34,7 @@ uses
   pythian.wfc.voices, pythian.wfc.instrument, wfc_model, wfc_sequence,
   wfc_music_voices_graph, wfc_music_ensemble_graph,
   pythian.instrument.recipe, pythian.mix.recipe, pythian.bus,
-  pythian.music.form, pythian.music.controls, pythian.music.decisions,
+  pythian.music.form, pythian.music.controls, pythian.music.decisions, pythian.music.blend,
   pythian.wfc.percussion, pythian.wfc.instrumental.stream,
   pythian.wfc.musical.corpus, pythian.music.selection,
   pythian.wfc.instrumental.policy, pythian.wfc.semantic.archive;
@@ -157,11 +157,7 @@ type
   end;
   TSemanticRepeatPolicy = (srpMaximum, srpAddExplicit);
   TSemanticSoundRepeatPolicy = (ssrpReject, ssrpAddExact);
-  TSemanticBlendProvider = record
-    LeftWeight: Integer;
-    RightWeight: Integer;
-    ControlParent: Integer;
-  end;
+  TSemanticBlendProvider = TMusicBlendProvider;
   TSemanticBlendSound = record
     RoleId: String;
     LeftTimbreWeight: Integer;
@@ -170,11 +166,7 @@ type
     RightEnvelopeWeight: Integer;
     RepeatPolicy: TSemanticSoundRepeatPolicy;
   end;
-  TSemanticBlendPart = record
-    InstrumentParent: Integer;
-    EffectsParent: Integer;
-    ExpressionParent: Integer;
-  end;
+  TSemanticBlendPart = TMusicBlendPart;
   TSemanticBlendInstrumental = record
     Enabled: Boolean;
     LabelText: String;
@@ -931,8 +923,8 @@ begin
   SetLength(ARecipe.Providers, AIO.Count(Length(ARecipe.Providers), MaximumSemanticStyleProviders));
   for LIndex := 0 to High(ARecipe.Providers) do
   begin
-    ARecipe.Providers[LIndex].LeftWeight := AIO.Count(ARecipe.Providers[LIndex].LeftWeight, 64);
-    ARecipe.Providers[LIndex].RightWeight := AIO.Count(ARecipe.Providers[LIndex].RightWeight, 64);
+    ARecipe.Providers[LIndex].LeftWeight := AIO.Count(ARecipe.Providers[LIndex].LeftWeight, MaximumMusicBlendWeight);
+    ARecipe.Providers[LIndex].RightWeight := AIO.Count(ARecipe.Providers[LIndex].RightWeight, MaximumMusicBlendWeight);
     ARecipe.Providers[LIndex].ControlParent := AIO.Count(ARecipe.Providers[LIndex].ControlParent, 1);
   end;
   SetLength(ARecipe.Sounds, AIO.Count(Length(ARecipe.Sounds), 6));

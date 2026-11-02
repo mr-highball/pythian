@@ -125,6 +125,7 @@ uses
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.sounds,
   pythian.tools.studio.styles,
+  pythian.tools.studio.blend,
   pythian.tools.annotations.catalog,
   pythian.tools.annotations.sourceguard,
   pythian.tools.listen.assets,
@@ -728,6 +729,7 @@ var
   LExperiment: TJSONObject;
   LSoundDesign: TJSONObject;
   LSavedStyle: TJSONObject;
+  LOtherStyle: TJSONObject;
   LChanged: Boolean;
 begin
   Need(AWrite <> nil, 'Job write is required');
@@ -735,7 +737,7 @@ begin
     'duration_ms|seeds|maximum_tokens|model_order|source_weights|generation_weights|resolve_unassigned|' +
     'parent_job_id|retry_of|source_sha256|start_frame|end_frame|effects|tail_seconds|' +
     'preview_job_id|collection_name|title|capture_id|mode|channel|tempo_bpm|' +
-    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|sound_design|style_id|');
+    'discovery_revision|entries|reconstruction|preparation|instrumental|parent_plan_sha256|instruments|note_edit|sound_design|style_id|style_blend|');
   Need(Text(AWrite, 'format') = StudioJobWriteFormat, 'Unsupported Studio job format');
   LJobId := Text(AWrite, 'job_id');
   Need(SafeId(LJobId), 'Invalid job identifier');
@@ -767,7 +769,7 @@ begin
     else if LKind = 'instrumental_style' then
     begin
       Keys(AWrite, '|format|job_id|kind|project_id|project_revision|project_snapshot_sha256|' +
-        'style_id|duration_ms|seeds|retry_of|');
+        'style_id|style_blend|duration_ms|seeds|retry_of|');
       Need((Number(AWrite, 'duration_ms') >= 2000) and
         (Number(AWrite, 'duration_ms') <= 86400000), 'Track length must be2seconds to24hours');
       Need((AWrite.Find('seeds') <> nil) and (AWrite.Find('seeds').JSONType = jtArray) and
@@ -785,10 +787,38 @@ begin
       finally LProject.Free end;
       LSavedStyle := ReadStudioNamedStyle(ACatalogRoot, Text(AWrite, 'style_id'));
       try
-        Need(not LSavedStyle.Booleans['has_form'] or
-          (Number(AWrite, 'duration_ms') = LSavedStyle.Int64s['preferred_duration_ms']),
+        if AWrite.Find('style_blend') = nil then
+        begin
+          LRequest.Add('style_source', LSavedStyle.Clone);
+        end
+        else
+        begin
+          Need(AWrite.Find('style_blend').JSONType = jtObject, 'Blend settings must be an object');
+          LOtherStyle := ReadStudioNamedStyle(ACatalogRoot,
+            Text(AWrite.Objects['style_blend'], 'right_style_id'));
+          try
+            LRequest.Add('style_source', StudioBlendSource(LSavedStyle, LOtherStyle,
+              AWrite.Objects['style_blend']));
+          finally
+            LOtherStyle.Free;
+          end;
+          LExisting := ReadStudioJob(ACatalogRoot, LSavedStyle.Strings['source_job_id']);
+          try
+            Need((LExisting.Strings['status'] = 'completed') and
+              IsStudioInstrumentalJob(LExisting.Strings['kind']),
+              'Style A needs its finished song for Before playback');
+            LParentResult := LExisting.Objects['results'];
+            LRequest.Add('comparison_before', TJSONObject.Create([
+              'job_id', LExisting.Strings['job_id'],
+              'plan_sha256', LParentResult.Strings['plan_sha256'],
+              'wav_sha256', LParentResult.Arrays['outputs'].Objects[0].Strings['wav_sha256']]));
+          finally
+            LExisting.Free;
+          end;
+        end;
+        Need(not LRequest.Objects['style_source'].Booleans['has_form'] or
+          (Number(AWrite, 'duration_ms') = LRequest.Objects['style_source'].Int64s['preferred_duration_ms']),
           'This style retains a song form. Use its saved length before generating.');
-        LRequest.Add('style_source', LSavedStyle.Clone);
       finally LSavedStyle.Free end;
     end
     else if LKind = 'instrumental_generate' then
@@ -1191,7 +1221,9 @@ begin
       begin
         Result.Strings['source_validation'] := 'saved_style_pending_integrity_check';
         Result.Add('learning_mode', 'instrumental');
-        Result.Add('learning_performed', False);
+        Result.Add('learning_performed', LRequest.Find('style_blend') <> nil);
+        Result.Add('recording_analysis_performed', False);
+        Result.Add('model_recombination_performed', LRequest.Find('style_blend') <> nil);
         Result.Add('source_count', 0);
         Result.Add('unique_source_bytes_to_verify', 0);
         Result.Add('output_count', 1);
@@ -1532,6 +1564,10 @@ begin
       LExisting.Delete('project_snapshot');
       LExisting.Delete('worker_seconds');
       LExisting.Delete('comparison_before');
+      { Big Boss: style_source is a native immutable snapshot, never a field
+        accepted in the submitted write. Retry compares the submitted payload;
+        the stored snapshot and request identity remain untouched. }
+      LExisting.Delete('style_source');
       if IsStudioInstrumentalFollowup(LExisting.Strings['kind']) then
       begin
         LExisting.Delete('duration_ms');
@@ -1624,8 +1660,10 @@ begin
         LJob.Add('error_code', '');
         LJob.Add('error_message', '');
         LJob.Add('project_id', Text(AWrite, 'project_id', False));
-        if IsStudioInstrumentalFollowup(LKind) or (LRequest.Find('comparison_before') <> nil) then
+        if IsStudioInstrumentalFollowup(LKind) then
           LJob.Add('parent_job_id', LRequest.Strings['parent_job_id']);
+        if not IsStudioInstrumentalFollowup(LKind) and (LRequest.Find('comparison_before') <> nil) then
+          LJob.Add('parent_job_id', LRequest.Objects['comparison_before'].Strings['job_id']);
         AddState(ACatalogRoot, LJobId, LJob);
       finally
         LJob.Free;

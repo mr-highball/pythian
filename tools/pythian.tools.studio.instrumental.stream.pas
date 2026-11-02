@@ -100,6 +100,7 @@ var
   LReplayConfig: TJSONObject;
   LPairs, LDrumRecipes: TJSONArray;
   I, J, K, LDrumWidth: Integer;
+  LTailFrames: Int64;
 begin
   Result := nil;
   LStream := nil;
@@ -108,12 +109,22 @@ begin
   LDecisions := nil;
   LReference := nil;
   LStored := nil;
+  if AMaterial.Style <> nil then
+  begin
+    { Big Boss: the primary blend already chose its complete parent tail. Use
+      that exact frame clock instead of deriving it again from the master mix. }
+    LTailFrames := AMaterial.StyleOptions.TailFrames;
+  end
+  else
+  begin
+    LTailFrames := StudioSoundTailFrames(ASettings, StudioInstrumentalRate);
+  end;
   if Length(AMaterial.Form) > 0 then
     LEstimate := StudioInstrumentalOutputEstimateFrames(StudioFormFramesAtTempo(AMaterial.Form,
       AMaterial.TempoMicroseconds, StudioInstrumentalRate),
-      StudioSoundTailFrames(ASettings, StudioInstrumentalRate))
+      LTailFrames)
   else LEstimate := StudioInstrumentalOutputEstimate(ARequest.Int64s['duration_ms'],
-    StudioSoundTailFrames(ASettings, StudioInstrumentalRate));
+    LTailFrames);
   LMeta := TJSONObject.Create;
   try
     LDirectory := StudioJobDirectory(ACatalogRoot, AJobId);
@@ -342,7 +353,13 @@ begin
       if AMaterial.SavedStyle <> nil then
       begin
         Result.Add('style_source', AMaterial.SavedStyle.Clone);
-        Result.Add('learning_performed', False);
+        Result.Add('learning_performed', AMaterial.SavedStyle.Get('kind', '') = 'blend');
+        Result.Add('recording_analysis_performed', False);
+        Result.Add('model_recombination_performed', AMaterial.SavedStyle.Get('kind', '') = 'blend');
+      end;
+      if ARequest.Find('comparison_before') <> nil then
+      begin
+        Result.Add('before', ARequest.Objects['comparison_before'].Clone);
       end;
       if LMeta.Find('style_candidate') <> nil then
         Result.Add('style_candidate', LMeta.Objects['style_candidate'].Clone);

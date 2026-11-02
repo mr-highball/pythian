@@ -22,6 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Saved-style job retry](NS-6_style-job-retry_01.md) — identical named-style requests conflict on native-added metadata; actual blend reconnect requires this repair
 - [Usable edited-style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) — actual edited input and complete corpus now blend/reblend with shared payloads; CI561 and checked deployment pass
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
@@ -31,6 +32,48 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: ordinary optional Music/Sounds/Timing blend controls
+  now pass desktop/390px consumers, including Unicode naming, actual first
+  blend, further blend with the other recording's vocabulary and frozen reuse.
+  The actual further blend retains two sources/nine providers/six parts; Before
+  binds the left parent's exact song, and no recording scan occurs. Native full05
+  passes9,408,521 with a clean heap; actual JS04 passes3,025,311 with matching
+  native archives. Reload, HTTP retry, two-hour Stop and mutual-exclusion/collapse
+  playback pass. Preserve the repaired QA01 preview-collapse failure. Evidence:
+  E/runs/studio-blends-qa01/02. Complete source/extracted CI and matching delivery
+  remain, as does real operator usefulness. No partial seven-unit acceptance.
+
+- 2026-11-02, Big Boss: retry AC1 now passes through actual queued/completed
+  jobs; its real closure resets count1→0. Native jobs03 also performs and names
+  a selective blend, uses it in a further blend with the other recording's
+  vocabulary, then reuses the frozen result with exact mix/six-part hashes.
+  Before references the actual left-parent song, model reads/source scans are
+  separated, and both originals stay exclusively locked. Continue the same
+  coupled browser/source/deployment gate; neither task earns partial effort.
+  Preserve the primary selected-parent tail when adapting output, and avoid
+  cloning all model/evidence rows merely to check plan dimensions a second time.
+
+- 2026-11-02, Big Boss: shared musical choices and the primary blend binding
+  pass3,025,311 native/actual JS checks each, with exact matching archive identities
+  and clean native heap. The tabbed optional UI compiles. Ordinary-job validation
+  preserves a staging-path setup failure, a new test's wrong request/state field
+  assumption, and new blend admission's missing comparison parent. A separate
+  read-only proof reproduces the existing identical saved-style retry conflict.
+  Linked its one-unit prerequisite before repair; stop parent expansion and
+  follow that blocker. Parent earns no effort, nonclosing count0→1. Native
+  current-model/code and UI qualification remain incomplete; stable stays accepted.
+
+- 2026-11-02, Big Boss: selected ordinary blend/reblend delivery after both
+  prerequisites close; inherited nonclosing count0. Criterion: independently
+  choose or weight musical parents, rules, sound/effects/expression and form,
+  generate six parts, save and use the result as another parent. Deliver a
+  tabbed optional style dialog and the same durable native saved-style job.
+  Close with native/actual JS primary-recipe parity, ordinary saved blend and
+  reblend, Before/After, immutable origins, failure/cancellation, actual desktop/
+  phone consumers and relevant full source/extracted/deployment gates. Stop at
+  a distinct prerequisite before scope expands. No parent effort is accepted
+  by the initial transport/API slice; actual usefulness still needs listening.
 
 - 2026-11-02, Big Boss: the linked ancestry and portable-range prerequisites
   are accepted after native/actual JS, actual Studio, complete CI561/extracted

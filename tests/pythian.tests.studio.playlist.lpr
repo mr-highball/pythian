@@ -39,6 +39,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.tools.path,
   pythian.tools.studio.style.candidate,
   pythian.tools.studio.styles,
+  pythian.tools.studio.blend,
   wfc_sequence, wfc_sequence_text;
 var GChecks: Integer;
 type
@@ -408,6 +409,73 @@ function SoundWrite(const AParentId, AId, AName: String;
 function NoteWrite(const AParentId, AId: String;
   const AParent: TJSONObject): TJSONObject; forward;
 
+procedure CheckStyleRetry(const ACatalog: String; const AWrite: TJSONObject);
+var
+  LBefore: TJSONObject;
+  LAfter: TJSONObject;
+  LAgain: TJSONObject;
+  LChanged: TJSONObject;
+  LStyle: TJSONObject;
+  LGuard: TFileStream;
+  LRejected: Boolean;
+  I: Integer;
+begin
+  LBefore := ReadStudioJob(ACatalog, AWrite.Strings['job_id']);
+  LAgain := nil;
+  LAfter := nil;
+  LChanged := nil;
+  LStyle := nil;
+  try
+    LStyle := ReadStudioNamedStyle(ACatalog, AWrite.Strings['style_id']);
+    LGuard := TFileStream.Create(NativeFilePath(ListeningAssetDirectory(ACatalog) +
+      '/styles/' + LStyle.Strings['sha256'] + '.pysg'), fmOpenReadWrite or fmShareExclusive);
+    try
+      LAgain := EnqueueStudioJob(ACatalog, AWrite);
+      Check(LAgain.Booleans['already_queued'] and
+        (LAgain.Strings['request_sha256'] = LBefore.Strings['request_sha256']) and
+        (LAgain.Integers['event_revision'] = LBefore.Integers['event_revision']),
+        'Identical saved-style/blend retry retains its job/hash/event while the model is exclusively locked');
+    finally
+      LGuard.Free;
+    end;
+    LAfter := ReadStudioJob(ACatalog, AWrite.Strings['job_id']);
+    Check(LAfter.AsJSON = LBefore.AsJSON, 'Retry never rewrites immutable native snapshots or results');
+    for I := 0 to 3 do
+    begin
+      LChanged := TJSONObject(AWrite.Clone);
+      case I of
+        0: LChanged.Int64s['duration_ms'] := LChanged.Int64s['duration_ms'] + 1;
+        1: LChanged.Arrays['seeds'].Int64s[0] := LChanged.Arrays['seeds'].Int64s[0] + 1;
+        2: LChanged.Strings['style_id'] := 'style-' + StringOfChar('0', 64);
+        3:
+          if LChanged.Find('style_blend') <> nil then
+            LChanged.Objects['style_blend'].Arrays['providers'].Objects[0].Integers['left_weight'] := 2
+          else
+          begin
+            FreeAndNil(LChanged);
+            Continue;
+          end;
+      end;
+      LRejected := False;
+      try
+        LAgain.Free;
+        LAgain := nil;
+        LAgain := EnqueueStudioJob(ACatalog, LChanged);
+      except
+        on E: EStudioConflict do LRejected := True;
+      end;
+      Check(LRejected and (LAgain = nil), 'Changed style/weight/seed/duration is not an identical retry');
+      FreeAndNil(LChanged);
+    end;
+  finally
+    LStyle.Free;
+    LChanged.Free;
+    LAfter.Free;
+    LAgain.Free;
+    LBefore.Free;
+  end;
+end;
+
 procedure CheckNamedStyle(const ACatalog, ALibrary: String;
   const AJob, AResults: TJSONObject);
 var
@@ -468,6 +536,7 @@ begin
       FreeAndNil(LStatus);
       LStatus := EnqueueStudioJob(ACatalog, LJob);
       FreeAndNil(LStatus);
+      CheckStyleRetry(ACatalog, LJob);
       LSourceA := TFileStream.Create(ALibrary + '/collections/Chillsynth/Evening.wav', fmOpenReadWrite or fmShareExclusive);
       try
         LSourceB := TFileStream.Create(ALibrary + '/collections/lofi/Soft steps.wav', fmOpenReadWrite or fmShareExclusive);
@@ -483,6 +552,7 @@ begin
         (LStatus.Objects['results'].Objects['decisions'].Int64s['music_frames'] = (2 + I) * 24000),
         'Actual saved-style job keeps source lineage, frozen learning and requested performance duration');
       if I = 0 then CheckSavedStyle(ACatalog, LJob.Strings['job_id'], LStatus.Objects['results']);
+      CheckStyleRetry(ACatalog, LJob);
       FreeAndNil(LStatus);
     end;
     LParent := ReadStudioJob(ACatalog, 'named-style-1');
@@ -568,6 +638,237 @@ begin
     LParent.Free;
     LStatus.Free;
     LJob.Free;
+    LSaved.Free;
+    LWrite.Free;
+  end;
+end;
+
+function SavedStyleId(const ACatalog, AName: String): String;
+var
+  LList: TJSONObject;
+  I: Integer;
+begin
+  Result := '';
+  LList := ListStudioStyles(ACatalog);
+  try
+    for I := 0 to LList.Arrays['styles'].Count - 1 do
+    begin
+      if LList.Arrays['styles'].Objects[I].Strings['name'] = AName then
+      begin
+        Result := LList.Arrays['styles'].Objects[I].Strings['id'];
+      end;
+    end;
+  finally
+    LList.Free;
+  end;
+  Check(Result <> '', 'Named blend fixture style exists: ' + AName);
+end;
+
+function StudioBlendChoices(const ARightId: String): TJSONObject;
+var
+  LRows: TJSONArray;
+  I: Integer;
+begin
+  Result := TJSONObject.Create(['format', StudioBlendFormat, 'right_style_id', ARightId,
+    'base_parent', 0, 'master_parent', 0, 'form_parent', 0, 'context', 0,
+    'union_pitch_ranges', True]);
+  LRows := TJSONArray.Create;
+  Result.Add('providers', LRows);
+  for I := 0 to StudioBlendProviders - 1 do
+  begin
+    LRows.Add(TJSONObject.Create(['left_weight', 1, 'right_weight', 1, 'control_parent', 0]));
+  end;
+  LRows.Objects[2].Integers['right_weight'] := 3;
+  LRows.Objects[4].Integers['right_weight'] := 2;
+  LRows := TJSONArray.Create;
+  Result.Add('parts', LRows);
+  for I := 0 to StudioBlendParts - 1 do
+  begin
+    LRows.Add(TJSONObject.Create(['instrument_parent', 0, 'effects_parent', 0, 'expression_parent', 0]));
+  end;
+  LRows.Objects[0].Integers['instrument_parent'] := 1;
+  LRows.Objects[0].Integers['effects_parent'] := 1;
+  LRows.Objects[2].Integers['expression_parent'] := 1;
+end;
+
+procedure CheckBlendedStyles(const ACatalog, ALibrary: String);
+var
+  LWrite: TJSONObject;
+  LSaved: TJSONObject;
+  LBaseJob: TJSONObject;
+  LRequest: TJSONObject;
+  LPrepared: TJSONObject;
+  LStatus: TJSONObject;
+  LSource: TJSONObject;
+  LOriginal: TJSONObject;
+  LBlend: TSemanticStyle;
+  LParent: TSemanticStyle;
+  LRecipe: TSemanticBlendRecipe;
+  LSourceGuardA: TFileStream;
+  LSourceGuardB: TFileStream;
+  LStyleGuard: TFileStream;
+  LIds: array[0..2] of String;
+  LHashes: array[0..6] of String;
+  LName: String;
+  LLeft: String;
+  LRootIdentity: String;
+  LOriginalText: String;
+  LRejected: Boolean;
+  I: Integer;
+  J: Integer;
+begin
+  LWrite := nil;
+  LSaved := nil;
+  LBaseJob := nil;
+  LRequest := nil;
+  LPrepared := nil;
+  LStatus := nil;
+  LSource := nil;
+  LOriginal := nil;
+  LBlend := nil;
+  LParent := nil;
+  try
+    LIds[0] := SavedStyleId(ACatalog, 'Night music');
+    LIds[1] := SavedStyleId(ACatalog, 'Sound style');
+    LWrite := TJSONObject.Create(['format', 'pythian.studio.style.write.v1',
+      'name', 'Second recording', 'job_id', 'classified-job-1']);
+    LSaved := SaveStudioStyle(ACatalog, LWrite);
+    LIds[2] := LSaved.Strings['id'];
+    FreeAndNil(LSaved);
+    LOriginal := ReadStudioNamedStyle(ACatalog, LIds[0]);
+    LOriginalText := LOriginal.AsJSON;
+    LBaseJob := ReadStudioJobRequest(ACatalog, LOriginal.Strings['source_job_id']);
+    LLeft := LIds[0];
+    for I := 0 to 1 do
+    begin
+      LRequest := TJSONObject.Create(['format', StudioJobWriteFormat,
+        'job_id', 'selected-blend-' + IntToStr(I), 'kind', 'instrumental_style',
+        'style_id', LLeft, 'project_id', LBaseJob.Strings['project_id'],
+        'project_revision', LBaseJob.Int64s['project_revision'],
+        'project_snapshot_sha256', LBaseJob.Strings['project_snapshot_sha256'], 'duration_ms', 2000]);
+      LRequest.Add('seeds', TJSONArray.Create([731]));
+      LRequest.Add('style_blend', StudioBlendChoices(LIds[I + 1]));
+      LSource := ReadStudioNamedStyle(ACatalog, LLeft);
+      LStyleGuard := TFileStream.Create(NativeFilePath(ListeningAssetDirectory(ACatalog) +
+        '/styles/' + LSource.Strings['sha256'] + '.pysg'), fmOpenReadWrite or fmShareExclusive);
+      try
+        LPrepared := PrepareStudioJob(ACatalog, LRequest);
+        Check(LPrepared.Booleans['model_recombination_performed'] and
+          not LPrepared.Booleans['recording_analysis_performed'] and
+          (LPrepared.Int64s['unique_source_bytes_to_verify'] = 0),
+          'Blend admission declares stored-model recombination without source audio scans');
+      finally
+        LStyleGuard.Free;
+      end;
+      FreeAndNil(LPrepared);
+      LPrepared := EnqueueStudioJob(ACatalog, LRequest);
+      FreeAndNil(LPrepared);
+      CheckStyleRetry(ACatalog, LRequest);
+      LSourceGuardA := TFileStream.Create(ALibrary + '/collections/Chillsynth/Evening.wav',
+        fmOpenReadWrite or fmShareExclusive);
+      try
+        LSourceGuardB := TFileStream.Create(ALibrary + '/collections/lofi/Soft steps.wav',
+          fmOpenReadWrite or fmShareExclusive);
+        try
+          Check(RunStudioWorker(ACatalog, LRequest.Strings['job_id'], ALibrary),
+            'Ordinary blend/reblend runs while every original recording is exclusively locked');
+        finally
+          LSourceGuardB.Free;
+        end;
+      finally
+        LSourceGuardA.Free;
+      end;
+      LStatus := ReadStudioJob(ACatalog, LRequest.Strings['job_id']);
+      Check(LStatus.Strings['status'] = 'completed',
+        'Selected blend completes: ' + LStatus.Get('error_message', ''));
+      Check(LStatus.Objects['results'].Booleans['model_recombination_performed'] and
+        not LStatus.Objects['results'].Booleans['recording_analysis_performed'] and
+        (LStatus.Objects['results'].Arrays['parts'].Count = 6),
+        'Blend performs six synthesized parts with truthful operation flags');
+      Check((LStatus.Objects['results'].Objects['style_source'].Strings['format'] = StudioBlendSourceFormat) and
+        (LStatus.Objects['results'].Objects['style_source'].Strings['id'] = ''),
+        'An unnamed blend source is not misrepresented as an existing named-style record');
+      Check(LStatus.Objects['results'].Objects['before'].Strings['job_id'] =
+        LSource.Strings['source_job_id'], 'Before playback identifies the actual left parent song');
+      LRootIdentity := LStatus.Objects['results'].Objects['style_candidate'].Strings['sha256'];
+      Check(LRootIdentity <> LSource.Strings['sha256'], 'A new blend is not relabeled as its old parent');
+      LBlend := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalog, LRootIdentity));
+      LRecipe := LBlend.CopyBlendRecipe;
+      Check((LRecipe.Providers[2].RightWeight = 3) and
+        (LRecipe.Providers[4].RightWeight = 2) and
+        (LRecipe.Instrumental.Parts[0].InstrumentParent = 1) and
+        (LRecipe.Instrumental.Parts[2].ExpressionParent = 1),
+        'Actual native artifact retains independent music, sound and expression choices');
+      LParent := LBlend.CopyParent(0);
+      Check(LParent.Identity = LSource.Strings['sha256'], 'Further blend retains its exact intermediate parent');
+      FreeAndNil(LParent);
+      FreeAndNil(LBlend);
+      CheckSavedStyle(ACatalog, LRequest.Strings['job_id'], LStatus.Objects['results']);
+      CheckStyleRetry(ACatalog, LRequest);
+      LName := 'First blend';
+      if I = 1 then LName := 'Further blend';
+      LWrite.Strings['name'] := LName;
+      LWrite.Strings['job_id'] := LRequest.Strings['job_id'];
+      LSaved := SaveStudioStyle(ACatalog, LWrite);
+      Check(LSaved.Strings['sha256'] = LRootIdentity, 'Naming keeps the actual complete blend');
+      LLeft := LSaved.Strings['id'];
+      if I = 1 then
+      begin
+        for J := 0 to 5 do LHashes[J] := LStatus.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'];
+        LHashes[6] := LStatus.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'];
+      end;
+      FreeAndNil(LSaved);
+      FreeAndNil(LSource);
+      FreeAndNil(LStatus);
+      FreeAndNil(LRequest);
+    end;
+    LRequest := TJSONObject.Create(['format', StudioJobWriteFormat, 'job_id', 'reused-further-blend',
+      'kind', 'instrumental_style', 'style_id', LLeft,
+      'project_id', LBaseJob.Strings['project_id'], 'project_revision', LBaseJob.Int64s['project_revision'],
+      'project_snapshot_sha256', LBaseJob.Strings['project_snapshot_sha256'], 'duration_ms', 2000]);
+    LRequest.Add('seeds', TJSONArray.Create([731]));
+    LPrepared := EnqueueStudioJob(ACatalog, LRequest);
+    FreeAndNil(LPrepared);
+    CheckStyleRetry(ACatalog, LRequest);
+    Check(RunStudioWorker(ACatalog, 'reused-further-blend', ALibrary), 'Frozen named reblend is playable');
+    LStatus := ReadStudioJob(ACatalog, 'reused-further-blend');
+    Check((LStatus.Strings['status'] = 'completed') and
+      not LStatus.Objects['results'].Booleans['learning_performed'], 'Saved reblend reuse performs no new learning');
+    CheckStyleRetry(ACatalog, LRequest);
+    for J := 0 to 5 do
+      Check(LHashes[J] = LStatus.Objects['results'].Arrays['parts'].Objects[J].Strings['wav_sha256'],
+        'Frozen reblend changes a saved instrument part');
+    Check(LHashes[6] = LStatus.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256'],
+      'Frozen reblend changes its saved full mix');
+    LSource := ReadStudioNamedStyle(ACatalog, LIds[0]);
+    Check(LSource.AsJSON = LOriginalText, 'Blend/reblend never mutates the named source style');
+    FreeAndNil(LSource);
+    FreeAndNil(LStatus);
+    FreeAndNil(LRequest);
+    LRequest := TJSONObject.Create(['format', StudioJobWriteFormat, 'job_id', 'invalid-blend',
+      'kind', 'instrumental_style', 'style_id', LIds[0],
+      'project_id', LBaseJob.Strings['project_id'], 'project_revision', LBaseJob.Int64s['project_revision'],
+      'project_snapshot_sha256', LBaseJob.Strings['project_snapshot_sha256'], 'duration_ms', 2000]);
+    LRequest.Add('seeds', TJSONArray.Create([731]));
+    LRequest.Add('style_blend', StudioBlendChoices(LIds[1]));
+    LRequest.Objects['style_blend'].Arrays['providers'].Objects[0].Integers['left_weight'] := 0;
+    LRequest.Objects['style_blend'].Arrays['providers'].Objects[0].Integers['right_weight'] := 0;
+    LRejected := False;
+    try
+      LPrepared := PrepareStudioJob(ACatalog, LRequest);
+    except
+      on E: EAudio do LRejected := Pos('positive weight', E.Message) > 0;
+    end;
+    Check(LRejected and (LPrepared = nil), 'Empty musical parent weights reject before a job is queued');
+  finally
+    LParent.Free;
+    LBlend.Free;
+    LOriginal.Free;
+    LSource.Free;
+    LStatus.Free;
+    LPrepared.Free;
+    LRequest.Free;
+    LBaseJob.Free;
     LSaved.Free;
     LWrite.Free;
   end;
@@ -728,6 +1029,7 @@ begin
   end;
   Check((LModels[0] <> LModels[1]) and (LHashes[0] <> LHashes[1]),
     'Changing only the teaching classification changes learned models and actual synthesized music');
+  CheckBlendedStyles(ACatalog, ALibrary);
 
   LPlaylist := TJSONObject(APlaylist.Clone);
   LReceipt := nil;
@@ -1409,7 +1711,13 @@ end;
 begin
   try
     Check(ParamCount = 1, 'Usage: playlist FRESH_ROOT');
+    {$ifdef PYTHIAN_BLEND_JOBS_ONLY}
+    CheckBlendedStyles(IncludeTrailingPathDelimiter(ParamStr(1)) + 'catalog',
+      IncludeTrailingPathDelimiter(ParamStr(1)) + 'library');
+    WriteLn('PASS ', GChecks, ' focused ordinary blend/reblend checks');
+    {$else}
     Run(ParamStr(1));
+    {$endif}
   except
     on E: Exception do begin WriteLn(StdErr, E.ClassName, ': ', E.Message); ExitCode := 1 end;
   end;

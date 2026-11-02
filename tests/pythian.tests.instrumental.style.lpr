@@ -33,11 +33,11 @@ uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
   pythian.instrument.catalog, pythian.instrument.recipe, pythian.sound.recipe.codec,
   pythian.mix.recipe, pythian.effects.catalog, pythian.effects.rack,
   pythian.percussion, pythian.bus, pythian.progress,
-  pythian.music.controls, pythian.music.decisions,
+  pythian.music.controls, pythian.music.decisions, pythian.music.blend,
   pythian.chord, pythian.music.proposal,
   pythian.wfc.semantic.corpus, pythian.wfc.musical.corpus,
   pythian.wfc.music,
-  pythian.wfc.semantic.style, pythian.wfc.instrumental.stream,
+  pythian.wfc.semantic.style, pythian.wfc.instrumental.stream, pythian.wfc.instrumental.blend,
   pythian.wfc.instrumental.policy, pythian.wfc.instrumental.edit, pythian.wfc.semantic.archive,
   pythian.wfc.instrumental.edit.stream,
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.providers, pythian.wfc.provider.contracts,
@@ -1004,6 +1004,8 @@ var
   LFurther: TSemanticStyle;
   LParent: TSemanticStyle;
   LRecipe: TSemanticBlendRecipe;
+  LPlan: TMusicBlendPlan;
+  LPlanCopy: TMusicBlendPlan;
   LCopy: TSemanticStyleDefinition;
   LRightDefinition: TSemanticStyleDefinition;
   LBefore: String;
@@ -1046,6 +1048,32 @@ begin
     LRecipe.Instrumental.Parts[0].EffectsParent := 1;
     LRecipe.Instrumental.Parts[1].InstrumentParent := 1;
     LBlend := TSemanticStyle.CreateBlend(LLeft, LRight, LRecipe);
+    LPlan := DefaultMusicBlendPlan(9, 6);
+    for I := 0 to 8 do
+    begin
+      LPlan.Providers[I] := LRecipe.Providers[I];
+    end;
+    for I := 0 to 5 do
+    begin
+      LPlan.Parts[I] := LRecipe.Instrumental.Parts[I];
+    end;
+    LPlan.UnionPitchRanges := True;
+    LPlan.Context := mbcDrivenRole;
+    LLoaded := BlendInstrumentalStyles(LLeft, LRight, LPlan, LRecipe.Instrumental.LabelText);
+    Check(LLoaded.Identity = LBlend.Identity,
+      'Shared instrumental choice contract differs from the existing explicit primary recipe');
+    SameInstrumental(LBlend, LLoaded);
+    FreeAndNil(LLoaded);
+    LPlanCopy := CopyMusicBlendPlan(LPlan);
+    LPlanCopy.Providers[0].LeftWeight := -1;
+    LRejected := False;
+    try
+      LBad := BlendInstrumentalStyles(LLeft, LRight, LPlanCopy, 'Invalid negative weight');
+    except
+      on EAudio do LRejected := True;
+    end;
+    Check(LRejected and (LBad = nil) and (LPlan.Providers[0].LeftWeight = 1),
+      'Invalid detached blend choices were admitted or changed the original plan');
     Check(LLeft.Identity = LBefore, 'Blending changed its source');
     Check(LBlend.NodeCount = 3, 'Instrumental blend lost a parent');
     LCopy := LBlend.CopyDefinition;
@@ -1070,7 +1098,8 @@ begin
       'Musical parent choice or actual weighted vocabulary union was not applied');
     LRejected := False;
     try
-      LBad := TSemanticStyle.CreateBlend(LLeft, LRight, LRecipe, nil, nil, LCancel.Observe);
+      LBad := BlendInstrumentalStyles(LLeft, LRight, LPlan,
+        LRecipe.Instrumental.LabelText, LCancel.Observe);
     except
       on EAbort do LRejected := True;
     end;
@@ -1101,6 +1130,13 @@ begin
     end;
     LRecipe.Instrumental.LabelText := 'Reusable further blend';
     LFurther := TSemanticStyle.CreateBlend(LBlend, LLeft, LRecipe);
+    for I := 0 to 8 do
+    begin
+      LPlan.Providers[I] := LRecipe.Providers[I];
+    end;
+    LLoaded := BlendInstrumentalStyles(LBlend, LLeft, LPlan, LRecipe.Instrumental.LabelText);
+    Check(LLoaded.Identity = LFurther.Identity, 'Shared choice contract changes a further blend');
+    FreeAndNil(LLoaded);
     Check(LFurther.NodeCount = 4, 'Further instrumental blend loses a unique ancestor');
     LLoaded := DecodeSemanticStyle(LFurther.Encode);
     SameInstrumental(LFurther, LLoaded);
@@ -1512,6 +1548,9 @@ begin
   end;
 end;
 begin
+  {$ifdef PYTHIAN_BLENDS_ONLY}
+  Blends;
+  {$else}
   {$ifdef PYTHIAN_ANCESTRY_ONLY}
   ArchiveStorage;
   Ancestry(Definition, 'authored');
@@ -1539,6 +1578,7 @@ begin
   {$endif}
   {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Capacity;
+  {$endif}
   {$endif}
   {$endif}
   {$endif}

@@ -3,7 +3,116 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: shared ancestry and portable guards accepted/deployed - 2026-11-02
+## Current gate: complete-source qualification for ordinary blends - 2026-11-02
+
+Big Boss SOLO. Final source full05 passes the ordinary native playlist suite:
+9,408,521 checks, zero unfreed blocks. Actual JS04 passes3,025,311 blend/reblend
+checks with native-identical archive hashes; its shared core/adapter inputs are
+unchanged in full05. Matching checked runtime05 has no heap tracing; web03 builds
+all12 browser assets. Fixed QA slot18129 uses the existing isolated synthetic
+catalog/artifact namespace, leaving production18097 and operator data untouched.
+
+Actual1280px/390px consumers now blend, name with Unicode, edit/reload choices,
+combine that saved blend with a second recording's vocabulary, name/reuse the
+further blend, and reconnect through reload. The further blend retains two
+sources, nine providers and six parts. Before points to the actual left-parent
+song. Reuse preserves its exact archive hash without PCM analysis/recombination.
+An exact HTTP retry returns already_queued with unchanged request hash/event7.
+A two-hour request cancels through the visible Stop control and stays cancelled
+after reload. Parent/mix/part/original playback pause one another and collapse
+pauses playback. Preserve QA01's preview-collapse failure; QA02 verifies repair.
+Zero/zero weights name the affected idea, and changed draft choices explicitly
+label the retained player Previous track. No musical-usefulness claim follows
+from first-party synthetic QA. Evidence: E/runs/studio-blends-qa01/02 and
+E/tests/studio-blends-full05, studio-blends-js04. All native test handles are
+collected. QA02 cleanup closes owned tab18, resets viewport and confirms all11
+audio elements paused, no loops/errors. No QA worker remains; exact service68072
+is stopped, port18129 is free, and its foreground session86934 is collected
+(exit1 is the recorded owned cleanup stop, not a failed assertion). Stable30400
+remains live. E/runs/studio-blends-qa02/cleanup.json retains that receipt.
+
+Next verify frozen source identities, publish the source and require complete
+integration/extracted-package CI, then matching fixed-slot delivery preserving
+all operator records. Retry AC1 is closed; AC2 and task effort await that gate.
+Scope remains45 tasks/37 current DONE/eight open,163/206(79.13%),43 open effort;
+consecutive nonclosing count0. The parent style task remains open for its full
+criteria and actual operator usefulness. No new generic WFC gap is demonstrated.
+
+## Earlier gate: actual Studio blend/reblend browser and source qualification - 2026-11-02
+
+Big Boss SOLO. Retry AC1 now closes through actual queued/completed blend and
+frozen named-reblend requests, resetting consecutive nonclosing count1→0.
+E/tests/studio-blends-jobs03 passes2,016,094 checks with zero unfreed blocks.
+Both selected blend jobs and reused-further-blend complete; actual mix/six-part
+hashes replay exactly. Original recordings are exclusively locked during
+generation. Retries work with model files exclusively locked, keep the exact
+job/request/event and reject changed style, weight, seed or duration. Neither
+parent nor retry task earns effort before its remaining source/browser/deployment
+gate. Scope remains45 tasks/37 current DONE/eight open,163/206(79.13%).
+
+The new primary musical choice contract and binding pass3,025,311 native/actual
+JS checks each; native heap is clean and archive identities match. Final web02
+compiles with tabbed per-provider/per-part choices, parent-song preview,
+context/timing controls and editable draft blends. Actual browser exploration
+has not begun. A final host repair preserves the semantic factory's selected
+tail even when it exceeds the selected master's tail; the primary wrapper no
+longer clones full model/evidence definitions merely to repeat inventory checks.
+Those final small changes require matching qualification/runtime bytes.
+
+Retain jobs01's staging-path and test-field failures, jobs02's initial-event
+failure, and the exact read-only old named-style retry proof. The interrupted
+selected-blend-0 fixture request is hash-verified in jobs01/failure-evidence;
+its owned relocation stays entirely within that isolated test root. All recorded
+native/JS/test handles through jobs03 are terminal/collected. The fixed stable
+service and operator data remain unchanged. Next complete a fresh full ordinary
+native suite, final actual-JS binding check, matching runtime and desktop/phone
+blend/save/reblend/reopen/cancel checks in the fixed isolated QA slot. Then finish
+complete source/extracted CI and deployment before acceptance. Do not publish
+the earlier native01 runtime as if it contained the retry/tail repairs.
+
+## Earlier prerequisite: saved-style retry - 2026-11-02
+
+Big Boss SOLO. The ordinary blend batch stops on a demonstrated existing
+[retry blocker](TODO/NS-6_style-job-retry_01.md), linked before repair. Exact
+read-only proof E/tests/style-job-retry-proof01 resubmits completed named-style-0
+and reproduces EStudioConflict on identical settings: native-added style_source
+metadata was compared with the submitted payload. Fix that bounded comparison,
+retain exact request/event/model identity, reject changed settings and prove
+actual ordinary blend/reblend reconnect without new learning. Close through
+native queued/completed consumers, browser retry and matching complete-source
+delivery. Stop before a general job-system rewrite. Scope45 tasks/37 current
+DONE/eight open,163/206(79.13%),43 open effort. No partial parent acceptance;
+its nonclosing batch advances count0→1. A prerequisite/handoff does not reset it.
+
+The parent API/optional UI implementation is retained. Shared native/actual JS
+consumers pass3,025,311 checks each with exact archive identities and a clean
+native heap; web02 compiles. Ordinary native jobs01 first hit an overly long
+default staging path in isolated setup. The same binary with explicit short
+E-drive roots advances through both source-classification generations, then a
+new test incorrectly reads project_revision from job state rather than request.
+Focused jobs02 repairs that host assumption and exposes new blend enqueue's
+missing parent_job_id assumption before its initial event. Preserve all logs,
+frozen jobs01 source, and the interrupted fixture request; no complete job-suite
+pass or browser qualification is claimed. Relevant source/runtime admission
+must pass before publication. Existing stable30400 and private operator data
+remain untouched; all prior completed test handles are terminal/collected.
+
+## Earlier batch: ordinary selective style blend/reblend - 2026-11-02
+
+Big Boss SOLO. The previous goal turn is progress: two complete prerequisites
+were accepted and deployed, with preserved operator data. Inherited consecutive
+nonclosing count0; scope remains163/205,44 tasks/37 current DONE/seven open.
+The parent [instrumental styles](TODO/NS-5_instrumental-styles_01.md) now owns
+the selected batch. Criterion/deliverable: optional tabbed parent weights and
+independent rules, sound/effects/expression/form choices, through the existing
+durable saved-style job; generate, name the blend and use it in a further blend.
+Close with actual native/JavaScript engine parity, native saved blend/reblend and
+Before/After, immutable lineage, cancellation/conflicts, desktop/phone consumers
+and relevant complete-source/extracted/deployment gates. Stop at a distinct
+required gap before adding scope; no partial parent effort or musical-usefulness
+claim follows from transport work. The accepted stable service remains live.
+
+## Previous closure: shared ancestry and portable guards accepted/deployed - 2026-11-02
 
 Big Boss SOLO. [Shared ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md)
 and [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)

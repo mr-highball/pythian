@@ -79,10 +79,21 @@ their musical positions when saved as a style. Longer tracks keep those
 positions; a track too short for them asks for a longer length. Exact audition
 notes stay with the song. Saving never treats them as new training or invented
 locks. The [scoped-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md) records
-its qualification status. Selective
-blend controls remain under the [style task](TODO/NS-5_instrumental-styles_01.md).
-These controls are qualified and deployed after complete CI559 and actual
-native/JS/Studio checks; WORK records the live deployment and preserved data.
+its qualification status. Those saved passage controls were deployed after
+complete CI559; WORK records subsequent deliveries and preserved data.
+
+**Blend styles** in the saved-style chooser combines two saved styles. **Music**
+sets each musical idea's A/B weight and separately chooses whose note limits and
+preferences apply. **Sounds** independently chooses each part's instrument,
+effects and expression. **Timing** chooses tempo, master effects, sections and
+shared musical context. Hear either parent's saved song in the dialog. Applying
+choices starts no job; **Generate** combines the retained examples and performs
+new instruments without scanning recordings. **Before** plays A's actual song.
+Save the result as another named style to reuse it or blend it again. **Edit
+blend** restores the current choices, including after reload. Changed choices
+mark the existing player **Previous track** until another result is ready.
+These controls are locally qualified; full source CI and live deployment remain
+pending in the [style task](TODO/NS-5_instrumental-styles_01.md) and WORK.
 
 While generation starts or runs, a visible status and **Stop generation** remain
 available across the three steps. Returning from background reconnects to the
@@ -212,7 +223,7 @@ learning model; compare Before/After or expand **Hear individual parts**.
 The editor is optional; the main Library → Selection → Generate flow stays simple.
 See the accepted [sound-design scope](TODO/DONE/NS-2_sound-design_01.md).
 
-The [graph workbench](TODO/NS-4_graph-workbench_01.md), reusable styles/blends and guided
+The [graph workbench](TODO/NS-4_graph-workbench_01.md), operator usefulness of styles/blends and guided
 [synthesis reviews](TODO/NS-6_synthesis-reviews_01.md) remain open work. Their
 library foundations do not imply that the simple Studio exposes every control.
 Optional correction/bypass of recording-derived musical proposals remains

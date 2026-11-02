@@ -81,6 +81,16 @@ begin
   LPhase := 0;
   LUnits := '';
   if AStage = 'instrumental_prepare' then LPhase := 1
+  else if AStage = 'studio_style_open' then
+  begin
+    LPhase := 1;
+    LUnits := 'items';
+  end
+  else if AStage = 'studio_style_blend' then
+  begin
+    LPhase := 2;
+    LUnits := 'items';
+  end
   else if AStage = 'studio_style_read' then
   begin
     LPhase := 1;

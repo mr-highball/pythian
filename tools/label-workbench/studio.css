@@ -499,6 +499,23 @@ dialog::backdrop {
   backdrop-filter:blur(4px)
 }
 
+/* Big Boss: one musical choice at a time, with parents, tabs and Apply in view. */
+#blend-style-dialog[open] { display:flex; flex-direction:column; overflow:hidden; max-height:calc(100dvh - 1rem); }
+#blend-style-dialog > :not(.blend-body) { flex-shrink:0; }
+.blend-parents,.blend-weights { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+.blend-parents label,.blend-body label { display:block; min-width:0; margin:.5rem 0; }
+.blend-parents select,.blend-body select,.blend-body input:not([type="checkbox"]) { display:block; width:100%; min-width:0; margin-top:.25rem; }
+.blend-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:.6rem 0; }
+.blend-tabs button { min-width:0; padding:.6rem .3rem; }
+.blend-tabs [aria-selected="true"] { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.blend-body { overflow:auto; min-height:0; padding-right:.25rem; }
+.blend-part-choices { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; align-items:end; }
+.blend-body .blend-check { display:flex; align-items:center; gap:.6rem; }
+.blend-check input { flex-shrink:0; width:1.2rem; height:1.2rem; }
+#blend-style-dialog > .hint { font-size:.875rem; margin:.6rem 0 .25rem; }
+#blend-status { margin:.25rem 0; }
+.blend-previews audio { display:block; width:100%; margin:.25rem 0 .5rem; }
+
 .dialog-heading {
   display:flex;
   justify-content:space-between;

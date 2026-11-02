@@ -3,7 +3,13 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 205 total effort units · 37 current-goal DONE · 163 / 205 accepted (79.51%).**
+**8 open tasks · 206 total effort units · 37 current-goal DONE · 163 / 206 accepted (79.13%).**
+
+The ordinary blend consumer exposes an existing [saved-style retry prerequisite](NS-6_style-job-retry_01.md):
+identical requests conflict on server-added metadata. One unit grows scope205→206;
+no effort is accepted. Follow that actual mobile-reconnect blocker before
+expanding the parent interface. Actual queued/completed native retry now closes
+AC1 and resets nonclosing count1→0; browser/source/deployment remain.
 
 [Shared style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) and its
 [portable sample-range prerequisite — DONE](DONE/NS-1_portable-sample-range_01.md)
@@ -14,7 +20,8 @@ edited style now blends at seven unique nodes and reblends at eight without
 repeated model/evidence payloads. All23 jobs,3 clips and7,143 existing metadata
 hashes remain unchanged. Scoped passage controls and frozen learning remain
 intact. Return to the parent selective blend/reblend interface; no parent or
-musical-quality credit follows. Consecutive nonclosing count remains0.
+musical-quality credit follows. That earlier closure carried nonclosing count0;
+the current retry prerequisite above records the later count.
 
 [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md) and
 [native cache paths — DONE](DONE/NS-6_native-cache-path_01.md) close six units after
@@ -145,13 +152,14 @@ operator listening; that task's eight units remain open.
 Together these 21 units deliver bass, drums, harmony and lead in Studio with
 real musical controls and playback. Authored/operator/MIDI inputs are sufficient
 to start; uncertain WAV proposals can follow without a benchmark-first gate.
-All 21 units in this first milestone are accepted. Seven later tasks remain open. No more raw-grain
+All 21 units in this first milestone are accepted. Eight later tasks remain open. No more raw-grain
 continuity experiments are selected.
 
 ## Complete current scope
 
 | Task | Effort | Actual prerequisites |
 | --- | ---: | --- |
+| [NS-6_style-job-retry_01](NS-6_style-job-retry_01.md) — identical saved-style job retry | 1 | In progress; native/browser/API retry pass; complete CI and matching delivery pending |
 | [NS-1_portable-sample-range_01 — DONE](DONE/NS-1_portable-sample-range_01.md) — primary portable Single limit | 1 | Accepted; native/actual JS guards and cancellation, complete CI561/extracted consumers and matching runtime deployment |
 | [NS-6_native-cache-path_01 — DONE](DONE/NS-6_native-cache-path_01.md) — native long-path cache publication | 2 | Accepted; long Unicode/atomic budgets, actual playlist/clip consumers and complete CI556/extracted packages |
 | [NS-6_simple-studio_01 — DONE](DONE/NS-6_simple-studio_01.md) — Library → Selection → Generate | 6 | Accepted; actual playlist learning, optional label selection, durable native output and browser playback |
@@ -174,7 +182,7 @@ continuity experiments are selected.
 | [NS-4_unguided-form_01 — DONE](DONE/NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Accepted; original request, native/pas2js, actual Studio/browser, complete CI547 and fixed-slot deployment |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
-| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; naming/reuse and shared ancestry are deployed; ordinary selective blend/reblend controls and musical usefulness remain |
+| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; ordinary blend/reblend controls pass native/JS/Studio; complete delivery and operator usefulness remain |
 | [NS-5_style-ancestry_01 — DONE](DONE/NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | Accepted; actual edited artifact, complete corpus, shared ownership, cancellation, ordinary jobs, CI561/extracted consumers and deployment |
 | [NS-5_style-corpus-capacity_01 — DONE](DONE/NS-5_style-corpus-capacity_01.md) — save the complete supported corpus | 4 | Accepted; complete actual corpus/models/clocks/recipes, native candidate/replay, native/JS and complete CI556 |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
@@ -193,9 +201,9 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all44 current-goal tasks (7 open, thirty-seven DONE),
-totaling205 units:42 open and163 accepted. Subtotals:
-NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 71. The NS-1 task repairs
+The two tables together are all45 current-goal tasks (8 open, thirty-seven DONE),
+totaling206 units:43 open and163 accepted. Subtotals:
+NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 72. The NS-1 task repairs
 an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 
 The first milestone owns priority, not convenience. Later tasks have explicit

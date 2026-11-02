@@ -59,13 +59,46 @@ uses Classes, SysUtils, Math,
   pythian.tools.studio.instrumental.output,
   pythian.tools.studio.instrumental.stream, pythian.tools.studio.form,
   pythian.wfc.instrumental.stream, pythian.tools.studio.sounds,
-  pythian.tools.json, pythian.wfc.semantic.style, pythian.tools.studio.styles;
+  pythian.tools.json, pythian.wfc.semantic.style, pythian.tools.studio.styles,
+  pythian.tools.studio.blend, pythian.wfc.instrumental.blend;
+
+type
+  TStyleBlendWork = class
+    Check: TStudioInstrumentalCheck;
+    Callback: TWorkProgressCallback;
+    procedure Observe(const AWork: TWorkProgress);
+  end;
+
+procedure TStyleBlendWork.Observe(const AWork: TWorkProgress);
+var
+  LWork: TWorkProgress;
+begin
+  if Assigned(Check) then
+  begin
+    Check;
+  end;
+  LWork := AWork;
+  if LWork.Stage = 'studio_style_read' then
+  begin
+    { Big Boss: individual files have different byte clocks. Keep their detail,
+      while the workflow counts complete parent files once through style_open. }
+    LWork.Stage := 'studio_style_parent_read';
+  end;
+  if Assigned(Callback) then
+  begin
+    Callback(LWork);
+  end;
+end;
 
 function RunSavedStyle(const ACatalogRoot, AJobId: String;
   const ARequest: TJSONObject; const ACheck: TStudioInstrumentalCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LStyle: TSemanticStyle;
+  LLeftStyle: TSemanticStyle;
+  LRightStyle: TSemanticStyle;
+  LBlendWork: TStyleBlendWork;
+  LArchive: TAudioBytes;
   LDefinition: TSemanticStyleDefinition;
   LMaterial: TStudioStreamMaterial;
   LRoles: TInstrumentalRoles;
@@ -74,20 +107,68 @@ var
   I: Integer;
 begin
   LStyle := nil;
+  LLeftStyle := nil;
+  LRightStyle := nil;
+  LBlendWork := nil;
   LSettings := nil;
-  LSource := ARequest.Objects['style_source'];
+  LSource := TJSONObject(ARequest.Objects['style_source'].Clone);
   try
     if Assigned(ACheck) then ACheck;
     ReportWork(AProgress, 'instrumental_prepare', wuItems, 0, 1);
-    LStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
-      LSource.Strings['sha256'], AProgress), nil, nil, AProgress);
+    if ARequest.Find('style_blend') = nil then
+    begin
+      LStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+        LSource.Strings['sha256'], AProgress), nil, nil, AProgress);
+    end
+    else
+    begin
+      LBlendWork := TStyleBlendWork.Create;
+      LBlendWork.Check := ACheck;
+      LBlendWork.Callback := AProgress;
+      ReportWork(LBlendWork.Observe, 'studio_style_open', wuItems, 0, 2);
+      LLeftStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+        LSource.Arrays['parents'].Objects[0].Strings['sha256'], LBlendWork.Observe),
+        nil, nil, LBlendWork.Observe);
+      ReportWork(LBlendWork.Observe, 'studio_style_open', wuItems, 1, 2);
+      LRightStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+        LSource.Arrays['parents'].Objects[1].Strings['sha256'], LBlendWork.Observe),
+        nil, nil, LBlendWork.Observe);
+      ReportWork(LBlendWork.Observe, 'studio_style_open', wuItems, 2, 2);
+      ReportWork(LBlendWork.Observe, 'studio_style_blend', wuItems, 0, 1);
+      LStyle := BlendInstrumentalStyles(LLeftStyle, LRightStyle,
+        DecodeStudioBlend(ARequest.Find('style_blend')), 'Studio blend', LBlendWork.Observe);
+      LArchive := LStyle.Encode(LBlendWork.Observe);
+      RetainStudioStyleBytes(ACatalogRoot, LStyle.Identity, LArchive, LBlendWork.Observe);
+      LSource.Strings['sha256'] := LStyle.Identity;
+      LSource.Int64s['bytes'] := Length(LArchive);
+      LArchive := nil;
+      FreeAndNil(LLeftStyle);
+      FreeAndNil(LRightStyle);
+      ReportWork(LBlendWork.Observe, 'studio_style_blend', wuItems, 1, 1);
+    end;
     LDefinition := LStyle.CopyDefinition(AProgress);
     if not LDefinition.Instrumental.Enabled or
       (LDefinition.Instrumental.SampleRate <> StudioInstrumentalRate) or
       (Length(LDefinition.Instrumental.Instruments) <> 3) or
       (Length(LDefinition.Instrumental.Percussion) <> 3) then
       raise EAudio.Create('This saved style needs the Studio three-voice/three-drum layout at24kHz');
+    LSource.Integers['provider_count'] := Length(LDefinition.Providers);
+    LSource.Integers['source_count'] := Length(LDefinition.Sources);
+    LSource.Integers['contribution_count'] := Length(LDefinition.Runs);
+    LSource.Strings['corpus_revision'] := LDefinition.Corpus.RevisionIdentity;
     LSettings := TJSONObject(LSource.Objects['settings'].Clone);
+    if ARequest.Find('style_blend') <> nil then
+    begin
+      { Flat settings from the base are not the combined provider policy. Actual
+        selected rules remain in the semantic archive and the explicit plan. }
+      LSettings.Delete('controls');
+      LSettings.Delete('form');
+      if Length(LDefinition.Instrumental.Form) > 0 then
+      begin
+        LSettings.Add('form', EncodeStudioForm(LDefinition.Instrumental.Form));
+        LSettings.Integers['cells'] := StudioFormCells(LDefinition.Instrumental.Form);
+      end;
+    end;
     { The retained mix already includes its original level controls. Apply it
       once; changing the performance length/seed never changes frozen learning. }
     LSettings.Delete('levels');
@@ -100,6 +181,8 @@ begin
     for I := 0 to High(LDefinition.Instrumental.Instruments) do
       LRecipes.Add(EncodeStudioInstrumentRecipe(LDefinition.Instrumental.Instruments[I]));
     LDesign.Add('mix', EncodeStudioMixRecipe(LDefinition.Instrumental.Mix));
+    LSource.Delete('settings');
+    LSource.Add('settings', LSettings.Clone);
     LMaterial := Default(TStudioStreamMaterial);
     LMaterial.Style := LStyle;
     LMaterial.SavedStyle := LSource;
@@ -132,6 +215,10 @@ begin
   finally
     LSettings.Free;
     LStyle.Free;
+    LLeftStyle.Free;
+    LRightStyle.Free;
+    LBlendWork.Free;
+    LSource.Free;
   end;
 end;
 

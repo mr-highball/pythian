@@ -10,6 +10,36 @@ bindings, control derivation, encoding and further blending as its parents.
 It uses actual WFC learning over retained independent samples. It does not
 average serialized model bytes or invent co-observed musical tuples.
 
+## Shared instrumental choices and Studio transport
+
+`pythian.music.blend` owns the portable, WFC-free `TMusicBlendPlan`: per-provider
+weights/control parent, per-part instrument/effects/expression parent, base/master/
+form parent, context connection and optional pitch-range union. Parent indices
+are0/1. `CopyMusicBlendPlan` detaches its arrays; primary validation checks choices.
+The optional `pythian.wfc.instrumental.blend.BlendInstrumentalStyles` binding maps
+that plan into the existing semantic recipe/factory with `srpMaximum`. It adds
+no second learner, codec or vocabulary-conversion implementation.
+
+Studio's `instrumental_style` request optionally carries `style_blend` in format
+`pythian.studio.blend.v1`, with nine ordered providers and six parts matching its
+actual corpus/renderer. `style_id` identifies A; `right_style_id` identifies B.
+The host freezes both named metadata records and the explicit recipe before
+starting work. The anonymous combined descriptor uses the distinct format
+`pythian.studio.blend-source.v1`, not the named catalog-record format. The native
+worker opens both retained archives, uses the primary factory, retains the
+resulting archive and performs it through the ordinary bounded stream.
+
+`recording_analysis_performed=false` distinguishes this operation from scanning
+PCM; `model_recombination_performed=true` identifies the requested saved-model
+composition. Subsequent frozen reuse reports both false. The actual candidate
+hash, original parent records and A's exact song/plan/WAV Before identity remain
+attached. Saving only names the already retained result and never starts work.
+Identical retry returns the same job/event/hash, ignoring only native-added
+comparison/source snapshots in payload comparison; changed settings still reject.
+The primary selected tail is preserved even when it exceeds the selected master's
+tail. UI/native/actual-JavaScript local checks pass; complete CI/deployment status
+is recorded in [WORK](WORK.md), with usefulness still awaiting operator judgment.
+
 ## Independent provider controls
 
 `TSemanticBlendRecipe.Providers` has one entry per existing provider, in the

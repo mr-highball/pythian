@@ -50,6 +50,8 @@ end;
 function StudioStageText(const AStage: String): String;
 begin
   if AStage = 'studio_style_read' then Exit('Open saved style');
+  if (AStage = 'studio_style_open') or (AStage = 'studio_style_parent_read') then Exit('Open saved styles');
+  if (AStage = 'studio_style_blend') or (AStage = 'semantic_blend_providers') then Exit('Combine musical ideas');
   if Copy(AStage, 1, 9) = 'semantic_' then Exit('Check saved musical ideas and instruments');
   if Copy(AStage, 1, 18) = 'instrumental_edit_' then
   begin
@@ -284,6 +286,12 @@ begin
     if StudioText(AJob, 'kind') = 'instrumental_regenerate' then LNames[2] := 'Change selected notes';
   end;
   if StudioText(AJob, 'kind') = 'instrumental_style' then LNames[1] := 'Open saved style';
+  if (StudioText(AJob, 'kind') = 'instrumental_style') and (LRequest <> nil) and
+    isObject(LRequest['style_blend']) then
+  begin
+    LNames[1] := 'Open saved styles';
+    LNames[2] := 'Combine musical ideas';
+  end;
   LRoot := Add(AParent, 'div', '');
   LRoot.className := 'learning-progress';
   LWorkflow := TJSObject(AJob['workflow']);
@@ -325,6 +333,8 @@ begin
         ' of selected music checked')
   else if (LTotal > 0) and (StudioText(LWorkflow, 'unit') = 'cells') then
     Add(LRoot, 'p', IntToStr(Trunc(LDone)) + ' / ' + IntToStr(Trunc(LTotal)) + ' musical steps checked')
+  else if (LTotal > 0) and (LPhase = 1) and (StudioText(LWorkflow, 'unit') = 'items') then
+    Add(LRoot, 'p', IntToStr(Trunc(LDone)) + ' of ' + IntToStr(Trunc(LTotal)) + ' saved styles opened')
   else if (LTotal > 0) and (LPhase = 3) then
     Add(LRoot, 'p', IntToStr(Trunc(100 * LDone / LTotal)) +
       '% of mix and instrument audio synthesized');

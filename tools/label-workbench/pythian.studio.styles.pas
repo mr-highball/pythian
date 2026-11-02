@@ -24,13 +24,15 @@ SOFTWARE.
 unit pythian.studio.styles;
 {$mode delphi}{$H+}{$modeswitch externalclass}
 interface
-uses JS, Web, SysUtils, pythian.studio.sources;
+uses JS, Web, SysUtils, pythian.studio.sources, pythian.studio.blend;
 type
   TStudioChooseStyle = procedure(const AStyle: TJSObject) of object;
   TStudioStyles = class
   private
     FFetch: TStudioFetch;
     FChoose: TStudioChooseStyle;
+    FBlend: TStudioBlendChoices;
+    FPresetBlend: TJSObject;
     FRows: TJSArray;
     FJobId: String;
     FLoading, FSaving, FAvailable: Boolean;
@@ -38,11 +40,13 @@ type
     procedure Refresh; async;
     procedure Save; async;
     procedure Draw;
+    procedure Blended(const AStyle: TJSObject);
     function Click(AEvent: TJSMouseEvent): Boolean;
   public
     constructor Create(const AFetch: TStudioFetch; const AChoose: TStudioChooseStyle);
     procedure SetAvailable(const AAvailable: Boolean);
     procedure Open;
+    procedure EditBlend(const AStyle: TJSObject);
     procedure SaveJob(const AJobId: String);
   end;
 implementation
@@ -52,13 +56,30 @@ begin Result := document.getElementById(AId) end;
 constructor TStudioStyles.Create(const AFetch: TStudioFetch; const AChoose: TStudioChooseStyle);
 begin
   FFetch := AFetch; FChoose := AChoose; FRows := TJSArray.new;
+  FBlend := TStudioBlendChoices.Create(@Blended);
   El('refresh-styles').addEventListener('click', @Click);
+  El('open-style-blend').addEventListener('click', @Click);
   El('confirm-save-style').addEventListener('click', @Click);
 end;
 procedure TStudioStyles.SetAvailable(const AAvailable: Boolean);
-begin FAvailable := AAvailable; if El('styles-dialog').hasAttribute('open') then Draw end;
+begin
+  FAvailable := AAvailable;
+  FBlend.SetAvailable(AAvailable);
+  if El('styles-dialog').hasAttribute('open') then Draw;
+end;
+procedure TStudioStyles.Blended(const AStyle: TJSObject);
+begin
+  TStudioDialog(El('styles-dialog')).close;
+  FChoose(AStyle);
+end;
 procedure TStudioStyles.Open;
 begin TStudioDialog(El('styles-dialog')).showModal; Refresh end;
+procedure TStudioStyles.EditBlend(const AStyle: TJSObject);
+begin
+  if not FAvailable then Exit;
+  FPresetBlend := TJSObject(TJSJSON.parse(TJSJSON.stringify(AStyle)));
+  Open;
+end;
 procedure TStudioStyles.SaveJob(const AJobId: String);
 begin
   if FSaving or not FAvailable then Exit;
@@ -83,6 +104,11 @@ begin
     if isArray(LData['errors']) and (TJSArray(LData['errors']).length > 0) then
       El('styles-status').textContent := El('styles-status').textContent + ' Some styles need repair.';
     Draw;
+    if FPresetBlend <> nil then
+    begin
+      FBlend.Open(FRows, FPresetBlend);
+      FPresetBlend := nil;
+    end;
   except on E: Exception do El('styles-status').textContent := E.Message end;
   FLoading := False;
 end;
@@ -90,6 +116,7 @@ procedure TStudioStyles.Draw;
 var I: Integer; LCard, LTitle, LNote, LButton: TJSElement; LRow: TJSObject;
 begin
   El('styles-list').innerHTML := '';
+  TJSHTMLButtonElement(El('open-style-blend')).disabled := not FAvailable or (FRows.length < 2);
   for I := 0 to FRows.length - 1 do
   begin
     LRow := TJSObject(FRows[I]);
@@ -121,7 +148,7 @@ begin
   FSaving := True; TJSHTMLButtonElement(El('confirm-save-style')).disabled := True;
   LWrite := TJSObject.new; LWrite['format'] := 'pythian.studio.style.write.v1';
   LWrite['name'] := LName; LWrite['job_id'] := FJobId;
-  El('save-style-status').textContent := 'Saving the learned style…';
+  El('save-style-status').textContent := 'Saving style…';
   try
     LSaved := await(TJSObject, ReadStudioJSONResponse(FFetch('/api/studio/style', 'POST', TJSJSON.stringify(LWrite))));
     if StudioText(LSaved, 'name') <> LName then raise Exception.Create('The saved name differs. Retry Save style.');
@@ -136,6 +163,7 @@ begin
   Result := False;
   LButton := TJSElement(AEvent.currentTarget);
   if LButton.id = 'refresh-styles' then Refresh
+  else if LButton.id = 'open-style-blend' then FBlend.Open(FRows)
   else if LButton.id = 'confirm-save-style' then Save
   else if FAvailable and LButton.hasAttribute('data-style-index') then
   begin

@@ -755,6 +755,8 @@ var
   LActive: Boolean;
   LResult, LReference, LLearning, LRow, LClassChoice, LBefore, LClipJob: TJSObject;
   LConfig: TJSObject;
+  LStyleResult: TJSObject;
+  LStyleChanged: Boolean;
   LRows: TJSArray;
   LUrl: String;
   LSeconds: Double;
@@ -807,6 +809,8 @@ begin
   if FSounds <> nil then FSounds.SetAvailable(FConnected and not LActive and not FSubmitting);
   if FStyles <> nil then FStyles.SetAvailable(FConnected and not LActive and not FSubmitting);
   TJSHTMLButtonElement(El('open-styles')).disabled := not FConnected or LActive or FLoading;
+  TJSHTMLButtonElement(El('edit-style-blend')).disabled := not FConnected or LActive or FLoading;
+  El('edit-style-blend').setAttribute('hidden', '');
   TJSHTMLButtonElement(El('use-selected-music')).disabled := LActive;
   El('generation-style-source').setAttribute('hidden', '');
   El('use-selected-music').setAttribute('hidden', '');
@@ -816,6 +820,12 @@ begin
     El('generation-style-source').removeAttribute('hidden');
     El('generation-style-source').textContent := 'Using saved style: ' + Str(FSelectedStyle, 'name') +
       '. Your selected recordings will not be analyzed again.';
+    if Str(FSelectedStyle, 'kind') = 'blend' then
+    begin
+      El('edit-style-blend').removeAttribute('hidden');
+      El('generation-style-source').textContent := 'Blend: ' + Str(FSelectedStyle, 'name') +
+        '. Generate combines the saved examples, then plays new instruments. No recording scan.';
+    end;
     El('generate-summary').textContent := 'Saved musical ideas, controls and sounds.';
     El('use-selected-music').removeAttribute('hidden');
     El('track-influence-controls').setAttribute('hidden', '');
@@ -854,7 +864,11 @@ begin
   else if ResultProjectId <> FProjectId then
     El('generation-status').textContent := 'Open Experiment settings to change this music or generate another version.'
   else if FSelectedStyle <> nil then
-    El('generation-status').textContent := 'Generate uses the saved style. No new learning.'
+  begin
+    if Str(FSelectedStyle, 'kind') = 'blend' then
+      El('generation-status').textContent := 'Ready to combine these styles. Choose a length, then Generate.'
+    else El('generation-status').textContent := 'Generate uses the saved style. No new learning.';
+  end
   else El('generation-status').textContent := 'Your selections save automatically. Generate learns from the selected music.';
   LClipJob := nil;
   if FClipState <> nil then LClipJob := Obj(FClipState['job']);
@@ -916,6 +930,24 @@ begin
    else
     El('generation-revision-note').textContent :=
       'Your playlist has changed since this run. Generate again to use your current selection.';
+  if (FSelectedStyle <> nil) and (ResultProjectId = FProjectId) then
+  begin
+    LStyleResult := Obj(LResult['style_source']);
+    LStyleChanged := LStyleResult = nil;
+    if not LStyleChanged then
+    begin
+      if Str(FSelectedStyle, 'kind') = 'blend' then
+        LStyleChanged := (Str(LStyleResult, 'kind') <> 'blend') or
+          (Str(FSelectedStyle, 'left_style_id') <> Str(LStyleResult, 'left_style_id')) or
+          not SameStudioJSON(FSelectedStyle['blend'], LStyleResult['blend'])
+      else LStyleChanged := Str(FSelectedStyle, 'id') <> Str(LStyleResult, 'id');
+    end;
+    if LStyleChanged then
+    begin
+      El('generation-title').textContent := 'Previous track';
+      El('generation-revision-note').textContent := 'Generate above to hear your new choices. This player keeps your last track.';
+    end;
+  end;
   El('change-sounds').setAttribute('hidden', '');
   El('change-notes').setAttribute('hidden', '');
   if Obj(LResult['decisions']) <> nil then
@@ -1543,7 +1575,12 @@ begin
       if FSelectedStyle <> nil then
       begin
         LWrite['kind'] := 'instrumental_style';
-        LWrite['style_id'] := Str(FSelectedStyle, 'id');
+        if Str(FSelectedStyle, 'kind') = 'blend' then
+        begin
+          LWrite['style_id'] := Str(FSelectedStyle, 'left_style_id');
+          LWrite['style_blend'] := CloneObject(Obj(FSelectedStyle['blend']));
+        end
+        else LWrite['style_id'] := Str(FSelectedStyle, 'id');
       end
       else LWrite['instrumental'] := LSettings;
       FJobWrite := LWrite;
@@ -2263,6 +2300,7 @@ begin
     'open-songs': FSongs.Open;
     'save-song': FSongs.SaveJob(FJobId);
     'open-styles': FStyles.Open;
+    'edit-style-blend': FStyles.EditBlend(FSelectedStyle);
     'save-style': FStyles.SaveJob(FJobId);
     'use-selected-music':
       begin FSelectedStyle := nil; FGenerationMessage := ''; Remember; Draw end;

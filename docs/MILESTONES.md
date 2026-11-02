@@ -22,7 +22,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 163 / 205 effort units accepted (79.51%); seven open, thirty-seven current-goal DONE.**
+**Current snapshot: 163 / 206 effort units accepted (79.13%); eight open, thirty-seven current-goal DONE.**
+
+Ordinary blending exposes a one-unit [saved-style retry prerequisite](TODO/NS-6_style-job-retry_01.md).
+An identical completed request conflicts because native-added metadata enters
+the payload comparison. Repair this mobile reconnect blocker before extending
+the parent UI. The addition earns nothing. Actual native retry AC1 now passes,
+resetting consecutive nonclosing count1→0; remaining qualification stays open.
 
 [Shared style ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md) and
 [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
@@ -34,7 +40,8 @@ edited input blends at seven unique nodes and reblends at eight, retaining
 frozen models, scopes and sounds through shared immutable payloads. All23 jobs,
 3 clips and7,143 existing metadata hashes survive unchanged. The parent
 selective blend/reblend interface and musical usefulness remain open; no partial
-parent effort or quality score is accepted. Consecutive nonclosing count stays0.
+parent effort or quality score is accepted. That earlier closure carried count0;
+the current retry prerequisite above records the later nonclosing count.
 
 The four-unit [scoped style-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md)
 closes after native/actual JS/Studio save/reuse/edit, complete
@@ -160,8 +167,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 8 | 63 | 63 / 71 |
-| **Total** | **44 current-goal tasks** | **42** | **163** | **79.51%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON and long instrumental sessions | 9 | 63 | 63 / 72 |
+| **Total** | **45 current-goal tasks** | **43** | **163** | **79.13%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

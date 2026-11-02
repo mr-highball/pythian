@@ -207,11 +207,37 @@ begin
     'Read style advances to planning without inventing new learning');
 end;
 
+procedure BlendedStyleWorkflow;
+var
+  LView: TStudioGenerationProgress;
+begin
+  LView := Default(TStudioGenerationProgress);
+  LView.Observe('instrumental_prepare', 0, 1);
+  LView.Observe('studio_style_open', 0, 2);
+  LView.Observe('studio_style_parent_read', 100, 700);
+  LView.Observe('studio_style_open', 1, 2);
+  LView.Observe('studio_style_parent_read', 1000, 2000);
+  Check((LView.Phase = 1) and (LView.Done = 1) and (LView.Total = 2) and
+    (LView.Units = 'items'), 'Different parent byte clocks do not reset blend workflow progress');
+  LView.Observe('studio_style_open', 2, 2);
+  LView.Observe('studio_style_blend', 0, 1);
+  LView.Observe('semantic_blend_providers', 1, 9);
+  Check((LView.Phase = 2) and (LView.Done = 0) and (LView.Total = 1),
+    'Model recombination has its own explicit workflow boundary');
+  LView.Observe('studio_style_blend', 1, 1);
+  LView.Observe('studio_style_parent_read', 500, 500);
+  Check((LView.Phase = 2) and (LView.Done = 1),
+    'Immutable style publication cannot rewind recombination progress');
+  LView.Observe('instrumental_render', 1, 48000);
+  Check(LView.Phase = 3, 'Completed blend enters the shared rendering workflow');
+end;
+
 begin
   Boundaries;
   WholeDay;
   SlowPublication;
   GenerateWorkflow;
   SavedStyleWorkflow;
+  BlendedStyleWorkflow;
   WriteLn('PASS ', GChecks, ' Studio rendering publication checks');
 end.
