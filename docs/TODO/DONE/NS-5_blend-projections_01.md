@@ -1,10 +1,10 @@
 # NS-5_blend-projections_01 — Preserve valid rhythm projections in selective blends
 
-[Tasks](README.md) · [Parent style workflow](NS-5_instrumental-styles_01.md)
+[Tasks](../README.md) · [Parent style workflow](../NS-5_instrumental-styles_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -32,9 +32,9 @@ music. Generic WFC validation must continue rejecting invalid declarations.
 
 **Blockers**
 
-- [Shared ancestry — DONE](DONE/NS-5_style-ancestry_01.md).
-- [Context composition — DONE](DONE/NS-4_context-composition_01.md).
-- [Known projected domains — DONE](DONE/NS-4_projected-domains_01.md).
+- [Shared ancestry — DONE](NS-5_style-ancestry_01.md).
+- [Context composition — DONE](NS-4_context-composition_01.md).
+- [Known projected domains — DONE](NS-4_projected-domains_01.md).
 
 **Dev Notes:**
 
@@ -58,3 +58,22 @@ music. Generic WFC validation must continue rejecting invalid declarations.
   disjoint-domain check exercises the actual primary composed musical graph.
   Exact real-parent synthesis, ordinary Studio, complete delivery qualification
   and acceptance are still pending. No effort is accepted for these checks.
+- 2026-11-02, Big Boss: AC1–3 close after the original real-parent request renders
+  792,000 frames at seed727633233, unchanged weights/duration and all six parts
+  nonzero. The ordinary native retry also completes synthesis/publication;
+  its saved three-node style reloads and reblends into four unique nodes with
+  the selected original drum providers and both source ledgers intact. Native
+  and actual pas2js fixtures agree. Actual Studio mix Before/After and paired
+  Kick playback advance without media errors, and390px reload retains the exact
+  result with every player paused and no loops. Two incomplete QA media-copy
+  failures remain; their old fixture queue is preserved before a primary-codec
+  empty QA queue isolates this experiment. Production data are unchanged.
+  Complete [CI567](https://github.com/mr-highball/pythian/actions/runs/41440101042)
+  passes at4428d74; all three artifact digests and138/320 package content hashes
+  verify. Matching normal native runtime and twelve assets are live through the
+  fixed stable slot, with all26 jobs/3 clips/2 styles/7,278 metadata hashes intact.
+  E/runs/blend-projection-release01 retains rollback, source/served-asset and
+  post-launch receipts; E/runs/blend-projection-qa01 retains actual consumer proof.
+  Owned QA tab/service and audio are closed; launcher exits. Solo checks are not
+  independent review. Four implementation units close, count1→0. Actual musical
+  usefulness and the parent style task's seven units remain separate.

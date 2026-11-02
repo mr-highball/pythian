@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** Dependency-blocked — selective projection repair
+**Status:** In progress — prepare the actual selective-blend audition
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,8 +22,8 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Selective blend projections](NS-5_blend-projections_01.md) — actual different
-  learned vocabularies expose an undeclared public token before audio
+- [Selective blend projections — DONE](DONE/NS-5_blend-projections_01.md) — exact
+  original-seed real blend/reblend, native/pas2js, Studio, CI567 and delivery pass
 
 - [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — complete CI565,
   verified extracted consumers and matching sound-tail runtime/UI are delivered
@@ -37,6 +37,14 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: the linked projection prerequisite is delivered. Real
+  clip-derived parents now synthesize selectively at the original seed/weights;
+  the saved three-node blend reloads and reblends into four nodes. Ordinary native
+  publication, Studio mix/part consumers, complete CI567/extracted packages and
+  matching stable runtime pass with all operator data preserved. Counter1→0.
+  Return to one deliberate operator comparison; no seven-unit musical-usefulness
+  acceptance follows from this implementation repair.
 
 - 2026-11-02, Big Boss: the first actual selective blend fails before audio with
   unknown source-sequence public token in projection rule0 alternative1. Both

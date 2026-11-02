@@ -3,7 +3,36 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: repair actual selective blend projection - 2026-11-02
+## Current focus: return to the real blend audition - 2026-11-02
+
+Big Boss SOLO. [Selective rhythm projections — DONE](TODO/DONE/NS-5_blend-projections_01.md)
+closes four units after exact original-seed real synthesis, native/actual pas2js,
+ordinary native publication and Studio mix/part playback. The real saved blend
+reloads at three unique ancestry nodes and reblends at four with selected original
+drum providers, unchanged other provider models and a clean heap. Complete CI567
+passes at4428d74; all three downloaded artifact digests and138/320 package hashes
+verify. The checked normal runtime is live through the fixed stable slot,
+PID75340, preserving26 jobs/3 clips/2 styles and all7,278 metadata hashes. Twelve
+served assets match; the hidden launcher exits. QA tab/service/audio are closed,
+viewport reset and every watcher/process handle is terminal/collected. Solo
+checks are not independent review. No WFC dependency change or musical verdict.
+Evidence: E/runs/blend-projection-release01, blend-projection-qa01 and
+blend-projection-ci567. Two incomplete QA media copies remain as failures; the
+old copied queue is preserved before primary-codec isolation of this experiment.
+Scope50 tasks/42 DONE/eight open,177/216(81.94%),39 open effort; count1→0.
+
+Return to the selected parent style batch: deliver one actual retained-parent /
+selective-blend comparison and a concise decision question. Preserve the original
+seed/weights/models and failed job; stop at that usable audition or a concrete
+required gap. The parent keeps seven unaccepted units for its complete operator
+outcome. Direct review entry and visible failed-generation retry are linked Ready
+consumer tasks, not reasons to invent new queue or job infrastructure. The
+least-complete NS-3 recording-proposal editor remains the next independent core
+implementation after the current deliberate listening handoff. Goal stays active.
+
+## Earlier projection preparation, now delivered - 2026-11-02
+
+The following preparation records are superseded by the completed gate above.
 
 The original real-parent request now synthesizes at seed727633233,32seconds plus
 one-second tail:792,000frames, all six parts nonzero,296 drum hits and a clean
@@ -27,7 +56,7 @@ No generic WFC change or task acceptance; count remains1.
 Big Boss SOLO. The actual musical batch is nonclosing1: both saved clip-derived
 nine-provider32second parents succeed, but the selective blend fails before audio
 with an unknown source-sequence public token in projection rule0 alternative1.
-Linked [four-unit projection repair](TODO/NS-5_blend-projections_01.md) before scope
+Linked [four-unit projection repair](TODO/DONE/NS-5_blend-projections_01.md) before scope
 expands. Preserve exact models, weights, request/seed and failure in
 E/runs/style-listen-20261102-01. Follow this prerequisite now; no vendor edit or
 new WFC branch is selected without a demonstrated generic gap. Native validation

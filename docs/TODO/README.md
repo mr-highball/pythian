@@ -3,16 +3,16 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**9 open tasks · 216 total effort units · 41 current-goal DONE · 173 / 216 accepted (80.09%).**
+**8 open tasks · 216 total effort units · 42 current-goal DONE · 177 / 216 accepted (81.94%).**
 
 [Visible generation retry](NS-6_generation-retry_01.md) adds one open unit: the
 current client restores a failure without a direct retry of its retained choices.
 Native retry works; repair the distinct consumer after the projection batch.
 
-[Selective blend projections](NS-5_blend-projections_01.md) adds four open units:
-the original learned-parent blend declared an unknown source token. The shared
-repair passes native/pas2js and actual same-seed synthesis; complete CI, ordinary
-Studio and delivery remain. No parent musical credit; nonclosing count1.
+[Selective blend projections — DONE](DONE/NS-5_blend-projections_01.md) closes four
+units after original-seed real-parent synthesis, native/pas2js, actual saved
+further blend, Studio mix/part playback, complete CI567 and matching delivery.
+All operator data remain; parent musical usefulness stays open. Count1→0.
 
 [Studio review entry](NS-6_review-entry_01.md) adds one open unit: current Help
 can reach the queue, but ordinary Studio lacks a direct waiting-question action.
@@ -234,7 +234,7 @@ continuity experiments are selected.
 | [NS-6_current-studio-guide_01 — DONE](DONE/NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Accepted; current shared lessons, main/tool/review modal navigation, preserved choices, compact phone header and matching UI delivery |
 | [NS-6_review-entry_01](NS-6_review-entry_01.md) — visible waiting questions from Studio | 1 | Ready; use the existing review queue and current result ID without another main step |
 | [NS-6_generation-retry_01](NS-6_generation-retry_01.md) — visible retry of failed generation choices | 1 | Ready; reuse retained request/native retry without silently changing learning inputs |
-| [NS-5_blend-projections_01](NS-5_blend-projections_01.md) — valid selected-provider rhythm projections | 4 | In progress; exact real blend now synthesizes; full delivery remains |
+| [NS-5_blend-projections_01 — DONE](DONE/NS-5_blend-projections_01.md) — valid selected-provider rhythm projections | 4 | Accepted; exact real blend/reblend, native/pas2js, Studio, CI567 and matching delivery |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
