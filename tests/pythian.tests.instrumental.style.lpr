@@ -1030,6 +1030,92 @@ begin
   Check(LRejected, 'Invalid tail parent admitted');
 end;
 
+procedure SelectiveRhythmDomains;
+var
+  LDefinition: TSemanticStyleDefinition;
+  LContext: TMusicalContextCell;
+  LSingle: TWfcMusicEnsembleFrame;
+  LLeft: TSemanticStyle;
+  LRight: TSemanticStyle;
+  LBlend: TSemanticStyle;
+  LLoaded: TSemanticStyle;
+  LFurther: TSemanticStyle;
+  LPlan: TMusicBlendPlan;
+  LCopy: TSemanticStyleDefinition;
+  LProvider: Integer;
+  LRole: Integer;
+begin
+  LLeft := nil;
+  LRight := nil;
+  LBlend := nil;
+  LLoaded := nil;
+  LFurther := nil;
+  try
+    LDefinition := Definition;
+    LDefinition.Instrumental.Form := nil;
+    LContext := DecodeMusicalContextToken(LDefinition.Runs[0].Tokens[5][6]);
+    SetLength(LSingle.Voices, 1);
+    for LRole := 0 to 2 do
+    begin
+      LContext.Frame.Voices[LRole].Action := wmcaRest;
+      LContext.Frame.Voices[LRole].Tones := nil;
+      LSingle.Voices[0] := LContext.Frame.Voices[LRole];
+      LDefinition.Runs[0].Tokens[LRole + 2][7] := EncodeWfcMusicEnsembleFrame(LSingle);
+    end;
+    LDefinition.Runs[0].Tokens[0][7] := EncodeWfcMusicPitchClassSet(
+      ProjectWfcMusicEnsembleFrameToPitchClassSet(LContext.Frame, 12));
+    LDefinition.Runs[0].Tokens[1][7] := EncodeWfcMusicRhythmFrame(
+      ProjectWfcMusicEnsembleFrameToRhythm(LContext.Frame));
+    LDefinition.Runs[0].Tokens[5][7] := EncodeMusicalContextToken(LContext);
+    for LRole := 0 to 2 do
+    begin
+      LDefinition.Instrumental.Percussion[LRole].AllowedHitRhythms :=
+        [LDefinition.Runs[0].Tokens[1][0], LDefinition.Runs[0].Tokens[1][7]];
+    end;
+    Relearn(LDefinition);
+    LLeft := TSemanticStyle.CreateSource(LDefinition);
+    LCopy := OtherDefinition;
+    LCopy.Instrumental.Form := nil;
+    LRight := TSemanticStyle.CreateSource(LCopy);
+    LPlan := DefaultMusicBlendPlan(9, 6);
+    for LProvider := 0 to 8 do
+    begin
+      LPlan.Providers[LProvider].RightWeight := 0;
+    end;
+    for LProvider in [1, 6, 7, 8] do
+    begin
+      LPlan.Providers[LProvider].LeftWeight := 0;
+      LPlan.Providers[LProvider].RightWeight := 1;
+    end;
+    LBlend := BlendInstrumentalStyles(LLeft, LRight, LPlan,
+      'Authored distinct groove domains; retain A drum restrictions');
+    LCopy := LBlend.CopyDefinition;
+    Check((LCopy.Providers[1].ModelText = OtherDefinition.Providers[1].ModelText) and
+      (LCopy.Providers[5].ModelText = LDefinition.Providers[5].ModelText),
+      'Selective groove blend changes its actual selected providers');
+    Check(Length(LCopy.Instrumental.Percussion[0].AllowedHitRhythms) = 2,
+      'Selective groove blend rewrites its retained drum restrictions');
+    LLoaded := DecodeSemanticStyle(LBlend.Encode);
+    SameInstrumental(LBlend, LLoaded);
+    LPlan := DefaultMusicBlendPlan(9, 6);
+    for LProvider := 0 to 8 do
+    begin
+      LPlan.Providers[LProvider].RightWeight := 0;
+    end;
+    LFurther := BlendInstrumentalStyles(LLoaded, LRight, LPlan,
+      'Authored reuse of a distinct-domain blend');
+    Check((LFurther.Depth = 3) and (LFurther.NodeCount = 4),
+      'Distinct-domain further blend loses its closed ancestry');
+    SameInstrumental(LLoaded, LFurther);
+  finally
+    LFurther.Free;
+    LLoaded.Free;
+    LBlend.Free;
+    LRight.Free;
+    LLeft.Free;
+  end;
+end;
+
 procedure Blends;
 var
   LLeft: TSemanticStyle;
@@ -1050,6 +1136,7 @@ var
   I: Integer;
 begin
   BlendSoundTails;
+  SelectiveRhythmDomains;
   LLeft := TSemanticStyle.CreateSource(Definition);
   LRight := nil;
   LBlend := nil;

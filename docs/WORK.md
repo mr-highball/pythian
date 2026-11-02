@@ -3,7 +3,47 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: real style/blend listening, after delivered review and Help - 2026-11-02
+## Current focus: repair actual selective blend projection - 2026-11-02
+
+Candidate repair: inherited percussion hit whitelists now intersect the actual
+selected groove vocabulary in the primary adapter, preserving original rules
+and forbidding empty-overlap hits. Native04 and actual pas2js04 pass 1,126
+percussion checks and 6,386,758 blend/reload/further-blend checks; archive
+identities match and native has zero unfreed blocks. The exact authored
+before03 reproduction retains the original exception. The private original
+models/request/seed synthesis is running; normal fixed-slot runtime bytes are
+built but not deployed. Full delivery and ordinary Studio remain before closure.
+No generic WFC change or task acceptance; count remains1.
+
+Big Boss SOLO. The actual musical batch is nonclosing1: both saved clip-derived
+nine-provider32second parents succeed, but the selective blend fails before audio
+with an unknown source-sequence public token in projection rule0 alternative1.
+Linked [four-unit projection repair](TODO/NS-5_blend-projections_01.md) before scope
+expands. Preserve exact models, weights, request/seed and failure in
+E/runs/style-listen-20261102-01. Follow this prerequisite now; no vendor edit or
+new WFC branch is selected without a demonstrated generic gap. Native validation
+is correctly rejecting a declaration; actual musical usefulness remains unknown.
+Criterion: primary selected-provider domains and context projections agree;
+deliver the exact real reproduction through shared native/pas2js and Studio.
+Close with actual synthesis or a correctly declared genuine constraint conflict,
+retained ancestry and matched delivery. Stop at that outcome or a distinct gap.
+Scope49 tasks/41 DONE/eight open,173/215(80.47%),42 open effort; count1. Existing
+operator projects/responses remain, with two new ordinary experiment playlists,
+two learned models/named songs and one retained failed job. Do not publish a
+musical verdict or request labels for the failed render.
+
+## Earlier musical batch, followed to its required prerequisite - 2026-11-02
+
+Active batch, Big Boss SOLO: previous turn is progress (two accepted deliveries).
+NS-5 AC1–4: prepare actual reusable recording-derived parents and one selective
+blend/reblend audition, with one concrete listening question. Close with native
+model/source/plan receipts, actual Studio playback and saved lineage; stop at
+that usable question or a required core gap. Count0, no parent effort accepted.
+Read-only inspection finds all five old instrumental jobs predate style-model
+retention. Their renders/answers stay intact; none can truthfully be named as a
+reusable learned style. Generate fresh parents from existing independent lofi/
+chillwave clips through ordinary Studio, then use the actual saved models.
+E/runs/style-listen-20261102-01 holds the private baseline and bounded plan.
 
 Big Boss SOLO. [Current shared Help — DONE](TODO/DONE/NS-6_current-studio-guide_01.md)
 closes two units after the [listening workbench — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md).

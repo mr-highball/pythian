@@ -50,7 +50,8 @@ type
     OutputBus: Integer;
     Enabled: Boolean;
     HitWeight: Integer;
-    { Empty means every rhythm token. Nonempty is an explicit caller mapping. }
+    { Empty means every rhythm token. A nonempty whitelist is intersected with
+      the actual selected rhythm model; no overlap forbids hits, not rests. }
     AllowedHitRhythms: TWfcModelTokens;
     Constraints: TWfcSequenceTokenConstraints;
   end;
@@ -249,6 +250,7 @@ function AllowedPercussionRhythms(const ARhythmModel: TWfcSequenceModel;
   const ADefinition: TPercussionDefinition; const AToken: String): TWfcModelTokens;
 var
   I: Integer;
+  LCount: Integer;
 begin
   Result := nil;
   if ARhythmModel = nil then raise EAudio.Create('Percussion needs a rhythm model');
@@ -257,7 +259,23 @@ begin
     SetLength(Result, ARhythmModel.PublicTokenCount);
     for I := 0 to High(Result) do Result[I] := ARhythmModel.PublicTokenAt(I);
   end
-  else Result := Copy(ADefinition.AllowedHitRhythms);
+  else
+  begin
+    { Big Boss: inherited hit restrictions are a whitelist over the selected
+      groove domain. Intersect without changing the retained definition. An
+      empty intersection forbids this hit; it is never an unrestricted rule. }
+    SetLength(Result, Length(ADefinition.AllowedHitRhythms));
+    LCount := 0;
+    for I := 0 to High(ADefinition.AllowedHitRhythms) do
+    begin
+      if ARhythmModel.FindPublicToken(ADefinition.AllowedHitRhythms[I]) >= 0 then
+      begin
+        Result[LCount] := ADefinition.AllowedHitRhythms[I];
+        Inc(LCount);
+      end;
+    end;
+    SetLength(Result, LCount);
+  end;
 end;
 
 function ComposePercussionGraph(const AConfig: TWfcMusicVoicesGraphConfig;

@@ -42,6 +42,7 @@ uses
   wfc,
   wfc_model,
   wfc_sequence,
+  wfc_sequence_learn,
   wfc_sequence_graph,
   wfc_music_voices_graph;
 
@@ -106,6 +107,78 @@ begin
       Check(LBefore.Layers[LPass].StateIndices[LCell] = LAfter.Layers[LPass].StateIndices[LCell],
         'Pitched latent states retained through drum changes');
     end;
+  end;
+end;
+
+procedure SelectedRhythmDomain;
+var
+  LStarter: TInstrumentalStarter;
+  LRhythm: TWfcSequenceModel;
+  LSamples: TWfcSequenceSamples;
+  LDrums: TPercussionDefinitions;
+  LAllowed: TWfcModelTokens;
+  LConfig: TWfcMusicVoicesGraphConfig;
+  LGraph: TGraph;
+  LBoundaries: TWfcMusicVoicesBoundaries;
+  LReport: TGraphNegotiationReport;
+  LHit: String;
+  LSelected: String;
+  LExcluded: String;
+  LToken: Integer;
+begin
+  LStarter := TInstrumentalStarter.Create;
+  LRhythm := nil;
+  LGraph := nil;
+  try
+    LConfig := LStarter.Config;
+    LSelected := LConfig.RhythmModel.PublicTokenAt(0);
+    LExcluded := LConfig.RhythmModel.PublicTokenAt(1);
+    LSamples := [MakeWfcSequenceSample([LSelected, LSelected])];
+    LRhythm := LearnSequenceModelCorpus(LSamples, 1);
+    LDrums := LStarter.CopyPercussion(8000);
+    SetLength(LDrums, 1);
+    LHit := '';
+    for LToken := 0 to LDrums[0].Model.PublicTokenCount - 1 do
+    begin
+      if PercussionVelocity(LDrums[0].Model.PublicTokenAt(LToken)) > 0 then
+      begin
+        LHit := LDrums[0].Model.PublicTokenAt(LToken);
+        Break;
+      end;
+    end;
+    Check(LHit <> '', 'Selected-domain fixture needs an actual drum hit');
+    LDrums[0].AllowedHitRhythms := [LSelected, LExcluded];
+    LAllowed := AllowedPercussionRhythms(LRhythm, LDrums[0], LHit);
+    Check((Length(LAllowed) = 1) and (LAllowed[0] = LSelected),
+      'Inherited drum rule names a rhythm excluded from the selected provider');
+    LDrums[0].AllowedHitRhythms := [LExcluded];
+    LAllowed := AllowedPercussionRhythms(LRhythm, LDrums[0], LHit);
+    Check(Length(LAllowed) = 0, 'Disjoint drum restriction becomes unrestricted');
+    LConfig.RhythmModel := LRhythm;
+    LConfig := ComposePercussionGraph(LConfig, LDrums);
+    SetLength(LBoundaries, WfcMusicVoicesModelCount(LConfig));
+    for LToken := 0 to High(LBoundaries) do
+    begin
+      LBoundaries[LToken] := MakeWfcSequenceInitialSegmentBoundary(False);
+    end;
+    LGraph := BuildWfcMusicVoicesSegmentGraph(LConfig, 2, 727633233, LBoundaries);
+    LGraph.SwitchToPass(LDrums[0].Name);
+    IntersectSequenceTokenConstraints(LDrums[0].Model, LGraph,
+      [MakeWfcSequenceTokenConstraint(0, [LHit])]);
+    Check(not LGraph.TrySolveNegotiated(DefaultGraphNegotiationOptions, LReport),
+      'Impossible selected-domain drum lock silently drops its rhythm restriction');
+    Check(LReport.Status <> gnsSolved, 'Selected-domain conflict loses failure evidence');
+    LAllowed := AllowedPercussionRhythms(LRhythm, LDrums[0], PercussionToken(0));
+    Check((Length(LAllowed) = 1) and (LAllowed[0] = LSelected),
+      'A drum rest incorrectly inherits hit-only restrictions');
+    LDrums[0].AllowedHitRhythms := nil;
+    LAllowed := AllowedPercussionRhythms(LRhythm, LDrums[0], LHit);
+    Check((Length(LAllowed) = 1) and (LAllowed[0] = LSelected),
+      'An explicitly unrestricted drum rule changes meaning');
+  finally
+    LGraph.Free;
+    LRhythm.Free;
+    LStarter.Free;
   end;
 end;
 
@@ -291,5 +364,6 @@ begin
 end;
 
 begin
+  SelectedRhythmDomain;
   Run;
 end.

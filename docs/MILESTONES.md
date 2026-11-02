@@ -22,7 +22,13 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 173 / 211 effort units accepted (81.99%); seven open, forty-one current-goal DONE.**
+**Current snapshot: 173 / 215 effort units accepted (80.47%); eight open, forty-one current-goal DONE.**
+
+[Selective blend projections](TODO/NS-5_blend-projections_01.md) adds four open
+units after the actual learned-parent blend fails before audio. Both real
+clip-derived saved parents work; their inherited drum/groove projection fails.
+Preserve weights/seed/models and follow that prerequisite. Parent batch is
+nonclosing1; no musical or parent completion is inferred.
 
 [Studio review entry](TODO/NS-6_review-entry_01.md) adds one open unit. Help can
 reach the delivered queue; ordinary Studio still needs a direct waiting-question
@@ -198,9 +204,9 @@ per-task percentages or north-star weights apply.
 | [NS-2](#ns-2) | Explicit percussion and full sound-design controls | 4 | 14 | 14 / 18 |
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
-| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
+| [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 19 | 10 | 10 / 29 |
 | [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 4 | 73 | 73 / 77 |
-| **Total** | **48 current-goal tasks** | **38** | **173** | **81.99%** |
+| **Total** | **49 current-goal tasks** | **42** | **173** | **80.47%** |
 
 ## First milestone: hear and change instrumental music in Studio
 

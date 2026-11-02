@@ -3,7 +3,12 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 211 total effort units · 41 current-goal DONE · 173 / 211 accepted (81.99%).**
+**8 open tasks · 215 total effort units · 41 current-goal DONE · 173 / 215 accepted (80.47%).**
+
+[Selective blend projections](NS-5_blend-projections_01.md) adds four open units:
+two actual clip-derived saved models succeed, but their selective blend declares
+an unknown source token before audio. Follow that real prerequisite at the exact
+weights/seed; no parent musical credit. Consecutive nonclosing count1.
 
 [Studio review entry](NS-6_review-entry_01.md) adds one open unit: current Help
 can reach the queue, but ordinary Studio lacks a direct waiting-question action.
@@ -224,6 +229,7 @@ continuity experiments are selected.
 | [NS-6_synthesis-reviews_01 — DONE](DONE/NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Accepted; exact mix/part clocks, contextual question/queue/Help, draft-safe refresh, Save/Next/reload, CI566 and delivery |
 | [NS-6_current-studio-guide_01 — DONE](DONE/NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Accepted; current shared lessons, main/tool/review modal navigation, preserved choices, compact phone header and matching UI delivery |
 | [NS-6_review-entry_01](NS-6_review-entry_01.md) — visible waiting questions from Studio | 1 | Ready; use the existing review queue and current result ID without another main step |
+| [NS-5_blend-projections_01](NS-5_blend-projections_01.md) — valid selected-provider context projections | 4 | In progress; exact real learned-parent blend fails declaration before audio |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |

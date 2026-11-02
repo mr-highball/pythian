@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** In progress
+**Status:** Dependency-blocked — selective projection repair
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,6 +22,9 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Selective blend projections](NS-5_blend-projections_01.md) — actual different
+  learned vocabularies expose an undeclared public token before audio
+
 - [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — complete CI565,
   verified extracted consumers and matching sound-tail runtime/UI are delivered
 - [Saved-style job retry — DONE](DONE/NS-6_style-job-retry_01.md) — identical named/blend requests preserve their bound job/hash/event; native/browser/CI562/deployment pass
@@ -34,6 +37,24 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: the first actual selective blend fails before audio with
+  unknown source-sequence public token in projection rule0 alternative1. Both
+  actual clip-derived models/songs saved successfully. Preserve the exact
+  selected weights/seed/settings; linked the four-unit projection prerequisite
+  before expanding scope. Follow it now. Parent batch nonclosing1; no musical
+  feedback is requested on this failed render and no seven-unit credit follows.
+
+- 2026-11-02, Big Boss: resume actual musical parent/blend preparation after
+  delivered reviews/shared Help. Counter0. All five old completed instrumental
+  jobs lack a retained style_candidate; do not rename an old render as a model.
+  Criterion/deliverable: fresh recording-derived style parents from existing
+  independent clips, then one selective blend/reblend comparison and concise
+  operator question. Evidence: actual native model/source/plan lineage, ordinary
+  Studio save/play/reopen and preserved original data/answers. Stop at one usable
+  review or a concrete required core gap. No new manual segmentation, whole-mix
+  reconstruction, private-response publication or universal-learning claim.
+  Private packet: E/runs/style-listen-20261102-01. No seven-unit acceptance yet.
 
 - 2026-11-02, Big Boss: sound-tail estimate correction is delivered after complete
   CI565 at07c78d7. Both jobs and extracted packages pass; all671 frozen inputs
