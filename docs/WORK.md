@@ -3,7 +3,39 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: actual edited-style criterion closed; corpus qualification running - 2026-11-01
+## Current handoff: CI560 and final corpus qualification running - 2026-11-01
+
+Implementation candidate1308e6e53a8043a4ce4434881b30e318466997ea is committed
+and pushed on hello-pythian. Exact [CI560](https://github.com/mr-highball/pythian/actions/runs/41382570241)
+job125076338067 is in the maintained integration step. One-shot watcher93516
+retains exact source/status and downloads digest-verified logs/packages on
+completion into E/runs/ancestry-ci560. Poll that owned handle; do not restart
+the workflow or publish another implementation while it is valid.
+
+Both local extracted packages now pass: core06 verifies123 units/137 hashes
+(e8d528e0d841a2f554d41bda0dc60b76199f2bc9ccb445e9195056266f7f8a67),
+WFC07 verifies188 units/318 hashes
+(cb062d3301aa05e3a873255aae8655b7e289c6f18e81271c56e121fece5fbb76).
+Fresh WFC07 closes its earlier old occurrence-count fixture failure; registry,
+budget, model lineage, generation and saved-audio consumers all pass, including
+a clean caller-codec heap. Package07 session41009 is terminal/collected.
+
+Native corpus baseline04 session49488/PID40008, final native suite06 session16502/
+PID60980 and final actual JS corpus06 session91828 remain active. The checked
+native baseline has consumed over30 CPU minutes and roughly580MB; preserve its
+real resource evidence and do not report it passed until terminal. These are
+checked/heap-traced test costs, not release-worker timings. Source06 contains
+the later primary reader/cache repair; final-source qualification is necessary.
+All focused/native/actual JS real-artifact and ordinary native job checks below
+have passed. Stable service/binaries, operator data and browser state are unchanged.
+
+The exact current ledger is E/runs/scoped-controls-qa01/ancestry-qualification-current.json.
+AC1 is closed; AC2/AC3 and task acceptance/deployment remain open. No new
+implementation/UI work is selected while these gates run. Accepted effort stays
+156/204(76.47%); consecutive nonclosing count0. On success finish matching
+fixed-slot qualification/deployment and update acceptance/accounting together.
+
+## Earlier handoff: actual edited-style criterion closed - 2026-11-01
 
 Big Boss SOLO. The current repair batch closes ancestry AC1 on the preserved
 actual six-node Studio artifact, with native and actual JavaScript consumers.
