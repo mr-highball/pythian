@@ -1,10 +1,10 @@
 # NS-6_synthesis-reviews_01 — Make Studio the listening and model-refinement workbench
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 5/10
-**Status:** In progress
+**Status:** Accepted — 2026-11-02
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -22,11 +22,25 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
-- [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — complete CI565
+- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
+- [Complete CI fanout — DONE](NS-6_ci-consumer-fanout_01.md) — complete CI565
   and matching delivery close the serial-timeout prerequisite
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: all four criteria and prerequisites pass. Complete
+  [CI566](https://github.com/mr-highball/pythian/actions/runs/41427821234) at
+  6023101f03bb6232e2a0f0ce7623131b0c2087db passes native integration23m37s and both
+  extracted package consumers. All three downloaded digests and138/320 packaged
+  content hashes verify. Checked source07/browser08 and normal native01 bytes
+  are live through the fixed stable slot. All23 jobs,3 independent clips and7,143
+  existing metadata hashes remain unchanged. The actual returning-lead review
+  resolves seven clock-matched parts and its exact plan. QA tabs/services/audio
+  are closed, wrappers and CI watcher are terminal/collected. E/runs/synthesis-
+  review-release566 retains rollback, release/served-asset and process receipts.
+  This closes five implementation units and retains nonclosing count0. It does
+  not accept the separate form/style musical judgments. Solo checks are not
+  independent review. Broader Help instruction remains its separate task.
 
 - 2026-11-02, Big Boss: source07/browser08 passes actual1280px/390px consumers.
   Queue refresh keeps an unsaved uncertainty answer and timestamp note while a
@@ -49,7 +63,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 - 2026-11-02, Big Boss: actual Help review finds stale broad Studio lessons
   describing retired grain controls and removed targets. Linked the separate
-  [current-guide task](NS-6_current-studio-guide_01.md) before expanding scope.
+  [current-guide task](../NS-6_current-studio-guide_01.md) before expanding scope.
   It follows this task; it does not block the current experiment. This batch
   repairs only its own listening lesson/target and contextual controls. Count0.
 
@@ -90,11 +104,11 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 - 2026-11-01, Big Boss: reuse the current form experiment and prepared-listening
   factory. Native Unicode review publication/response/replay is repaired under
-  [listening UTF-8](DONE/NS-6_listening-utf8_01.md), not a new comparison framework.
+  [listening UTF-8](NS-6_listening-utf8_01.md), not a new comparison framework.
   The390px saved-note view keeps exact Unicode, but its narrow Remove button
   wraps one word over several lines. AC2 should give that note action enough
   width. This does not block the current question or justify another broad audit.
 
 - 2026-10-29, Big Boss: Current listening projection, prepared comparisons, review lineage, navigation, source playback and saved responses are reusable. Current answers concern reconstruction only and do not establish instrumental feasibility.
-- Read [the implementation review](../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
+- Read [the implementation review](../../ASSESSMENT-2026-10-29.md) and [retirement/replacement map](../RETIRED/2026-10-29/README.md) before repeating prior work. Preserve original failure evidence. Experimental musical proposals may be auditioned and corrected without independent inference-accuracy acceptance; never relabel them as established measurements.
 - Before implementation, state the audible/operator criterion, concrete deliverable, minimal closing checks and stop condition. Record repaired defects, failed approaches and linked follow-ups here. Do not broaden infrastructure work beyond an actual blocker.

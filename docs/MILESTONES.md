@@ -22,7 +22,15 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 166 / 210 effort units accepted (79.05%); eight open, thirty-nine current-goal DONE.**
+**Current snapshot: 171 / 210 effort units accepted (81.43%); seven open, forty current-goal DONE.**
+
+[Synthesis reviews — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md) closes five
+implementation units after actual mix/part playback, retained draft and feedback
+recovery, desktop/390px layout/Help, complete CI566 and matching fixed-slot
+delivery. All23 jobs,3 clips and7,143 metadata hashes stay exact. The operator's
+actual instrumental yes supports further instrumental experiments; form and
+style quality retain their separate judgments. Current-guide delivery remains
+open, without partial credit. Consecutive nonclosing count0.
 
 The [current Studio guide](TODO/NS-6_current-studio-guide_01.md) adds two open
 units after actual Help review finds retired grain-setting instructions and
@@ -183,8 +191,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 10 | 66 | 66 / 76 |
-| **Total** | **47 current-goal tasks** | **44** | **166** | **79.05%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 5 | 71 | 71 / 76 |
+| **Total** | **47 current-goal tasks** | **39** | **171** | **81.43%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -338,7 +346,7 @@ operator listening remain open; the musical-form task's effort is unaccepted.
 ### NS-6 — A useful operator bridge
 
 [Studio](TODO/DONE/NS-6_instrumental-studio_01.md),
-[reviews](TODO/NS-6_synthesis-reviews_01.md) and
+[reviews](TODO/DONE/NS-6_synthesis-reviews_01.md) and
 [instrumental streams — DONE](TODO/DONE/NS-6_instrumental-streams_01.md) deliver actual
 experimental jobs, Original/Before/After feedback, inspectable results, efficient
 long playback and mobile recovery. Reuse existing working UI and native transport.

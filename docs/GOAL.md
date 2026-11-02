@@ -20,10 +20,12 @@ before full-plan archival and deeper graph controls. A new visual shell alone is
 completion. That flow and its coarse-learning prerequisite were accepted on
 2026-10-31 after actual native/pas2js and desktop/phone consumers passed. The
 optional [sound editor](TODO/DONE/NS-2_sound-design_01.md) is also accepted after
-actual saved-score editing/audition and checked deployment. The remaining graph,
-form, styles/blends and guided-review outcomes still
-define unfinished work; musical preference is not inferred from implementation
-acceptance.
+actual saved-score editing/audition and checked deployment. The
+[listening workbench](TODO/DONE/NS-6_synthesis-reviews_01.md) now provides exact
+mix/part comparisons, one question and durable feedback. Graph inspection,
+recording-proposal corrections, articulation, generation consolidation, current
+instruction and form/style musical judgments remain unfinished. Musical
+preference is not inferred from implementation acceptance.
 
 - **Real instrumental output.** Generated musical events drive Pythian oscillators/noise, wavetable, additive/FM/PM and layered instrument recipes, envelopes, modulation, filters, buses and effects. Source recordings teach or provide comparison context. A deliberately selected sampler instrument is explicit; assembling windows from a full training mix is not the primary output path.
 - **The breadth of the musical graph.** Time is the primary horizontal axis; bass, percussion, harmony, lead and other roles are visible lanes. Context, pitch/register, rhythm/groove, expression, musical affect, sound and structure have explicit dependencies, domains and editable controls. Inspect actual dimensions, passes, vocabularies and constraints. Change the model layout or add a useful dimension/pass when listening exposes a need; do not fix a giant arbitrary grid in advance.

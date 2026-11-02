@@ -60,7 +60,7 @@ not the form hypothesis or any operator musical judgment.
 - Fixed-slot loopback QA passes actual desktop Save and390px reload with the
   exact note `Big Boss QA only: mélodie 🎵 音 stays exact.` Two synthetic answers
   remain in that isolated fixture only. All inspected playback is paused. Keep
-  the observed narrow Remove-button wrapping as a [review UX follow-up](../NS-6_synthesis-reviews_01.md);
+  the observed narrow Remove-button wrapping as a [review UX follow-up](NS-6_synthesis-reviews_01.md);
   no general UI audit is selected. Stable deployment and complete CI are pending.
 
 - Big Boss: the native regression first reproduces the production self-read

@@ -3,7 +3,42 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: make the instrumental question/player immediate - 2026-11-02
+## Current focus: teach the current Studio controls - 2026-11-02
+
+Big Boss SOLO. [Listening workbench — DONE](TODO/DONE/NS-6_synthesis-reviews_01.md)
+closes five implementation units after complete
+[CI566](https://github.com/mr-highball/pythian/actions/runs/41427821234) at6023101.
+Native integration23m37s and extracted consumers pass; all three downloaded
+digests and138/320 package hashes verify. Source07/browser08 and normal native01
+are live through the fixed stable slot, PID51744. Server d75ef29f6e6aff509a92acabeda1515a71a56670b143e075b17b8e50d29a0ce3;
+worker6a106258bc23dab8ed03b38744da9e9a1199b537e2a3898bbc8c2cc9744389c6.
+All671 inputs and416 native inputs bind exactly. All23 jobs,3 clips and7,143
+existing metadata hashes remain. Twelve served assets match, including the
+intended phone template substitutions. The independent OS launcher exits; solo
+verification is not independent review. All QA services/tabs/audio are closed and
+watcher93754/release41380 are terminal/collected. E/runs/synthesis-review-release566
+retains verified/rollback/process receipts. No TLS/firewall or WFC source change.
+
+Actual operator instrumental=yes supports continued instrumental synthesis and
+deliberate retained-score changes. The live returning-lead question now resolves
+all seven exact clock-matched parts. Form/style musical judgments remain open.
+Scope47 tasks/40 DONE/seven open,171/210(81.43%),39 open effort; nonclosing count0.
+
+Next [current guide](TODO/NS-6_current-studio-guide_01.md), effort2. Criterion:
+current Library/Selection/Generate lessons, reachable contextual Help, Show,
+Return and Close without modifying choices or starting work. Deliver the existing
+shared guide inside current Studio, with tool-dialog context; close through
+actual desktop/390px consumers and matching served assets. Stop at that usable
+instruction or a distinct blocker. Prepared source04/browser04 on E while CI ran;
+qualified checkout and stable remained untouched. Full pas2js build and listening
+bridge29 pass. Actual Library/Selection/Generate and nested import/clip paths keep
+all415 QA metadata hashes and selected ranges. Return remains clickable inside
+the open tool dialog. Final prose uses Add to library and actual Track influence
+in Generate. No guide units accepted yet; integrate and deliver next.
+
+## Earlier listening batch, before CI566 closed - 2026-11-02
+
+The following preparation record is superseded by the completed gate above.
 
 Current batch, Big Boss SOLO: exact-performance candidate is integrated and
 listening task In progress. Criterion/deliverable: show the question and real
@@ -64,7 +99,7 @@ and independent receipts. Release23995 and CI watcher32997 are terminal/collecte
 No firewall/TLS changes. The truthful music/tail/total/size estimate is delivered;
 the parent style task retains its own seven units for actual operator usefulness.
 
-Return to [synthesis reviews](TODO/NS-6_synthesis-reviews_01.md). Existing staged
+Return to [synthesis reviews](TODO/DONE/NS-6_synthesis-reviews_01.md). Existing staged
 E/tests/synthesis-review-source02 contains671 inputs, actual read-only completed-
 performance binding, seven mix/part choices, same-part/same-time Before/After,
 readable note-action width and the small section-Pause announcement repair.

@@ -231,9 +231,16 @@ learning model; compare Before/After or expand **Hear individual parts**.
 The editor is optional; the main Library → Selection → Generate flow stays simple.
 See the accepted [sound-design scope](TODO/DONE/NS-2_sound-design_01.md).
 
-The [graph workbench](TODO/NS-4_graph-workbench_01.md), operator usefulness of styles/blends and guided
-[synthesis reviews](TODO/NS-6_synthesis-reviews_01.md) remain open work. Their
-library foundations do not imply that the simple Studio exposes every control.
+The [listening workbench](TODO/DONE/NS-6_synthesis-reviews_01.md) puts one question
+and its player first. Choose review opens pending/completed questions; Help stays
+in place. Hear selects the mix or a part, and Before/After keep the same position.
+Notes show time; Save & next records feedback without retraining. Original context
+is available when the experiment has a real recording reference.
+
+The [graph workbench](TODO/NS-4_graph-workbench_01.md) and operator usefulness of
+styles/blends remain open. The broader [current Studio guide](TODO/NS-6_current-studio-guide_01.md)
+is in progress. Existing library foundations do not imply that the simple Studio
+exposes every control.
 Optional correction/bypass of recording-derived musical proposals remains
 [open](TODO/NS-3_experimental-learning_01.md); importing/analyzing recordings and
 automatic playlist learning do not require that editor.

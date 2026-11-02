@@ -1,10 +1,10 @@
 # NS-6_current-studio-guide_01 — Teach the Studio that actually exists
 
-[Tasks](README.md) · [Goal](../GOAL.md) · [Listening workflow](NS-6_synthesis-reviews_01.md)
+[Tasks](README.md) · [Goal](../GOAL.md) · [Listening workflow](DONE/NS-6_synthesis-reviews_01.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 2/10
-**Status:** Dependency-blocked — finish current listening controls
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -31,11 +31,26 @@ quality or inference accuracy. Keep the current listening experiment moving.
 
 **Blockers**
 
-- [Current listening controls](NS-6_synthesis-reviews_01.md) — its compact queue
+- [Current listening controls](DONE/NS-6_synthesis-reviews_01.md) — its compact queue
   and player define the actual Help targets that this broader guide must teach.
 - [Simple Studio — DONE](DONE/NS-6_simple-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: the listening prerequisite now passes complete CI566 and
+  matching delivery. Prepared isolated E/tests/current-guide-source04 while that
+  gate ran; no candidate changed the qualified checkout or production service.
+  Criterion: current Library/Selection/Generate and tool lessons with reachable
+  modal Help/Show/Return/Close, preserving choices and starting no work. Deliver
+  the shared guide mounted in current Studio; stop at that usable instruction or
+  a distinct blocker. Actual1280px/390px consumers pass Library, Selection,
+  Generate and nested import/clip contexts. All415 existing QA metadata hashes
+  remain unchanged; no native worker or audio starts. Return stays inside an
+  open tool dialog so it remains clickable. Final text uses Add to library and
+  puts Track influence in Generate, as the actual controls do. Full pas2js04 and
+  maintained listening bridge29 pass. Final integration/served bytes remain;
+  no effort accepted. Original synthetic QA waveform-unavailable state is
+  preserved and makes no new waveform/playback claim. Count0.
 
 - 2026-11-02, Big Boss: discovered while checking the listening Help boundary.
   pythian.workspace.guide's Settings lesson targets batch-palette and describes

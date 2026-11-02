@@ -3,7 +3,15 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 210 total effort units · 39 current-goal DONE · 166 / 210 accepted (79.05%).**
+**7 open tasks · 210 total effort units · 40 current-goal DONE · 171 / 210 accepted (81.43%).**
+
+[Synthesis reviews — DONE](DONE/NS-6_synthesis-reviews_01.md) closes five units
+after actual native/desktop/390px consumers, complete CI566, verified extracted
+packages and matching fixed-slot delivery. Exact mix/part clocks, contextual
+question/Help/queue, retained draft refresh, Save/Next/reload and actual saved
+operator decision pass. All23 jobs/3 clips/7,143 metadata hashes survive. No form
+or style-quality credit follows. The broader current-guide candidate is prepared
+on E; its integration/delivery remains open. Consecutive nonclosing count0.
 
 [Current Studio guide](NS-6_current-studio-guide_01.md) adds two open units:
 actual review found lessons for retired grain settings and removed targets.
@@ -204,8 +212,8 @@ continuity experiments are selected.
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
-| [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Exact mix/parts/clock/Save candidate passes; finish concise desktop/phone layout and complete delivery |
-| [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Depends on listening controls; retire stale grain/project lessons without adding mandatory setup |
+| [NS-6_synthesis-reviews_01 — DONE](DONE/NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Accepted; exact mix/part clocks, contextual question/queue/Help, draft-safe refresh, Save/Next/reload, CI566 and delivery |
+| [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Prepared current shared lessons and modal-target consumers pass; final integration/delivery pending |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
