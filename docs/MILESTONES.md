@@ -35,6 +35,11 @@ weights and duration. Saved further-blend ancestry, native/pas2js, ordinary
 Studio mix/part playback, complete CI567 and matching fixed-slot delivery pass.
 All operator data remain. Count1→0; musical usefulness and parent effort stay open.
 
+The actual repaired blend now has a named song, reusable saved style and a bound
+Original/Before/After listening question. Live playback and preserved answers
+pass; the brief discloses different Before/After seeds. The parent's seven units
+remain open for the actual operator judgment. No extra effort is accepted.
+
 [Studio review entry](TODO/NS-6_review-entry_01.md) adds one open unit. Help can
 reach the delivered queue; ordinary Studio still needs a direct waiting-question
 action. This distinct navigation outcome earns no planning or musical credit.

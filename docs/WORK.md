@@ -3,7 +3,29 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: return to the real blend audition - 2026-11-02
+## Current focus: real blend review is live; optional proposals are next - 2026-11-02
+
+The repaired real blend is now live as a named song and saved reusable style,
+with one targeted Original/Before/After question. The native publisher protects
+all answered requests; its actual parent/reference bindings retain the lofi
+Before and source excerpt. The What changed brief states that the retained
+Before and new After have different seeds; this is a directional audition, not
+an isolated causal proof. Both performances expose seven exact clock-matched
+mix/part choices at792,000frames/24kHz. Live Before, After and Original playback,
+390px layout and untouched answer controls pass; no answer was submitted.
+All7,142 pre-existing nonqueue metadata hashes remain exact; the queue alone is
+intentionally updated. Current stable retains27 jobs/3 saved styles/3 clips with
+zero clip errors and no active jobs. The owned live tab closes, all media stop,
+viewport resets and the user's original GitHub tab remains. Review/source/plan,
+question/publication, screenshot and preservation receipts are private under
+E/runs/style-listen-20261102-01. The parent is Awaiting operator feedback; its
+seven units remain open. Scope177/216(81.94%), count0; no musical verdict.
+
+Next independent implementation: NS-3 recording-proposal correction consumer,
+the least-complete north star. Restore its optional current Studio path over
+existing Pascal analyses/providers, keeping ordinary Generate simple. Read its
+task and actual old/current consumers before naming that batch; do not ask the
+operator for exhaustive segmentation or wait idle for the listening answer.
 
 Big Boss SOLO. [Selective rhythm projections — DONE](TODO/DONE/NS-5_blend-projections_01.md)
 closes four units after exact original-seed real synthesis, native/actual pas2js,

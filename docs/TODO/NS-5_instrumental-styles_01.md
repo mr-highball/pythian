@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 7/10
-**Status:** In progress — prepare the actual selective-blend audition
+**Status:** Awaiting operator feedback — actual selective-blend audition is live
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -37,6 +37,17 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: the repaired real blend is saved as a named song and
+  reusable style, with a bound Original/Before/After review asking whether the
+  borrowed groove/drums improve the lofi direction. Retained Before and new After
+  seeds differ, explicitly stated in the brief. Native metadata resolves both
+  real mix/six-part performances at the same33second clock. Actual live playback,
+  390px layout, untouched answer controls and original-answer preservation pass;
+  no operator verdict is inferred. All7,142 old nonqueue metadata files remain
+  exact; only the queue changes deliberately. E/runs/style-listen-20261102-01
+  retains the private model/job/question and playback receipts. Seven units stay
+  open until the actual usefulness judgment and remaining outcome criteria pass.
 
 - 2026-11-02, Big Boss: the linked projection prerequisite is delivered. Real
   clip-derived parents now synthesize selectively at the original seed/weights;
