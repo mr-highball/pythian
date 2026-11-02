@@ -35,6 +35,24 @@ candidate c8443e0 and private prepared release are preserved; its old CI568 guar
 must not be treated as a passing release. Scope51 tasks/42DONE/nine open,
 177/217(81.57%),40 open effort. No operator action or segmentation is needed.
 
+Follow-up source de3f185 is pushed; CI569/run41458690918 is running (native
+125321864413, packages125321864585; packages already pass). It changes native's
+resource budget and adds one final Write-Output plus the workflow marker check;
+all previous build commands compare exact after removing that added message.
+The primary Pascal/native/UI code remains c8443e0. This is the same active
+headroom batch, carrying count1; waiting for CI is not another failed batch.
+Private watcher E/runs/recording-ideas-watch-ci569.ps1 retains terminal logs and
+all three artifact digests under recording-ideas-headroom-ci569. Prepared
+verify-ci569, release-ci569 and verify-release569 scripts remain guarded: require
+whole CI569 success and its marker, verify both extracted packages, then reuse
+the exact qualified native02/web08 bytes. Keep compiled sourcec8443e0 distinct
+from complete CI sourcede3f185. Only tools/build.ps1's reviewed completion message
+differs among the old input manifests; the other415 native inputs remain exact.
+Do not recompile unchanged implementations or treat the earlier cancelled run as
+success. After matched delivery, close headroom and recording ideas together,
+fix incoming DONE links and recompute accepted effort from actual task metadata.
+If CI569 fails, preserve it and reassess at count2 before another batch.
+
 The repaired real blend is now live as a named song and saved reusable style,
 with one targeted Original/Before/After question. The native publisher protects
 all answered requests; its actual parent/reference bindings retain the lofi

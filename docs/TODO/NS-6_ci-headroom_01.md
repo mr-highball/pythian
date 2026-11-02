@@ -38,6 +38,13 @@ Primary attribution: NS-6, required delivery repair, not musical quality.
 
 **Dev Notes:**
 
+- 2026-11-02, Big Boss: source de3f185 is pushed with native40minutes and an
+  explicit full-build completion marker checked by the workflow. Parse and
+  command-inventory comparison pass: no existing build command changes. CI569
+  is running; packages pass, native and deployment remain pending. Recording-
+  ideas native/UI code and checked bytes remain c8443e0. This is the same active
+  batch with count1, not an acceptance or another nonclosing batch.
+
 - 2026-11-02, Big Boss: recording-ideas batch stops at this actual prerequisite;
   consecutive nonclosing count0→1. Its native59/110, project128, actual pas2js
   16/67/1439 and desktop/390px consumers pass; eight units remain open. The new
