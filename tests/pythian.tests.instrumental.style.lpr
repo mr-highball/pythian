@@ -29,6 +29,7 @@ program instrumental_style_checks;
 {$endif}
 
 uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
+  pythian.stream.bytes,
   pythian.instrument.catalog, pythian.instrument.recipe, pythian.sound.recipe.codec,
   pythian.mix.recipe, pythian.effects.catalog, pythian.effects.rack,
   pythian.percussion, pythian.bus, pythian.progress,
@@ -37,10 +38,12 @@ uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
   pythian.wfc.semantic.corpus, pythian.wfc.musical.corpus,
   pythian.wfc.music,
   pythian.wfc.semantic.style, pythian.wfc.instrumental.stream,
-  pythian.wfc.layers, pythian.wfc.providers, pythian.wfc.provider.contracts,
+  pythian.wfc.instrumental.policy, pythian.wfc.instrumental.edit,
+  pythian.wfc.instrumental.edit.stream,
+  pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.providers, pythian.wfc.provider.contracts,
   pythian.wfc.learning, pythian.wfc.percussion,
   wfc_model, wfc_sequence, wfc_sequence_text, wfc_sequence_learn, wfc_music_ensemble,
-  wfc_music_sequence, wfc_music_ensemble_graph;
+  wfc_music_sequence, wfc_music_ensemble_graph, wfc_music_voices_graph;
 
 const CRate = 24000;
   CNames: array[0..8] of String =
@@ -57,6 +60,7 @@ type
     Frames: Int64;
     Calls: Integer;
     Cancel: Boolean;
+    Writer: TMusicDecisionWriter;
     procedure Append(const AChunk: TMusicDecisionChunk);
   end;
 
@@ -77,6 +81,7 @@ procedure TDecisionReceipt.Append(const AChunk: TMusicDecisionChunk);
 var I: Integer;
 begin
   if Cancel then raise EAbort.Create('Requested decision cancellation');
+  if Writer <> nil then Writer.Append(AChunk);
   Check((AChunk.FirstCell = Cells) and (AChunk.StartFrame = Frames),
     'Style decision sink receives a discontinuous score');
   Check(Length(AChunk.Providers) = 9, 'Style decision sink omits an actual provider');
@@ -798,6 +803,198 @@ begin
   end;
 end;
 
+procedure ScopedControls;
+const Pattern: array[0..7] of Integer = (0, 0, 1, 0, 1, 1, 0, 1);
+var LDefinition, LCopy, LBadDefinition: TSemanticStyleDefinition;
+  LSource, LScoped, LLoaded, LBad, LBlended, LReblended: TSemanticStyle;
+  LBlendRecipe: TSemanticBlendRecipe;
+  LParts: TMusicalPartControls; LOriginal: array[0..5, 0..1] of String;
+  LPolicies, LDetached: TInstrumentalProviderPolicies;
+  LRows: TLayerPositionPreferences; LMasks: TVoiceMasks;
+  LOptions: TInstrumentalStreamOptions; LOwner: TSemanticInstrumentalStream;
+  LMaster: TAudioSamples; LStems: TBusSampleBlocks;
+  LObserver: TDecisionReceipt; LBytes: TAudioBytesStream;
+  LWriter: TMusicDecisionWriter; LReader, LBeforeReader: TMusicDecisionReader;
+  LBeforeBytes: TAudioBytesReadStream; LEditor: TInstrumentalPassageStream;
+  LEdit: TInstrumentalPassageEdit; LReport: TInstrumentalPassageReport;
+  LBefore, LAfter: TMusicDecisionChunk; LModels: TInstrumentalPolicyModels;
+  LConfig: TWfcMusicVoicesGraphConfig; LDrums: TPercussionDefinitions;
+  LCancel: TCancel; LRejected: Boolean; LIdentity: String;
+  P, C, I, LCase, LFrames: Integer;
+begin
+  LSource := nil; LScoped := nil; LLoaded := nil; LBad := nil; LOwner := nil;
+  LBlended := nil; LReblended := nil;
+  LBytes := nil; LWriter := nil; LReader := nil; LBeforeReader := nil;
+  LBeforeBytes := nil; LEditor := nil; LCancel := TCancel.Create;
+  LObserver := TDecisionReceipt.Create;
+  try
+    LDefinition := Definition;
+    LDefinition.Instrumental.Form := nil;
+    for P := 0 to 5 do for C := 0 to 1 do LOriginal[P, C] := LDefinition.Runs[0].Tokens[P][C];
+    for P := 0 to 5 do for C := 0 to 7 do
+      LDefinition.Runs[0].Tokens[P][C] := LOriginal[P, Pattern[C]];
+    Relearn(LDefinition);
+    LDefinition.Providers[6].Constraints := [MakeWfcSequenceTokenConstraint(4, [PercussionToken(100)])];
+    LSource := TSemanticStyle.CreateSource(LDefinition); LIdentity := LSource.Identity;
+    SetLength(LParts, 3);
+    for P := 0 to 2 do LParts[P] := DefaultMusicalPartControl;
+    LParts[2].MaximumPitch := 60;
+    LScoped := LSource.DeriveMusicalControls(720, 1200, 0, 1, LParts,
+      'Explicit lead register over cells three and four');
+    LLoaded := DecodeSemanticStyle(LScoped.Encode);
+    Check((LLoaded.Identity = LScoped.Identity) and (LLoaded.NodeCount = 2) and
+      (LSource.Identity = LIdentity), 'Scoped derivation loses its parent or exact archive');
+    LCopy := LLoaded.CopyDefinition;
+    for P := 0 to 8 do Check((LCopy.Providers[P].ModelText = LDefinition.Providers[P].ModelText) and
+      (LCopy.Providers[P].VocabularySha256 = LDefinition.Providers[P].VocabularySha256),
+      'Scoped controls change learned models or vocabulary');
+    Check((LCopy.Runs[0].Tokens[4][4] = LDefinition.Runs[0].Tokens[4][4]) and
+      (LCopy.Providers[4].Scopes[0].StartTick = 720) and
+      (LCopy.Providers[4].Scopes[0].EndTick = 1200), 'Scoped request becomes new observed notes or a global bound');
+    LPolicies := SemanticStylePolicies(LCopy);
+    LDetached := CopyInstrumentalPolicies(LPolicies);
+    LDetached[4].Scopes[0].AllowedTokens[0] := 'caller mutation';
+    Check(LPolicies[4].Scopes[0].AllowedTokens[0] <> 'caller mutation', 'Scoped policy copy aliases its source');
+    LMasks := InstrumentalPolicyMasks(LPolicies, ['lead', 'bass'], 2, 4);
+    Check((Length(LMasks[0]) = 2) and (LMasks[0][0].Position = 1) and
+      (LMasks[0][1].Position = 2) and (Length(LMasks[1]) = 0),
+      'Actual planning window globalizes scope or swaps provider order');
+    LRows := InstrumentalPolicyRows(LPolicies, 'bass', 2, 4);
+    Check((Length(LRows) = 4) and (LRows[0].Preferences[0].Multiplier = 3),
+      'A scoped recipe loses unrelated saved global preferences');
+    LRows := InstrumentalPolicyRows(LPolicies, 'harmony', 2, 4);
+    Check((Length(LRows) = 2) and (LRows[0].Position = 1) and (LRows[1].Position = 2) and
+      (LRows[0].Preferences[0].Multiplier > 1), 'Soft chord preference leaks outside its saved passage');
+    SameInstrumental(LScoped, LLoaded);
+    LBlendRecipe := Default(TSemanticBlendRecipe);
+    SetLength(LBlendRecipe.Providers, 9);
+    for P := 0 to 8 do LBlendRecipe.Providers[P].LeftWeight := 1;
+    LBlendRecipe.Instrumental.Enabled := True;
+    LBlendRecipe.Instrumental.LabelText := 'Explicit scoped control parent';
+    SetLength(LBlendRecipe.Instrumental.Parts, 6);
+    LBlended := TSemanticStyle.CreateBlend(LScoped, LSource, LBlendRecipe);
+    Check((Length(LBlended.CopyDefinition.Providers[4].Scopes) = 1) and
+      (LBlended.CopyDefinition.Providers[4].Scopes[0].StartTick = 720),
+      'Selective control parent loses its scoped policy in a blend');
+    SameInstrumental(LBlended, LScoped);
+    LReblended := TSemanticStyle.CreateBlend(LBlended, LSource, LBlendRecipe);
+    FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LReblended.Encode);
+    Check((LLoaded.NodeCount = 6) and (LLoaded.Identity = LReblended.Identity),
+      'A further blend loses scoped controls or actual ancestry');
+    SameInstrumental(LReblended, LLoaded);
+    FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LScoped.Encode);
+    for LCase := 0 to 6 do
+    begin
+      LBadDefinition := LScoped.CopyDefinition;
+      case LCase of
+        0: LBadDefinition.Providers[4].Scopes[0].StepTicks := 120;
+        1: LBadDefinition.Providers[4].Scopes[0].AllowedTokens[0] := 'unknown note';
+        2: LBadDefinition.Providers[4].Scopes[0].EndTick := 2400;
+        3: LBadDefinition.Providers[4].Scopes[0].StartTick := 721;
+        4: LBadDefinition.Providers[4].Scopes[0].AllowedTokens := nil;
+        5: LBadDefinition.Providers[4].Constraints := [MakeWfcSequenceTokenConstraint(3,
+          [LDefinition.Runs[0].Tokens[4][2]])];
+        6: begin
+          SetLength(LBadDefinition.Providers[4].Scopes, 2);
+          LBadDefinition.Providers[4].Scopes[0].Preferences :=
+            [MakeLayerTokenPreference(LDefinition.Runs[0].Tokens[4][0], 1024)];
+          LBadDefinition.Providers[4].Scopes[1] := LBadDefinition.Providers[4].Scopes[0];
+        end;
+      end;
+      LRejected := False;
+      try LBad := TSemanticStyle.CreateDerived(LScoped, LBadDefinition);
+      except
+        on EAudio do LRejected := True;
+        on EArgumentException do LRejected := LCase = 1;
+      end;
+      Check(LRejected and (LBad = nil) and (LSource.Identity = LIdentity), 'Invalid/conflicting scoped policy admitted');
+    end;
+    LCancel.AtStage := 'instrumental_policy_validate'; LRejected := False;
+    try LBad := TSemanticStyle.CreateDerived(LScoped, LScoped.CopyDefinition, nil, nil, LCancel.Observe);
+    except on EAbort do LRejected := True end;
+    Check(LRejected and (LBad = nil) and (LSource.Identity = LIdentity), 'Scoped cancellation publishes partial state');
+    LOptions := LCopy.Instrumental.Options; LOptions.MusicFrames := CRate;
+    LRejected := False;
+    try LOwner := LLoaded.CreateInstrumentalStream(LOptions);
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LOwner = nil), 'Shortened music silently truncates its scoped controls');
+    LOptions.MusicFrames := CRate * 3;
+    LBytes := TAudioBytesStream.Create(MaximumMusicDecisionBytes * 2);
+    LWriter := TMusicDecisionWriter.Create(LBytes); LObserver.Writer := LWriter;
+    LOwner := LLoaded.CreateInstrumentalStream(LOptions, LObserver.Append);
+    LFrames := 0;
+    while LOwner.Stream.ReadOutputs(511, [], LMaster, LStems) do Inc(LFrames, Length(LMaster) div 2);
+    Check((LFrames = CRate * 4) and (LObserver.Cells = 12), 'Extended scope performance does not complete on its actual clock');
+    Check(LWriter.Seal <> '', 'Actual scoped performance has no sealed score');
+    FreeAndNil(LOwner); LObserver.Writer := nil;
+    SetLength(LModels, 9);
+    for P := 0 to 8 do LModels[P] := DecodeWfcSequenceText(LCopy.Providers[P].ModelText);
+    LConfig := SemanticStyleVoiceLayout(LCopy);
+    LConfig.HarmonyModel := LModels[0]; LConfig.RhythmModel := LModels[1];
+    for P := 0 to 2 do LConfig.Voices[P].Model := LModels[P + 2];
+    LDrums := CopyPercussionDefinitions(LCopy.Instrumental.Percussion);
+    for P := 0 to 2 do LDrums[P].Model := LModels[P + 6];
+    LBytes.Position := 0; LReader := TMusicDecisionReader.Create(LBytes);
+    LBeforeBytes := TAudioBytesReadStream.Create(LBytes.Snapshot);
+    LBeforeReader := TMusicDecisionReader.Create(LBeforeBytes);
+    LEdit := Default(TInstrumentalPassageEdit);
+    LEdit.StartFrame := CRate div 2; LEdit.EndFrame := CRate * 7 div 4;
+    LEdit.Parts := [False, False, True, False, False, False];
+    LEdit.Controls := LParts; LEdit.Controls[2] := DefaultMusicalPartControl;
+    LEdit.Seed := 624; LEdit.MaxBacktracks := 256; LEdit.MaxPassBacktracks := 16;
+    LEditor := TInstrumentalPassageStream.Create(LConfig, ['bass', 'chords', 'lead'], LDrums,
+      LModels[5], LReader, 12, LEdit, 32, LPolicies, 480, 240);
+    while LEditor.TryNext(LAfter, LReport) do
+    begin
+      Check(LBeforeReader.TryNext(LBefore), 'Edited scope has no original score chunk');
+      for C := 0 to High(LAfter.Cells) do
+      begin
+        I := LAfter.FirstCell + C;
+        if (I >= 3) and (I < 5) then
+          Check(LAfter.Cells[C].Parts[2].Tones[0].Pitch <= 60, 'Retained edit dropped the saved scoped pitch domain');
+        for P := 0 to High(LBefore.Providers) do
+          if (I < 2) or (I >= 7) or (LBefore.Providers[P].Key <> 'lead') then
+            Check((LBefore.Providers[P].Tokens[C] = LAfter.Providers[P].Tokens[C]) and
+              (LBefore.Providers[P].States[C] = LAfter.Providers[P].States[C]),
+              'Saved policy edit changes an unrequested provider or outside-range state');
+      end;
+    end;
+    Check(LEditor.State = ipesCompleted, 'Scoped policy does not survive actual retained lookahead/seams');
+    FreeAndNil(LEditor); FreeAndNil(LReader); FreeAndNil(LBeforeReader);
+    LBytes.Position := 0; LBeforeBytes.Position := 0;
+    LReader := TMusicDecisionReader.Create(LBytes);
+    LBeforeReader := TMusicDecisionReader.Create(LBeforeBytes);
+    LEdit.Parts := [True, True, True, True, True, True]; LEdit.Harmony := True; LEdit.Rhythm := True;
+    LEditor := TInstrumentalPassageStream.Create(LConfig, ['bass', 'chords', 'lead'], LDrums,
+      LModels[5], LReader, 12, LEdit, 32, LPolicies, 480, 240);
+    while LEditor.TryNext(LAfter, LReport) do
+    begin
+      Check(LBeforeReader.TryNext(LBefore), 'All-part policy edit has no original score');
+      for C := 0 to High(LAfter.Cells) do
+      begin
+        I := LAfter.FirstCell + C;
+        if (I >= 3) and (I < 5) then
+          Check(LAfter.Cells[C].Parts[2].Tones[0].Pitch <= 60, 'All-part edit relaxed a saved scoped bound');
+        for P := 0 to High(LAfter.Providers) do
+        begin
+          if (I = 4) and (LAfter.Providers[P].Key = 'kick') then
+            Check(LAfter.Providers[P].Tokens[C] = PercussionToken(100), 'Selected drum loses its saved hard lock');
+          if (I < 2) or (I >= 7) then Check((LAfter.Providers[P].Tokens[C] = LBefore.Providers[P].Tokens[C]) and
+            (LAfter.Providers[P].States[C] = LBefore.Providers[P].States[C]), 'All-part edit changes an outside-scope state');
+        end;
+      end;
+    end;
+    Check(LEditor.State = ipesCompleted, 'Complete saved policy does not survive an all-part edit');
+    WriteLn('Scoped instrumental policy ', LScoped.Identity, '; native/JS scope, replay and edit consumer pass');
+  finally
+    LEditor.Free; LBeforeReader.Free; LReader.Free; LBeforeBytes.Free;
+    for P := 0 to High(LModels) do LModels[P].Free;
+    LWriter.Free; LBytes.Free; LOwner.Free; LObserver.Free; LCancel.Free;
+    LReblended.Free; LBlended.Free;
+    LBad.Free; LLoaded.Free; LScoped.Free; LSource.Free;
+  end;
+end;
+
 procedure Blends;
 var
   LLeft: TSemanticStyle;
@@ -1154,6 +1351,9 @@ begin
   end;
 end;
 begin
+  {$ifdef PYTHIAN_SCOPES_ONLY}
+  ScopedControls;
+  {$else}
   {$ifdef PYTHIAN_VARIANTS_ONLY}
   Variants;
   {$else}
@@ -1167,10 +1367,12 @@ begin
   Seeds;
   MetadataOrigin;
   Variants;
+  ScopedControls;
   {$endif}
   {$endif}
   {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Capacity;
+  {$endif}
   {$endif}
   {$endif}
   WriteLn('Complete instrumental style checks passed: ', GChecks);

@@ -34,6 +34,7 @@ uses pythian.audio, pythian.time, pythian.progress, pythian.bus, pythian.chord,
   pythian.percussion, pythian.music.stream, pythian.wfc.instrumental,
   pythian.wfc.percussion, pythian.wfc.stream, pythian.wfc.voices,
   pythian.wfc.layers, wfc, wfc_model, wfc_sequence,
+  pythian.wfc.instrumental.policy,
   wfc_sequence_graph, wfc_music_ensemble, wfc_music_voices_graph,
   wfc_music_voices_stream;
 
@@ -86,6 +87,8 @@ type
     FHasExpression: Boolean;
     FHasDensity: Boolean;
     FProviderPreferences: TVoicePreferences;
+    FPolicies: TInstrumentalProviderPolicies;
+    FPolicyKeys: TLayerNames;
     FExpression: TMusicalExpressions;
     FDensityProfiles: array of TObject;
     FVoiceProgress: TWorkProgressCallback;
@@ -133,7 +136,9 @@ type
         here and rejects rather than silently changing the held-note clock. }
       const AMasks: TVoiceMasks = nil;
       const APreferences: TVoicePreferences = nil;
-      const AExpression: TMusicalExpressions = nil);
+      const AExpression: TMusicalExpressions = nil;
+      const APolicies: TInstrumentalProviderPolicies = nil;
+      const AProgress: TWorkProgressCallback = nil);
     destructor Destroy; override;
     function ReadSamples(const AMaximumFrames: Integer; out ASamples: TAudioSamples;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -284,7 +289,9 @@ constructor TInstrumentalMusicStream.Create(const AConfig: TWfcMusicVoicesGraphC
   const AContext: TWfcSequenceModel; const ADecisionSink: TMusicDecisionSink;
   const AForm: TMusicForm; const ADomainProvider: TInstrumentalDomainProvider;
   const AMasks: TVoiceMasks; const APreferences: TVoicePreferences;
-  const AExpression: TMusicalExpressions);
+  const AExpression: TMusicalExpressions;
+  const APolicies: TInstrumentalProviderPolicies;
+  const AProgress: TWorkProgressCallback);
 var
   LBindings: TInstrumentStreamBindings;
   LOptions: TInstrumentStreamOptions;
@@ -296,6 +303,7 @@ var
   LConstraint: TWfcSequenceTokenConstraint;
   LFormKeys: TMusicDecisionTokens;
   LProvider: Integer;
+  LPolicyModels: TInstrumentalPolicyModels;
 begin
   inherited Create;
   if (AGraph = nil) or (Length(ARoles) < 1) or (Length(ARoles) > 6) or
@@ -332,6 +340,16 @@ begin
   for LIndex := 0 to High(FDefinitions) do
     FDrumModelIndices[LIndex] := WfcMusicVoicesModelCount(FConfig) + LIndex;
   FConfig := ComposePercussionGraph(FConfig, FDefinitions);
+  FPolicies := CopyInstrumentalPolicies(APolicies);
+  SetLength(FPolicyKeys, WfcMusicVoicesModelCount(FConfig));
+  SetLength(LPolicyModels, Length(FPolicyKeys));
+  for LProvider := 0 to High(FPolicyKeys) do
+  begin
+    FPolicyKeys[LProvider] := WfcMusicVoicesPassLabel(FConfig, LProvider);
+    if (LProvider >= 2) and (LProvider < 2 + Length(FRoleNames)) then
+      FPolicyKeys[LProvider] := FRoleNames[LProvider - 2];
+    LPolicyModels[LProvider] := WfcMusicVoicesModelAt(FConfig, LProvider);
+  end;
   if ((Length(AMasks) > 0) and
     (Length(AMasks) <> WfcMusicVoicesModelCount(FConfig))) or
     ((Length(APreferences) > 0) and
@@ -384,6 +402,9 @@ begin
   finally
     LMap.Free;
   end;
+  if Length(FPolicies) > 0 then
+    ValidateInstrumentalPolicies(FPolicies, FPolicyKeys, LPolicyModels, FTotalCells,
+      FOptions.TicksPerQuarter, FOptions.StepTicks, AProgress);
   if Length(AForm) > 0 then
   begin
     SetLength(LFormKeys, 2 + Length(ARoles) + Length(APercussion));
@@ -403,7 +424,7 @@ begin
   if LStates * FOptions.SegmentCells > MaximumLayerStateCells then
     raise EAudio.Create('Instrumental lookahead exceeds its explicit state-cell budget');
   FVoiceLookaheadCells := FOptions.SegmentCells;
-  if FForm <> nil then
+  if (FForm <> nil) or (Length(FPolicies) > 0) then
   begin
     FVoiceLookaheadCells := Min(MaximumMusicDecisionCells, MaximumLayerStateCells div LStates);
     FVoiceLookaheadCells := (FVoiceLookaheadCells div FOptions.SegmentCells) * FOptions.SegmentCells;
@@ -574,6 +595,12 @@ begin
         end;
       end;
     end;
+    if Length(FPolicies) > 0 then
+    begin
+      LRows := InstrumentalPolicyRows(FPolicies, FPolicyKeys[LIndex],
+        AStartTick div FOptions.StepTicks, ACellCount, LPreferences, LRows, FVoiceProgress);
+      LPreferences := nil;
+    end;
     if (Length(LRows) > 0) or (Length(LPreferences) > 0) then
     begin
       ApplySequencePositionPreferences(WfcMusicVoicesModelAt(FConfig, LIndex),
@@ -636,6 +663,8 @@ begin
   LCellCount := Min(Int64(FOptions.SegmentCells), FTotalCells - FCells);
   ReportWork(AProgress, 'instrumental_stream_plan', wuItems, FCells, FTotalCells);
   LPlanningCells := LCellCount;
+  if Length(FPolicies) > 0 then
+    LPlanningCells := Min(Int64(FVoiceLookaheadCells), FTotalCells - FCells);
   if FForm <> nil then
     LPlanningCells := FForm.ReadyLookaheadCells(FVoiceLookaheadCells);
   if FForm <> nil then
@@ -659,13 +688,21 @@ begin
     end;
     FFormBoundCells := Max(FFormBoundCells, LBindCell);
   end;
-  if Assigned(FDomainProvider) then
+  if Assigned(FDomainProvider) or (Length(FPolicies) > 0) then
   begin
     LBindCell := Max(FCells, FDomainBoundCells);
     if LBindCell < FCells + LPlanningCells then
     begin
       LWindowCells := FCells + LPlanningCells - LBindCell;
-      LMasks := FDomainProvider(LBindCell, LWindowCells);
+      if Length(FPolicies) > 0 then
+      begin
+        LMasks := InstrumentalPolicyMasks(FPolicies, FPolicyKeys, LBindCell, LWindowCells, AProgress);
+        for LProvider := 0 to High(LMasks) do
+          for LMask in LMasks[LProvider] do
+            FVoices.IntersectAllowedTokens(LProvider, LBindCell + LMask.Position, LMask.AllowedTokens);
+      end;
+      LMasks := nil;
+      if Assigned(FDomainProvider) then LMasks := FDomainProvider(LBindCell, LWindowCells);
       for LProvider := 0 to High(LMasks) do
         for LMask in LMasks[LProvider] do
         begin

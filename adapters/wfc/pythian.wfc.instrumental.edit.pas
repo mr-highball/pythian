@@ -30,6 +30,7 @@ interface
 
 uses pythian.audio, pythian.chord, pythian.progress, pythian.music.controls,
   pythian.music.decisions, pythian.wfc.layers, pythian.wfc.percussion,
+  pythian.wfc.instrumental.policy,
   wfc, wfc_model, wfc_sequence, wfc_music_ensemble, wfc_music_voices_graph;
 
 const
@@ -92,7 +93,9 @@ function TryEditInstrumentalPassageChunk(const AConfig: TWfcMusicVoicesGraphConf
   const AEdges: TInstrumentalPassageEdges;
   const AEdit: TInstrumentalPassageEdit; var AAfter: TMusicDecisionChunk;
   out AReport: TInstrumentalPassageReport;
-  const AProgress: TWorkProgressCallback = nil): Boolean;
+  const AProgress: TWorkProgressCallback = nil;
+  const APolicies: TInstrumentalProviderPolicies = nil;
+  const ATicksPerQuarter: Integer = 480; const AStepTicks: Integer = 240): Boolean;
 
 implementation
 
@@ -106,7 +109,6 @@ type
   TEditModels = array of TWfcSequenceModel;
   TEditBoundaries = array of TWfcSequenceSegmentBoundary;
   TEditKeys = array of TGraphValues;
-  TEditProjections = array of TWfcModelTokens;
 
 procedure AddToken(var ATokens: TWfcModelTokens; const AToken: String);
 begin
@@ -176,7 +178,9 @@ function TryEditInstrumentalPassageChunk(const AConfig: TWfcMusicVoicesGraphConf
   const AEdges: TInstrumentalPassageEdges;
   const AEdit: TInstrumentalPassageEdit; var AAfter: TMusicDecisionChunk;
   out AReport: TInstrumentalPassageReport;
-  const AProgress: TWorkProgressCallback): Boolean;
+  const AProgress: TWorkProgressCallback;
+  const APolicies: TInstrumentalProviderPolicies;
+  const ATicksPerQuarter: Integer; const AStepTicks: Integer): Boolean;
 var
   LModels: TEditModels;
   LNames: TLayerNames;
@@ -188,7 +192,9 @@ var
   LEditableCells: TEditFlags;
   LCandidate: TMusicDecisionChunk;
   LCompiled: TInstrumentalGraphControls;
-  LProjections: TEditProjections;
+  LProjections: TInstrumentalContextProjections;
+  LProjected: TInstrumentalContextControls;
+  LOneCellControls: TInstrumentalGraphControls;
   LGraph: TGraph;
   LPass: TGraph;
   LBridge: TWfcSolveProgressBridge;
@@ -209,8 +215,10 @@ var
   LMask: TWfcSequenceTokenConstraints;
   LPrefs: TLayerTokenPreferences;
   LContextMasks: TVoiceMasks;
+  LPolicyMasks: TVoiceMasks;
+  LPolicyModels: TInstrumentalPolicyModels;
   LFrame: TChordFrame;
-  LChanges: array of TSequencePreferenceScope;
+  LChanges: array of TObject;
   LProvider: Integer;
   LCell: Integer;
   LToken: Integer;
@@ -220,13 +228,43 @@ var
   LOffset: Integer;
   LNamedCount: Integer;
   LDrumOffset: Integer;
-  LWeight: Integer;
-  LPreference: TLayerTokenPreference;
   LPosition: Int64;
   LStates: Int64;
+  LPolicyProjectionWork: Int64;
   LAllowed: Boolean;
   LAny: Boolean;
   LChanged: Boolean;
+  function PolicySupportsDrumRhythm(const ADrum, ACell: Integer; const ARhythm: String): Boolean;
+  var T, M, LAt: Integer; LHasDomain, LKeep: Boolean; LToken: String;
+  begin
+    LAt := LDrumOffset + ADrum;
+    LHasDomain := False;
+    if LAt < Length(LPolicyMasks) then
+      for M := 0 to High(LPolicyMasks[LAt]) do
+        LHasDomain := LHasDomain or (LPolicyMasks[LAt][M].Position = ACell);
+    for M := 0 to High(ADrums[ADrum].Constraints) do
+      LHasDomain := LHasDomain or
+        (ADrums[ADrum].Constraints[M].Position = ABefore.FirstCell + ACell);
+    if not LHasDomain then Exit(True);
+    for T := 0 to LModels[LAt].PublicTokenCount - 1 do
+    begin
+      Inc(LPolicyProjectionWork, AConfig.RhythmModel.PublicTokenCount);
+      Need(LPolicyProjectionWork <= MaximumLayerProjectionWork,
+        'Saved drum policy exceeds the bounded rhythm-projection work budget');
+      if (T mod 32) = 0 then
+        ReportWork(AProgress, 'instrumental_edit_policy_projection', wuItems,
+          T, LModels[LAt].PublicTokenCount);
+      LToken := LModels[LAt].PublicTokenAt(T);
+      LKeep := MaskAllows(LPolicyMasks, LAt, ACell, LToken) and
+        (ADrums[ADrum].Enabled or (PercussionVelocity(LToken) = 0));
+      for M := 0 to High(ADrums[ADrum].Constraints) do
+        if ADrums[ADrum].Constraints[M].Position = ABefore.FirstCell + ACell then
+          LKeep := LKeep and ContainsToken(ADrums[ADrum].Constraints[M].AllowedTokens, LToken);
+      if LKeep and ContainsToken(AllowedPercussionRhythms(AConfig.RhythmModel,
+        ADrums[ADrum], LToken), ARhythm) then Exit(True);
+    end;
+    Result := False;
+  end;
   procedure RestorePreferences;
   var
     I: Integer;
@@ -278,10 +316,15 @@ var
     LValues: TGraphValues;
     LDomain: TGraphValues;
     LOriginal: String;
+    LPolicyMask: TWfcSequenceTokenConstraint;
   begin
     for P := 0 to ACount - 1 do
     begin
       LPass := LGraph.PassGraph[P];
+      if AFirst + P < Length(LPolicyMasks) then
+        for LPolicyMask in LPolicyMasks[AFirst + P] do
+          IntersectSequenceAllowedTokens(LModels[AFirst + P], LPass,
+            LPolicyMask.Position, LPolicyMask.AllowedTokens);
       for C := 0 to High(ABefore.Cells) do
       begin
         if LEditableCells[C] and LEditableProviders[AFirst + P] then
@@ -315,10 +358,19 @@ var
     end;
   end;
   procedure ApplyPreferences(const ALocal: Integer; const APreferences: TLayerTokenPreferences);
+  var LRows: TLayerPositionPreferences;
   begin
     SetLength(LChanges, Length(LChanges) + 1);
-    LChanges[High(LChanges)] := TSequencePreferenceScope.Create(LModels[LProvider],
-      LGraph.PassGraph[ALocal], APreferences, AProgress);
+    if Length(APolicies) = 0 then
+      LChanges[High(LChanges)] := TSequencePreferenceScope.Create(LModels[LProvider],
+        LGraph.PassGraph[ALocal], APreferences, AProgress)
+    else
+    begin
+      LRows := InstrumentalPolicyRows(APolicies, LNames[LProvider],
+        ABefore.FirstCell, Length(ABefore.Cells), APreferences, nil, AProgress);
+      LChanges[High(LChanges)] := TSequencePositionPreferenceScope.Create(LModels[LProvider],
+        LGraph.PassGraph[ALocal], LRows, nil, AProgress);
+    end;
   end;
   procedure KeepSequence(const AProvider: Integer; const ASequence: TWfcGeneratedSequenceSegment);
   var
@@ -393,6 +445,7 @@ begin
   LGraph := nil;
   LBridge := nil;
   LOffset := 0;
+  LPolicyProjectionWork := 0;
   RequireExactTimingCounter(AEdit.StartFrame, 'Musical edit start frame');
   RequireExactTimingCounter(AEdit.EndFrame, 'Musical edit end frame');
   if AContext <> nil then
@@ -569,6 +622,16 @@ begin
   end;
   Need(LStates * Length(ABefore.Cells) <= MaximumLayerStateCells,
     'Musical edit exceeds its bounded state-cell budget');
+  if Length(APolicies) > 0 then
+  begin
+    SetLength(LPolicyModels, Length(LModels));
+    for LProvider := 0 to High(LModels) do LPolicyModels[LProvider] := LModels[LProvider];
+    ValidateInstrumentalPolicies(APolicies, LNames, LPolicyModels,
+      ABefore.FirstCell + Length(ABefore.Cells) + AEdges.FollowingCells,
+      ATicksPerQuarter, AStepTicks, AProgress);
+    LPolicyMasks := InstrumentalPolicyMasks(APolicies, LNames,
+      ABefore.FirstCell, Length(ABefore.Cells), AProgress);
+  end;
   LCandidate := CopyMusicDecisionChunk(ABefore);
   if ABefore.FirstCell > 0 then
     LCandidate.Previous := CopyChordFrame(AEdges.CandidatePrevious.Cells[High(AEdges.CandidatePrevious.Cells)].Parts);
@@ -599,41 +662,12 @@ begin
       end;
       FreeAndNil(LGraph);
       OpenSequence(0, True);
-      SetLength(LProjections, AContext.PublicTokenCount);
-      LPrefs := nil;
-      for LToken := 0 to AContext.PublicTokenCount - 1 do
-      begin
-        if (LToken mod 32) = 0 then
-        begin
-          ReportWork(AProgress, 'instrumental_edit_context', wuItems,
-            LToken, AContext.PublicTokenCount);
-        end;
-        LContextMasks := BindMusicalContextTokens([AContext.PublicTokenAt(LToken)],
-          Length(ARoleNames), nil, True);
-        SetLength(LProjections[LToken], LNamedCount);
-        LWeight := 1;
-        for LIndex := 0 to LNamedCount - 1 do
-        begin
-          LProjections[LToken][LIndex] := LContextMasks[LIndex][0].AllowedTokens[0];
-          if LIndex < Length(LCompiled.Preferences) then
-          begin
-            for LPreference in LCompiled.Preferences[LIndex] do
-            begin
-              if LPreference.Token = LProjections[LToken][LIndex] then
-              begin
-                Need(LWeight <= MaximumLayerPreferenceMultiplier div LPreference.Multiplier,
-                  'Combined musical context preference exceeds its bound');
-                LWeight := LWeight * LPreference.Multiplier;
-              end;
-            end;
-          end;
-        end;
-        if LWeight > 1 then
-        begin
-          SetLength(LPrefs, Length(LPrefs) + 1);
-          LPrefs[High(LPrefs)] := MakeLayerTokenPreference(AContext.PublicTokenAt(LToken), LWeight);
-        end;
-      end;
+      LOneCellControls := CompileInstrumentalControls(AConfig, 1, AEdit.Tonic,
+        AEdit.TonicBias, AEdit.Controls, nil, AProgress);
+      LProjected := ProjectInstrumentalContextControls(AContext, Length(ARoleNames),
+        LOneCellControls, AProgress);
+      LProjections := LProjected.Projections;
+      LPrefs := LProjected.Preferences;
       HoldSeamsAndScope(0, 1);
       for LCell := 0 to High(ABefore.Cells) do
       begin
@@ -655,6 +689,8 @@ begin
               LAllowed := LAllowed and MaskAllows(LCompiled.Masks, LIndex, LCell,
                 LProjections[LToken][LIndex]);
             end;
+            LAllowed := LAllowed and MaskAllows(LPolicyMasks, LOffset + LIndex,
+              LCell, LProjections[LToken][LIndex]);
           end;
           for LIndex := 0 to High(ADrums) do
           begin
@@ -663,7 +699,9 @@ begin
               LAllowed := LAllowed and ContainsToken(AllowedPercussionRhythms(AConfig.RhythmModel,
                 ADrums[LIndex], ABefore.Providers[LDrumOffset + LIndex].Tokens[LCell]),
                 LProjections[LToken][1]);
-            end;
+            end
+            else LAllowed := LAllowed and PolicySupportsDrumRhythm(LIndex, LCell,
+              LProjections[LToken][1]);
           end;
           if LAllowed then
           begin

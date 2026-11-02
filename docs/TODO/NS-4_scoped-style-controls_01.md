@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 4/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -45,6 +45,53 @@ inference benchmark is required. Sound-recipe-only saving can proceed separately
 - [Instrumental streams — DONE](DONE/NS-6_instrumental-streams_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: final frozen source passes complete native and actual
+  JavaScript instrumental consumers (15,867,347 checks each), native playlist
+  (7,392,406), generic styles/blends, retained editor (1,533) and native progress
+  (43,584 checks/43,478 callbacks). Native heaps are clean. Preserve scope-n04's
+  missing-example-fixture compile failure; scope-n04-extra01 adds those unchanged
+  fixture inputs and passes the remaining consumers. Actual 390px Studio saves
+  the passage style, reuses it at four seconds, edits another passage and restores
+  the exact job. Primary inspection finds both scopes and unchanged learned models;
+  no different-note fixture outcome is claimed as musical usefulness. All QA
+  media are paused, its tab/service closed and the operator service/data unchanged.
+  Publication/full-source qualification remain required before acceptance.
+  The demonstrated six-node style → eight-node blend → rejected further blend
+  is linked separately as [style ancestry](NS-5_style-ancestry_01.md); it does not
+  invalidate scope save/reuse/edit or authorize unrelated implementation here.
+
+- 2026-11-01, Big Boss: the shared policy and ordinary capture/reuse paths are
+  implemented; acceptance remains pending full qualification. Primary scope
+  checks now pass 3,025,506 actual JavaScript checks, including exact reload,
+  soft/hard scope, immutable learning, provider-order binding, longer/shorter
+  clocks, cancellation, further blends and retained partial/all-part edits with
+  a drum lock. Scope identity is2e5c5b506c9a32df344d5b2f2907c638188654fafad0227a37fdccf877ccc147.
+  Earlier native snapshot passes 1,008,570 scope checks and 7,392,406 actual
+  playlist checks, including named passage-style reuse at a longer duration,
+  independent mix/six-stem replay and unchanged models. Current frozen-source
+  native qualification and isolated actual Studio QA are in progress; no task
+  effort or counter reset yet. E/tests/scoped-policy-js06, scope-n03/scope-n04
+  and E/runs/scoped-controls-qa01 retain source manifests and evidence.
+  Preserve native01's missing internal declarations, native02's compile invalidated
+  by a concurrent source edit, and JS01/02/03's fixture import, expected exception
+  type and omitted byte-stream budget failures. Native03/04 use isolated frozen
+  source copies so later work cannot invalidate a running compilation. The shared
+  context projection replaces the old local implementation; no generic WFC gap
+  or dependency edit is demonstrated.
+
+- 2026-11-01, Big Boss: selected after the recorded two-batch reassessment.
+  Criterion: a requested passage control can be saved as a style, reused and
+  edited again without changing its scope or frozen learning. Deliver one
+  detached provider/tick policy shared by initial streams and retained edits,
+  its primary archive binding and ordinary Studio capture. Close with native
+  and actual JavaScript position/seam/lock/reload/cancellation consumers, an
+  actual Studio note-edit save/use flow and complete source qualification.
+  Shorter performances reject scopes they cannot contain; longer performances
+  extend the baseline without looping the control. Stop at a demonstrated
+  prerequisite or these criteria, before unrelated blend UI. CI558 remains
+  live for the preceding sound variant; do not cancel it with a new push.
+  The inherited count remains 2 until a real criterion closes.
 
 - 2026-11-01, Big Boss: found while connecting the parent style task's edited
   performance capture. `TSemanticProvider.Preferences` is global; the existing

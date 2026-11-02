@@ -45,14 +45,18 @@ function RetainStudioStyleCandidate(const ACatalogRoot: String;
 function RetainStudioSoundStyle(const ACatalogRoot, AJobId: String;
   const AParent: TJSONObject; const AInstruments: TInstrumentRecipes;
   const AMix: TStemMixRecipe; const AMusicFrames, ATailFrames: Int64;
-  const ASeed: Cardinal; const ACheck: TInstrumentalWorkCheck;
+  const ASeed: Cardinal; const AMeta: TJSONObject; const ACheck: TInstrumentalWorkCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
+function RetainStudioPassageStyle(const ACatalogRoot, AJobId: String;
+  const AParent, AEdit, AMeta, AReport: TJSONObject;
+  const AMusicFrames, ATailFrames: Int64; const ASeed: Cardinal;
+  const ACheck: TInstrumentalWorkCheck; const AProgress: TWorkProgressCallback): TJSONObject;
 
 implementation
 
-uses SysUtils, pythian.audio, pythian.text,
+uses SysUtils, pythian.audio, pythian.text, pythian.time,
   pythian.wfc.semantic.corpus, pythian.tools.json,
-  pythian.tools.studio.styles;
+  pythian.tools.studio.styles, pythian.tools.studio.instrumental.settings;
 
 type
   TCandidateProgress = class
@@ -162,6 +166,23 @@ begin
   end;
 end;
 
+procedure RetainCandidate(const ACatalogRoot: String; const AStyle: TSemanticStyle;
+  const AResult: TJSONObject; const AProgress: TWorkProgressCallback);
+var LDefinition: TSemanticStyleDefinition; LBytes: TAudioBytes;
+begin
+  LDefinition := AStyle.CopyDefinition(AProgress);
+  LBytes := AStyle.Encode(AProgress);
+  RetainStudioStyleBytes(ACatalogRoot, AStyle.Identity, LBytes, AProgress);
+  AResult.Strings['status'] := 'ready';
+  AResult.Add('sha256', AStyle.Identity);
+  AResult.Add('bytes', Length(LBytes));
+  AResult.Add('artifact', 'styles/' + AStyle.Identity + '.pysg');
+  AResult.Add('corpus_revision', LDefinition.Corpus.RevisionIdentity);
+  AResult.Add('provider_count', Length(LDefinition.Providers));
+  AResult.Add('source_count', Length(LDefinition.Sources));
+  AResult.Add('contribution_count', Length(LDefinition.Runs));
+end;
+
 function RetainStudioStyleCandidate(const ACatalogRoot: String;
   const ACorpus: TMusicalCorpus; const AAudioSources: TJSONArray;
   const ARecipe: TSemanticInstrumentalRecipe; const ACheck: TInstrumentalWorkCheck;
@@ -170,7 +191,6 @@ var
   LStyle: TSemanticStyle;
   LDefinition: TSemanticStyleDefinition;
   LProgress: TCandidateProgress;
-  LBytes: TAudioBytes;
 begin
   Result := TJSONObject.Create(['format', 'pythian.studio.style-candidate.v1',
     'status', 'unavailable']);
@@ -187,16 +207,7 @@ begin
       LDefinition := MusicalCorpusStyleDefinition(ACorpus,
         CorpusSources(ACorpus, AAudioSources), ARecipe, LProgress.Observe);
       LStyle := TSemanticStyle.CreateSource(LDefinition, nil, nil, LProgress.Observe);
-      LBytes := LStyle.Encode(LProgress.Observe);
-      RetainStudioStyleBytes(ACatalogRoot, LStyle.Identity, LBytes, LProgress.Observe);
-      Result.Strings['status'] := 'ready';
-      Result.Add('sha256', LStyle.Identity);
-      Result.Add('bytes', Length(LBytes));
-      Result.Add('artifact', 'styles/' + LStyle.Identity + '.pysg');
-      Result.Add('corpus_revision', ACorpus.RevisionIdentity);
-      Result.Add('provider_count', Length(LDefinition.Providers));
-      Result.Add('source_count', Length(LDefinition.Sources));
-      Result.Add('contribution_count', Length(LDefinition.Runs));
+      RetainCandidate(ACatalogRoot, LStyle, Result, LProgress.Observe);
       ReportWork(LProgress.Observe, 'studio_style_snapshot', wuItems, 1, 1);
     except
       on E: Exception do
@@ -219,13 +230,12 @@ end;
 function RetainStudioSoundStyle(const ACatalogRoot, AJobId: String;
   const AParent: TJSONObject; const AInstruments: TInstrumentRecipes;
   const AMix: TStemMixRecipe; const AMusicFrames, ATailFrames: Int64;
-  const ASeed: Cardinal; const ACheck: TInstrumentalWorkCheck;
+  const ASeed: Cardinal; const AMeta: TJSONObject; const ACheck: TInstrumentalWorkCheck;
   const AProgress: TWorkProgressCallback): TJSONObject;
 var
   LParent, LStyle: TSemanticStyle;
   LDefinition: TSemanticStyleDefinition;
   LRecipe: TSemanticInstrumentalRecipe;
-  LBytes: TAudioBytes;
   LProgress: TCandidateProgress;
 begin
   Result := TJSONObject.Create(['format', 'pythian.studio.style-candidate.v1',
@@ -247,19 +257,14 @@ begin
         LRecipe.Options.MusicFrames := AMusicFrames;
         LRecipe.Options.TailFrames := ATailFrames;
         LRecipe.Options.Seed := ASeed;
+        Need((LRecipe.Options.TicksPerQuarter = AMeta.Integers['ticks_per_quarter']) and
+          (LRecipe.Options.StepTicks = AMeta.Integers['step_ticks']),
+          'Sound recipe differs from its performed musical grid');
+        LRecipe.Options.TempoMicroseconds := AMeta.Integers['tempo_microseconds'];
         LRecipe.Origin := LRecipe.Origin + '; operator sound recipe from job ' + AJobId;
         LStyle := TSemanticStyle.CreateInstrumentalVariant(LParent, LRecipe,
           nil, nil, LProgress.Observe);
-        LBytes := LStyle.Encode(LProgress.Observe);
-        RetainStudioStyleBytes(ACatalogRoot, LStyle.Identity, LBytes, LProgress.Observe);
-        Result.Strings['status'] := 'ready';
-        Result.Add('sha256', LStyle.Identity);
-        Result.Add('bytes', Length(LBytes));
-        Result.Add('artifact', 'styles/' + LStyle.Identity + '.pysg');
-        Result.Add('corpus_revision', LDefinition.Corpus.RevisionIdentity);
-        Result.Add('provider_count', Length(LDefinition.Providers));
-        Result.Add('source_count', Length(LDefinition.Sources));
-        Result.Add('contribution_count', Length(LDefinition.Runs));
+        RetainCandidate(ACatalogRoot, LStyle, Result, LProgress.Observe);
         Result.Add('parent_sha256', LParent.Identity);
         Result.Add('derivation', 'instrumental_recipe');
       except
@@ -276,6 +281,77 @@ begin
     end;
   finally
     LStyle.Free; LParent.Free; LProgress.Free;
+  end;
+end;
+
+function RetainStudioPassageStyle(const ACatalogRoot, AJobId: String;
+  const AParent, AEdit, AMeta, AReport: TJSONObject;
+  const AMusicFrames, ATailFrames: Int64; const ASeed: Cardinal;
+  const ACheck: TInstrumentalWorkCheck; const AProgress: TWorkProgressCallback): TJSONObject;
+var LParent, LResized, LBase, LStyle: TSemanticStyle; LDefinition: TSemanticStyleDefinition;
+  LRecipe: TSemanticInstrumentalRecipe; LSupplied: TStudioPassageEdit;
+  LClock: TTempoMap; LProgress: TCandidateProgress; LStart, LEnd: Integer;
+begin
+  Result := TJSONObject.Create(['format', 'pythian.studio.style-candidate.v1', 'status', 'unavailable']);
+  LParent := nil; LResized := nil; LStyle := nil; LClock := nil; LProgress := nil;
+  try
+    try
+      try
+        Need((AParent <> nil) and (AParent.Get('status', '') = 'ready'),
+          'This version has no reusable musical model');
+        LProgress := TCandidateProgress.Create;
+        LProgress.Check := ACheck; LProgress.Callback := AProgress;
+        LParent := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+          AParent.Strings['sha256'], LProgress.Observe), nil, nil, LProgress.Observe);
+        LDefinition := LParent.CopyDefinition(LProgress.Observe);
+        LRecipe := LDefinition.Instrumental;
+        Need((LRecipe.Options.StepTicks = AMeta.Integers['step_ticks']) and
+          (LRecipe.Options.TicksPerQuarter = AMeta.Integers['ticks_per_quarter']),
+          'Passage controls differ from their saved musical clock');
+        LBase := LParent;
+        if (LRecipe.Options.MusicFrames <> AMusicFrames) or
+          (LRecipe.Options.TailFrames <> ATailFrames) or (LRecipe.Options.Seed <> ASeed) or
+          (LRecipe.Options.TempoMicroseconds <> AMeta.Integers['tempo_microseconds']) then
+        begin
+          LRecipe.Options.MusicFrames := AMusicFrames;
+          LRecipe.Options.TailFrames := ATailFrames; LRecipe.Options.Seed := ASeed;
+          LRecipe.Options.TempoMicroseconds := AMeta.Integers['tempo_microseconds'];
+          LRecipe.Origin := LRecipe.Origin + '; performed options from job ' + AJobId;
+          LResized := TSemanticStyle.CreateInstrumentalVariant(LParent, LRecipe, nil, nil, LProgress.Observe);
+          LBase := LResized;
+        end;
+        Need((AMeta.Int64s['total_cells'] > 0) and
+          (AMeta.Int64s['total_cells'] <= High(Integer) div LRecipe.Options.StepTicks),
+          'Passage controls exceed the supported musical tick extent');
+        LClock := TTempoMap.Create(LRecipe.Options.TicksPerQuarter,
+          AMeta.Int64s['total_cells'] * LRecipe.Options.StepTicks,
+          [MakeTempoChange(0, LRecipe.Options.TempoMicroseconds)]);
+        Need((AReport.Int64s['actual_start_frame'] >= 0) and
+          (AReport.Int64s['actual_end_frame'] > AReport.Int64s['actual_start_frame']),
+          'Passage controls require the actual edited musical range');
+        LStart := LClock.NextGridTick(AReport.Int64s['actual_start_frame'], LRecipe.SampleRate, LRecipe.Options.StepTicks);
+        LEnd := LClock.NextGridTick(AReport.Int64s['actual_end_frame'], LRecipe.SampleRate, LRecipe.Options.StepTicks);
+        LSupplied := DecodeStudioPassageEdit(AEdit, AMusicFrames);
+        LStyle := LBase.DeriveMusicalControls(LStart, LEnd, LSupplied.Tonic,
+          LSupplied.TonicBias, LSupplied.Controls, 'Operator passage controls from job ' + AJobId,
+          LProgress.Observe);
+        RetainCandidate(ACatalogRoot, LStyle, Result, LProgress.Observe);
+        Result.Add('parent_sha256', LBase.Identity);
+        Result.Add('source_parent_sha256', LParent.Identity);
+        Result.Add('derivation', 'scoped_musical_controls');
+        Result.Add('start_tick', LStart); Result.Add('end_tick', LEnd);
+        Result.Add('scope_policy', 'fixed musical ticks; reject shorter scope; no repetition');
+      except
+        on E: Exception do
+        begin
+          if (LProgress <> nil) and LProgress.CallbackFailed then raise;
+          Result.Strings['status'] := 'unavailable';
+          Result.Add('reason', E.ClassName + ': ' + E.Message);
+        end;
+      end;
+    except FreeAndNil(Result); raise end;
+  finally
+    LClock.Free; LStyle.Free; LResized.Free; LParent.Free; LProgress.Free;
   end;
 end;
 

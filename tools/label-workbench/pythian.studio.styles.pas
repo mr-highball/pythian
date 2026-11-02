@@ -97,7 +97,7 @@ begin
     El('styles-list').appendChild(LCard);
     LTitle := document.createElement('h3'); LTitle.textContent := StudioText(LRow, 'name'); LCard.appendChild(LTitle);
     LNote := document.createElement('p'); LNote.className := 'hint';
-    LNote.textContent := 'Saved musical ideas, instruments and effects. No new recording analysis.';
+    LNote.textContent := 'Saved musical ideas, controls and sounds. No new recording analysis.';
     if LRow['has_form'] = True then LNote.textContent := LNote.textContent +
       ' Keeps its ' + StudioTime(StudioNumber(LRow, 'preferred_duration_ms') / 1000) + ' song form.';
     LCard.appendChild(LNote);

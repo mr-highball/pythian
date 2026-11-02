@@ -28,7 +28,7 @@ unit pythian.tools.studio.notes;
 
 interface
 
-uses Classes, fpjson, pythian.progress;
+uses Classes, fpjson, pythian.progress, pythian.wfc.semantic.style;
 
 { Big Boss: native metadata/I/O adapter only. The caller has verified the parent
   plan and opened its exact journal through OpenStudioDecisionJournal. Primary
@@ -36,13 +36,14 @@ uses Classes, fpjson, pythian.progress;
   Borrows metadata/input; returns an owned receipt/report after full success. }
 function EditStudioRetainedNotes(const ACatalogRoot, AJobId: String;
   const AMeta, AEdit: TJSONObject; const ASource: TStream;
-  const AProgress: TWorkProgressCallback): TJSONObject;
+  const AProgress: TWorkProgressCallback; const AStyle: TSemanticStyle = nil): TJSONObject;
 
 implementation
 
 uses SysUtils, pythian.audio, pythian.music.decisions,
   pythian.wfc.layers, pythian.wfc.percussion, pythian.wfc.instrumental.edit,
   pythian.wfc.instrumental.edit.stream,
+  pythian.wfc.instrumental.policy,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions,
   pythian.tools.studio.instrumental.config,
   pythian.tools.studio.instrumental.settings,
@@ -179,7 +180,7 @@ end;
 
 function EditStudioRetainedNotes(const ACatalogRoot, AJobId: String;
   const AMeta, AEdit: TJSONObject; const ASource: TStream;
-  const AProgress: TWorkProgressCallback): TJSONObject;
+  const AProgress: TWorkProgressCallback; const AStyle: TSemanticStyle): TJSONObject;
 var
   LModels: TStoredMusicalModels;
   LReader: TMusicDecisionReader;
@@ -195,6 +196,8 @@ var
   LChanged: Int64;
   LActualStart: Int64;
   LActualEnd: Int64;
+  LPolicies: TInstrumentalProviderPolicies;
+  LDefinition: TSemanticStyleDefinition;
   I: Integer;
   procedure Reject(const ADetail, AMessage: String);
   var
@@ -233,6 +236,16 @@ begin
     LEdit.MaxBacktracks := 256;
     LEdit.MaxPassBacktracks := 16;
     LModels := TStoredMusicalModels.Create(AMeta, AProgress);
+    if AStyle <> nil then
+    begin
+      LDefinition := AStyle.CopyDefinition(AProgress);
+      Need(Length(LDefinition.Providers) = AMeta.Arrays['models'].Count,
+        'Saved style policy model inventory differs from the retained score');
+      for I := 0 to High(LDefinition.Providers) do
+        Need(LDefinition.Providers[I].ModelText = AMeta.Arrays['models'].Strings[I],
+          'Saved style policy models differ from the retained score');
+      LPolicies := SemanticStylePolicies(LDefinition);
+    end;
     LReader := TMusicDecisionReader.Create(ASource);
     LWriter := TStudioDecisionWriter.Create(ACatalogRoot, AJobId);
     LPasses.Sorted := True;
@@ -241,7 +254,9 @@ begin
     LActualStart := -1;
     LActualEnd := -1;
     LEditor := TInstrumentalPassageStream.Create(LModels.Config, LModels.Names,
-      LModels.Drums, LModels.Context, LReader, AMeta.Int64s['total_cells'], LEdit);
+      LModels.Drums, LModels.Context, LReader, AMeta.Int64s['total_cells'], LEdit,
+      MaximumMusicDecisionCells, LPolicies, AMeta.Integers['ticks_per_quarter'],
+      AMeta.Integers['step_ticks']);
     try
       while LEditor.TryNext(LAfter, LReport, AProgress) do
       begin

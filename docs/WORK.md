@@ -3,7 +3,80 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: edited sound styles; scoped note controls next - 2026-11-01
+## Current handoff: scoped controls pass local consumers; publication next - 2026-11-01
+
+Big Boss SOLO. The preceding goal turn was progress: sound variants published at
+2ff54266fca16f9672f7d0a2765e18fbcb58bfa9 with real consumers and the scoped-control
+prerequisite linked. Its exact [CI558](https://github.com/mr-highball/pythian/actions/runs/41362261627)
+now succeeds in full: maintained integration, both extracted packages and retained
+artifacts. Downloaded logs/packages match GitHub's recorded digests. This does
+not qualify the new uncommitted scoped source or change the
+operator service. After the two-batch reassessment, this batch delivers the linked
+[scoped-control task](TODO/NS-4_scoped-style-controls_01.md)'s actual save/reuse/edit
+consumer, rather than another archive-only slice. Count remains 2 until a complete
+criterion closes; no task effort is accepted yet.
+
+The primary detached provider/tick policy binds named providers in both initial
+streams and the differently ordered retained editor. Global locks intersect scoped
+domains; positive preferences remain separate, compose once with global/form/drum
+weights, and retain cancellation and bounded work. Known future domains enter the
+actual lookahead. The shared musical-control compiler now owns context projection.
+V6 scopes use the same bounded codec/reader; existing unscoped V4/V5 identities
+stay exact. Scope controls may be blended/reblended without changing learned
+models, vocabulary or source evidence. Longer performances keep fixed musical
+positions; shorter ones reject rather than truncate or loop. Tempo changes retain
+ticks while moving sample-time placement.
+
+Ordinary note edits consume the complete saved policy, then capture requested
+controls using the actual completed frame/tick clock. Performed option changes
+remain their own recipe ancestor when required. A changed audition is not new
+training or an invented note lock. Sound edits retain scoped controls too.
+Naming/reuse use the existing jobs/dialogs and opaque catalog; the current native
+catalog still compiles with core/tool paths only. Studio text distinguishes the
+saved style from exact notes kept in the song.
+
+Current complete native and actual JavaScript instrumental suites each pass
+15,867,347 checks, with unchanged complete-corpus identity and clean native heap.
+JS generic styles/blends and the real 192-cell retained editor pass too (1,533
+checks, 24 changed cells; normalized source digest unchanged). Focused new scope
+checks pass 3,025,506 including partial/all-part edits, drum locks, soft/hard time
+scope, cancellation and further blends. Earlier frozen native snapshot scope-n03
+passes 7,392,406 actual playlist checks: named passage-style reuse at longer
+duration, independent mix/six-stem replay and unchanged models. Final scope-n04
+native playlist and generic styles/blends pass with clean heaps. Its first progress
+compile lacked unchanged example fixtures in the isolated source copy; preserve
+that harness failure. Adding those fixtures permits the progress consumer to pass
+43,584 checks/43,478 callbacks and the retained editor to pass 1,533 checks with
+its unchanged source digest. Maintained code hashes match the frozen E snapshot.
+
+Isolated 390px Studio has completed a 0:00.500–0:02.000 activity edit and named it
+Moonlit motion. Its receipt retains ticks480–1920, the complete parent/model and
+no learning. The fixture honestly reports no different notes; do not count this
+as musical usefulness. Actual Before/After playback completes without media
+errors. Actual reuse at four seconds and another passage edit complete without
+learning or model changes. The further artifact retains both requested tick scopes
+and reload restores the exact job. Mobile/desktop screenshots and read-only Pascal
+inspection retain the actual receipts. All nine media elements were paused, the
+QA tab closed, viewport restored and exact fixed-slot QA service stopped. QA uses
+the existing synthetic private catalog only. The live operator service/data remain
+unchanged. Evidence: E/tests/scoped-policy-js06, scoped-full-js01, scope-n03/
+scope-n04 and E/runs/scoped-controls-qa01. Preserve the task's recorded declaration,
+source-isolation and fixture failures. No generic WFC gap is demonstrated.
+
+The actual twice-edited style has six ancestry nodes. Blending it with its original
+produces eight, then a further blend fails the retained eight-node limit. The
+primary API proof, actual artifacts and clean heap remain in ancestry-proof under
+the QA evidence folder. Linked [style ancestry](TODO/NS-5_style-ancestry_01.md)
+before expanding scope: shared payloads and ancestry need a bounded representation,
+not an arbitrary limit increase. This is Pythian adaptation, not a generic WFC gap.
+
+Next: publish this exact source for complete integration/extracted-package CI.
+Only after all scoped-task criteria/prerequisites pass may it move to DONE and
+accounting/counter change. Stop before unrelated blend UI. Current accounting is
+43 tasks, 34 DONE/nine open, 152/204 (74.51%), 52 open effort. Goal stays active;
+no operator input is needed.
+
+## Previous handoff: edited sound styles; scoped note controls next - 2026-11-01
 
 Big Boss SOLO. This batch connects an actual edited sound recipe to named style
 reuse. A primary recipe variant retains its complete parent, frozen models,

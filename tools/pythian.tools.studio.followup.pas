@@ -42,7 +42,8 @@ uses Classes, SysUtils, pythian.audio, pythian.bus, pythian.time,
   pythian.tools.studio.jobs, pythian.tools.studio.decisions, pythian.tools.studio.notes,
   pythian.tools.studio.instrumental.config, pythian.tools.studio.instrumental.output,
   pythian.tools.studio.sounds, pythian.tools.json,
-  pythian.tools.studio.style.candidate;
+  pythian.tools.studio.style.candidate, pythian.tools.studio.styles,
+  pythian.wfc.semantic.style;
 
 procedure Need(const AValue: Boolean; const AMessage: String);
 begin
@@ -61,6 +62,7 @@ var
   LRecipeRows: TJSONArray;
   LActualRecipes: TInstrumentRecipes;
   LStyleCandidate: TJSONObject;
+  LRetainedStyle: TSemanticStyle;
   LFile: TFileStream;
   LOutput: TStudioInstrumentalOutput;
   LReplay: TMusicDecisionReplay;
@@ -91,6 +93,7 @@ begin
   LFile := nil;
   LOutput := nil;
   LReplay := nil;
+  LRetainedStyle := nil;
   FillChar(LInstruments, SizeOf(LInstruments), 0);
   FillChar(LDrums, SizeOf(LDrums), 0);
   try
@@ -128,8 +131,12 @@ begin
     ReportWork(AProgress, 'instrumental_plan_begin', wuItems, 0, 1);
     if LNoteEdit then
     begin
+      if (LParentResult.Find('style_candidate') <> nil) and
+        (LParentResult.Objects['style_candidate'].Get('status', '') = 'ready') then
+        LRetainedStyle := DecodeSemanticStyle(ReadStudioStyleBytes(ACatalogRoot,
+          LParentResult.Objects['style_candidate'].Strings['sha256'], AProgress), nil, nil, AProgress);
       LNoteChanges := EditStudioRetainedNotes(ACatalogRoot, AJobId, LMeta,
-        ARequest.Objects['note_edit'], LFile, AProgress);
+        ARequest.Objects['note_edit'], LFile, AProgress, LRetainedStyle);
       FreeAndNil(LFile);
       LDecisions := LNoteChanges.Objects['decisions'];
       LFile := OpenStudioDecisionJournal(ACatalogRoot, LDecisions, AProgress);
@@ -252,13 +259,12 @@ begin
     LResult := TJSONObject(LParentResult.Clone);
     if LResult.Find('style_candidate') <> nil then
     begin
-      if LNoteEdit or (LRoot.Strings['kind'] = 'instrumental_regenerate') then
+      if LNoteEdit then
       begin
-        { Time-scoped note controls require their own retained policy. Never
-          promote an audition to new learning or silently globalize its scope. }
-        LResult.Objects['style_candidate'].Strings['status'] := 'unavailable';
-        LResult.Objects['style_candidate'].Strings['reason'] :=
-          'Saving passage controls as a style is not ready. Original style kept.';
+        LStyleCandidate := RetainStudioPassageStyle(ACatalogRoot, AJobId,
+          LParentResult.Objects['style_candidate'], ARequest.Objects['note_edit'],
+          LMeta, LNoteChanges.Objects['edit_report'], LDecisions.Int64s['music_frames'],
+          LResources.Int64s['tail_frames'], LOptions.Seed, ACheck, AProgress);
       end
       else
       begin
@@ -267,10 +273,10 @@ begin
         LStyleCandidate := RetainStudioSoundStyle(ACatalogRoot, AJobId,
           LParentResult.Objects['style_candidate'], LActualRecipes,
           LOutput.CopyMixRecipe, LDecisions.Int64s['music_frames'],
-          LResources.Int64s['tail_frames'], LOptions.Seed, ACheck, AProgress);
-        LResult.Delete('style_candidate');
-        LResult.Add('style_candidate', LStyleCandidate);
+          LResources.Int64s['tail_frames'], LOptions.Seed, LMeta, ACheck, AProgress);
       end;
+      LResult.Delete('style_candidate');
+      LResult.Add('style_candidate', LStyleCandidate);
     end;
     for I := LResult.Count - 1 downto 0 do
       if Pos('|' + LResult.Names[I] + '|',
@@ -318,6 +324,7 @@ begin
     Result := LResult;
     LResult := nil;
   finally
+    LRetainedStyle.Free;
     LReplay.Free;
     LOutput.Free;
     LFile.Free;

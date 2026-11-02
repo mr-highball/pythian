@@ -35,6 +35,8 @@ uses
   pythian.wfc.voices,
   pythian.wfc.layers,
   pythian.wfc.providers,
+  pythian.wfc.instrumental.policy,
+  wfc_model,
   wfc_sequence,
   wfc_music_ensemble,
   wfc_music_voices_graph;
@@ -43,6 +45,13 @@ type
   TInstrumentalGraphControls = record
     Masks: TVoiceMasks;
     Preferences: TVoicePreferences;
+  end;
+  TInstrumentalContextProjections = array of TWfcModelTokens;
+  TInstrumentalContextControls = record
+    Projections: TInstrumentalContextProjections;
+    Preferences: TLayerTokenPreferences;
+    HasDomain: Boolean;
+    AllowedTokens: TWfcModelTokens;
   end;
 
 { Compile portable musical controls against the actual supplied vocabularies.
@@ -63,13 +72,24 @@ function RhythmActivityWeight(const ARhythm: TWfcMusicRhythmFrame;
 function SequenceActivityPreferences(const AModel: TWfcSequenceModel;
   const AKind: TStyleProviderVocabulary; const AParts: TMusicalPartControls;
   const AProgress: TWorkProgressCallback = nil): TLayerTokenPreferences;
+{ ACompiled is a one-cell musical control recipe, without a source guide. This
+  is the shared upstream context projection used by passage editing and saved
+  controls; provider observations/models are never changed. }
+function ProjectInstrumentalContextControls(const AContext: TWfcSequenceModel;
+  const ARoleCount: Integer; const ACompiled: TInstrumentalGraphControls;
+  const AProgress: TWorkProgressCallback = nil): TInstrumentalContextControls;
+function CompileInstrumentalScopedControls(const AConfig: TWfcMusicVoicesGraphConfig;
+  const ARoleNames: TLayerNames; const AContext: TWfcSequenceModel;
+  const AStartTick, AEndTick: Int64; const ATicksPerQuarter, AStepTicks,
+  ATonic, ATonicBias: Integer; const AParts: TMusicalPartControls;
+  const AOrigin: String; const AProgress: TWorkProgressCallback = nil): TInstrumentalProviderPolicies;
 
 implementation
 
 uses
   SysUtils,
   pythian.audio,
-  wfc_model,
+  pythian.wfc.musical.context,
   wfc_music,
   wfc_music_sequence;
 
@@ -315,6 +335,97 @@ begin
   if not LHasMasks then Result.Masks := nil;
   if not LHasPreferences then Result.Preferences := nil;
   ReportWork(AProgress, 'musical_controls_ready', wuItems, 1, 1);
+end;
+
+function ProjectInstrumentalContextControls(const AContext: TWfcSequenceModel;
+  const ARoleCount: Integer; const ACompiled: TInstrumentalGraphControls;
+  const AProgress: TWorkProgressCallback): TInstrumentalContextControls;
+var T, P: Integer; LMask: TWfcSequenceTokenConstraint; LPreference: TLayerTokenPreference;
+  LMasks: TVoiceMasks; LKeep: Boolean; LWeight: Integer;
+begin
+  Result := Default(TInstrumentalContextControls);
+  if AContext = nil then Exit;
+  for P := 0 to High(ACompiled.Masks) do
+    Result.HasDomain := Result.HasDomain or (Length(ACompiled.Masks[P]) > 0);
+  SetLength(Result.Projections, AContext.PublicTokenCount);
+  for T := 0 to AContext.PublicTokenCount - 1 do
+  begin
+    if (T mod 32) = 0 then
+      ReportWork(AProgress, 'musical_context_controls', wuItems, T, AContext.PublicTokenCount);
+    LMasks := BindMusicalContextTokens([AContext.PublicTokenAt(T)], ARoleCount, nil, True);
+    SetLength(Result.Projections[T], ARoleCount + 2);
+    LKeep := True; LWeight := 1;
+    for P := 0 to ARoleCount + 1 do
+    begin
+      Result.Projections[T][P] := LMasks[P][0].AllowedTokens[0];
+      if P < Length(ACompiled.Masks) then for LMask in ACompiled.Masks[P] do
+      begin
+        if LMask.Position <> 0 then
+          raise EAudio.Create('Context control projection requires a one-cell recipe');
+        LKeep := LKeep and Contains(LMask.AllowedTokens, Result.Projections[T][P]);
+      end;
+      if P < Length(ACompiled.Preferences) then for LPreference in ACompiled.Preferences[P] do
+        if LPreference.Token = Result.Projections[T][P] then
+        begin
+          if LWeight > MaximumLayerPreferenceMultiplier div LPreference.Multiplier then
+            raise EAudio.Create('Combined musical context preference exceeds its bound');
+          LWeight := LWeight * LPreference.Multiplier;
+        end;
+    end;
+    if LKeep and Result.HasDomain then
+    begin
+      SetLength(Result.AllowedTokens, Length(Result.AllowedTokens) + 1);
+      Result.AllowedTokens[High(Result.AllowedTokens)] := AContext.PublicTokenAt(T);
+    end;
+    if LWeight > 1 then
+    begin
+      SetLength(Result.Preferences, Length(Result.Preferences) + 1);
+      Result.Preferences[High(Result.Preferences)] := MakeLayerTokenPreference(AContext.PublicTokenAt(T), LWeight);
+    end;
+  end;
+  if Result.HasDomain and (Length(Result.AllowedTokens) = 0) then
+    raise EAudio.Create('Pitch bounds leave no supported musical context');
+end;
+
+function CompileInstrumentalScopedControls(const AConfig: TWfcMusicVoicesGraphConfig;
+  const ARoleNames: TLayerNames; const AContext: TWfcSequenceModel;
+  const AStartTick, AEndTick: Int64; const ATicksPerQuarter, AStepTicks,
+  ATonic, ATonicBias: Integer; const AParts: TMusicalPartControls;
+  const AOrigin: String; const AProgress: TWorkProgressCallback): TInstrumentalProviderPolicies;
+var LCompiled: TInstrumentalGraphControls; LContext: TInstrumentalContextControls;
+  P: Integer; LKey: String; LAllowed: TWfcModelTokens; LPreferences: TLayerTokenPreferences;
+  procedure Add(const AKey: String; const AHasDomain: Boolean;
+    const ATokens: TWfcModelTokens; const APreferences: TLayerTokenPreferences);
+  var N: Integer;
+  begin
+    if not AHasDomain and (Length(APreferences) = 0) then Exit;
+    N := Length(Result); SetLength(Result, N + 1); Result[N].Key := AKey;
+    SetLength(Result[N].Scopes, 1);
+    with Result[N].Scopes[0] do
+    begin
+      StartTick := AStartTick; EndTick := AEndTick;
+      TicksPerQuarter := ATicksPerQuarter; StepTicks := AStepTicks; Origin := AOrigin;
+      HasDomain := AHasDomain; AllowedTokens := Copy(ATokens); Preferences := Copy(APreferences);
+    end;
+  end;
+begin
+  Result := nil;
+  if Length(ARoleNames) <> Length(AConfig.Voices) then
+    raise EAudio.Create('Scoped controls require the actual role order');
+  LCompiled := CompileInstrumentalControls(AConfig, 1, ATonic, ATonicBias, AParts, nil, AProgress);
+  for P := 0 to Length(ARoleNames) + 1 do
+  begin
+    LKey := 'harmony';
+    if P = 1 then LKey := 'rhythm';
+    if P >= 2 then LKey := ARoleNames[P - 2];
+    LAllowed := nil; LPreferences := nil;
+    if (P < Length(LCompiled.Masks)) and (Length(LCompiled.Masks[P]) > 0) then
+      LAllowed := LCompiled.Masks[P][0].AllowedTokens;
+    if P < Length(LCompiled.Preferences) then LPreferences := LCompiled.Preferences[P];
+    Add(LKey, Length(LAllowed) > 0, LAllowed, LPreferences);
+  end;
+  LContext := ProjectInstrumentalContextControls(AContext, Length(ARoleNames), LCompiled, AProgress);
+  Add(MusicalContextPassName, LContext.HasDomain, LContext.AllowedTokens, LContext.Preferences);
 end;
 
 end.

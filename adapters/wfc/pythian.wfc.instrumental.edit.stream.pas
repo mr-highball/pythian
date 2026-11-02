@@ -30,6 +30,7 @@ interface
 
 uses pythian.progress, pythian.music.decisions, pythian.wfc.layers,
   pythian.wfc.percussion, pythian.wfc.instrumental.edit,
+  pythian.wfc.instrumental.policy,
   wfc_sequence, wfc_music_voices_graph;
 
 const InstrumentalPassageStreamVersion = 1;
@@ -58,6 +59,9 @@ type
     FContext: TWfcSequenceModel;
     FReader: TMusicDecisionReader;
     FEdit: TInstrumentalPassageEdit;
+    FPolicies: TInstrumentalProviderPolicies;
+    FTicksPerQuarter: Integer;
+    FStepTicks: Integer;
     FTotalCells: Int64;
     FPosition: Int64;
     FState: TInstrumentalPassageStreamState;
@@ -76,7 +80,9 @@ type
       const ANames: TLayerNames; const ADrums: TPercussionDefinitions;
       const AContext: TWfcSequenceModel; const AReader: TMusicDecisionReader;
       const ATotalCells: Int64; const AEdit: TInstrumentalPassageEdit;
-      const AMaximumCells: Integer = MaximumMusicDecisionCells);
+      const AMaximumCells: Integer = MaximumMusicDecisionCells;
+      const APolicies: TInstrumentalProviderPolicies = nil;
+      const ATicksPerQuarter: Integer = 480; const AStepTicks: Integer = 240);
     function TryNext(var AAfter: TMusicDecisionChunk;
       out AReport: TInstrumentalPassageReport;
       const AProgress: TWorkProgressCallback = nil): Boolean;
@@ -101,7 +107,8 @@ constructor TInstrumentalPassageStream.Create(const AConfig: TWfcMusicVoicesGrap
   const ANames: TLayerNames; const ADrums: TPercussionDefinitions;
   const AContext: TWfcSequenceModel; const AReader: TMusicDecisionReader;
   const ATotalCells: Int64; const AEdit: TInstrumentalPassageEdit;
-  const AMaximumCells: Integer);
+  const AMaximumCells: Integer; const APolicies: TInstrumentalProviderPolicies;
+  const ATicksPerQuarter: Integer; const AStepTicks: Integer);
 var
   LStates: Int64;
   I: Integer;
@@ -140,6 +147,9 @@ begin
   FEdit := AEdit;
   FEdit.Parts := Copy(AEdit.Parts);
   FEdit.Controls := Copy(AEdit.Controls);
+  FPolicies := CopyInstrumentalPolicies(APolicies);
+  FTicksPerQuarter := ATicksPerQuarter;
+  FStepTicks := AStepTicks;
   FState := ipesReady;
 end;
 
@@ -227,7 +237,8 @@ begin
         ReportWork(AProgress, 'instrumental_edit_window', wuItems,
           0, Length(LWindow.Cells));
         if not TryEditInstrumentalPassageChunk(FConfig, FNames, FDrums, FContext,
-          LWindow, LEdges, LEdit, LCandidate, LReport, AProgress) then
+          LWindow, LEdges, LEdit, LCandidate, LReport, AProgress,
+          FPolicies, FTicksPerQuarter, FStepTicks) then
         begin
           AReport := LReport;
           FState := ipesRejected;

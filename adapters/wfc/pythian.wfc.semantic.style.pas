@@ -36,7 +36,8 @@ uses
   pythian.instrument.recipe, pythian.mix.recipe, pythian.bus,
   pythian.music.form, pythian.music.controls, pythian.music.decisions,
   pythian.wfc.percussion, pythian.wfc.instrumental.stream,
-  pythian.wfc.musical.corpus, pythian.music.selection;
+  pythian.wfc.musical.corpus, pythian.music.selection,
+  pythian.wfc.instrumental.policy;
 
 const
   MaximumSemanticStyleBytes = 32 * 1024 * 1024;
@@ -81,6 +82,7 @@ type
     VocabularyAncestor: String;
     Preferences: TLayerTokenPreferences;
     Constraints: TWfcSequenceTokenConstraints;
+    Scopes: TInstrumentalControlScopes;
   end;
   TSemanticProviders = array of TSemanticProvider;
   TSemanticRun = record
@@ -264,6 +266,9 @@ type
       const AAdmission: TProviderCodecAdmission = nil;
       const AProgress: TWorkProgressCallback = nil): TSemanticStyle;
     function CopyDefinition(const AProgress: TWorkProgressCallback = nil): TSemanticStyleDefinition;
+    function DeriveMusicalControls(const AStartTick, AEndTick: Int64;
+      const ATonic, ATonicBias: Integer; const AParts: TMusicalPartControls;
+      const AOrigin: String; const AProgress: TWorkProgressCallback = nil): TSemanticStyle;
     function Encode(const AProgress: TWorkProgressCallback = nil): TAudioBytes;
     function CreateSession(const ASeed: Integer; const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
@@ -290,6 +295,7 @@ type
 { Detached model-free layout for inspection/adapters. Use the owning factory
   for generation; it binds the actual immutable models through this layout. }
 function SemanticStyleVoiceLayout(const ADefinition: TSemanticStyleDefinition): TWfcMusicVoicesGraphConfig;
+function SemanticStylePolicies(const ADefinition: TSemanticStyleDefinition): TInstrumentalProviderPolicies;
 function SemanticVocabularyIdentity(const AModelText: String; const AContract: TProviderContract;
   const AProgress: TWorkProgressCallback = nil): String;
 function SemanticPreparationIdentity(const ASource: TSemanticSource;
@@ -308,7 +314,8 @@ uses
   pythian.text, pythian.wfc.providers, wfc,
   pythian.wfc.style, pythian.wfc.context.profile, pythian.wfc.context.archive,
   pythian.wfc.context, pythian.wfc.learning, wfc_sequence_learn, wfc_sequence_text,
-  wfc_music_ensemble, wfc_music_sequence, pythian.music.pattern;
+  wfc_music_ensemble, wfc_music_sequence, pythian.music.pattern,
+  pythian.wfc.musical.context, pythian.wfc.instrumental.controls;
 
 type
   TOriginPosition = record
@@ -854,6 +861,37 @@ begin
     end;
 end;
 
+procedure Require(const ACondition: Boolean; const AMessage: String); forward;
+
+function DefinitionHasScopes(const ADefinition: TSemanticStyleDefinition): Boolean;
+var P: Integer;
+begin
+  for P := 0 to High(ADefinition.Providers) do
+    if Length(ADefinition.Providers[P].Scopes) > 0 then Exit(True);
+  Result := False;
+end;
+
+procedure ScopeIO(const AIO: TStyleIO; var AScopes: TInstrumentalControlScopes);
+var I, J: Integer;
+begin
+  SetLength(AScopes, AIO.Count(Length(AScopes), MaximumInstrumentalControlScopes));
+  for I := 0 to High(AScopes) do with AScopes[I] do
+  begin
+    StartTick := AIO.Q(StartTick); EndTick := AIO.Q(EndTick);
+    TicksPerQuarter := AIO.N(TicksPerQuarter); StepTicks := AIO.N(StepTicks);
+    Origin := AIO.Text(Origin, 4096);
+    HasDomain := AIO.Count(Ord(HasDomain), 1) <> 0;
+    SetLength(AllowedTokens, AIO.Count(Length(AllowedTokens), MaximumLayerPositionValues));
+    for J := 0 to High(AllowedTokens) do AllowedTokens[J] := AIO.Text(AllowedTokens[J]);
+    SetLength(Preferences, AIO.Count(Length(Preferences), MaximumLayerPreferences));
+    for J := 0 to High(Preferences) do
+    begin
+      Preferences[J].Token := AIO.Text(Preferences[J].Token);
+      Preferences[J].Multiplier := AIO.N(Preferences[J].Multiplier);
+    end;
+  end;
+end;
+
 procedure DefinitionIO(const AIO: TStyleIO; var ADefinition: TSemanticStyleDefinition);
 var
   LIndex: Integer;
@@ -1062,6 +1100,18 @@ begin
   end;
   InstrumentalIO(AIO, ADefinition.Instrumental);
   CorpusEvidenceIO(AIO, ADefinition.Corpus);
+  { Optional canonical extension: existing unscoped definition bytes/identities
+    remain exact. The outer V6 header declares actual scoped control content. }
+  if (not AIO.FReading and DefinitionHasScopes(ADefinition)) or
+    (AIO.FReading and (AIO.FStream.Position < AIO.FStream.Size)) then
+  begin
+    Require(AIO.Text('pythian.instrumental.scopes.v1') = 'pythian.instrumental.scopes.v1',
+      'Unsupported instrumental scope extension');
+    Require(AIO.Count(Length(ADefinition.Providers), MaximumSemanticStyleProviders) =
+      Length(ADefinition.Providers), 'Scope extension provider layout differs');
+    for LIndex := 0 to High(ADefinition.Providers) do
+      ScopeIO(AIO, ADefinition.Providers[LIndex].Scopes);
+  end;
 end;
 
 function DefinitionBytes(const ADefinition: TSemanticStyleDefinition;
@@ -1459,6 +1509,25 @@ begin
   for I := 0 to High(Result.Voices) do Result.Voices[I].Model := ALayers[I + 2].Model;
 end;
 
+function SemanticStylePolicies(const ADefinition: TSemanticStyleDefinition): TInstrumentalProviderPolicies;
+var P: Integer;
+begin
+  Result := nil;
+  Require(ADefinition.Instrumental.Enabled, 'Instrumental policy requires its actual binding');
+  SetLength(Result, Length(ADefinition.Providers));
+  for P := 0 to High(Result) do
+  begin
+    Result[P].Key := ADefinition.Providers[P].Contract.Name;
+    if ADefinition.Providers[P].Contract.Vocabulary = spvVoice then
+      Result[P].Key := ADefinition.Providers[P].Contract.RoleId;
+    if ADefinition.Providers[P].Contract.Vocabulary = spvMusicalContext then
+      Result[P].Key := MusicalContextPassName;
+    Result[P].Constraints := CopyVoiceTokenConstraints(ADefinition.Providers[P].Constraints);
+    Result[P].Preferences := Copy(ADefinition.Providers[P].Preferences);
+    Result[P].Scopes := CopyInstrumentalScopes(ADefinition.Providers[P].Scopes);
+  end;
+end;
+
 constructor TSemanticInstrumentalStream.Create(const ADefinition: TSemanticStyleDefinition;
   const AOptions: TInstrumentalStreamOptions;
   const ADecisionSink: TMusicDecisionSink; const AGraph: TBusGraph;
@@ -1471,6 +1540,7 @@ var
   LMasks: TVoiceMasks;
   LPreferences: TVoicePreferences;
   LContextIndex: Integer;
+  LPolicies: TInstrumentalProviderPolicies;
   I: Integer;
 begin
   inherited Create;
@@ -1534,9 +1604,15 @@ begin
     LMasks[I] := FLayers[I].Constraints;
     LPreferences[I] := FLayers[I].Preferences;
   end;
+  LPolicies := nil;
+  if DefinitionHasScopes(ADefinition) then
+  begin
+    LPolicies := SemanticStylePolicies(ADefinition);
+    LMasks := nil; LPreferences := nil;
+  end;
   FStream := TInstrumentalMusicStream.Create(LConfig, LRoles, LDrums, FGraph,
     LRecipe.Options, FLayers[LContextIndex].Model, ADecisionSink, LRecipe.Form, nil,
-    LMasks, LPreferences, LRecipe.Expression);
+    LMasks, LPreferences, LRecipe.Expression, LPolicies, AProgress);
   ReportWork(AProgress, 'semantic_instrumental_ready', wuItems, 1, 1);
 end;
 
@@ -2277,6 +2353,8 @@ begin
   ReportWork(AProgress, 'semantic_validate_clock_cells', wuItems, 0, 0);
   ReportWork(AProgress, 'semantic_prepare_constraints', wuItems, 0, 0);
   LDefinition := AStyle.FDefinition;
+  Require(not DefinitionHasScopes(LDefinition) or LDefinition.Instrumental.Enabled,
+    'Scoped instrumental policy requires an instrumental style');
   Require((Length(LDefinition.Providers) > 0) and (Length(LDefinition.Sources) > 0) and
     (Length(LDefinition.Runs) > 0), 'Semantic style requires providers, sources and observed runs');
   SetLength(LPreviousEnds, Length(LDefinition.Sources));
@@ -2650,7 +2728,8 @@ begin
     FParent := Copy(AParent);
     LIO := TStyleIO.Create(nil, False, AProgress);
     try
-      if FKind = 4 then LIO.Text('pythian.semantic.style.v5')
+      if DefinitionHasScopes(FDefinition) then LIO.Text('pythian.semantic.style.v6')
+      else if FKind = 4 then LIO.Text('pythian.semantic.style.v5')
       else LIO.Text('pythian.semantic.style.v4');
       LIO.N(FKind);
       LIO.Blob(AParent);
@@ -2716,9 +2795,11 @@ begin
   begin
     LBaseline.Providers[LIndex].Preferences := nil;
     LBaseline.Providers[LIndex].Constraints := nil;
+    LBaseline.Providers[LIndex].Scopes := nil;
     LBaseline.Providers[LIndex].VocabularyAncestor := '';
     LCandidate.Providers[LIndex].Preferences := nil;
     LCandidate.Providers[LIndex].Constraints := nil;
+    LCandidate.Providers[LIndex].Scopes := nil;
     LCandidate.Providers[LIndex].VocabularyAncestor := '';
   end;
   Require(Sha256Bytes(DefinitionBytes(LBaseline, AProgress), AProgress) = Sha256Bytes(DefinitionBytes(LCandidate, AProgress), AProgress),
@@ -2755,6 +2836,40 @@ begin
   FInheritedJoints := AParent.FInheritedJoints;
   FKind := 4;
   Finish(LDefinition, AParent.Encode(AProgress), ARegistry, AAdmission, AProgress);
+end;
+
+function TSemanticStyle.DeriveMusicalControls(const AStartTick, AEndTick: Int64;
+  const ATonic, ATonicBias: Integer; const AParts: TMusicalPartControls;
+  const AOrigin: String; const AProgress: TWorkProgressCallback): TSemanticStyle;
+var LDefinition: TSemanticStyleDefinition; LLayers: TLearnedLayers;
+  LConfig: TWfcMusicVoicesGraphConfig; LNames: TLayerNames;
+  LPolicies, LNew: TInstrumentalProviderPolicies; P, I, J, N: Integer;
+begin
+  Result := nil;
+  LDefinition := CopyDefinition(AProgress);
+  Require(LDefinition.Instrumental.Enabled, 'Musical control derivation requires an instrumental style');
+  LPolicies := SemanticStylePolicies(LDefinition);
+  LLayers := LoadLayers(LDefinition, AProgress);
+  try
+    LConfig := VoiceConfig(LDefinition, LLayers);
+    SetLength(LNames, Length(LConfig.Voices));
+    for P := 0 to High(LNames) do LNames[P] := LDefinition.Providers[P + 2].Contract.RoleId;
+    LNew := CompileInstrumentalScopedControls(LConfig, LNames,
+      LLayers[2 + Length(LNames)].Model, AStartTick, AEndTick,
+      LDefinition.Instrumental.Options.TicksPerQuarter,
+      LDefinition.Instrumental.Options.StepTicks, ATonic, ATonicBias, AParts, AOrigin, AProgress);
+    for P := 0 to High(LNew) do
+    begin
+      I := 0;
+      while (I < Length(LPolicies)) and (LPolicies[I].Key <> LNew[P].Key) do Inc(I);
+      Require(I < Length(LPolicies), 'Scoped control provider differs from the saved style');
+      N := Length(LDefinition.Providers[I].Scopes);
+      SetLength(LDefinition.Providers[I].Scopes, N + Length(LNew[P].Scopes));
+      for J := 0 to High(LNew[P].Scopes) do
+        LDefinition.Providers[I].Scopes[N + J] := LNew[P].Scopes[J];
+    end;
+    Result := TSemanticStyle.CreateDerived(Self, LDefinition, nil, nil, AProgress);
+  finally FreeLayers(LLayers) end;
 end;
 
 function ActivePolicyIdentity(const ADefinition: TSemanticStyleDefinition): String;
@@ -3337,6 +3452,8 @@ begin
     LSide := FRecipe.Providers[LProvider].ControlParent;
     LDefinition.Providers[LProvider].Preferences := LDefinitions[LSide].Providers[LProvider].Preferences;
     LDefinition.Providers[LProvider].Constraints := LDefinitions[LSide].Providers[LProvider].Constraints;
+    LDefinition.Providers[LProvider].Scopes :=
+      CopyInstrumentalScopes(LDefinitions[LSide].Providers[LProvider].Scopes);
     if (FRecipe.Providers[LProvider].LeftWeight > 0) and
       (FRecipe.Providers[LProvider].RightWeight > 0) then
     begin
@@ -3506,10 +3623,12 @@ begin
   LResult := nil;
   try
     LFormat := LIO.Text;
-    Require((LFormat = 'pythian.semantic.style.v4') or (LFormat = 'pythian.semantic.style.v5'),
+    Require((LFormat = 'pythian.semantic.style.v4') or (LFormat = 'pythian.semantic.style.v5') or
+      (LFormat = 'pythian.semantic.style.v6'),
       'Unsupported semantic format; regenerate development artifact');
     LKind := LIO.Count(0, 4);
-    Require(((LFormat = 'pythian.semantic.style.v5') and (LKind = 4)) or
+    Require((LFormat = 'pythian.semantic.style.v6') or
+      ((LFormat = 'pythian.semantic.style.v5') and (LKind = 4)) or
       ((LFormat = 'pythian.semantic.style.v4') and (LKind <> 4)),
       'Semantic format differs from its declared recipe kind');
     LParentBytes := LIO.Blob(nil);
@@ -3521,6 +3640,8 @@ begin
     LIO.EndOfInput;
     Require(LHash = Sha256Bytes(Copy(ABytes, 0, LBodyLength), AProgress), 'Semantic payload digest mismatch');
     LDefinition := ReadDefinition(LDefinitionBytes, AProgress);
+    Require((LFormat = 'pythian.semantic.style.v6') = DefinitionHasScopes(LDefinition),
+      'Semantic scope format differs from its actual controls');
     if LKind = 0 then
     begin
       Require((Length(LParentBytes) = 0) and (Length(LOtherBytes) = 0), 'Source cannot carry parent bytes');

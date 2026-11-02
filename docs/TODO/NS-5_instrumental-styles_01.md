@@ -22,6 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
+- [Usable edited-style ancestry](NS-5_style-ancestry_01.md) — the actual twice-edited input reaches the eight-node limit before its further blend
 - [Scoped style controls](NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy; sound-only variants can proceed
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
 - [NS-3_style-vocabulary_01](DONE/NS-3_style-vocabulary_01.md)
@@ -30,6 +31,15 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: actual scoped Studio QA exposes a distinct AC2
+  prerequisite. A sound-edited style followed by two passage edits has six
+  retained nodes. Its first blend with the original succeeds at eight; its
+  further blend rejects the fixed limit. The exact primary-API proof and actual
+  artifacts are retained in E/runs/scoped-controls-qa01/ancestry-proof*. Linked
+  the six-unit ancestry task before expanding that implementation; current scoped
+  control qualification can finish independently. No generic WFC gap is shown,
+  and neither this discovery nor a task addition accepts effort/resets the count.
 
 - 2026-11-01, Big Boss: actual sound-only edits now retain their performed
   instruments/mix/options as primary immutable recipe variants. Models, source

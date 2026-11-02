@@ -74,9 +74,12 @@ back; changing the selected music also returns to playlist learning. Saving a
 style changes metadata only and never starts a job. Older tracks without a
 retained model explain that a new generation is needed. Sound-only edits retain
 their actual changed recipe and complete frozen model parent, so they can be
-saved and reused too. Passage-control saving still needs the
-[scoped-control consumer](TODO/NS-4_scoped-style-controls_01.md); it does not offer
-an unchanged parent recipe as though it described the edited notes. Selective
+saved and reused too. Passage edits retain the requested limits/preferences at
+their musical positions when saved as a style. Longer tracks keep those
+positions; a track too short for them asks for a longer length. Exact audition
+notes stay with the song. Saving never treats them as new training or invented
+locks. The [scoped-control consumer](TODO/NS-4_scoped-style-controls_01.md) records
+its qualification status. Selective
 blend controls remain under the [style task](TODO/NS-5_instrumental-styles_01.md).
 These controls are being qualified in the isolated QA slot; WORK records the
 live deployment separately.

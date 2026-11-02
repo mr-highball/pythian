@@ -32,6 +32,7 @@ uses Classes, SysUtils, Math, fpjson, pythian.audio, pythian.wave, pythian.progr
   pythian.instrument, pythian.synth, pythian.oscillator, pythian.percussion, pythian.bus,
   pythian.time, pythian.music.sound, pythian.music.stream, pythian.music.replay,
   pythian.wave.read, pythian.wfc.semantic.style,
+  pythian.wfc.instrumental.stream,
   pythian.music.decisions,
   pythian.tools.studio.decisions, pythian.tools.studio.instrumental.output,
   pythian.tools.listen.assets,
@@ -318,11 +319,12 @@ end;
 
 procedure CheckSavedStyle(const ACatalog, AJobId: String; const AResults: TJSONObject);
 var
-  LReceipt: TJSONObject;
+  LReceipt, LMeta: TJSONObject;
   LFile: TFileStream;
   LBytes: TAudioBytes;
   LStyle: TSemanticStyle;
   LStream: TSemanticInstrumentalStream;
+  LOptions: TInstrumentalStreamOptions;
   LReader: TWaveFrameReader;
   LExpected: array[0..6] of TAudioClip;
   LMaster: TAudioSamples;
@@ -346,6 +348,7 @@ begin
       'Reused style retains its frozen corpus revision');
   LStyle := nil;
   LStream := nil;
+  LMeta := nil;
   for I := 0 to 6 do LExpected[I] := nil;
   try
     LFile := OpenStudioReadStream(ListeningAssetDirectory(ACatalog) + '/' + LReceipt.Strings['artifact']);
@@ -357,7 +360,15 @@ begin
     finally LFile.Free end;
     LStyle := DecodeSemanticStyle(LBytes);
     Check(LStyle.Identity = LReceipt.Strings['sha256'], 'Native style artifact retains its immutable identity');
-    LStream := LStyle.CreateInstrumentalStream;
+    LOptions := LStyle.CopyDefinition.Instrumental.Options;
+    LOptions.MusicFrames := AResults.Objects['decisions'].Int64s['music_frames'];
+    LOptions.TailFrames := AResults.Objects['output_resources'].Int64s['tail_frames'];
+    if FileExists(NativeFilePath(StudioJobDirectory(ACatalog, AJobId) + '/instrumental-stream-completed.json')) then
+    begin
+      LMeta := ReadStudioJSON(StudioJobDirectory(ACatalog, AJobId) + '/instrumental-stream-completed.json');
+      LOptions.Seed := LMeta.Int64s['seed'];
+    end;
+    LStream := LStyle.CreateInstrumentalStream(LOptions);
     for I := 0 to 6 do
     begin
       LFile := OpenStudioInstrumentalAudio(ACatalog, AJobId, I, LHash);
@@ -386,6 +397,7 @@ begin
     Check(LPosition = LExpected[6].FrameCount, 'Saved style replay ends before the native output');
   finally
     for I := 0 to 6 do LExpected[I].Free;
+    LMeta.Free;
     LStream.Free;
     LStyle.Free;
   end;
@@ -401,7 +413,7 @@ procedure CheckNamedStyle(const ACatalog, ALibrary: String;
 var
   LWrite, LSaved, LAgain, LList, LJob, LStatus, LParent: TJSONObject;
   LModelGuard, LSourceA, LSourceB: TFileStream;
-  LId, LText, LArtifact, LSoundStyleId: String;
+  LId, LText, LArtifact, LSoundStyleId, LNoteStyleId: String;
   LAbort: TCandidateAbort;
   LBytes: TAudioBytes;
   LCancelled: Boolean;
@@ -478,7 +490,14 @@ begin
     begin
       FreeAndNil(LJob);
       if I = 0 then LJob := SoundWrite('named-style-1', 'style-sound-edit', 'square', LParent.Objects['results'])
-      else LJob := NoteWrite('named-style-1', 'style-note-edit', LParent.Objects['results']);
+      else
+      begin
+        LJob := NoteWrite('named-style-1', 'style-note-edit', LParent.Objects['results']);
+        LJob.Objects['note_edit'].Booleans['rhythm'] := True;
+        LJob.Objects['note_edit'].Int64s['start_frame'] := 12000;
+        LJob.Objects['note_edit'].Int64s['end_frame'] := 48000;
+        LJob.Objects['note_edit'].Objects['controls'].Arrays['parts'].Objects[0].Integers['activity_bias'] := 1;
+      end;
       LStatus := EnqueueStudioJob(ACatalog, LJob);
       FreeAndNil(LStatus);
       Check(RunStudioWorker(ACatalog, LJob.Strings['job_id'], ALibrary),
@@ -503,8 +522,17 @@ begin
             'Saving a sound-edited song keeps its actual new style recipe');
         finally LAgain.Free end;
       end
-      else Check(LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'unavailable',
-        'A scoped note edit is not saved as an unchanged recipe or invented training');
+      else
+      begin
+        Check((LStatus.Objects['results'].Objects['style_candidate'].Strings['status'] = 'ready') and
+          (LStatus.Objects['results'].Objects['style_candidate'].Strings['derivation'] = 'scoped_musical_controls') and
+          (LStatus.Objects['results'].Objects['style_candidate'].Strings['source_parent_sha256'] = LSaved.Strings['sha256']) and
+          (LStatus.Objects['results'].Strings['model_sha256'] = LParent.Objects['results'].Strings['model_sha256']),
+          'Actual passage saving preserves its scope, model and complete source parent');
+        LWrite.Strings['name'] := 'Passage style'; LWrite.Strings['job_id'] := LJob.Strings['job_id'];
+        LAgain := SaveStudioStyle(ACatalog, LWrite);
+        try LNoteStyleId := LAgain.Strings['id'] finally LAgain.Free end;
+      end;
       FreeAndNil(LStatus);
     end;
     FreeAndNil(LJob);
@@ -525,6 +553,17 @@ begin
         LParent.Objects['results'].Arrays['outputs'].Objects[0].Strings['wav_sha256']),
       'Saved sound recipe changes actual audio while preserving learned models and source lineage');
     CheckSavedStyle(ACatalog, 'reused-sound-style', LStatus.Objects['results']);
+    FreeAndNil(LStatus);
+    LJob.Strings['job_id'] := 'reused-passage-style'; LJob.Strings['style_id'] := LNoteStyleId;
+    LJob.Int64s['duration_ms'] := 4000;
+    LStatus := EnqueueStudioJob(ACatalog, LJob); FreeAndNil(LStatus);
+    Check(RunStudioWorker(ACatalog, 'reused-passage-style', ALibrary), 'Actual native job reuses named scoped controls');
+    LStatus := ReadStudioJob(ACatalog, 'reused-passage-style');
+    Check((LStatus.Strings['status'] = 'completed') and
+      not LStatus.Objects['results'].Booleans['learning_performed'] and
+      (LStatus.Objects['results'].Strings['model_sha256'] = LParent.Objects['results'].Strings['model_sha256']),
+      'Extended passage-style reuse performs without changing learned evidence');
+    CheckSavedStyle(ACatalog, 'reused-passage-style', LStatus.Objects['results']);
   finally
     LParent.Free;
     LStatus.Free;

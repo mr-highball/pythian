@@ -816,7 +816,7 @@ begin
     El('generation-style-source').removeAttribute('hidden');
     El('generation-style-source').textContent := 'Using saved style: ' + Str(FSelectedStyle, 'name') +
       '. Your selected recordings will not be analyzed again.';
-    El('generate-summary').textContent := 'Saved musical ideas, instruments and effects.';
+    El('generate-summary').textContent := 'Saved musical ideas, controls and sounds.';
     El('use-selected-music').removeAttribute('hidden');
     El('track-influence-controls').setAttribute('hidden', '');
     if FSelectedStyle['has_form'] = True then

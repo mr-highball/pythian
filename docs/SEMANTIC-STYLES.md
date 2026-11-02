@@ -19,6 +19,9 @@ Neither reader accepts historical development variants. Source/control/blend
 nodes use `pythian.semantic.style.v4`; recipe-only instrumental variants use
 `pythian.semantic.style.v5`, conventionally stored as `.pysg`. Both share the
 same primary bounded byte codec, definition validation and ancestry reader.
+Definitions with time-scoped instrumental controls use `pythian.semantic.style.v6`.
+An optional canonical scope extension leaves existing unscoped V4/V5 bytes exact;
+all three use the same primary codec and validation.
 It persists caller codec identity/version, canonical configuration and declared
 meaning. Regenerate v1/v2/v3 development artifacts; no compatibility reader remains.
 
@@ -33,6 +36,48 @@ without changing the parent. V5 cannot silently carry a different node kind or
 rewrite frozen definition fields. Passage-scoped preferences require the linked
 [style-control consumer](TODO/NS-4_scoped-style-controls_01.md); a global token
 preference does not represent a short excerpt's scope.
+
+## Time-scoped instrumental controls
+
+`TSemanticProvider.Scopes` retains half-open musical ticks, explicit PPQ and step,
+actual request origin, an optional hard token domain and separate positive token
+preferences. `DeriveMusicalControls(StartTick, EndTick, Tonic, TonicBias, Parts,
+Origin)` compiles requested musical controls against the existing vocabularies
+and creates the existing control derivation. It never learns an audition or turns
+its generated notes into new locks. Source observations, models and vocabulary
+stay frozen; selective blends retain the chosen control parent's scopes too.
+
+[`pythian.wfc.instrumental.policy`](../adapters/wfc/pythian.wfc.instrumental.policy.pas)
+owns detached copying, provider-key binding, bounded validation and window
+resolution for initial streams and retained edits. Sparse global locks intersect
+scoped domains; soft global/scoped, drum and form preferences compose once at
+each actual position. Existing primary sequence/domain/position-weight code owns
+application and solving. Context projection is shared with the musical-control
+compiler. The editor retains unrequested providers and outside-range states;
+known future constraints enter the bounded planning window before solving.
+
+Scopes keep their musical positions when a performance is longer and do not
+repeat automatically. A shorter performance that cannot contain a scope rejects
+with a useful length error. A changed tempo retains tick scope while changing
+sample-time placement; incompatible PPQ/step, unknown providers/tokens, invalid
+scope, conflicting hard domains and excessive combined weights reject. The
+128-scope, existing token/preparation-work, ancestry and byte limits are explicit.
+Callbacks preserve cancellation at validation and bounded window preparation.
+
+The current eight-node ancestry limit still restricts edited-style composition:
+an actual twice-edited Studio style has six nodes, blends with its original at
+eight, then cannot be blended further. The linked
+[ancestry task](TODO/NS-5_style-ancestry_01.md) owns bounded sharing of retained
+parents and payloads; scope save/reuse/edit does not claim that gap is resolved.
+
+Ordinary Studio capture uses the actual edited frame range and completed clock
+to retain musical ticks. If performed length/tempo/seed differs from the source
+artifact, its actual recipe variant remains a parent of the scoped derivation.
+Naming/reuse retain those ancestors and the original source context. Exact
+audition notes remain in the song's decision journal, separately from style
+policy. See [the scoped-control task](TODO/NS-4_scoped-style-controls_01.md) and
+[WORK](WORK.md) for qualification and deployment status; no musical-usefulness
+claim follows from persistence or a successful new performance.
 
 The [selective blend/reblend extension](SEMANTIC-BLENDS.md) adds independent
 provider contributions and retained multi-parent evidence to this same current
