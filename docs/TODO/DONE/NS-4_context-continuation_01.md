@@ -35,7 +35,7 @@ Keep learned transitions, origins, bounded lookahead and continuous instruments.
 **Blockers**
 
 - [Instrumental runtime — accepted](NS-4_instrumental-runtime_01.md)
-- Native providers from [experimental learning](../NS-3_experimental-learning_01.md)
+- Native providers from [experimental learning](NS-3_experimental-learning_01.md)
   remain implemented. Its reopened optional correction UI is not a prerequisite
   for this saved-provider continuation consumer.
 

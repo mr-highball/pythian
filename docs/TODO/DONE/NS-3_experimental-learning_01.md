@@ -1,15 +1,23 @@
 # NS-3_experimental-learning_01 — Turn available WAV analysis into editable musical graph proposals
 
-[Active tasks](README.md) · [Goal](../GOAL.md) · [Milestones](../MILESTONES.md)
+[Active tasks](../README.md) · [Goal](../../GOAL.md) · [Milestones](../../MILESTONES.md)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 8/10
-**Status:** Dependency-blocked — implemented; complete delivery pending
+**Status:** Accepted — 2026-11-02
 **Owner:** Big Boss (single agent)
 
 **Description:**
 
 Use the existing key/tempo/onset/pitch/dynamics/timbre analyses to propose musical providers for instrumental generation. Experimental access does not depend on a completed accuracy benchmark. Keep source, proposal and operator decisions distinct. Stop on hidden substitution of source grains for synthesized parts.
+
+Current delivery,2026-11-02: the optional current Studio editor again connects
+capture/import and source analysis to corrected or bypassed musical experiments.
+Actual fresh-profile save/reload, focus-independent Apply/Cancel, explicit six-part
+synthesis, Original/mix/part playback and same-job reconnect pass. Matching
+native/UI bytes are live; all7,312 existing operator metadata hashes remain exact.
+Ordinary playlist Generate still requires no proposal approval. See Dev Notes
+for source identities, preserved failures and the bounded Experimental limits.
 
 Reopened on2026-10-31: the simplified Studio has no maintained owner of the
 recording-proposal correction form. Native analysis/provider generation and
@@ -50,26 +58,38 @@ Primary attribution: NS-3. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [CI headroom](NS-6_ci-headroom_01.md) — CI568 exceeds the native job resource
-  deadline; local consumers pass, but matching deployment requires a complete run.
+- [CI headroom — DONE](NS-6_ci-headroom_01.md) — complete CI569 and matching
+  deployment close the demonstrated CI568 resource deadline prerequisite.
 
-- [Optional laboratory](DONE/NS-6_optional-lab_01.md) — reuse its current form/job
+- [Optional laboratory](NS-6_optional-lab_01.md) — reuse its current form/job
   bridge for the optional recording-proposal consumer rather than resurrecting
   the old full-page workflow. This is not a blocker for automatic playlist learning.
 
-- [NS-4_motif-coupling_01 — DONE](DONE/NS-4_motif-coupling_01.md) — real selected-role
+- [NS-4_motif-coupling_01 — DONE](NS-4_motif-coupling_01.md) — real selected-role
   context coupling repairs the actual richer Studio manual melody and variants.
 
-- [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — native Unicode
+- [NS-6_json-identity_01 — DONE](NS-6_json-identity_01.md) — native Unicode
   musical choices and source/job receipts now preserve actual operator bytes.
 
-- [NS-4_joint-context_01 — DONE](DONE/NS-4_joint-context_01.md) — paired context
+- [NS-4_joint-context_01 — DONE](NS-4_joint-context_01.md) — paired context
   resolves the demonstrated AC3 motif prerequisite; Studio mapping is accepted above.
 
-- [NS-4_instrumental-runtime_01](DONE/NS-4_instrumental-runtime_01.md)
-- [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
+- [NS-4_instrumental-runtime_01](NS-4_instrumental-runtime_01.md)
+- [NS-6_instrumental-studio_01](NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: AC1–AC4 restored and delivered. Frontend6d42dee/web09
+  and normal nativec8443e0 bytes use complete CI569/de3f185 qualification for the
+  unchanged native implementation. Exact native/package/source hashes, actual
+  pas2js and fresh-profile consumers pass; native CI is not claimed to compile
+  the presentation unit. Live PID67772 serves all12 checked assets over existing
+  HTTPS, with27 jobs/3 clips/3 styles, zero clip errors/active jobs and all7,312
+  pre-existing metadata hashes exact. Saved lofi clip modal still lists both
+  original ranges and labels. No operator answers or musical verdict were added.
+  Evidence: private E/runs/recording-ideas-release01 and clean-profile01. All
+  browser trees, QA listeners/audio and startup launcher close. Accept eight
+  units only after this actual consumer/deployment outcome; no duplicate credit.
 
 - 2026-11-02, Big Boss: fresh Edge profile on E exposes a focus-dependent
   source-dialog handoff missed by the earlier IAB pointer check. Open now uses

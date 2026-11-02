@@ -2,11 +2,11 @@
 
 ## Current goal: instrumental exploration
 
-Forty-two current-goal tasks are accepted: **177 / 216 effort units (81.94%)**. Their
+Forty-four current-goal tasks are accepted: **186 / 217 effort units (85.71%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
-Studio and context/cancellation/identity repairs. The recording-proposal editor
-is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
-unreachable; native providers remain reusable evidence. This is not musical preference or universal
+Studio and context/cancellation/identity repairs. The optional recording-proposal
+editor is [restored and delivered](NS-3_experimental-learning_01.md) through current
+source/capture consumers, actual synthesis and saved lineage. This is not musical preference or universal
 style-learning acceptance. Coarse classified whole/range learning and the simple
 playlist-to-Generate flow are accepted, with honest analyzed/model-used coverage.
 Canonical generated audio/storage, supported context
@@ -26,13 +26,17 @@ native/actual JS, ordinary Studio, complete CI561/extracted consumers and matchi
 deployment pass. The portable Single guard repair shares the existing IEEE limit.
 Saved-style retry now preserves the same immutable job through native/browser
 reconnect, complete CI562/extracted consumers and matching deployment.
-Complete CI fanout retains every consumer in independent30minute jobs; CI565,
-verified extracted ZIPs and matching sound-tail runtime/UI delivery pass.
-There are138 DONE task files: forty-one current,
+Complete CI fanout retains every consumer; CI569 adds native40minute headroom
+and a final completion marker, while packages retain30minutes. Verified extracted
+ZIPs and matched runtime/browser delivery pass.
+There are141 DONE task records: forty-four current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) | 2026-11-02 | 8/10 | Restored current correction/bypass/manual editor, fresh-profile source-guided synthesis, exact Original/parts/reconnect and matched deployment |
+| [NS-6_ci-headroom_01](NS-6_ci-headroom_01.md) | 2026-11-02 | 1/10 | Complete CI569, final completion marker, all verified packages, native40minute headroom and matching preserved-data delivery |
+| [NS-5_blend-projections_01](NS-5_blend-projections_01.md) | 2026-11-02 | 4/10 | Real-parent original-seed selective projections, further blends, native/pas2js/browser, complete CI567 and preserved-data deployment |
 | [NS-6_current-studio-guide_01](NS-6_current-studio-guide_01.md) | 2026-11-02 | 2/10 | Current shared lessons, main/tool/review contextual Help/Show/Return/Close, preserved choices/data, compact phone header and matched UI delivery over unchanged CI566 native inputs |
 | [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) | 2026-11-02 | 5/10 | Actual mix/parts, synchronized comparison, contextual question/Help/queue, retained draft and exact feedback, complete CI566 and preserved-data delivery |
 | [NS-6_ci-consumer-fanout_01](NS-6_ci-consumer-fanout_01.md) | 2026-11-02 | 2/10 | Complete native/package CI565, every check retained, verified source ZIPs and matching sound-tail delivery with all operator metadata preserved |

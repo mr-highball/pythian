@@ -31,7 +31,7 @@ complexity, not musical quality, inference accuracy or elapsed time.
 
 **Blockers**
 
-- Native observation/provider mapping from [experimental learning](../NS-3_experimental-learning_01.md)
+- Native observation/provider mapping from [experimental learning](NS-3_experimental-learning_01.md)
   remains implemented. Its reopened optional correction UI is not a prerequisite
   for this automatic whole/range corpus consumer.
 

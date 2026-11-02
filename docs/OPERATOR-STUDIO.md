@@ -261,9 +261,8 @@ The [graph workbench](TODO/NS-4_graph-workbench_01.md) and operator usefulness o
 styles/blends remain open. The broader [current Studio guide](TODO/DONE/NS-6_current-studio-guide_01.md)
 is delivered. Existing library foundations do not imply that the simple Studio
 exposes every graph control.
-Optional correction/bypass of recording-derived musical proposals is implemented;
-[complete delivery](TODO/NS-3_experimental-learning_01.md) remains pending native
-CI headroom. See WORK for the running build. Importing/analyzing recordings and
+Optional correction/bypass of recording-derived musical proposals is
+[delivered](TODO/DONE/NS-3_experimental-learning_01.md). Importing/analyzing recordings and
 automatic playlist learning do not require that editor.
 Historical operator workflows are retained in [the work history](WORK-HISTORY.md),
 not required steps in this interface.

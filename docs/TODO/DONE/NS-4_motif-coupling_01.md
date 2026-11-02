@@ -84,7 +84,7 @@ silently relaxed constraints and pinning every part are not the deliverable.
   Studio criteria; consecutive nonclosing count remains zero.
 
 - 2026-10-30, Big Boss: Required prerequisite for
-  [experimental learning AC3](../NS-3_experimental-learning_01.md). Preserve the
+  [experimental learning AC3](NS-3_experimental-learning_01.md). Preserve the
   actual failed Studio job, desktop screenshot and Pascal diagnostic under
   musical-editor-20261030-boss in the dedicated E-drive roots. Exact case:
   root9/natural_minor, lead MIDI60,62,64,67,64,62,60,55, velocity80 and attacks,

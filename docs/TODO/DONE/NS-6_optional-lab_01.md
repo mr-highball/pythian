@@ -71,7 +71,7 @@ for existing control algorithms. The parent graph-controls estimate remains seve
   completed parent even while history reconnects or after a failed/cancelled run.
   Keep the original screenshot and native terminal histories in the packet.
   The missing optional recording-proposal editor is a distinct reopened original
-  [task](../NS-3_experimental-learning_01.md), not acceptance of this authored form.
+  [task](NS-3_experimental-learning_01.md), not acceptance of this authored form.
 
 - Deployment: verified service/worker and twelve browser assets in the fixed
   stable slot; unchanged LAN/TLS/storage/firewall. App/session return200, all6908
