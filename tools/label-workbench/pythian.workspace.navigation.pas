@@ -270,7 +270,8 @@ begin
     if FListeningOnly then
     begin
       LRoot.classList.add('listening-entry');
-      FRefreshButton.textContent := 'Refresh';
+      FRefreshButton.textContent := '↻';
+      FRefreshButton.setAttribute('title', 'Refresh listening questions');
       FRefreshButton.setAttribute('aria-label', 'Refresh listening questions');
     end;
   end;
@@ -289,26 +290,27 @@ begin
   begin
     if FCounts[2].Count = 0 then
     begin
-      LText := 'No listening questions waiting.';
+      LText := 'No questions waiting.';
     end
     else if FCounts[2].Count = 1 then
     begin
-      LText := '1 listening question waiting.';
+      LText := '1 question waiting.';
     end
     else
     begin
-      LText := IntToStr(FCounts[2].Count) + ' listening questions waiting.';
+      LText := IntToStr(FCounts[2].Count) + ' questions waiting.';
     end;
   end
   else if not FConnected or (FCounts[2].State = 'unavailable') then
   begin
-    LText := 'Listening questions unavailable. Your music is still here.';
+    LText := 'Reviews unavailable.';
   end;
   if FNextText.textContent <> LText then
   begin
     FNextText.textContent := LText;
   end;
-  FNextLink.textContent := 'Listening reviews';
+  FNextLink.textContent := 'Review';
+  FNextLink.setAttribute('aria-label', 'Listening reviews');
   FNextLink.setAttribute('href', '/listen.html');
   FNextLink.setAttribute('data-count-state', FCounts[2].State);
   FNextLink.setAttribute('data-count', IntToStr(FCounts[2].Count));

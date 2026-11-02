@@ -785,7 +785,7 @@ code {
 .material-grid button { min-width: 0; padding: .5rem .15rem; font-size: .8rem; }
 .material-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; margin-top: .5rem; }
 .listening-entry { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; margin: .65rem 0 1rem; font-size: .85rem; }
-.listening-entry .workspace-next-text { flex: 1 1 12rem; color: var(--muted); }
+.listening-entry .workspace-next-text { flex: 1 1 9rem; color: var(--muted); }
 .listening-entry .workspace-next-link { min-height: 2.75rem; display: inline-flex; align-items: center; }
-.listening-entry button { padding: .4rem .65rem; font-size: .85rem; }
+.listening-entry button { width: 2.75rem; padding: .4rem; font-size: 1.2rem; }
 .material-dialog .source-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .6rem 0; }

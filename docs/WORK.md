@@ -14,6 +14,16 @@ instrumental91 checks pass with clean heaps; all four browser programs and actua
 JS retry45/progress12/portable codec checks pass. The schema extraction changes
 native inputs, so full current-source CI is required rather than reusing569.
 Fresh-profile browser qualification and delivery remain open; no effort accepted.
+The actual pending/exact-question/return, empty/unavailable and audio-stop paths
+pass desktop/390px. A stopped native job retries its frozen revision, seed and
+8seconds despite current selection0/40seconds. Simulated lost response reuses
+the same write/job; native completion follows browser close. The old QA driver
+force-kills before recent profile writes flush, so its first reopen restores an
+older cancelled run. Preserve that failure; the owned Pascal driver now requests
+normal Browser.close before process-tree cleanup. Actual same-browser reload
+retains the new job with no POST; normal close/reopen qualification is in progress.
+Native full playlist9408558 checks, including style/blend retries, also pass with
+a clean heap. CI570 at fa15d2b is active; package success alone earns no acceptance.
 Preserve the initial harness assumptions (automatic empty-playlist save is not
 generation; listening page uses workspace/question) in E/runs/review-retry-browser01.
 Big Boss SOLO; count0. Criterion: reach the actual waiting listening question
