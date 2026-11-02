@@ -3,7 +3,60 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current gate: complete-source qualification for ordinary blends - 2026-11-02
+## Current gate: finish style estimates, then operator usefulness - 2026-11-02
+
+Big Boss SOLO. [Saved-style retry — DONE](TODO/DONE/NS-6_style-job-retry_01.md)
+closes its final criterion/task after complete
+[CI562](https://github.com/mr-highball/pythian/actions/runs/41403307845)
+at e770d833ecd114751958d5cda469f814f8df98f7 and matching live delivery.
+Integration passes in23m36s; both extracted packages pass before the unchanged
+30minute budget. Downloaded artifact digests match; core124/WFC190 owned units,
+138/320 content hashes and all actual consumers pass. The independent ZIP probe
+first counted two zero-byte directory records as unmanifested files; it now
+checks every content member separately, retaining that probe repair. Final
+Win32 focused consumer passes3,025,311 with a clean heap and exact native/JS
+blend/reblend identities. E/runs/studio-blends-ci562 and
+E/tests/studio-blends-win32-final01 retain evidence. No musical-quality credit.
+
+Checked runtime05/web03 are live in the fixed stable slot, PID72148, at
+https://192.168.12.108:18097/studio.html. Server SHA256
+54cf01c8e96ce5052c507fc742e23d74e05d303e04b22eccdee0cbf11a68f0ac;
+worker2e6c03489546f0730996dc730d7ab8b04429653325594d8a170dfb29742a9c7c.
+No heap tracing. All671 frozen source inputs match; all12 staged browser assets
+match. HTTPS serves11 files exactly plus the phone page's intended host/public-
+certificate substitutions. The hidden OS-owned launcher has exited and the
+exact service remains available. Release guard/probe repairs are preserved;
+no firewall/TLS changes or production-data migration occurred. All23 jobs,
+3 clips, zero named styles and7,143 existing metadata hashes remain unchanged.
+E/runs/studio-blends-release01 holds rollback, manifest, verified and independent
+receipts. Read-only clip GET ranges confirm the actual three files, including
+the earlier Dreamy/Guitar/Piano11:06.660–13:42.831 passage. Optional HEAD returned
+405; actual browser GET-range transport passes without reading full parents.
+
+QA03 additionally renders a real edited two-second-tail parent, names it, then
+blends its Bass instrument with A's one-second master. All six parts retain
+48,000 tail frames/96,000 total at24kHz with no PCM analysis. The primary/native
+tail clock is exact. The Generate helper/size preview still assumes its default
+one-second tail: finish that truthful presentation within the parent style
+task before full parent acceptance, then obtain actual operator usefulness.
+No new task or effort is created for this existing UI scope. QA03 tab20 closes,
+all11 media elements were paused/no loops/errors, exact service54696 stops,
+and session20275 is collected (exit1 is the owned stop). QA02/03 and CI watchers
+are terminal/collected; no QA browser, listener or worker remains. User tab2 is
+preserved, viewport reset. The stable release session7172 is terminal/collected.
+
+Scope45 tasks/38 current DONE/seven open,164/206(79.61%),42 open effort.
+Consecutive nonclosing count remains0 after genuine retry closure. Goal stays
+active; Big Boss alone. Parent styles stay In progress without partial credit;
+its ordinary Music/Sounds/Timing blend/save/reblend/reuse is now deployed, but
+the estimate detail and actual listening remain. Existing form review stays
+waiting; saved feedback was neither changed nor silently trained. No new generic
+WFC gap or separate dependency branch is needed. Next batch must state its
+criterion/deliverable/evidence/stop, starting with the bounded estimate detail
+before selecting another outcome. Documentation-only acceptance changes below
+need metadata/link/privacy checks, not another native build/service restart.
+
+## Previous gate: complete-source qualification for ordinary blends - 2026-11-02
 
 Big Boss SOLO. Final source full05 passes the ordinary native playlist suite:
 9,408,521 checks, zero unfreed blocks. Actual JS04 passes3,025,311 blend/reblend
@@ -73,7 +126,7 @@ the earlier native01 runtime as if it contained the retry/tail repairs.
 ## Earlier prerequisite: saved-style retry - 2026-11-02
 
 Big Boss SOLO. The ordinary blend batch stops on a demonstrated existing
-[retry blocker](TODO/NS-6_style-job-retry_01.md), linked before repair. Exact
+[retry blocker](TODO/DONE/NS-6_style-job-retry_01.md), linked before repair. Exact
 read-only proof E/tests/style-job-retry-proof01 resubmits completed named-style-0
 and reproduces EStudioConflict on identical settings: native-added style_source
 metadata was compared with the submitted payload. Fix that bounded comparison,

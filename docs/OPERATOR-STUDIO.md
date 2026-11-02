@@ -92,8 +92,10 @@ new instruments without scanning recordings. **Before** plays A's actual song.
 Save the result as another named style to reuse it or blend it again. **Edit
 blend** restores the current choices, including after reload. Changed choices
 mark the existing player **Previous track** until another result is ready.
-These controls are locally qualified; full source CI and live deployment remain
-pending in the [style task](TODO/NS-5_instrumental-styles_01.md) and WORK.
+These controls are qualified through complete CI562 and live delivery. Generate's
+preflight helper/size estimate still assumes the default one-second tail; actual
+output retains longer selected sound tails. That presentation detail and musical
+usefulness remain in the [style task](TODO/NS-5_instrumental-styles_01.md) and WORK.
 
 While generation starts or runs, a visible status and **Stop generation** remain
 available across the three steps. Returning from background reconnects to the

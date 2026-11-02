@@ -1,10 +1,10 @@
 # NS-6_style-job-retry_01 — Reconnect to the same saved-style job
 
-[Tasks](README.md) · [Style consumer](NS-5_instrumental-styles_01.md) · [Workflow](../TASKFLOW.MD)
+[Tasks](../README.md) · [Style consumer](../NS-5_instrumental-styles_01.md) · [Workflow](../../TASKFLOW.MD)
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 1/10
-**Status:** In progress
+**Status:** Accepted
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -28,9 +28,24 @@ jobs, not a general job-system rewrite.
 
 **Blockers**
 
-- None. This unblocks [ordinary selective styles](NS-5_instrumental-styles_01.md).
+- None. This unblocks [ordinary selective styles](../NS-5_instrumental-styles_01.md).
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: AC2 closes with complete
+  [CI562](https://github.com/mr-highball/pythian/actions/runs/41403307845)
+  at e770d833ecd114751958d5cda469f814f8df98f7. Integration and extracted core/WFC
+  consumers pass; downloaded package digests and138/320 content hashes match.
+  Matching checked runtime05/web03 are deployed through the fixed stable slot,
+  with all23 jobs,3 clips and7,143 existing metadata hashes unchanged. Twelve
+  staged assets match; HTTPS serves11 static files exactly and the phone page
+  with its intended host/public-certificate substitutions. Independent launch
+  survives its hidden wrapper; no QA browser, worker, looping audio or listener
+  remains. E/runs/studio-blends-ci562 and studio-blends-release01 retain receipts.
+  Native Win32 additionally passes3,025,311 focused checks with native/JS-identical
+  archives and a clean heap. Preserve earlier retry failures and all subsequent
+  probe repairs. All criteria/prerequisites pass: accept one effort unit, now
+  164/206(79.61%),38 current DONE/seven open. Nonclosing count remains0.
 
 - 2026-11-02, Big Boss: full native ordinary playlist consumer passes9,408,521
   with a clean heap. Actual phone browser blend/further-blend/frozen reuse

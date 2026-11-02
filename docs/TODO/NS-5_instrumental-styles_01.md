@@ -22,7 +22,7 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Saved-style job retry](NS-6_style-job-retry_01.md) — identical named-style requests conflict on native-added metadata; actual blend reconnect requires this repair
+- [Saved-style job retry — DONE](DONE/NS-6_style-job-retry_01.md) — identical named/blend requests preserve their bound job/hash/event; native/browser/CI562/deployment pass
 - [Usable edited-style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) — actual edited input and complete corpus now blend/reblend with shared payloads; CI561 and checked deployment pass
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
 - [NS-5_style-corpus-capacity_01](DONE/NS-5_style-corpus-capacity_01.md) — complete supported corpus saving is accepted
@@ -32,6 +32,19 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: ordinary selective blend/reblend is deployed after
+  complete CI562, actual native/JS/desktop/390px consumers, extracted packages
+  and matching fixed-slot runtime05/web03. The tiny retry prerequisite accepts
+  its own one unit; this parent earns none. QA03 additionally edits a real
+  synthesized song to a two-second tail, saves that actual style, then selects
+  its Bass instrument with A's one-second master. Output retains48,000 tail
+  frames and96,000 total at24kHz, all six parts and no recording scan. The
+  Generate helper/resource preview still assumes the default one-second tail:
+  finish that truthful presentation within this parent's ordinary blend scope
+  before full parent acceptance. Actual native render/storage clocks are exact.
+  Real operator usefulness also remains open. Evidence: E/runs/studio-blends-qa03
+  and studio-blends-release01; no new task/effort is invented for this UI detail.
 
 - 2026-11-02, Big Boss: ordinary optional Music/Sounds/Timing blend controls
   now pass desktop/390px consumers, including Unicode naming, actual first
