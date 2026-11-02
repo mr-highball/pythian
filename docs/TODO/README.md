@@ -3,7 +3,14 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**7 open tasks · 217 total effort units · 44 current-goal DONE · 186 / 217 accepted (85.71%).**
+**5 open tasks · 217 total effort units · 46 current-goal DONE · 188 / 217 accepted (86.64%).**
+
+[Review entry — DONE](DONE/NS-6_review-entry_01.md) and
+[visible retry — DONE](DONE/NS-6_generation-retry_01.md) close two units after
+actual desktop/390px queue/result navigation, frozen retry, lost-response reuse,
+Stop, normal reload/reopen and playback. Complete CI570, all artifact/package
+hashes and matching fixed-slot delivery pass. The live queue shows six questions;
+all27 jobs/3 clips/3 styles and7,312 prior metadata hashes remain exact. Count0.
 
 [Recording ideas — DONE](DONE/NS-3_experimental-learning_01.md) and
 [native CI headroom — DONE](DONE/NS-6_ci-headroom_01.md) close nine units after
@@ -14,18 +21,17 @@ own actual consumers. All7,312 prior metadata hashes,27 jobs/3 clips/3 styles
 remain exact. CI568 and the old handoff failure stay preserved. Count2→0 after
 real gate closure; no musical-quality or independent-review verdict follows.
 
-[Visible generation retry](NS-6_generation-retry_01.md) adds one open unit: the
-current client restores a failure without a direct retry of its retained choices.
-Native retry works; repair the distinct consumer after the projection batch.
+[Visible generation retry — DONE](DONE/NS-6_generation-retry_01.md) now preserves
+the failed run's choices separately from current playlist Generate. The existing
+native retry lineage and reconnect transport remain shared.
 
 [Selective blend projections — DONE](DONE/NS-5_blend-projections_01.md) closes four
 units after original-seed real-parent synthesis, native/pas2js, actual saved
 further blend, Studio mix/part playback, complete CI567 and matching delivery.
 All operator data remain; parent musical usefulness stays open. Count1→0.
 
-[Studio review entry](NS-6_review-entry_01.md) adds one open unit: current Help
-can reach the queue, but ordinary Studio lacks a direct waiting-question action.
-Reuse the existing queue and show the next action without another main step.
+[Studio review entry — DONE](DONE/NS-6_review-entry_01.md) exposes a compact count,
+Review action and the completed result's own question without another main step.
 
 [Current Studio guide — DONE](DONE/NS-6_current-studio-guide_01.md) closes two
 units after shared current lessons, actual main/tool/review Help/Show/Return/Close,
@@ -168,8 +174,8 @@ unblocks evolving musical form. The original24cell guide now performs through
 three8cell commits; all upstream and downstream gates pass. These five units
 repair the primary companion stream, not Studio form controls. Saved
 styles/blends now have their accepted reusable sound recipes. Graph inspection
-and direct review navigation retain their own
-open tasks. Effort is relative implementation complexity, not musical-quality
+retains its own open task. Direct review navigation is delivered above.
+Effort is relative implementation complexity, not musical-quality
 credit. Big Boss remains the sole implementation and verification agent.
 The [shared form API](../MUSICAL-FORM.md) now performs explicit musical returns
 and selective motif retention through the actual six-part graph. The full task
@@ -242,8 +248,8 @@ continuity experiments are selected.
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
 | [NS-6_synthesis-reviews_01 — DONE](DONE/NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Accepted; exact mix/part clocks, contextual question/queue/Help, draft-safe refresh, Save/Next/reload, CI566 and delivery |
 | [NS-6_current-studio-guide_01 — DONE](DONE/NS-6_current-studio-guide_01.md) — current workflow and reachable Help targets | 2 | Accepted; current shared lessons, main/tool/review modal navigation, preserved choices, compact phone header and matching UI delivery |
-| [NS-6_review-entry_01](NS-6_review-entry_01.md) — visible waiting questions from Studio | 1 | Ready; use the existing review queue and current result ID without another main step |
-| [NS-6_generation-retry_01](NS-6_generation-retry_01.md) — visible retry of failed generation choices | 1 | Ready; reuse retained request/native retry without silently changing learning inputs |
+| [NS-6_review-entry_01 — DONE](DONE/NS-6_review-entry_01.md) — visible waiting questions from Studio | 1 | Accepted; actual queue/result/return, preserved data, compact phone entry and CI570 delivery |
+| [NS-6_generation-retry_01 — DONE](DONE/NS-6_generation-retry_01.md) — visible retry of failed generation choices | 1 | Accepted; frozen request, lost-response reuse, Stop/reload/reopen, shared native/pas2js schema and CI570 delivery |
 | [NS-5_blend-projections_01 — DONE](DONE/NS-5_blend-projections_01.md) — valid selected-provider rhythm projections | 4 | Accepted; exact real blend/reblend, native/pas2js, Studio, CI567 and matching delivery |
 | [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
@@ -258,8 +264,8 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all51 current-goal tasks (7 open, forty-four DONE),
-totaling217 units:31 open and186 accepted. Subtotals:
+The two tables together are all51 current-goal tasks (5 open, forty-six DONE),
+totaling217 units:29 open and188 accepted. Subtotals:
 NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 29, NS-6 79. The NS-1 task repairs
 an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 

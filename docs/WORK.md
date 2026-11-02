@@ -3,7 +3,54 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current focus: recording ideas delivered; feedback bridge next - 2026-11-02
+## Current focus: feedback bridge delivered; articulation next — 2026-11-02
+
+Big Boss SOLO. [Review entry — DONE](TODO/DONE/NS-6_review-entry_01.md) and
+[frozen retry — DONE](TODO/DONE/NS-6_generation-retry_01.md) close two effort units.
+Current scope51 tasks/46DONE/five open,188/217(86.64%),29 open effort. Count0
+after complete delivered criteria; no musical-quality or independent-review
+credit follows. NS-5 form/style usefulness still awaits actual operator judgment.
+
+Compact shared navigation exposes the real waiting count and exact completed
+result question without another main step. Native admission and pas2js share
+one instrumental write schema. Actual JS45, native jobs113/instrumental91 and
+playlist9408558 pass with clean heaps. Desktop/390px queue/result/return and
+empty/unavailable states pass. A native cancelled run retries its original
+8seconds/seed/revision despite newer selection0/40seconds. Deliberately lost
+submission response reconciles the same write/job. Normal close/reopen, actual
+reload, Stop and mix/Original playback pass; saved answers never change.
+
+Complete CI570/fa15d2b succeeds: native19m53s, packages3m14s, final completion
+marker, three artifact digests and138/320 package content hashes verified.
+Native417 compiled inputs remain identical. Compact frontend eeb8bd7/web05 is
+separately built and exercised; CI does not pretend to run browser handlers.
+Fixed stable slot is live at PID64988, existing LAN/TLS/firewall retained,
+launcher exited and all12 served assets verified. All27 jobs/3 clips/3 styles
+and7,312 prior metadata hashes remain exact; zero active jobs/clip errors. Live
+Studio shows six questions, the actual retained failed blend's Retry action,
+two lofi clips and one chillwave clip. No live job or answer is submitted by QA.
+
+Private proof: E/runs/review-retry-browser01, review-retry-recovery01,
+review-retry-failure01, review-retry-ci570 and review-retry-release01.
+Keep the harness failures: automatic empty-playlist saves are not generation;
+the copied catalog correctly fails file-identity checks; force-killing a profile
+can lose unflushed storage. The owned Pascal driver now requests Browser.close;
+normal reload/reopen succeeds. Failed-screen API injection is explicit. Automatic
+approval blocked native failure injection without a specific reason; it was not
+run. The later live failed-state view is real and read-only. Corrected release
+receipt labels live in postlaunch-verified.json; pre-correction receipts remain.
+All isolated browser trees, QA listeners/workers and audio close; physical phone,
+hardware mic and musical judgments are not claimed. One inactive IAB error tab41
+remains: Browser blocks its data-page close and computer-use forbids controlling
+the returned ChatGPT.exe host. User GitHub tab2 remains; zero playing/looping media.
+
+Next select the prepared NS-2 stream-articulation prerequisite to shared
+generation consolidation, through the least-complete NS-5's actual musical
+needs. The draft design is E/runs/next-stream-articulation-design.txt. Do not
+expand review infrastructure or labeling. No helper or generic WFC edit is
+authorized. The goal remains active; select/state the next batch before editing.
+
+## Prior bridge preparation and recording-ideas delivery — 2026-11-02
 
 Active bridge batch: NS-6 review-entry and generation-retry, one unit each.
 Local implementation candidate: compact listening-only mode reuses workspace
@@ -217,7 +264,7 @@ one-second tail:792,000frames, all six parts nonzero,296 drum hits and a clean
 heap. Source4428d74 is pushed; complete CI567 is running and extracted consumers
 pass. Normal416-input runtime is built. An isolated ordinary native retry of the
 same failure is running; stable is unchanged. Current Studio also reveals a
-distinct [visible generation retry](TODO/NS-6_generation-retry_01.md) gap. Link its
+distinct [visible generation retry](TODO/DONE/NS-6_generation-retry_01.md) gap. Link its
 one unit before returning to this projection verification. Scope50 tasks/41 DONE,
 nine open,173/216(80.09%),43 open effort; no acceptance, count1.
 
@@ -284,7 +331,7 @@ files and clip ranges survive main/tool Help/Show/Return/Close. No work starts.
 
 Final ordinary-Studio audit identifies a distinct gap: its review queue can be
 reached through Help, but it has no direct waiting-question/count action. Linked
-[one-unit review entry](TODO/NS-6_review-entry_01.md) before expanding scope. The
+[one-unit review entry](TODO/DONE/NS-6_review-entry_01.md) before expanding scope. The
 review workbench and shared guide remain delivered; the new task is not a new
 queue framework or mandatory fourth step. Scope48 tasks/41 DONE/seven open,
 173/211(81.99%),38 open effort; consecutive nonclosing count0. Musical quality,

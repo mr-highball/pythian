@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Forty-four current-goal tasks are accepted: **186 / 217 effort units (85.71%)**. Their
+Forty-six current-goal tasks are accepted: **188 / 217 effort units (86.64%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The optional recording-proposal
 editor is [restored and delivered](NS-3_experimental-learning_01.md) through current
@@ -29,11 +29,13 @@ reconnect, complete CI562/extracted consumers and matching deployment.
 Complete CI fanout retains every consumer; CI569 adds native40minute headroom
 and a final completion marker, while packages retain30minutes. Verified extracted
 ZIPs and matched runtime/browser delivery pass.
-There are141 DONE task records: forty-four current,
+There are143 DONE task records: forty-six current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_review-entry_01](NS-6_review-entry_01.md) | 2026-11-02 | 1/10 | Compact waiting count, exact result question, preserved return state, actual desktop/390px and CI570 delivery |
+| [NS-6_generation-retry_01](NS-6_generation-retry_01.md) | 2026-11-02 | 1/10 | Frozen retries, idempotent lost-response recovery, Stop/reload/reopen/playback, shared native/pas2js schema and CI570 delivery |
 | [NS-3_experimental-learning_01](NS-3_experimental-learning_01.md) | 2026-11-02 | 8/10 | Restored current correction/bypass/manual editor, fresh-profile source-guided synthesis, exact Original/parts/reconnect and matched deployment |
 | [NS-6_ci-headroom_01](NS-6_ci-headroom_01.md) | 2026-11-02 | 1/10 | Complete CI569, final completion marker, all verified packages, native40minute headroom and matching preserved-data delivery |
 | [NS-5_blend-projections_01](NS-5_blend-projections_01.md) | 2026-11-02 | 4/10 | Real-parent original-seed selective projections, further blends, native/pas2js/browser, complete CI567 and preserved-data deployment |

@@ -30,7 +30,7 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 
 - Final ordinary-Studio entry audit finds the queue reachable through Help but
   no direct pending-question action in the simplified product. Linked the
-  separate [Studio entry task](../NS-6_review-entry_01.md), effort1, before adding
+  separate [Studio entry task](NS-6_review-entry_01.md), effort1, before adding
   scope. This accepted task owns the actual question/player/feedback workbench;
   the new task owns navigation from ordinary Studio, not another queue framework.
 

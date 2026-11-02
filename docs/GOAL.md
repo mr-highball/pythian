@@ -27,9 +27,10 @@ mix/part comparisons, one question and durable feedback. The shared
 instruction in the three-step workflow and its tools. Optional
 [recording-proposal corrections](TODO/DONE/NS-3_experimental-learning_01.md)
 are restored and delivered with current fresh-profile consumers and saved source
-lineage. Graph inspection, articulation, generation consolidation, direct
-Studio review entry, visible generation retry and
-form/style musical judgments remain unfinished. Musical
+lineage. Direct [review entry](TODO/DONE/NS-6_review-entry_01.md) and
+[frozen generation retry](TODO/DONE/NS-6_generation-retry_01.md) are delivered.
+Graph inspection, articulation, generation consolidation and form/style musical
+judgments remain unfinished. Musical
 preference is not inferred from implementation acceptance.
 
 - **Real instrumental output.** Generated musical events drive Pythian oscillators/noise, wavetable, additive/FM/PM and layered instrument recipes, envelopes, modulation, filters, buses and effects. Source recordings teach or provide comparison context. A deliberately selected sampler instrument is explicit; assembling windows from a full training mix is not the primary output path.

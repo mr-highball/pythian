@@ -22,7 +22,14 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 186 / 217 effort units accepted (85.71%); seven open, forty-four current-goal DONE.**
+**Current snapshot: 188 / 217 effort units accepted (86.64%); five open, forty-six current-goal DONE.**
+
+[Review entry — DONE](TODO/DONE/NS-6_review-entry_01.md) and
+[visible retry — DONE](TODO/DONE/NS-6_generation-retry_01.md) close two units after
+actual queue/result/return, frozen settings, lost-response reuse, Stop, normal
+reload/reopen and mix/Original playback. Complete CI570/sourcefa15d2b, verified
+artifacts/packages and matching frontend eeb8bd7 delivery pass. The three main
+steps remain; all prior private data are exact. No musical judgment follows.
 
 [Recording ideas — DONE](TODO/DONE/NS-3_experimental-learning_01.md) restores eight
 units after current accept/correct/bypass/manual consumers and actual six-part
@@ -35,10 +42,9 @@ the pas2js-only handoff repair has separate source/actual consumer proof. All
 checks remain. Failures stay preserved; count2→0 after real criterion closure,
 without a musical-quality or independent-review verdict.
 
-[Visible generation retry](TODO/NS-6_generation-retry_01.md) adds one open
-consumer unit after actual current Studio restores a failed blend without a
-direct retry action. Native identical retry remains accepted. Follow the current
-projection prerequisite before this separate recovery change.
+[Visible generation retry — DONE](TODO/DONE/NS-6_generation-retry_01.md) exposes
+the retained failed/stopped settings through the existing native retry contract.
+Current playlist Generate remains a separate explicit choice.
 
 [Selective blend projections — DONE](TODO/DONE/NS-5_blend-projections_01.md) closes
 four units after the original real-parent request synthesizes at unchanged seed,
@@ -51,9 +57,9 @@ Original/Before/After listening question. Live playback and preserved answers
 pass; the brief discloses different Before/After seeds. The parent's seven units
 remain open for the actual operator judgment. No extra effort is accepted.
 
-[Studio review entry](TODO/NS-6_review-entry_01.md) adds one open unit. Help can
-reach the delivered queue; ordinary Studio still needs a direct waiting-question
-action. This distinct navigation outcome earns no planning or musical credit.
+[Studio review entry — DONE](TODO/DONE/NS-6_review-entry_01.md) provides the direct
+waiting-question action and completed result's own question. Queue failures do
+not block selection or generation.
 
 [Current Studio guide — DONE](TODO/DONE/NS-6_current-studio-guide_01.md) closes two
 units after current shared lessons, main/tool/review modal consumers, unchanged
@@ -227,8 +233,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 0 | 15 | 15 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 14 | 14 / 29 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 5 | 74 | 74 / 79 |
-| **Total** | **51 current-goal tasks** | **31** | **186** | **85.71%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, current instruction, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 3 | 76 | 76 / 79 |
+| **Total** | **51 current-goal tasks** | **29** | **188** | **86.64%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
@@ -410,8 +416,8 @@ The 53 former open tasks are [retired/replaced](TODO/RETIRED/2026-10-29/README.m
 not accepted. All 97 historical DONE records and their evidence remain separate;
 none has the current Goal tag. The former 52.45% weighted outcome-credit ledger is
 [historical](history/MILESTONES-2026-10-29.md), not a baseline in the new formula.
-Current scoped records: 7 open + 44 current DONE; legacy records: 53 retired +
-97 historical DONE (141 total DONE task records). No implementation, saved feedback or license is discarded.
+Current scoped records: 5 open + 46 current DONE; legacy records: 53 retired +
+97 historical DONE (143 total DONE task records). No implementation, saved feedback or license is discarded.
 
 100% means all required outcomes in this defined experimental goal are delivered
 and reviewed. It cannot promise any style from any user with universal accuracy.
@@ -421,8 +427,8 @@ criteria and changes the carried nonclosing count from two to zero; WORK records
 the event. Percussion, Studio and its concrete cancellation repair also close
 their criteria. The optional authored/affect laboratory and broader musical
 controls are accepted, including retained note/sound follow-ups. Current open work
-is graph inspection, streamed articulation and generation consolidation, musical
-form/style judgment, direct review navigation and visible generation retry.
+is graph inspection, streamed articulation and generation consolidation, and
+musical form/style judgment. Direct review navigation and retry are delivered.
 Independent clips, corpus vocabulary and long instrumental streams are accepted.
 Actual operator listening remains part of musical form; implementation checks
 alone do not establish musical preference or quality.
