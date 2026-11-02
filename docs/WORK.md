@@ -3,7 +3,61 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current prerequisite: complete independent CI jobs - 2026-11-02
+## Current focus: make the instrumental question/player immediate - 2026-11-02
+
+Big Boss SOLO. [Complete CI fanout — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)
+accepts two units after complete
+[CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216) at
+07c78d72902f839e2e95754ba9c468d7a3503972. Native integration23m50s and extracted
+packages2m19s pass independently, retaining every command, option, consumer and
+30minute job limit. All three downloaded artifact digests match; source ZIPs
+retain124/190 owned units and138/320 content hashes. CI563's serial timeout and
+CI564's avoidable fresh-directory defect are preserved, with the latter repaired
+by explicit setup and a real fresh-root command/log probe. This real gate and
+delivery closure resets consecutive nonclosing count2→0. Scope46 tasks/39 DONE/
+seven open,166/208(79.81%),42 open effort. No musical-quality credit follows.
+
+Qualified runtime01/web02 are live through the fixed stable slot, PID43596,
+https://192.168.12.108:18097/studio.html. Server d4bdcb63d554a7d6d0e85fb858017e30848496b770aaab2c2a92b22f6d10cb14;
+worker af1b420351aab8ba83fe476d4eb5f187ff1a091f38858e4cd50e7f2cd5ba3610.
+All671 frozen inputs/416 native inputs match the built8b9cc74 source; later
+commits change orchestration/docs only. Normal checked flags, no heap tracing.
+All23 jobs,3 clips, zero named styles and7,143 existing metadata hashes match.
+The guarded hidden launcher has exited; exact stable executable still owns the
+port. HTTPS serves11 byte-exact static assets and the intended phone-template
+substitutions. E/runs/style-tail-release565 retains rollback, manifest, verified
+and independent receipts. Release23995 and CI watcher32997 are terminal/collected.
+No firewall/TLS changes. The truthful music/tail/total/size estimate is delivered;
+the parent style task retains its own seven units for actual operator usefulness.
+
+Return to [synthesis reviews](TODO/NS-6_synthesis-reviews_01.md). Existing staged
+E/tests/synthesis-review-source02 contains671 inputs, actual read-only completed-
+performance binding, seven mix/part choices, same-part/same-time Before/After,
+readable note-action width and the small section-Pause announcement repair.
+Native ordinary suite02 passes9,408,558 with a clean heap; original new-fixture
+rejection is preserved in source01. A real48second authored Before/After changes
+only Bass sound; the other five stem hashes stay exact. Actual browser preserves
+15.708808seconds and Bass across both versions. QA uncertainty/Unicode note at
+frame377011 saves and reloads, with all33 QA jobs unchanged. Original retains
+its independent clock, no competing autoplay. CLI setup's absent external audio
+root is repaired by using the service's actual artifact root, not moving audio.
+No operator musical verdict is inferred from these engineering checks.
+
+Required AC2 follow-through is demonstrated, not a broad audit: desktop/390px
+screenshots place excessive navigation/help/queue summary before the question
+and player; note text still exposes frame counts instead of useful time. Keep
+the native/canonical frame metadata, prioritize the question/player, and make
+secondary queue/help contextual. Then integrate/qualify this existing candidate
+and prepare one deliberate instrumental review. Stop at that usable workflow or
+a distinct required gap; no new comparison framework, microclip labels or silent
+learning. Current counter0. Actual operator returning-lead question remains
+unanswered. QA tab23 closes, viewport resets, QA54348/handle23502 stop and collect;
+all audio is paused, no loops/errors, no QA listener/worker. Only user tab2 remains.
+E/runs/synthesis-review-qa01 retains screenshots, response/retained-part proof,
+browser findings and cleanup. No candidate source is integrated yet. Goal remains
+active, solo; no new generic WFC gap or dependency-source edit.
+
+## Earlier prerequisite: complete independent CI jobs - 2026-11-02
 
 Reassessment, Big Boss: two consecutive nonclosing batches. CI564's new packages
 job at a21e43d fails before invoking any consumer: the fresh checkout has no
@@ -22,7 +76,7 @@ native-fpc-logs, raw run logs and partial package evidence. Stable72148 remains
 the prior accepted delivery; do not run its prepared CI563 release wrapper.
 The sound-tail batch is nonclosing1, not accepted by partial CI.
 
-Linked [two-unit CI fanout](TODO/NS-6_ci-consumer-fanout_01.md) before scope
+Linked [two-unit CI fanout](TODO/DONE/NS-6_ci-consumer-fanout_01.md) before scope
 expands. Criterion/deliverable: run unchanged complete integration and extracted
 packages in separate isolated jobs at one source, with30minutes per job. Close
 with both jobs successful, verified extracted ZIPs and matching fixed-slot

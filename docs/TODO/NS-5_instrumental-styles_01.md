@@ -22,8 +22,8 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Blockers**
 
-- [Complete CI fanout](NS-6_ci-consumer-fanout_01.md) — CI563 passes integration
-  but expires during serial extracted-package checks; require the complete gate
+- [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — complete CI565,
+  verified extracted consumers and matching sound-tail runtime/UI are delivered
 - [Saved-style job retry — DONE](DONE/NS-6_style-job-retry_01.md) — identical named/blend requests preserve their bound job/hash/event; native/browser/CI562/deployment pass
 - [Usable edited-style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) — actual edited input and complete corpus now blend/reblend with shared payloads; CI561 and checked deployment pass
 - [Scoped style controls — DONE](DONE/NS-4_scoped-style-controls_01.md) — faithful saved note-edit scope and retained provider policy, qualified/deployed through CI559
@@ -34,6 +34,14 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: sound-tail estimate correction is delivered after complete
+  CI565 at07c78d7. Both jobs and extracted packages pass; all671 frozen inputs
+  match the qualified runtime01/web02. The fixed stable service preserves23 jobs,
+  3 clips and7,143 metadata files, with no QA remnants. This closes the bounded
+  truthful-estimate deliverable and its CI prerequisite; count2→0. Actual
+  operator usefulness and this parent's seven-unit acceptance remain open.
+  Evidence: E/runs/style-tail-ci565 and style-tail-release565.
 
 - 2026-11-02, Big Boss: complete CI563 is cancelled at its30minute deadline:
   integration passes28m49s and extracted core passes; WFC qualification is cut

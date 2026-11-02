@@ -23,10 +23,29 @@ Primary attribution: NS-6. Effort estimates relative implementation/integration 
 **Blockers**
 
 - [NS-6_instrumental-studio_01](DONE/NS-6_instrumental-studio_01.md)
-- [Complete CI fanout](NS-6_ci-consumer-fanout_01.md) — actual prerequisite to
-  publishing/deploying further review changes after CI563's serial timeout
+- [Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — complete CI565
+  and matching delivery close the serial-timeout prerequisite
 
 **Dev Notes:**
+
+- 2026-11-02, Big Boss: E/tests/synthesis-review-source02 stages a read-only
+  exact performance/mix/part binding and listening controls without integrating
+  it into the repository yet. Ordinary native suite02 passes9,408,558 with zero
+  unfreed blocks. Actual QA retains the same15.708808second position and Bass
+  selection across Before/After; the targeted sound change keeps all other five
+  stem hashes exact. Explicit QA uncertainty and Unicode note at frame377011
+  save/reload; all33 QA jobs remain unchanged. Original retains its independent
+  clock, with no autoplay. No operator musical verdict is inferred.
+- Source01's new fixture wrongly treated generated+Original as generated-only;
+  preserve the correct rejection/clean heap. Source02 separates the exact voting
+  WAV before using the existing prepared factory. CLI setup initially omitted
+  the service's external artifact root; setting the same host root resolves it.
+  Native models/audio are not missing. E/runs/synthesis-review-qa01 retains proof.
+- Actual desktop/390px screenshots expose excessive navigation above the question
+  and technical frame wording in notes. Finish AC2 before integration/publication:
+  prioritize question/player, contextual queue/help and human time while retaining
+  canonical frame metadata. QA tab23 closes, viewport resets, exact QA54348 stops
+  and handle23502 is collected. User tab2 and production data are untouched.
 
 - Big Boss, current form QA: native player Pause stops audio but the section
   announcement can still say `Playing A return.` AC2 should synchronize that

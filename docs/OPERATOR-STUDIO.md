@@ -98,8 +98,8 @@ two seconds of music with a two-second tail gives four seconds of playback.
 Space counts the mix and six parts, including long WAV headers. Saved styles and
 blends use their actual retained tails without scanning recordings or models.
 An older browser draft may need its style selected again to load this metadata.
-This estimate correction passes local native/JS/desktop/phone checks; complete
-source delivery and musical usefulness remain in the
+This estimate correction is delivered after native/JS/desktop/phone checks and
+complete CI565. Actual musical usefulness remains in the
 [style task](TODO/NS-5_instrumental-styles_01.md) and WORK.
 
 While generation starts or runs, a visible status and **Stop generation** remain
@@ -112,7 +112,8 @@ It is not needed for ordinary Library → Selection → Generate.
 
 Choose **Track length** in seconds, minutes or hours, then press **Generate music**.
 The default is two minutes; plans from two seconds to24hours are supported.
-The displayed disk estimate includes the mix, six parts and a1second effect tail.
+The displayed disk estimate includes the mix, six parts and their sound tail.
+Default instruments use one second; saved styles/blends use their retained tail.
 Output storage grows with length; musical lookahead and PCM working blocks stay
 bounded. Native admission checks free disk space before starting.
 Optional **Track influence**

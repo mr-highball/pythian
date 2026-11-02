@@ -52,8 +52,8 @@ one-second tail. Native/JS and desktop/phone qualification status remains in WOR
 Identical retry returns the same job/event/hash, ignoring only native-added
 comparison/source snapshots in payload comparison; changed settings still reject.
 The primary selected tail is preserved even when it exceeds the selected master's
-tail. UI/native/actual-JavaScript local checks pass; complete CI/deployment status
-is recorded in [WORK](WORK.md), with usefulness still awaiting operator judgment.
+tail. UI/native/actual-JavaScript, complete CI565 and matching deployment pass;
+[WORK](WORK.md) records evidence. Usefulness still awaits operator judgment.
 
 ## Independent provider controls
 

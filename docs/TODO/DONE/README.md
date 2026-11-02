@@ -2,7 +2,7 @@
 
 ## Current goal: instrumental exploration
 
-Thirty-eight current-goal tasks are accepted: **164 / 206 effort units (79.61%)**. Their
+Thirty-nine current-goal tasks are accepted: **166 / 208 effort units (79.81%)**. Their
 criteria and prerequisites passed: finite runtime/percussion, ordinary instrumental
 Studio and context/cancellation/identity repairs. The recording-proposal editor
 is [reopened](../NS-3_experimental-learning_01.md) because its correction UI became
@@ -26,11 +26,14 @@ native/actual JS, ordinary Studio, complete CI561/extracted consumers and matchi
 deployment pass. The portable Single guard repair shares the existing IEEE limit.
 Saved-style retry now preserves the same immutable job through native/browser
 reconnect, complete CI562/extracted consumers and matching deployment.
-There are135 DONE task files: thirty-eight current,
+Complete CI fanout retains every consumer in independent30minute jobs; CI565,
+verified extracted ZIPs and matching sound-tail runtime/UI delivery pass.
+There are136 DONE task files: thirty-nine current,
 97 historical.
 
 | Accepted task | Date | Effort | Outcome |
 | --- | --- | ---: | --- |
+| [NS-6_ci-consumer-fanout_01](NS-6_ci-consumer-fanout_01.md) | 2026-11-02 | 2/10 | Complete native/package CI565, every check retained, verified source ZIPs and matching sound-tail delivery with all operator metadata preserved |
 | [NS-6_style-job-retry_01](NS-6_style-job-retry_01.md) | 2026-11-02 | 1/10 | Identical queued/completed named/blend retries, immutable request/event/Before, native/browser/CI562 and checked deployment |
 | [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) | 2026-11-02 | 6/10 | Shared immutable ancestry, actual edited input/full corpus blend/reblend, native/JS/jobs/browser, complete CI561 and deployment |
 | [NS-1_portable-sample-range_01](NS-1_portable-sample-range_01.md) | 2026-11-02 | 1/10 | Primary IEEE Single guards, native/actual JS cancellation/overflow consumers, complete CI561 and normal-flag runtime deployment |

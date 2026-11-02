@@ -3,24 +3,23 @@
 [Goal](../GOAL.md) · [Assessment](../ASSESSMENT-2026-10-29.md) ·
 [Milestones](../MILESTONES.md) · [Task flow](../TASKFLOW.MD) · [Work](../WORK.md)
 
-**8 open tasks · 208 total effort units · 38 current-goal DONE · 164 / 208 accepted (78.85%).**
+**7 open tasks · 208 total effort units · 39 current-goal DONE · 166 / 208 accepted (79.81%).**
 
-[Complete CI fanout](NS-6_ci-consumer-fanout_01.md), two units, is the current
-delivery prerequisite. CI563 passes all integration and the extracted core, but
-its30minute serial job cuts off WFC package verification. Separate independent
-jobs retain all checks and the same per-job limit; acceptance still requires
-the complete exact-source workflow and matching deployment. CI564 then exposes
-missing fresh build-directory setup before package logging. Nonclosing count2
-has triggered reassessment; repair only that boundary and finish this gate.
+[Complete CI fanout — DONE](DONE/NS-6_ci-consumer-fanout_01.md) closes two units
+after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216),
+verified extracted packages and matching fixed-slot sound-tail delivery. Native
+and package jobs retain every check and30minutes each. CI563's serial timeout and
+CI564's repaired fresh-directory setup failure remain. All23 jobs/3 clips/7,143
+metadata files survive unchanged. Count2→0; no musical-quality credit.
 
 [Saved-style retry — DONE](DONE/NS-6_style-job-retry_01.md) closes one unit after
 native/browser/API reconnect, complete
 [CI562](https://github.com/mr-highball/pythian/actions/runs/41403307845), extracted
 consumers and matching deployment. Ordinary blend/save/further-blend/frozen reuse
 controls are now live, preserving all23 jobs,3 clips and7,143 existing metadata
-hashes. The parent retains its own seven open units: finish its default-tail
-estimate presentation and actual operator usefulness. That closure carried
-nonclosing count0; the current delivery reassessment above carries2. No
+hashes. The parent retains its own seven open units for actual operator
+usefulness; the later sound-tail estimate correction above is delivered. That closure carried
+nonclosing count0; the later CI delivery above also closes at0. No
 musical-quality credit follows from the retry closure.
 
 [Shared style ancestry — DONE](DONE/NS-5_style-ancestry_01.md) and its
@@ -194,14 +193,14 @@ continuity experiments are selected.
 | [NS-4_unguided-form_01 — DONE](DONE/NS-4_unguided-form_01.md) — usable Let WFC vary section generation | 4 | Accepted; original request, native/pas2js, actual Studio/browser, complete CI547 and fixed-slot deployment |
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
-| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; ordinary blend/reblend controls are deployed; tail-estimate presentation and operator usefulness remain |
+| [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; ordinary blend/reblend and truthful tail estimates are deployed; actual operator usefulness remains |
 | [NS-5_style-ancestry_01 — DONE](DONE/NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | Accepted; actual edited artifact, complete corpus, shared ownership, cancellation, ordinary jobs, CI561/extracted consumers and deployment |
 | [NS-5_style-corpus-capacity_01 — DONE](DONE/NS-5_style-corpus-capacity_01.md) — save the complete supported corpus | 4 | Accepted; complete actual corpus/models/clocks/recipes, native candidate/replay, native/JS and complete CI556 |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |
 | [NS-6_clip-library_01 — DONE](DONE/NS-6_clip-library_01.md) — reusable clips and parent/child selection | 3 | Accepted; reusable clips, metadata discovery, whole/child selection and actual recovery |
-| [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Instrumental Studio and complete CI fanout |
-| [NS-6_ci-consumer-fanout_01](NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | CI563 serial timeout; preserve every consumer and require complete workflow success |
+| [NS-6_synthesis-reviews_01](NS-6_synthesis-reviews_01.md) — one useful question with Original/Before/After | 5 | Exact mix/parts/clock/Save candidate passes; finish concise desktop/phone layout and complete delivery |
+| [NS-6_ci-consumer-fanout_01 — DONE](DONE/NS-6_ci-consumer-fanout_01.md) — independent complete integration/package jobs | 2 | Accepted; complete CI565, verified ZIPs and matching fixed-slot delivery, all consumers retained |
 | [NS-6_listening-utf8_01 — DONE](DONE/NS-6_listening-utf8_01.md) — readable durable Unicode review publication/feedback | 3 | Accepted; complete native/browser recovery, Unicode Save/replay and CI541 |
 | [NS-6_json-identity_01 — DONE](DONE/NS-6_json-identity_01.md) — preserve Unicode choices and JSON identities | 3 | Accepted; actual native save/reload/job and HTTP consumers |
 | [NS-6_sourcefree-draft_01 — DONE](DONE/NS-6_sourcefree-draft_01.md) — reopen a valid draft without optional musical material | 1 | Accepted; actual absent/present recipe reload and explicit native generation |
@@ -214,8 +213,8 @@ continuity experiments are selected.
 | [NS-6_native-reuse_01 — DONE](DONE/NS-6_native-reuse_01.md) — finish full native qualification within the existing budget | 3 | Accepted; complete CI547 in25m56s, all consumers retained, fresh option/source contexts |
 | [NS-6_scalar-fixture_01 — DONE](DONE/NS-6_scalar-fixture_01.md) — preserve encoded Unicode in JSON test fixtures | 1 | Accepted; preserved original failures, native full/reused and actual pas2js consumers, complete CI547 |
 
-The two tables together are all46 current-goal tasks (8 open, thirty-eight DONE),
-totaling208 units:44 open and164 accepted. Subtotals:
+The two tables together are all46 current-goal tasks (7 open, thirty-nine DONE),
+totaling208 units:42 open and166 accepted. Subtotals:
 NS-1 1, NS-2 18, NS-3 15, NS-4 75, NS-5 25, NS-6 74. The NS-1 task repairs
 an actual pas2js compile failure; preserved core independence earns no new baseline credit.
 

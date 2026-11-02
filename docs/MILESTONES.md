@@ -22,25 +22,24 @@ adapters and Studio infrastructure are implementation foundations. The finite
 instrumental runtime, explicit percussion and finite Studio generation have met
 their criteria, including the discovered live-cancellation prerequisite.
 
-**Current snapshot: 164 / 208 effort units accepted (78.85%); eight open, thirty-eight current-goal DONE.**
+**Current snapshot: 166 / 208 effort units accepted (79.81%); seven open, thirty-nine current-goal DONE.**
 
-The new two-unit [CI fanout prerequisite](TODO/NS-6_ci-consumer-fanout_01.md)
-addresses CI563's actual serial timeout. Complete integration passes28m49s and
-the extracted core passes, but WFC package verification is cancelled. Keep all
-checks and30minute job limits in independent jobs, and require whole-workflow
-success before deployment. CI564 then exposes absent fresh build-directory
-setup before log redirection; no consumer ran in that failed packages job.
-No new effort is accepted. Counter2 triggers reassessment and the bounded setup
-repair, followed by the same complete delivery gate.
+The two-unit [CI fanout prerequisite — DONE](TODO/DONE/NS-6_ci-consumer-fanout_01.md)
+closes after complete [CI565](https://github.com/mr-highball/pythian/actions/runs/41416642216):
+integration23m50s and extracted packages2m19s in independent30minute jobs. All
+consumers/options remain, downloaded ZIP identities/content match and fixed-slot
+delivery preserves23 jobs/3 clips/7,143 metadata files. CI563's timeout and
+CI564's repaired fresh-directory failure remain. Count2→0. The truthful saved-
+sound estimate is delivered; actual style usefulness remains a separate gate.
 
 [Saved-style retry — DONE](TODO/DONE/NS-6_style-job-retry_01.md) closes one unit
 after native/browser/API retry, complete
 [CI562](https://github.com/mr-highball/pythian/actions/runs/41403307845), extracted
 consumers and matching fixed-slot deployment. Ordinary blend/save/reblend/reuse
 is now live; all23 jobs,3 clips and7,143 existing metadata hashes are preserved.
-The parent keeps its seven open units for its default-tail estimate presentation
-and actual operator usefulness. That closure carried nonclosing count0; the
-current delivery reassessment above carries2.
+The parent keeps its seven open units for actual operator usefulness; its later
+sound-tail estimate correction above is delivered. That closure carried nonclosing count0; the
+later CI delivery above also closes at0.
 
 [Shared style ancestry — DONE](TODO/DONE/NS-5_style-ancestry_01.md) and
 [portable sample ranges — DONE](TODO/DONE/NS-1_portable-sample-range_01.md)
@@ -179,8 +178,8 @@ per-task percentages or north-star weights apply.
 | [NS-3](#ns-3) | Experimental recording-derived providers and growing style vocabulary | 8 | 7 | 7 / 15 |
 | [NS-4](#ns-4) | Shared instrumental runtime, joint context, motif coupling, retained decisions, graph inspection, positioned priors, scoped style controls, musical controls, verified context composition, known projected domains and usable unguided form | 7 | 68 | 68 / 75 |
 | [NS-5](#ns-5) | Evolving musical form and reusable selective blends/reblends | 15 | 10 | 10 / 25 |
-| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 10 | 64 | 64 / 74 |
-| **Total** | **46 current-goal tasks** | **44** | **164** | **78.85%** |
+| [NS-6](#ns-6) | Simple playlist-to-learning Studio, optional laboratory, saved clips, meaningful reviews, cancellation, faithful JSON, long instrumental sessions and complete delivery checks | 8 | 66 | 66 / 74 |
+| **Total** | **46 current-goal tasks** | **42** | **166** | **79.81%** |
 
 ## First milestone: hear and change instrumental music in Studio
 
