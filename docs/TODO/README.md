@@ -6,13 +6,16 @@
 **8 open tasks · 204 total effort units · 35 current-goal DONE · 156 / 204 accepted (76.47%).**
 
 Actual edited-style use exposes a required [ancestry gap](NS-5_style-ancestry_01.md):
-the six-node Studio input blends once at eight and cannot be blended further.
+the deployed six-node Studio input blends once at eight and cannot be blended further.
 Six units cover bounded reusable ancestry. The four-unit
 [scoped-control consumer — DONE](DONE/NS-4_scoped-style-controls_01.md) now passes
 complete CI559, actual native/JS/Studio checks and checked deployment. Saved
 passage controls retain their musical positions and frozen learning; the real
-closure resets the nonclosing count to0. Follow the now-ready ancestry prerequisite
-before expanding the parent blend interface. No partial parent effort is accepted.
+closure reset the count. The current ancestry AC1 now passes on the real edited
+artifact through native/actual JS mix and six stems, resetting the later count1→0.
+Persistent shared payload ownership is implemented; full-corpus, ordinary-job
+and complete source/extracted qualification remain. Finish those gates before
+expanding the parent blend interface. No partial task effort is accepted.
 
 [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md) and
 [native cache paths — DONE](DONE/NS-6_native-cache-path_01.md) close six units after
@@ -172,7 +175,7 @@ continuity experiments are selected.
 | [NS-4_context-composition_01 — DONE](DONE/NS-4_context-composition_01.md) — verified upstream source + voice transaction | 6 | Accepted; source/projection/frame proof, shared prefix, upstream66/downstream543 and extracted consumers |
 | [NS-4_projected-domains_01 — DONE](DONE/NS-4_projected-domains_01.md) — use known target domains before source assignment | 6 | Accepted; original64cell proof, native/pas2js/stream ownership, upstream67/downstream544 and extracted packages |
 | [NS-5_instrumental-styles_01](NS-5_instrumental-styles_01.md) — saved styles, selective blend and reblend | 7 | In progress; complete library snapshots/blends/reblends and caller performance binding qualify in CI556; ordinary Studio naming/use/blend workflow remains |
-| [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | Ready; scoped controls and complete corpus accepted; actual six-node input cannot reblend under the eight-node limit |
+| [NS-5_style-ancestry_01](NS-5_style-ancestry_01.md) — edited styles survive further blends | 6 | In progress; AC1 actual native/JS mix/stem replay closes; shared payload owner implemented; corpus/jobs/full qualification pending |
 | [NS-5_style-corpus-capacity_01 — DONE](DONE/NS-5_style-corpus-capacity_01.md) — save the complete supported corpus | 4 | Accepted; complete actual corpus/models/clocks/recipes, native candidate/replay, native/JS and complete CI556 |
 | [NS-6_connection-admission_01 — DONE](DONE/NS-6_connection-admission_01.md) — responsive refresh despite idle browser sockets | 2 | Accepted; bounded idle admission, native103, actual browser/reconnect and HTTPS |
 | [NS-6_song-library_01 — DONE](DONE/NS-6_song-library_01.md) — save songs/playlists and visible Stop/reconnect | 5 | Accepted; named output playlists, existing audio, global Stop and browser recovery |

@@ -36,9 +36,9 @@ begin
   Last := AProgress;
   if Abort then raise EAudio.Create('Caller cancelled');
 end;
-var P: TObserver; Rejected: Boolean;
+var P: TObserver; Rejected: Boolean; B: TWorkBudget;
 begin
-  P := TObserver.Create;
+  P := TObserver.Create; B := nil;
   try
     ReportWork(P.Receive, 'large-file', wuBytes, Int64(2147483648), Int64(4294967296), 3);
     if (P.Last.Done <> Int64(2147483648)) or (P.Last.Total <> Int64(4294967296)) or
@@ -59,6 +59,18 @@ begin
     try ReportWork(P.Receive, 'invalid', wuFrames, 3, 2)
     except on EAudio do Rejected := True end;
     if not Rejected then raise Exception.Create('Invalid progress accepted');
-    WriteLn('PASS portable progress: large counts, unknown totals and exception propagation');
-  finally P.Free end;
+    B := TWorkBudget.Create(9007199254740991, 'Compound operation');
+    B.Charge(Int64(4294967296)); B.Charge(9007194959773695);
+    if (B.Used <> 9007199254740991) or (B.Remaining <> 0) then
+      raise Exception.Create('Shared work budget loses exact large accumulation');
+    Rejected := False;
+    try B.Charge(1) except on EAudio do Rejected := True end;
+    if not Rejected or (B.Used <> B.Maximum) then
+      raise Exception.Create('Excessive shared charge mutates the retained budget');
+    Rejected := False;
+    try B.Charge(-1) except on EAudio do Rejected := True end;
+    if not Rejected or (B.Used <> B.Maximum) then
+      raise Exception.Create('Invalid shared charge mutates the retained budget');
+    WriteLn('PASS portable progress: large counts, unknown totals, shared work and exception propagation');
+  finally B.Free; P.Free end;
 end.

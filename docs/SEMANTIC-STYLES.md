@@ -15,15 +15,22 @@ weighted relearning and saved sound recipes; the semantic graph owns an explicit
 provider inventory and executable dependency configuration. Optional sound
 bindings embed current PYS bytes, including their existing ancestry and policies.
 The instrumental binding instead owns primary instrument and stem/mix recipes.
-Neither reader accepts historical development variants. Source/control/blend
-nodes use `pythian.semantic.style.v4`; recipe-only instrumental variants use
-`pythian.semantic.style.v5`, conventionally stored as `.pysg`. Both share the
-same primary bounded byte codec, definition validation and ancestry reader.
-Definitions with time-scoped instrumental controls use `pythian.semantic.style.v6`.
-An optional canonical scope extension leaves existing unscoped V4/V5 bytes exact;
-all three use the same primary codec and validation.
-It persists caller codec identity/version, canonical configuration and declared
-meaning. Regenerate v1/v2/v3 development artifacts; no compatibility reader remains.
+New semantic graphs use `pythian.semantic.style.v7`, conventionally stored as
+`.pysg`. The primary archive owner retains a canonical parent graph and a shared
+pool of recipe/model/evidence sections. Repeated parents count once. Immutable
+payloads share storage and internally computed digests; returned bytes remain
+detached. File identity is still SHA256 of the exact complete encoded archive.
+
+Existing V4 source/control/blend, V5 recipe-variant and V6 scoped-control
+artifacts import through the same primary codec and semantic factories, within
+their original eight-occurrence bound. Their exact bytes, identities, model
+meaning and parent IDs remain intact when embedded in a newer graph. Regenerate
+V1–V3 development artifacts; those readers remain removed.
+
+The [ancestry task](TODO/NS-5_style-ancestry_01.md) records current qualification.
+The actual edited artifact and native/actual JS mix/stem replay pass; complete
+corpus, ordinary-job and source/extracted qualification remain pending. This
+working implementation has not replaced the accepted review service.
 
 `TSemanticStyle.CreateInstrumentalVariant(Parent, Recipe)` replaces only the
 performed instrument, mix/effects, expression, form and performance options.
@@ -64,11 +71,11 @@ scope, conflicting hard domains and excessive combined weights reject. The
 128-scope, existing token/preparation-work, ancestry and byte limits are explicit.
 Callbacks preserve cancellation at validation and bounded window preparation.
 
-The current eight-node ancestry limit still restricts edited-style composition:
-an actual twice-edited Studio style has six nodes, blends with its original at
-eight, then cannot be blended further. The linked
-[ancestry task](TODO/NS-5_style-ancestry_01.md) owns bounded sharing of retained
-parents and payloads; scope save/reuse/edit does not claim that gap is resolved.
+The accepted deployment still has the eight-occurrence limit that blocked an
+actual edited style. The current shared-ancestry implementation retains that
+six-node input, blends at seven unique nodes, then reblends at eight. The
+[ancestry task](TODO/NS-5_style-ancestry_01.md) owns remaining qualification and
+deployment; scope save/reuse/edit acceptance did not close this separate gap.
 
 Ordinary Studio capture uses the actual edited frame range and completed clock
 to retain musical ticks. If performed length/tempo/seed differs from the source
@@ -352,12 +359,29 @@ partial style object.
 
 Bounds include32MiB per archive, fifteen archived providers,128 prepared sources,
 4096 retained runs,262144 weighted observations per provider,64 contribution
-weight and eight ancestry nodes. Compact token IDs retain every admitted row,
+weight and64 unique ancestry nodes (maximum path64). Compact token IDs retain every admitted row,
 including zero-weight inherited observations; dictionaries have at most8192
 retained meanings per provider. Model text is at most16MiB per provider. Actual
 companion sample/token/state/history and graph bounds still apply. A complete
 producer corpus may use64 sources,1024 proposal runs and65536 weighted observations;
 admitted gaps can create several independent samples within a proposal run.
+
+The [primary archive](../adapters/wfc/pythian.wfc.semantic.archive.pas) retains
+at most131072 unique payload sections, with32MiB per complete file and per unique
+payload pool. Codec byte/work counters and aggregate learning are separate.
+The codec bound permits four32MiB traversals per admitted node (8GiB across64
+nodes); it is a charged-work ceiling, not allocated RAM. Aggregate learning
+preserves up to32 existing per-model512MiB charges per node, across at most64
+nodes. Each actual learner invocation still has its original per-model bound.
+
+Frozen control/recipe edits reuse already validated source evidence and models;
+they still validate changed policy/recipe execution and codec admission. A blend
+reuses a model only when its positive ordered evidence identities, integer
+weights and model history order exactly match a validated parent. Other inputs
+use the same primary weighted learner; there is no second learning algorithm.
+Decoding validates parents before children and releases each full parent owner
+at its final direct child. `ArchivePayloadBytes` reports unique retained byte
+blocks, excluding headers/current decoded state; it is not process memory use.
 
 Replay/reblending uses the shared weighted learner. Its observer bounds a
 conservative comparison/history-work charge at536870912 per provider, including

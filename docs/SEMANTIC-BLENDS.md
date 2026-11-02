@@ -173,7 +173,7 @@ exact unrelated controls, not only lineage labels.
 
 ## Current encoding, bounds and verification
 
-The current `pythian.semantic.style.v4` encoding records source,
+The V4 encoding recorded source,
 control-derived and binary-blend kinds, parent bytes, blend recipe, contribution
 identities and full definition. There is no historical-variant reader; regenerate
 older development artifacts. Decode reconstructs rather than trusts a serialized
@@ -242,14 +242,16 @@ sessions receive a live explicit registry; accepted sessions own their decoded
 choices. Recursive validation shares one aggregate admission budget. Earlier
 v1 artifacts must be regenerated; there is no legacy reader or executable data.
 
-Semantic ancestry is bounded to 8 encoded tree nodes, counting each retained
-parent occurrence even when its identity repeats. `Depth` reports maximum path
-length; `NodeCount` reports encoded occurrences. The former source/control-only
-maximum depth 8 remains supported because those trees are single chains.
-`blend(A,B)` has 3 nodes; `blend(blend(A,B),A)` has 5; the diamond
-`blend(blend(A,B),blend(A,B))` has 7. Further expansion beyond 8 rejects explicitly.
-These are semantic artifact bounds, distinct from PYS's existing depth/node
-limits. No unimplemented DAG compaction is implied.
+Current V7 ancestry is bounded to64 unique nodes and maximum path64.
+`Depth` reports maximum path length; `NodeCount` reports unique retained
+ancestors including the root. `blend(A,B)` has3 nodes;
+`blend(blend(A,B),A)` has4; reusing that same intermediate on both sides
+retains4. A further diamond can retain5 without duplicating its source models
+and evidence. These are semantic artifact bounds, separate from PYS bounds.
+The bounded legacy importer preserves V4–V6 identities within their original
+eight-occurrence trees. The [ancestry task](TODO/NS-5_style-ancestry_01.md)
+records qualification/deployment status; ordinary blend selection remains the
+[parent Studio task](TODO/NS-5_instrumental-styles_01.md).
 
 Limits remain explicit:32MiB per archive,15 archived providers,128 prepared sources,
 4096 canonical runs,262144 weighted observations per provider and bounded integer

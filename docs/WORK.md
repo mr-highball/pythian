@@ -3,7 +3,122 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current handoff: scoped controls accepted and deployed; ancestry next - 2026-11-01
+## Current handoff: actual edited-style criterion closed; corpus qualification running - 2026-11-01
+
+Big Boss SOLO. The current repair batch closes ancestry AC1 on the preserved
+actual six-node Studio artifact, with native and actual JavaScript consumers.
+Its first blend has7 unique nodes/46,853 bytes and identity
+be2833f8bd7ac89b465af5b32b0891d2dd631e13d99ec31b716952dbd3c9f7e2;
+the further blend has8/47,241 bytes and identity
+9bf4a33862937301344dace5a9e7f7182ea04964f4830efbbb02f105b1f2e016.
+Both targets retain exact imported identities, models, scopes and intermediate
+parent; each compares240,000 samples of mix and six stems after freeing all
+style inputs. Evidence: E/tests/ancestry-actual06 native/JS logs and clean native
+heap. This real criterion closure resets the consecutive nonclosing count1→0.
+No task effort closes: AC2 complete-corpus and AC3 ordinary/source/extracted
+qualification remain pending.
+
+The private archive owner now normalizes retained model/evidence blocks once
+in memory, caches only internally computed digests, and uses one canonical
+reader/writer. Parent imports share immutable blocks; detached byte views do not
+expose cached-hash mutation. Decoder parents are reclaimed at their last direct
+child. Frozen edits validate changed policies/recipes without relearning source
+models; blends reuse models only for exact ordered positive evidence IDs,
+weights and history order. Other combinations use the primary weighted learner.
+Learning and codec accounting are separate; aggregate learning preserves every
+existing per-provider producer bound instead of imposing a512MiB composition
+floor.
+
+Frozen native06/JS06 authored consumers pass1,680,813 checks each, including
+exact4096-byte shared storage through64 nodes, detached caller bytes, the65th
+node rejection, no-relearning work counters, malformed references and
+cancellation. Authored archive023fcb5d4864ce6d80927da0d8c729f50e6af24f179c29f5f7062e478d3efca7
+is unchanged; generic style/blend and portable budget consumers also pass.
+Preserve native05: an added assertion wrongly assumed new scopes/recipes must
+cost less than twice a tiny source archive. Removed that arbitrary ratio; exact
+shared-payload storage is tested directly. Its failed fixture is not a clean
+heap result or a reason to trim new data.
+
+The full-corpus JS04 baseline now passes2,690,221 checks with all64 sources,
+1024 runs and65536 weighted cells/provider: further artifact6b775537/2,006,045
+bytes, original35f13b6a/1,323,149 bytes and543,503 actual callbacks. Its session13460
+is terminal/collected; native04 session49488/PID40008 remains active. Snapshot06
+removes repeated structural-reader hashing and adds ownership checks, so final
+complete native suite16502 and actual JS corpus91828 are now running on that
+new frozen implementation. These are changed-source qualification, not restarts
+of the older baseline. Preserve every snapshot/log and collect each exact handle.
+Ordinary native saved-style/playlist jobs06 pass7,392,406 checks and a clean heap,
+with originals locked and no relearning. Core package06 passes123 units/137 hashes.
+WFC package06 reaches the extracted caller codec and exposes another old
+occurrence-count assertion (6 versus5 unique); only that expectation is repaired.
+Preserve its failure; fresh WFC package07 session41009 is running.
+The stable review service and all operator data remain untouched. Total scope
+is still156/204 accepted effort; this partial criterion adds no points.
+
+## Earlier handoff: shared style ancestry prototype - 2026-11-01
+
+
+Current local results: the preserved six-node edited input now blends at7 unique
+nodes and reblends at8, with exact old identities/models/scopes/intermediate
+parent and a clean heap. The new further archive is47,241 bytes. The authored
+native/actual JS consumer passes1,680,745 mix/six-stem checks on each target after
+freeing input styles; identity023fcb5d4864ce6d80927da0d8c729f50e6af24f179c29f5f7062e478d3efca7
+matches. Rehashed bad references, cancellation, generic styles/blends and the
+portable shared work counter pass. The moved byte codec retains all10 original
+native fixture digests. These are implementation checks, not musical usefulness.
+
+Corpus qualification has now found a real issue: actual JS exhausts the new shared
+512MiB comparison budget after valid source/reload work. Its terminal failure is
+preserved in ancestry-capacity-js03. Keep the full corpus and existing per-model
+capacities; separate budget domains and reuse validated frozen models/evidence.
+The matching isolated native baseline consumed over23 CPU minutes and about540MB.
+After the JS failure was confirmed, Big Boss stopped only that verified test
+executable; stopped-baseline.json retains ownership/resource evidence. This is a
+deliberate invalidated-prototype stop, not a native pass, observation timeout or
+reason to restart unchanged code. The review service was untouched.
+
+The complete native03 suite stopped at an old repeated-ancestor count assertion
+(5 versus4 actual unique nodes); evidence is preserved and the fixture corrected
+in the working tree. Both corpus-focused runs are now terminal; repair the actual
+sharing/accounting issue before compiling another frozen source. Source, manifests, failures and
+logs live under E/tests/ancestry-*. The fixed stable slot remains the accepted scoped-control
+deployment; no production data or review service has changed.
+
+Before accepting AC2, replace per-encode-only pooling with persistent immutable
+payload ownership/cached hashes. Current factory snapshots can still repeat
+model/evidence blocks in memory and rehash them for each closed ancestor.
+Keep the primary codec and exact file-hash identity; encapsulate immutable graph
+storage rather than introducing a caller-controlled trusted-hash path. Reclaim
+decoded parent objects when their last direct child is validated. Avoid imposing
+a smaller aggregate learning floor than the existing supported per-model producer
+contracts. These are remaining parts of this task, not new credit or a new ticket.
+Ordinary native jobs and complete source/extracted qualification also remain.
+
+Big Boss SOLO. The previous goal turn closed scoped controls through full CI559,
+actual consumers and checked deployment; it was progress. This batch inherited
+count0; its prototype/full-corpus rejection closes no complete criterion, so the
+current consecutive nonclosing count is1. Another nonclosing batch requires
+reassessment before further implementation; a refactor/handoff does not reset it.
+Selected [style ancestry](TODO/NS-5_style-ancestry_01.md), with both prerequisites
+accepted. Criterion/deliverable: the real six-node edited style and a complete
+supported corpus can blend, save/reload and blend again through one bounded,
+self-contained shared-node/payload archive and the ordinary native jobs. Preserve
+actual identities, source observations, controls, sounds and detached ownership.
+Native/actual JS mix/stem, malformed references, cancellation, ordinary jobs and
+complete source/extracted consumers must pass. Stop before blend-selection UI
+or at a demonstrated prerequisite; an archive-only slice earns no acceptance.
+
+The existing primary byte/text/hash contracts and semantic validation/factories
+remain authoritative. Move the private archive I/O into one shared implementation,
+retain repeated model/evidence sections once, and use canonical closed ancestry
+graphs rather than recursively copying parents. Canonical file identity remains
+the encoded archive hash; aggregate decoding work must be bounded. Existing V4–V6
+private artifacts need a bounded import, not silent model/identity rewriting.
+Implementation has begun; no effort is accepted. Current totals remain
+156/204(76.47%),35 DONE/eight open. Stable remains the checked scoped-control
+deployment; no operator data or service change is selected by this new batch.
+
+## Previous handoff: scoped controls accepted and deployed; ancestry next - 2026-11-01
 
 Big Boss SOLO. The preceding goal turn was a verified wait on exact CI559 and
 its live watcher, not a restart or another implementation batch. Source

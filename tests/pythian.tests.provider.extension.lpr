@@ -1032,7 +1032,8 @@ begin
     end;
     LRecipe.RepeatPolicy := srpAddExplicit;
     LFurther := TSemanticStyle.CreateBlend(LLoaded, LLeft, LRecipe, LRegistry);
-    Check((LFurther.NodeCount = 6) and (LFurther.Depth = 4), 'Reloaded derived style is a usable further-blend parent');
+    Check((LFurther.NodeCount = 5) and (LFurther.Depth = 4),
+      'Reloaded derived style retains five unique nodes as a further-blend parent');
     CheckOriginalContributions(LLeft, LRight, LFurther, 5, 4);
     FreeAndNil(LParent);
     LParent := DecodeSemanticStyle(LFurther.Encode, LRegistry);

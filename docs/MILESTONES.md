@@ -28,8 +28,12 @@ Actual saved edits expose a six-unit [ancestry prerequisite](TODO/NS-5_style-anc
 The six-node Studio input blends with its original at eight, then a further blend
 fails that limit. Bounded shared ancestry must support this intended workflow;
 the addition earns no effort. Scoped controls are now qualified/deployed and
-accepted; their separate real closure resets the count. This parent-style
-prerequisite is Ready and remains required before ordinary selective blending.
+accepted; their separate real closure resets the count. The current
+repair closes its actual-artifact AC1 through native/actual JS mix and six stems;
+that real criterion resets the later nonclosing count1→0. Shared payload ownership
+is implemented, with full-corpus, ordinary-job and source/extracted qualification
+still pending. No partial effort closes. Finish this prerequisite before ordinary
+selective blending.
 
 The four-unit [scoped style-control consumer — DONE](TODO/DONE/NS-4_scoped-style-controls_01.md)
 closes after native/actual JS/Studio save/reuse/edit, complete

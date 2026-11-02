@@ -43,6 +43,20 @@ type
     do not yield a browser event loop; schedule bulk work off the UI thread.
     No timestamps, threads, I/O or devices belong to this portable contract. }
   TWorkProgressCallback = procedure(const AProgress: TWorkProgress) of object;
+  { Caller-owned accumulation for compound operations. No automatic reset.
+    Invalid or excessive charges reject before changing Used. }
+  TWorkBudget = class
+  private
+    FMaximum, FUsed: Int64;
+    FName: String;
+    function GetRemaining: Int64;
+  public
+    constructor Create(const AMaximum: Int64; const AName: String);
+    procedure Charge(const AUnits: Int64);
+    property Maximum: Int64 read FMaximum;
+    property Used: Int64 read FUsed;
+    property Remaining: Int64 read GetRemaining;
+  end;
 
 procedure ReportWork(const ACallback: TWorkProgressCallback; const AStage: String;
   const AUnits: TWorkUnit; const ADone, ATotal: Int64; const APass: Integer = 0);
@@ -51,6 +65,25 @@ function WorkUnitName(const AUnits: TWorkUnit): String;
 implementation
 
 uses pythian.audio;
+
+constructor TWorkBudget.Create(const AMaximum: Int64; const AName: String);
+begin
+  inherited Create;
+  if not ((AMaximum > 0) and (AMaximum <= 9007199254740991) and
+    (AMaximum = Trunc(AMaximum)) and (Length(AName) > 0) and (Length(AName) <= 255)) then
+    raise EAudio.Create('Work budget requires a positive exact maximum and bounded name');
+  FMaximum := AMaximum; FName := AName;
+end;
+
+function TWorkBudget.GetRemaining: Int64;
+begin Result := FMaximum - FUsed end;
+
+procedure TWorkBudget.Charge(const AUnits: Int64);
+begin
+  if not ((AUnits >= 0) and (AUnits <= Remaining) and (AUnits = Trunc(AUnits))) then
+    raise EAudio.Create(FName + ' exceeds its declared aggregate work budget');
+  Inc(FUsed, AUnits);
+end;
 
 procedure ReportWork(const ACallback: TWorkProgressCallback; const AStage: String;
   const AUnits: TWorkUnit; const ADone, ATotal: Int64; const APass: Integer);

@@ -29,7 +29,7 @@ program instrumental_style_checks;
 {$endif}
 
 uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
-  pythian.stream.bytes,
+  pythian.stream.bytes, pythian.binary,
   pythian.instrument.catalog, pythian.instrument.recipe, pythian.sound.recipe.codec,
   pythian.mix.recipe, pythian.effects.catalog, pythian.effects.rack,
   pythian.percussion, pythian.bus, pythian.progress,
@@ -38,7 +38,7 @@ uses SysUtils, Math, pythian.audio, pythian.time, pythian.hash, pythian.text,
   pythian.wfc.semantic.corpus, pythian.wfc.musical.corpus,
   pythian.wfc.music,
   pythian.wfc.semantic.style, pythian.wfc.instrumental.stream,
-  pythian.wfc.instrumental.policy, pythian.wfc.instrumental.edit,
+  pythian.wfc.instrumental.policy, pythian.wfc.instrumental.edit, pythian.wfc.semantic.archive,
   pythian.wfc.instrumental.edit.stream,
   pythian.wfc.layers, pythian.wfc.voices, pythian.wfc.providers, pythian.wfc.provider.contracts,
   pythian.wfc.learning, pythian.wfc.percussion,
@@ -783,7 +783,7 @@ begin
     LBlend := TSemanticStyle.CreateBlend(LVariant, LFurther, LBlendRecipe);
     FreeAndNil(LLoaded);
     LLoaded := DecodeSemanticStyle(LBlend.Encode);
-    Check((LBlend.NodeCount = 6) and
+    Check((LBlend.NodeCount = 4) and
       (LLoaded.CopyDefinition.Instrumental.Instruments[2].Id = LRecipe.Instruments[2].Id),
       'Selective blend loses the chosen variant instrument or actual parent ancestry');
     SameInstrumental(LBlend, LLoaded);
@@ -793,7 +793,7 @@ begin
     LFurther := TSemanticStyle.CreateBlend(LBlend, LExpected, LBlendRecipe);
     FreeAndNil(LLoaded);
     LLoaded := DecodeSemanticStyle(LFurther.Encode);
-    Check((LLoaded.Identity = LFurther.Identity) and (LFurther.NodeCount = 8),
+    Check((LLoaded.Identity = LFurther.Identity) and (LFurther.NodeCount = 6),
       'A variant-backed blend cannot be reused as a further parent');
     SameInstrumental(LFurther, LLoaded);
     WriteLn('Instrumental variant ', LVariant.Identity, '; further ', LFurther.Identity);
@@ -879,7 +879,7 @@ begin
     SameInstrumental(LBlended, LScoped);
     LReblended := TSemanticStyle.CreateBlend(LBlended, LSource, LBlendRecipe);
     FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LReblended.Encode);
-    Check((LLoaded.NodeCount = 6) and (LLoaded.Identity = LReblended.Identity),
+    Check((LLoaded.NodeCount = 4) and (LLoaded.Identity = LReblended.Identity),
       'A further blend loses scoped controls or actual ancestry');
     SameInstrumental(LReblended, LLoaded);
     FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LScoped.Encode);
@@ -1101,7 +1101,7 @@ begin
     end;
     LRecipe.Instrumental.LabelText := 'Reusable further blend';
     LFurther := TSemanticStyle.CreateBlend(LBlend, LLeft, LRecipe);
-    Check(LFurther.NodeCount = 5, 'Further instrumental blend loses repeated ancestry');
+    Check(LFurther.NodeCount = 4, 'Further instrumental blend loses a unique ancestor');
     LLoaded := DecodeSemanticStyle(LFurther.Encode);
     SameInstrumental(LFurther, LLoaded);
     FreeAndNil(LLoaded);
@@ -1128,6 +1128,153 @@ begin
     LBlend.Free;
     LRight.Free;
     LLeft.Free;
+  end;
+end;
+
+function CorruptSharedParent(const ABytes: TAudioBytes; const AParent: Integer): TAudioBytes;
+var LIO: TStyleIO; I, J, N, C, LOffset: Integer;
+begin
+  LIO := TStyleIO.Create(ABytes, True);
+  try
+    Check(LIO.Text = 'pythian.semantic.style.v7', 'Ancestry fixture is not the shared format');
+    N := LIO.Count(0, MaximumSemanticArchiveSections);
+    for I := 0 to N - 1 do LIO.Blob(nil);
+    N := LIO.Count(0, MaximumSemanticArchiveNodes); LOffset := -1;
+    for I := 0 to N - 1 do
+    begin
+      LIO.Text; LIO.N; LIO.N;
+      if I = N - 1 then LOffset := LIO.Position;
+      LIO.N; LIO.N; LIO.N;
+      C := LIO.Count(0, MaximumSemanticArchiveSections);
+      for J := 0 to C - 1 do LIO.N;
+    end;
+    Check(LOffset >= 0, 'Missing shared root parent offset');
+    Result := Copy(ABytes); WriteInt32LE(Result, LOffset, AParent);
+    WriteSha256Hex(Result, Length(Result) - 64,
+      Sha256Bytes(Copy(Result, 0, Length(Result) - 68)));
+  finally LIO.Free end;
+end;
+
+
+procedure ArchiveStorage;
+var LArchive, LNext: TSemanticArchive; LNode: TSemanticArchiveNode;
+  LWork: TSemanticArchiveWork; LBytes, LBaseline: TAudioBytes;
+  LIdentity: String; I: Integer; LRejected: Boolean;
+begin
+  LArchive := nil; LNext := nil; LWork := TSemanticArchiveWork.Create;
+  try
+    LNode := Default(TSemanticArchiveNode); LNode.Format := 7; LNode.Kind := 0;
+    SetLength(LBytes, 4096);
+    for I := 0 to High(LBytes) do LBytes[I] := I mod 251;
+    SetLength(LNode.Definition, 1); LNode.Definition[0] := LBytes;
+    LArchive := TSemanticArchive.Create(nil, nil, LNode, LWork, nil);
+    LBaseline := LArchive.Encode(0, LWork);
+    LIdentity := Sha256Bytes(LBaseline); LArchive.SealRoot(LIdentity);
+    LBytes[0] := 255;
+    Check(Sha256Bytes(LArchive.Encode(0, LWork)) = LIdentity,
+      'Caller byte mutation reaches immutable archive payloads');
+    LNode.Definition[0] := Copy(LNode.Definition[0]);
+    LNode.Definition[0][0] := 0;
+    LNode.Kind := 1;
+    for I := 2 to MaximumSemanticArchiveNodes do
+    begin
+      LNode.Parent := LIdentity;
+      LNext := TSemanticArchive.Create(LArchive, nil, LNode, LWork, nil);
+      FreeAndNil(LArchive); LArchive := LNext; LNext := nil;
+      Check(LArchive.PayloadBytes = 4096, 'Shared ancestor evidence is retained more than once');
+      LBaseline := LArchive.Encode(LArchive.Count - 1, LWork);
+      LIdentity := Sha256Bytes(LBaseline); LArchive.SealRoot(LIdentity);
+    end;
+    Check(LArchive.Count = MaximumSemanticArchiveNodes, 'Declared node capacity is unreachable');
+    LNode.Parent := LIdentity; LRejected := False;
+    try LNext := TSemanticArchive.Create(LArchive, nil, LNode, LWork, nil)
+    except on EAudio do LRejected := True end;
+    Check(LRejected and (LNext = nil) and
+      (Sha256Bytes(LArchive.Encode(LArchive.Count - 1, LWork)) = LIdentity),
+      'Excess ancestry publishes a candidate or changes the existing archive');
+  finally LNext.Free; LArchive.Free; LWork.Free end;
+end;
+
+procedure Ancestry(const ABase: TSemanticStyleDefinition; const ALabel: String);
+var LVersions: array[0..5] of TSemanticStyle; LBlend, LFurther, LLoaded, LParent, LBad: TSemanticStyle;
+  LDefinition, LCopy: TSemanticStyleDefinition; LRecipe: TSemanticInstrumentalRecipe;
+  LBlendRecipe: TSemanticBlendRecipe; LParts: TMusicalPartControls; LCatalog: TInstrumentRecipes;
+  LA, LB: TSemanticInstrumentalStream; LBytes, LInvalid: TAudioBytes;
+  LCancel: TCancel; I, P, LCase: Integer; LRejected: Boolean; LIdentity: String;
+  LWork: TSemanticArchiveWork; LLearning: Int64;
+begin
+  for I := 0 to High(LVersions) do LVersions[I] := nil;
+  LBlend := nil; LFurther := nil; LLoaded := nil; LParent := nil; LBad := nil;
+  LA := nil; LB := nil; LCancel := TCancel.Create;
+  LWork := TSemanticArchiveWork.Create;
+  try
+    LDefinition := ABase;
+    LVersions[0] := TSemanticStyle.CreateSource(LDefinition, nil, nil, nil, LWork);
+    LLearning := LWork.Budget.Used;
+    LCatalog := BuiltInInstrumentRecipes;
+    LRecipe := LVersions[0].CopyDefinition.Instrumental;
+    LRecipe.Form := nil; LRecipe.Instruments[0] := LCatalog[5];
+    LVersions[1] := TSemanticStyle.CreateInstrumentalVariant(LVersions[0], LRecipe, nil, nil, nil, LWork);
+    Check(LWork.Budget.Used = LLearning, 'Recipe-only edit relearns frozen source models');
+    LRecipe.Options.MusicFrames := CRate * 3;
+    LVersions[2] := TSemanticStyle.CreateInstrumentalVariant(LVersions[1], LRecipe);
+    SetLength(LParts, 3); for I := 0 to 2 do LParts[I] := DefaultMusicalPartControl;
+    LVersions[3] := LVersions[2].DeriveMusicalControls(240, 720, 0, 1, LParts,
+      'Authored first passage root preference');
+    LRecipe.Options.MusicFrames := CRate * 4;
+    LVersions[4] := TSemanticStyle.CreateInstrumentalVariant(LVersions[3], LRecipe);
+    LVersions[5] := LVersions[4].DeriveMusicalControls(960, 1440, 7, 2, LParts,
+      'Authored second passage root preference');
+    Check(LVersions[5].NodeCount = 6, 'Edited input does not retain its six actual nodes');
+    LBlendRecipe := Default(TSemanticBlendRecipe); SetLength(LBlendRecipe.Providers, 9);
+    for P := 0 to 8 do LBlendRecipe.Providers[P].LeftWeight := 1;
+    LBlendRecipe.Instrumental.Enabled := True; LBlendRecipe.Instrumental.LabelText := 'Edited shared ancestry';
+    SetLength(LBlendRecipe.Instrumental.Parts, 6);
+    LBlend := TSemanticStyle.CreateBlend(LVersions[5], LVersions[0], LBlendRecipe, nil, nil, nil, LWork);
+    Check(LWork.Budget.Used = LLearning, 'Unchanged effective blend contributions are relearned');
+    WriteLn('Unique retained ancestry payload bytes: ', LBlend.ArchivePayloadBytes);
+    Check(LBlend.NodeCount = 7, 'First blend counts a shared source twice');
+    LLoaded := DecodeSemanticStyle(LBlend.Encode);
+    LFurther := TSemanticStyle.CreateBlend(LLoaded, LVersions[0], LBlendRecipe);
+    FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LFurther.Encode);
+    Check((LLoaded.NodeCount = 8) and (LLoaded.Identity = LFurther.Identity),
+      'Actual edited style cannot be reused through a further blend');
+    LParent := LLoaded.CopyParent(0);
+    Check(LParent.Identity = LBlend.Identity, 'Shared graph drops its exact intermediate parent');
+    FreeAndNil(LParent);
+    LCopy := LLoaded.CopyDefinition;
+    Check((LCopy.Providers[0].Scopes[0].StartTick = 240) and
+      (LCopy.Providers[0].Scopes[1].StartTick = 960) and
+      (LCopy.Providers[5].Scopes[1].EndTick = 1440), 'Further blend rewrites passage positions');
+    for P := 0 to 8 do Check(LCopy.Providers[P].ModelText = LDefinition.Providers[P].ModelText,
+      'Shared ancestry changes a frozen model');
+    Check(LCopy.Instrumental.Instruments[0].Id = LCatalog[5].Id, 'Shared ancestry loses its actual edited sound');
+    LBytes := LLoaded.Encode; LIdentity := LLoaded.Identity;
+    Check(Sha256Bytes(LBytes) = LIdentity, 'Shared identity is not its actual archive digest');
+    for LCase := 0 to 2 do
+    begin
+      case LCase of
+        0: LInvalid := CorruptSharedParent(LBytes, -2);
+        1: LInvalid := CorruptSharedParent(LBytes, 7);
+        2: LInvalid := CorruptSharedParent(LBytes, 99);
+      end;
+      LRejected := False;
+      try LBad := DecodeSemanticStyle(LInvalid) except on EAudio do LRejected := True end;
+      Check(LRejected and (LBad = nil), 'Rehashed dangling/cyclic ancestry publishes a style');
+    end;
+    LCancel.AtStage := 'semantic_archive_nodes'; LRejected := False;
+    try LBad := DecodeSemanticStyle(LBytes, nil, nil, LCancel.Observe)
+    except on EAbort do LRejected := True end;
+    Check(LRejected and (LBad = nil) and (LLoaded.Identity = LIdentity),
+      'Canceled shared reload changes its source or publishes partial ownership');
+    LA := LLoaded.CreateInstrumentalStream; LB := LVersions[5].CreateInstrumentalStream;
+    FreeAndNil(LLoaded); FreeAndNil(LFurther); FreeAndNil(LBlend);
+    for I := 0 to High(LVersions) do FreeAndNil(LVersions[I]);
+    SameStreams(LA, LB);
+    WriteLn('Edited ancestry ', ALabel, ' native/JS mix and six stems: ', LIdentity, ' bytes=', Length(LBytes));
+  finally
+    LA.Free; LB.Free; LWork.Free; LCancel.Free; LBad.Free; LParent.Free; LLoaded.Free; LFurther.Free; LBlend.Free;
+    for I := 0 to High(LVersions) do LVersions[I].Free;
   end;
 end;
 
@@ -1194,6 +1341,7 @@ var
   LObserver: TCapacityObserver;
   LWeightedSamples: TWeightedSequenceSamples;
   LModel: TWfcSequenceModel;
+  LShared: TWorkBudget;
   LActualContributions: TMusicalCorpusContributions;
   LActualModels: TLayerModelTexts;
   I: Integer;
@@ -1320,6 +1468,8 @@ begin
       Check(LCaptured.Providers[P].ModelText = LActualModels[P],
         'Large corpus snapshot changes an actual provider model');
     LCaptured.Corpus.Sources[0].Classifications[0] := 'mutated copy';
+    LCaptured := LLoaded.CopyDefinition;
+    Ancestry(LCaptured, 'complete corpus');
     LCaptured := Default(TSemanticStyleDefinition);
     FreeAndNil(LCorpus);
     LLedger := nil;
@@ -1340,6 +1490,17 @@ begin
     Check(LRejected and (LModel = nil), 'Nil-callback learning bypasses its work budget');
     LModel := LearnWeightedSequenceModel(LWeightedSamples, 1, 3, nil, MaximumSemanticStyleLearningWork);
     Check(LModel <> nil, 'Work-limit rejection poisons a valid learning retry');
+    FreeAndNil(LModel);
+    LShared := TWorkBudget.Create(1048576, 'Compound model validation');
+    try
+      LModel := LearnWeightedSequenceModel(LWeightedSamples, 1, 3, nil, 0, LShared);
+      Check((LModel <> nil) and (LShared.Used > 0), 'Shared nil-callback learning is not charged');
+      FreeAndNil(LModel); LShared.Charge(LShared.Remaining); LRejected := False;
+      try LModel := LearnWeightedSequenceModel(LWeightedSamples, 1, 3, nil, 0, LShared)
+      except on EAudio do LRejected := True end;
+      Check(LRejected and (LModel = nil) and (LShared.Remaining = 0),
+        'A later model resets or bypasses the compound work budget');
+    finally LShared.Free end;
     WriteLn('Complete large corpus archive ', LStyle.Identity, ' bytes=', Length(LBytes),
       '; actual_progress_callbacks=', LObserver.Calls);
   finally
@@ -1351,6 +1512,10 @@ begin
   end;
 end;
 begin
+  {$ifdef PYTHIAN_ANCESTRY_ONLY}
+  ArchiveStorage;
+  Ancestry(Definition, 'authored');
+  {$else}
   {$ifdef PYTHIAN_SCOPES_ONLY}
   ScopedControls;
   {$else}
@@ -1368,10 +1533,13 @@ begin
   MetadataOrigin;
   Variants;
   ScopedControls;
+  ArchiveStorage;
+  Ancestry(Definition, 'authored');
   {$endif}
   {$endif}
   {$ifndef PYTHIAN_PERFORMANCE_ONLY}
   Capacity;
+  {$endif}
   {$endif}
   {$endif}
   {$endif}

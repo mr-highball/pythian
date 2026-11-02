@@ -49,11 +49,13 @@ type
   Zero excludes a sample. This changes training counts, never generation prefs.
   Inputs are borrowed synchronously; positive samples require 1..64 copies.
   The caller supplies a bounded observation budget, at most 1048576; actual
-  companion sample/state limits still apply. No partial model is published. }
+  companion sample/state limits still apply. No partial model is published.
+  ASharedWork optionally accumulates the same comparison/history charges across
+  multiple models; it is borrowed and never reset. }
 function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
   const AOrder: Integer; const AMaximumObservations: Integer = 65536;
   const AProgress: TWorkProgressCallback = nil;
-  const AMaximumWork: Int64 = 0): TWfcSequenceModel;
+  const AMaximumWork: Int64 = 0; const ASharedWork: TWorkBudget = nil): TWfcSequenceModel;
 
 { Each recording/excerpt remains a separate sample: no cross-file transition.
   All sequences must use one shared palette; the caller retains that palette. }
@@ -79,19 +81,21 @@ type
     FOrder: Integer;
     FStage: String;
     FDone: Int64;
+    FShared: TWorkBudget;
   public
     constructor Create(const ACallback: TWorkProgressCallback;
-      const AMaximum: Int64; const AOrder: Integer);
+      const AMaximum: Int64; const AOrder: Integer; const AShared: TWorkBudget);
     procedure Observe(const AWork: TWorkProgress);
   end;
 
 constructor TWeightedLearningWork.Create(const ACallback: TWorkProgressCallback;
-  const AMaximum: Int64; const AOrder: Integer);
+  const AMaximum: Int64; const AOrder: Integer; const AShared: TWorkBudget);
 begin
   inherited Create;
   FCallback := ACallback;
   FMaximum := AMaximum;
   FOrder := AOrder;
+  FShared := AShared;
 end;
 
 procedure TWeightedLearningWork.Observe(const AWork: TWorkProgress);
@@ -115,6 +119,7 @@ begin
     LCharge := (LDelta + 1) * 256 * (FOrder + 1);
   if (FMaximum > 0) and (LCharge > FMaximum - FUsed) then
     raise EAudio.Create('Weighted sequence learning exceeds its declared comparison/history-work budget');
+  if FShared <> nil then FShared.Charge(LCharge);
   if FMaximum > 0 then Inc(FUsed, LCharge);
   if Assigned(FCallback) then FCallback(AWork);
 end;
@@ -122,7 +127,7 @@ end;
 function LearnWeightedSequenceModel(const ASamples: TWeightedSequenceSamples;
   const AOrder, AMaximumObservations: Integer;
   const AProgress: TWorkProgressCallback;
-  const AMaximumWork: Int64): TWfcSequenceModel;
+  const AMaximumWork: Int64; const ASharedWork: TWorkBudget): TWfcSequenceModel;
 var
   LExpanded: TWfcSequenceSamples;
   LCount: Integer;
@@ -186,9 +191,9 @@ begin
   LWork := nil;
   LBridge := nil;
   try
-    if AMaximumWork > 0 then
+    if (AMaximumWork > 0) or (ASharedWork <> nil) then
     begin
-      LWork := TWeightedLearningWork.Create(AProgress, AMaximumWork, AOrder);
+      LWork := TWeightedLearningWork.Create(AProgress, AMaximumWork, AOrder, ASharedWork);
       LBridge := TWfcSolveProgressBridge.Create(LWork.Observe);
     end
     else LBridge := TWfcSolveProgressBridge.Create(AProgress);

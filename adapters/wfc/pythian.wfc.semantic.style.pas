@@ -37,7 +37,7 @@ uses
   pythian.music.form, pythian.music.controls, pythian.music.decisions,
   pythian.wfc.percussion, pythian.wfc.instrumental.stream,
   pythian.wfc.musical.corpus, pythian.music.selection,
-  pythian.wfc.instrumental.policy;
+  pythian.wfc.instrumental.policy, pythian.wfc.semantic.archive;
 
 const
   MaximumSemanticStyleBytes = 32 * 1024 * 1024;
@@ -230,24 +230,29 @@ type
     FNodeCount: Integer;
     FInheritedJoints: Boolean;
     FKind: Integer;
-    FParent: TAudioBytes;
-    FOtherParent: TAudioBytes;
+    FArchive: TSemanticArchive;
     FRecipe: TSemanticBlendRecipe;
-    procedure Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes;
+    function GetArchivePayloadBytes: Int64;
+    procedure Finish(const ADefinition: TSemanticStyleDefinition; const AParent, AOther: TSemanticStyle;
       const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+      const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork);
+    procedure UseLegacyEncoding(const AFormat: Integer; const AWork: TSemanticArchiveWork;
       const AProgress: TWorkProgressCallback);
   public
+    destructor Destroy; override;
     constructor CreateSource(const ADefinition: TSemanticStyleDefinition;
       const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
-      const AProgress: TWorkProgressCallback = nil);
+      const AProgress: TWorkProgressCallback = nil;
+      const AWork: TSemanticArchiveWork = nil);
     { Only preferences/constraints may change in this derivation. Models, source
       contributions and observed relationships retain their frozen ancestry. }
     constructor CreateDerived(const AParent: TSemanticStyle;
       const ADefinition: TSemanticStyleDefinition;
       const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
-      const AProgress: TWorkProgressCallback = nil);
+      const AProgress: TWorkProgressCallback = nil;
+      const AWork: TSemanticArchiveWork = nil);
     { Changes only the performed instrument/mix/expression/form/options recipe.
       Models, observations, schema and provider policy remain frozen. Retains
       the complete parent; a score audition is never new training evidence. }
@@ -255,12 +260,14 @@ type
       const ARecipe: TSemanticInstrumentalRecipe;
       const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
-      const AProgress: TWorkProgressCallback = nil);
+      const AProgress: TWorkProgressCallback = nil;
+      const AWork: TSemanticArchiveWork = nil);
     constructor CreateBlend(const ALeft, ARight: TSemanticStyle;
       const ARecipe: TSemanticBlendRecipe;
       const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
-      const AProgress: TWorkProgressCallback = nil);
+      const AProgress: TWorkProgressCallback = nil;
+      const AWork: TSemanticArchiveWork = nil);
     function CopyBlendRecipe: TSemanticBlendRecipe;
     function CopyParent(const ASide: Integer; const ARegistry: TProviderCodecRegistry = nil;
       const AAdmission: TProviderCodecAdmission = nil;
@@ -290,6 +297,8 @@ type
     property Identity: String read FIdentity;
     property Depth: Integer read FDepth;
     property NodeCount: Integer read FNodeCount;
+    { Unique retained archive payload bytes, excluding headers/current decoded state. }
+    property ArchivePayloadBytes: Int64 read GetArchivePayloadBytes;
   end;
 
 { Detached model-free layout for inspection/adapters. Use the owning factory
@@ -328,269 +337,7 @@ type
     Sorted: array of Integer;
     ByteCount: Integer;
   end;
-  TStyleIO = class
-  private
-    FStream: TAudioBytesStream;
-    FNumberBytes: TAudioBytes;
-    FReading: Boolean;
-    FProgress: TWorkProgressCallback;
-    FFields: Int64;
-    procedure VisitField;
-  public
-    constructor Create(const ABytes: TAudioBytes; const AReading: Boolean;
-      const AProgress: TWorkProgressCallback = nil);
-    destructor Destroy; override;
-    function N(const AValue: Integer = 0): Integer;
-    function U(const AValue: Cardinal): Cardinal;
-    function Q(const AValue: Int64 = 0): Int64;
-    function R(const AValue: Double): Double;
-    function Count(const AValue, AMaximum: Integer): Integer;
-    function Text(const AValue: String = ''; const AMaximum: Integer = 1048576): String;
-    function Blob(const AValue: TAudioBytes;
-      const AMaximum: Integer = MaximumSemanticStyleBytes): TAudioBytes;
-    function Bytes: TAudioBytes;
-    procedure EndOfInput;
-  end;
-
-constructor TStyleIO.Create(const ABytes: TAudioBytes; const AReading: Boolean;
-  const AProgress: TWorkProgressCallback);
-var
-  LOffset: Integer;
-  LBlock: Integer;
-begin
-  inherited Create;
-  FStream := TAudioBytesStream.Create(MaximumSemanticStyleBytes);
-  SetLength(FNumberBytes, 8);
-  FReading := AReading;
-  FProgress := AProgress;
-  ReportWork(FProgress, 'semantic_archive_fields', wuItems, 0, 0);
-  if Length(ABytes) > MaximumSemanticStyleBytes then
-  begin
-    raise EAudio.Create('Semantic archive exceeds 32 MiB');
-  end;
-  if AReading and (Length(ABytes) > 0) then
-  begin
-    ReportWork(FProgress, 'semantic_archive_input', wuBytes, 0, Length(ABytes));
-    LOffset := 0;
-    while LOffset < Length(ABytes) do
-    begin
-      LBlock := Length(ABytes) - LOffset;
-      if LBlock > 65536 then
-      begin
-        LBlock := 65536;
-      end;
-      WriteStreamBytesExact(FStream, ABytes, LOffset, LBlock);
-      Inc(LOffset, LBlock);
-      ReportWork(FProgress, 'semantic_archive_input', wuBytes, LOffset, Length(ABytes));
-    end;
-    FStream.Position := 0;
-  end;
-end;
-
-destructor TStyleIO.Destroy;
-begin
-  FStream.Free;
-  inherited Destroy;
-end;
-
-procedure TStyleIO.VisitField;
-begin
-  Inc(FFields);
-  if FFields mod 4096 = 0 then
-  begin
-    ReportWork(FProgress, 'semantic_archive_fields', wuItems, FFields, 0);
-  end;
-end;
-
-function TStyleIO.N(const AValue: Integer): Integer;
-begin
-  VisitField;
-  Result := AValue;
-  if FReading then
-  begin
-    if FStream.Size - FStream.Position < 4 then
-    begin
-      raise EAudio.Create('Truncated semantic number');
-    end;
-    ReadStreamBytesExact(FStream, FNumberBytes, 0, 4);
-    Result := ReadInt32LE(FNumberBytes, 0);
-  end
-  else
-  begin
-    WriteInt32LE(FNumberBytes, 0, AValue);
-    WriteStreamBytesExact(FStream, FNumberBytes, 0, 4);
-  end;
-end;
-
-function TStyleIO.U(const AValue: Cardinal): Cardinal;
-begin
-  VisitField;
-  Result := AValue;
-  if FReading then
-  begin
-    ReadStreamBytesExact(FStream, FNumberBytes, 0, 4);
-    Result := ReadUInt32LE(FNumberBytes, 0);
-  end
-  else
-  begin
-    WriteUInt32LE(FNumberBytes, 0, AValue);
-    WriteStreamBytesExact(FStream, FNumberBytes, 0, 4);
-  end;
-end;
-
-function TStyleIO.Q(const AValue: Int64): Int64;
-begin
-  Result := AValue;
-  if FReading then
-  begin
-    if FStream.Size - FStream.Position < 8 then
-    begin
-      raise EAudio.Create('Truncated semantic wide number');
-    end;
-    ReadStreamBytesExact(FStream, FNumberBytes, 0, 8);
-    Result := ReadInt64LE(FNumberBytes, 0);
-  end
-  else
-  begin
-    WriteInt64LE(FNumberBytes, 0, AValue);
-    WriteStreamBytesExact(FStream, FNumberBytes, 0, 8);
-  end;
-end;
-
-function TStyleIO.Count(const AValue, AMaximum: Integer): Integer;
-begin
-  Result := N(AValue);
-  if (Result < 0) or (Result > AMaximum) then
-  begin
-    raise EAudio.Create('Semantic count or enum exceeds contract');
-  end;
-end;
-
-function TStyleIO.R(const AValue: Double): Double;
-begin
-  Result := AValue;
-  if FReading then
-  begin
-    ReadStreamBytesExact(FStream, FNumberBytes, 0, 8);
-    Result := ReadFloat64LE(FNumberBytes, 0);
-  end
-  else
-  begin
-    WriteFloat64LE(FNumberBytes, 0, AValue);
-    WriteStreamBytesExact(FStream, FNumberBytes, 0, 8);
-  end;
-  RequireFinite(Result, 'Semantic instrumental recipe');
-end;
-
-function TStyleIO.Blob(const AValue: TAudioBytes; const AMaximum: Integer): TAudioBytes;
-var
-  LCount: Integer;
-  LOffset: Integer;
-  LBlock: Integer;
-begin
-  Result := nil;
-  LCount := Count(Length(AValue), AMaximum);
-  if LCount >= 65536 then
-    ReportWork(FProgress, 'semantic_archive_blob', wuBytes, 0, LCount);
-  if FReading then
-  begin
-    if LCount > FStream.Size - FStream.Position then
-    begin
-      raise EAudio.Create('Truncated semantic blob');
-    end;
-    SetLength(Result, LCount);
-    LOffset := 0;
-    while LOffset < LCount do
-    begin
-      LBlock := LCount - LOffset;
-      if LBlock > 65536 then
-      begin
-        LBlock := 65536;
-      end;
-      ReadStreamBytesExact(FStream, Result, LOffset, LBlock);
-      Inc(LOffset, LBlock);
-      if LCount >= 65536 then
-        ReportWork(FProgress, 'semantic_archive_blob', wuBytes, LOffset, LCount);
-    end;
-  end
-  else
-  begin
-    Result := AValue;
-    LOffset := 0;
-    while LOffset < LCount do
-    begin
-      LBlock := LCount - LOffset;
-      if LBlock > 65536 then
-      begin
-        LBlock := 65536;
-      end;
-      WriteStreamBytesExact(FStream, AValue, LOffset, LBlock);
-      Inc(LOffset, LBlock);
-      if LCount >= 65536 then
-        ReportWork(FProgress, 'semantic_archive_blob', wuBytes, LOffset, LCount);
-    end;
-    if FStream.Size > MaximumSemanticStyleBytes then
-    begin
-      raise EAudio.Create('Semantic archive exceeds 32 MiB');
-    end;
-  end;
-end;
-
-function TStyleIO.Text(const AValue: String; const AMaximum: Integer): String;
-var
-  LBytes: TAudioBytes;
-begin
-  LBytes := nil;
-  if not FReading then
-  begin
-    LBytes := EncodeUTF8Text(TScalarText(AValue), AMaximum, True, True);
-    Blob(LBytes, AMaximum);
-    Exit(AValue);
-  end;
-  LBytes := Blob(LBytes, AMaximum);
-  Result := String(DecodeUTF8Text(LBytes, AMaximum, True, True));
-end;
-
-function TStyleIO.Bytes: TAudioBytes;
-var
-  LOffset: Integer;
-  LBlock: Integer;
-  LPosition: Int64;
-begin
-  Result := nil;
-  SetLength(Result, FStream.Size);
-  if FStream.Size >= 65536 then
-    ReportWork(FProgress, 'semantic_archive_output', wuBytes, 0, FStream.Size);
-  LPosition := FStream.Position;
-  try
-    FStream.Position := 0;
-    LOffset := 0;
-    while LOffset < FStream.Size do
-    begin
-      LBlock := FStream.Size - LOffset;
-      if LBlock > 65536 then
-      begin
-        LBlock := 65536;
-      end;
-      ReadStreamBytesExact(FStream, Result, LOffset, LBlock);
-      Inc(LOffset, LBlock);
-      if FStream.Size >= 65536 then
-      begin
-        ReportWork(FProgress, 'semantic_archive_output', wuBytes, LOffset, FStream.Size);
-      end;
-    end;
-  finally
-    FStream.Position := LPosition;
-  end;
-end;
-
-procedure TStyleIO.EndOfInput;
-begin
-  if FReading and (FStream.Position <> FStream.Size) then
-  begin
-    raise EAudio.Create('Trailing semantic payload');
-  end;
-end;
+  TStyleIO = pythian.wfc.semantic.archive.TStyleIO;
 
 procedure CodecBindingIO(const AIO: TStyleIO; var ABinding: TProviderCodecBinding);
 begin
@@ -689,22 +436,22 @@ begin
   for I := 0 to High(ARecipe.Instruments) do
   begin
     LBytes := nil;
-    if not AIO.FReading then LBytes := EncodeInstrumentRecipe(ARecipe.Instruments[I], AIO.FProgress);
+    if not AIO.Reading then LBytes := EncodeInstrumentRecipe(ARecipe.Instruments[I], AIO.Progress);
     LBytes := AIO.Blob(LBytes, MaximumSoundRecipeBytes);
-    if AIO.FReading then ARecipe.Instruments[I] := DecodeInstrumentRecipe(LBytes, AIO.FProgress);
+    if AIO.Reading then ARecipe.Instruments[I] := DecodeInstrumentRecipe(LBytes, AIO.Progress);
   end;
   LBytes := nil;
-  if not AIO.FReading then LBytes := EncodeStemMixRecipe(ARecipe.Mix,
-    ARecipe.SampleRate, AIO.FProgress);
+  if not AIO.Reading then LBytes := EncodeStemMixRecipe(ARecipe.Mix,
+    ARecipe.SampleRate, AIO.Progress);
   LBytes := AIO.Blob(LBytes, MaximumSoundRecipeBytes);
-  if AIO.FReading then ARecipe.Mix := DecodeStemMixRecipe(LBytes,
-    ARecipe.SampleRate, AIO.FProgress);
+  if AIO.Reading then ARecipe.Mix := DecodeStemMixRecipe(LBytes,
+    ARecipe.SampleRate, AIO.Progress);
   SetLength(ARecipe.Percussion, AIO.Count(Length(ARecipe.Percussion), 6));
   for I := 0 to High(ARecipe.Percussion) do
   begin
     with ARecipe.Percussion[I] do
     begin
-      if not AIO.FReading and (Model <> nil) then
+      if not AIO.Reading and (Model <> nil) then
         raise EAudio.Create('Saved drum recipe borrows a model; models belong in Providers');
       Name := AIO.Text(Name);
       Origin := AIO.Text(Origin);
@@ -908,9 +655,12 @@ begin
   SetLength(ADefinition.Providers, AIO.Count(Length(ADefinition.Providers), MaximumSemanticStyleProviders));
   for LIndex := 0 to High(ADefinition.Providers) do
   begin
+    AIO.MarkSection;
     ContractIO(AIO, ADefinition.Providers[LIndex].Contract);
+    AIO.MarkSection;
     ADefinition.Providers[LIndex].ModelText := AIO.Text(ADefinition.Providers[LIndex].ModelText,
       16 * 1024 * 1024);
+    AIO.MarkSection;
     ADefinition.Providers[LIndex].ExtractionPolicy := AIO.Text(ADefinition.Providers[LIndex].ExtractionPolicy);
     ADefinition.Providers[LIndex].VocabularySha256 := AIO.Text(ADefinition.Providers[LIndex].VocabularySha256);
     ADefinition.Providers[LIndex].VocabularyAncestor := AIO.Text(ADefinition.Providers[LIndex].VocabularyAncestor);
@@ -931,12 +681,13 @@ begin
       end;
     end;
   end;
+  AIO.MarkSection;
   { Big Boss: only encounter-order values are serialized. The host's lexical
     ordering is an internal lookup index, so UTF-8/UTF-16 ordering differences
     cannot alter the archive. Zero-weight parent observations remain retained. }
   SetLength(LTables, Length(ADefinition.Providers));
   LVisited := 0;
-  if not AIO.FReading then
+  if not AIO.Reading then
     for LIndex := 0 to High(ADefinition.Runs) do
       for LItem := 0 to High(ADefinition.Runs[LIndex].Tokens) do
       begin
@@ -947,7 +698,7 @@ begin
         for LCell := 0 to High(ADefinition.Runs[LIndex].Tokens[LItem]) do
         begin
           if LCell mod 256 = 0 then
-            ReportWork(AIO.FProgress, 'semantic_archive_dictionary', wuItems, LVisited, 0);
+            ReportWork(AIO.Progress, 'semantic_archive_dictionary', wuItems, LVisited, 0);
           StyleTokenIndex(LTables[LItem], ADefinition.Runs[LIndex].Tokens[LItem][LCell], True);
         end;
       end;
@@ -957,15 +708,17 @@ begin
     for LCell := 0 to LCount - 1 do
     begin
       LToken := '';
-      if not AIO.FReading then LToken := LTables[LItem].Values[LCell];
+      if not AIO.Reading then LToken := LTables[LItem].Values[LCell];
       LToken := AIO.Text(LToken);
-      if AIO.FReading and (StyleTokenIndex(LTables[LItem], LToken, True) <> LCell) then
+      if AIO.Reading and (StyleTokenIndex(LTables[LItem], LToken, True) <> LCell) then
         raise EAudio.Create('Semantic token dictionary repeats a meaning');
     end;
   end;
+  AIO.MarkSection;
   SetLength(ADefinition.Sources, AIO.Count(Length(ADefinition.Sources), MaximumSemanticStyleSources));
   for LIndex := 0 to High(ADefinition.Sources) do
   begin
+    AIO.MarkSection;
     ADefinition.Sources[LIndex].Sha256 := AIO.Text(ADefinition.Sources[LIndex].Sha256);
     ADefinition.Sources[LIndex].GroupId := AIO.Text(ADefinition.Sources[LIndex].GroupId);
     ADefinition.Sources[LIndex].Split := TSemanticSplit(AIO.Count(Ord(ADefinition.Sources[LIndex].Split), 3));
@@ -992,13 +745,18 @@ begin
     ADefinition.Sources[LIndex].OriginFrameCount := AIO.Q(ADefinition.Sources[LIndex].OriginFrameCount);
     ADefinition.Sources[LIndex].OriginStartFrame := AIO.Q(ADefinition.Sources[LIndex].OriginStartFrame);
     ADefinition.Sources[LIndex].OriginEndFrame := AIO.Q(ADefinition.Sources[LIndex].OriginEndFrame);
+    AIO.MarkSection;
     ADefinition.Sources[LIndex].PreparationEvidence := AIO.Blob(ADefinition.Sources[LIndex].PreparationEvidence);
+    AIO.MarkSection;
     ADefinition.Sources[LIndex].PreparationSha256 := AIO.Text(ADefinition.Sources[LIndex].PreparationSha256);
   end;
+  AIO.MarkSection;
   SetLength(ADefinition.Runs, AIO.Count(Length(ADefinition.Runs), MaximumSemanticStyleRuns));
   for LIndex := 0 to High(ADefinition.Runs) do
   begin
+    AIO.MarkSection;
     ADefinition.Runs[LIndex].SourceIndex := AIO.N(ADefinition.Runs[LIndex].SourceIndex);
+    AIO.MarkSection;
     ADefinition.Runs[LIndex].Identity := AIO.Text(ADefinition.Runs[LIndex].Identity);
     ADefinition.Runs[LIndex].ProposalPolicy := AIO.Text(ADefinition.Runs[LIndex].ProposalPolicy);
     SetLength(ADefinition.Runs[LIndex].RoleOrigins,
@@ -1030,6 +788,7 @@ begin
       end;
     end;
     SetLength(ADefinition.Runs[LIndex].Tokens, AIO.Count(Length(ADefinition.Runs[LIndex].Tokens), MaximumSemanticStyleProviders));
+    AIO.MarkSection;
     SetLength(ADefinition.Runs[LIndex].Weights, AIO.Count(Length(ADefinition.Runs[LIndex].Weights), MaximumSemanticStyleProviders));
     SetLength(ADefinition.Runs[LIndex].ProviderEvidence,
       AIO.Count(Length(ADefinition.Runs[LIndex].ProviderEvidence), MaximumSemanticStyleProviders));
@@ -1042,21 +801,24 @@ begin
     begin
       ADefinition.Runs[LIndex].Weights[LItem] := AIO.Count(ADefinition.Runs[LIndex].Weights[LItem], 64);
     end;
+    AIO.MarkSection;
     for LItem := 0 to High(ADefinition.Runs[LIndex].Tokens) do
     begin
+      AIO.MarkSection;
       SetLength(ADefinition.Runs[LIndex].Tokens[LItem], AIO.Count(
         Length(ADefinition.Runs[LIndex].Tokens[LItem]), MaximumSemanticStyleObservations));
       if LItem >= Length(LTables) then raise EAudio.Create('Observed run has an absent provider');
       for LCell := 0 to High(ADefinition.Runs[LIndex].Tokens[LItem]) do
       begin
         LTokenIndex := 0;
-        if not AIO.FReading then
+        if not AIO.Reading then
           LTokenIndex := StyleTokenIndex(LTables[LItem], ADefinition.Runs[LIndex].Tokens[LItem][LCell], False);
         LTokenIndex := AIO.Count(LTokenIndex, Length(LTables[LItem].Values) - 1);
         ADefinition.Runs[LIndex].Tokens[LItem][LCell] := LTables[LItem].Values[LTokenIndex];
       end;
     end;
   end;
+  AIO.MarkSection;
   SetLength(ADefinition.Projections, AIO.Count(Length(ADefinition.Projections), 64));
   for LIndex := 0 to High(ADefinition.Projections) do
   begin
@@ -1098,12 +860,15 @@ begin
     ADefinition.Sounds[LIndex].Timbre := AIO.Blob(ADefinition.Sounds[LIndex].Timbre);
     ADefinition.Sounds[LIndex].Envelope := AIO.Blob(ADefinition.Sounds[LIndex].Envelope);
   end;
+  AIO.MarkSection;
   InstrumentalIO(AIO, ADefinition.Instrumental);
+  AIO.MarkSection;
   CorpusEvidenceIO(AIO, ADefinition.Corpus);
+  AIO.MarkSection;
   { Optional canonical extension: existing unscoped definition bytes/identities
     remain exact. The outer V6 header declares actual scoped control content. }
-  if (not AIO.FReading and DefinitionHasScopes(ADefinition)) or
-    (AIO.FReading and (AIO.FStream.Position < AIO.FStream.Size)) then
+  if (not AIO.Reading and DefinitionHasScopes(ADefinition)) or
+    (AIO.Reading and (AIO.Position < AIO.Size)) then
   begin
     Require(AIO.Text('pythian.instrumental.scopes.v1') = 'pythian.instrumental.scopes.v1',
       'Unsupported instrumental scope extension');
@@ -1128,6 +893,18 @@ begin
   finally
     LIO.Free;
   end;
+end;
+
+function DefinitionSections(const ADefinition: TSemanticStyleDefinition;
+  const AProgress: TWorkProgressCallback): TSemanticByteSections;
+var LIO: TStyleIO; LDefinition: TSemanticStyleDefinition;
+begin
+  LDefinition := ADefinition;
+  LIO := TStyleIO.Create(nil, False, AProgress, True);
+  try
+    DefinitionIO(LIO, LDefinition);
+    Result := LIO.Sections;
+  finally LIO.Free end;
 end;
 
 function ReadDefinition(const ABytes: TAudioBytes;
@@ -2116,7 +1893,7 @@ end;
 
 procedure ValidateInstrumentalDefinition(const ADefinition: TSemanticStyleDefinition;
   const ALayers: TLearnedLayers; const AInheritedJoints: Boolean;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const ACheckObservations: Boolean = True);
 var
   LOwner: TSemanticInstrumentalStream;
   LContext: TMusicalContextCell;
@@ -2151,6 +1928,7 @@ begin
   LOwner := TSemanticInstrumentalStream.Create(ADefinition,
     ADefinition.Instrumental.Options, nil, nil, AProgress);
   LOwner.Free;
+  if not ACheckObservations then Exit;
   { Original rows are declared observations, including Experimental proposals.
     Verify their actual context/voice/drum relationships without a benchmark gate
     or rendering source PCM during persistence. }
@@ -2307,7 +2085,8 @@ end;
 
 procedure ValidateDefinition(const AStyle: TSemanticStyle;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const ASharedWork: TWorkBudget;
+  const AReplayModels: Boolean);
 var
   LDefinition: TSemanticStyleDefinition;
   LLayers: TLearnedLayers;
@@ -2549,6 +2328,8 @@ begin
         end;
         Require(LFound, 'Provider source clock is not bound to the source ledger');
       end;
+      if AReplayModels then
+      begin
       SetLength(LSamples, Length(LDefinition.Runs));
       for LRun := 0 to High(LDefinition.Runs) do
       begin
@@ -2556,12 +2337,13 @@ begin
         LSamples[LRun].Weight := LDefinition.Runs[LRun].Weights[LProvider];
       end;
       LModel := LearnWeightedSequenceModel(LSamples, LLayers[LProvider].Model.Order,
-        MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork);
+        MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork, ASharedWork);
       try
         Require(EncodeWfcSequenceText(LModel) = LDefinition.Providers[LProvider].ModelText,
           'Saved model does not replay exact source/run contributions');
       finally
         LModel.Free;
+      end;
       end;
     end;
     ReportWork(AProgress, 'semantic_validate_providers', wuItems, Length(LLayers), Length(LLayers));
@@ -2712,48 +2494,110 @@ begin
   end;
 end;
 
-procedure TSemanticStyle.Finish(const ADefinition: TSemanticStyleDefinition; const AParent: TAudioBytes;
+
+{ Called only after a constructor has proved that all source/model/schema fields
+  are frozen against a fully validated parent. Registry admission and changed
+  policy/recipe execution still run on this target; observations are immutable. }
+procedure ValidateEditedDefinition(const AStyle: TSemanticStyle;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
   const AProgress: TWorkProgressCallback);
-var
-  LIO: TStyleIO;
-  LBody: TAudioBytes;
-  LAdmission: TProviderCodecAdmission;
-  LOwned: Boolean;
+var LLayers: TLearnedLayers; I: Integer; LGrid: TCompatibleProviderSession;
+  LVoices: TNamedVoiceSession;
 begin
-  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+  LLayers := LoadLayers(AStyle.FDefinition, AProgress);
   try
+    for I := 0 to High(LLayers) do
+      ValidateProviderContract(LLayers[I].Model, AStyle.FDefinition.Providers[I].Contract,
+        ARegistry, AAdmission, AProgress);
+    if AStyle.FDefinition.Instrumental.Enabled then
+      ValidateInstrumentalDefinition(AStyle.FDefinition, LLayers,
+        AStyle.FInheritedJoints, AProgress, False)
+    else if AStyle.FDefinition.NamedVoices then
+    begin
+      LVoices := AStyle.CreateVoiceSession(731, AProgress); LVoices.Free;
+    end
+    else
+    begin
+      Require(not DefinitionHasScopes(AStyle.FDefinition),
+        'Scoped instrumental policy requires an instrumental style');
+      LGrid := AStyle.CreateSession(731, ARegistry, AAdmission, AProgress); LGrid.Free;
+    end;
+  finally FreeLayers(LLayers) end;
+end;
+
+function TSemanticStyle.GetArchivePayloadBytes: Int64;
+begin
+  Result := FArchive.PayloadBytes;
+end;
+
+destructor TSemanticStyle.Destroy;
+begin
+  FArchive.Free;
+  inherited Destroy;
+end;
+
+procedure TSemanticStyle.Finish(const ADefinition: TSemanticStyleDefinition;
+  const AParent, AOther: TSemanticStyle; const ARegistry: TProviderCodecRegistry;
+  const AAdmission: TProviderCodecAdmission; const AProgress: TWorkProgressCallback;
+  const AWork: TSemanticArchiveWork);
+var LIO: TStyleIO; LAdmission: TProviderCodecAdmission; LOwned: Boolean;
+  LWork: TSemanticArchiveWork; LWorkOwned: Boolean; LNode: TSemanticArchiveNode;
+  LLeft, LRight: TSemanticArchive;
+begin
+  LWork := AWork; LWorkOwned := LWork = nil;
+  if LWorkOwned then LWork := TSemanticArchiveWork.Create;
+  LAdmission := nil; LOwned := False;
+  try
+    LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
     FDefinition := ReadDefinition(DefinitionBytes(ADefinition, AProgress), AProgress);
-    ValidateDefinition(Self, ARegistry, LAdmission, AProgress);
-    FParent := Copy(AParent);
+    if FKind in [1, 4] then
+    begin
+      Require((AParent <> nil) and (AOther = nil), 'Frozen edit requires its validated parent');
+      ValidateEditedDefinition(Self, ARegistry, LAdmission, AProgress);
+      { Constructors have proved frozen equality before reaching this boundary.
+        Share these read-only records; caller-owned records remain detached. }
+      FDefinition.Sources := AParent.FDefinition.Sources;
+      FDefinition.Runs := AParent.FDefinition.Runs;
+      FDefinition.Corpus := AParent.FDefinition.Corpus;
+    end
+    else
+      ValidateDefinition(Self, ARegistry, LAdmission, AProgress, LWork.Budget, FKind = 0);
+    LLeft := nil; LRight := nil;
+    if AParent <> nil then LLeft := AParent.FArchive;
+    if AOther <> nil then LRight := AOther.FArchive;
+    LNode := Default(TSemanticArchiveNode); LNode.Format := 7; LNode.Kind := FKind;
+    if AParent <> nil then LNode.Parent := AParent.Identity;
+    if AOther <> nil then LNode.OtherParent := AOther.Identity;
     LIO := TStyleIO.Create(nil, False, AProgress);
     try
-      if DefinitionHasScopes(FDefinition) then LIO.Text('pythian.semantic.style.v6')
-      else if FKind = 4 then LIO.Text('pythian.semantic.style.v5')
-      else LIO.Text('pythian.semantic.style.v4');
-      LIO.N(FKind);
-      LIO.Blob(AParent);
-      LIO.Blob(FOtherParent);
-      BlendRecipeIO(LIO, FRecipe, FKind = 3);
-      LIO.Blob(DefinitionBytes(FDefinition, AProgress));
-      LBody := LIO.Bytes;
-      LIO.Text(Sha256Bytes(LBody, AProgress));
-      FBytes := LIO.Bytes;
-      FIdentity := Sha256Bytes(FBytes, AProgress);
-    finally
-      LIO.Free;
-    end;
+      BlendRecipeIO(LIO, FRecipe, FKind = 3); LNode.Recipe := LIO.Bytes;
+    finally LIO.Free end;
+    LNode.Definition := DefinitionSections(FDefinition, AProgress);
+    FArchive := TSemanticArchive.Create(LLeft, LRight, LNode, LWork, AProgress);
+    FBytes := FArchive.Encode(FArchive.Count - 1, LWork, AProgress);
+    FIdentity := Sha256Bytes(FBytes, AProgress);
+    FArchive.SealRoot(FIdentity); FNodeCount := FArchive.Count;
   finally
-    if LOwned then
-    begin
-      LAdmission.Free;
-    end;
+    if LOwned then LAdmission.Free;
+    if LWorkOwned then LWork.Free;
   end;
+end;
+
+procedure TSemanticStyle.UseLegacyEncoding(const AFormat: Integer;
+  const AWork: TSemanticArchiveWork; const AProgress: TWorkProgressCallback);
+begin
+  Require((AFormat in [4, 5, 6]) and
+    ((AFormat = 6) = DefinitionHasScopes(FDefinition)) and
+    ((AFormat = 6) or ((AFormat = 5) = (FKind = 4))),
+    'Imported semantic format differs from its actual recipe/controls');
+  FArchive.SetRootFormat(AFormat);
+  FBytes := FArchive.Encode(FArchive.Count - 1, AWork, AProgress);
+  FIdentity := Sha256Bytes(FBytes, AProgress); FArchive.SealRoot(FIdentity);
 end;
 
 constructor TSemanticStyle.CreateSource(const ADefinition: TSemanticStyleDefinition;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork);
 var
   LProvider: Integer;
   LRun: Integer;
@@ -2774,20 +2618,20 @@ begin
       demands exact canonical re-encoding, so an altered archived ID rejects. }
     LDefinition.Runs[LRun].ProviderEvidence := nil;
   end;
-  Finish(LDefinition, nil, ARegistry, AAdmission, AProgress);
+  Finish(LDefinition, nil, nil, ARegistry, AAdmission, AProgress, AWork);
 end;
 
 constructor TSemanticStyle.CreateDerived(const AParent: TSemanticStyle;
   const ADefinition: TSemanticStyleDefinition;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork);
 var
   LBaseline: TSemanticStyleDefinition;
   LCandidate: TSemanticStyleDefinition;
   LIndex: Integer;
 begin
   inherited Create;
-  Require((AParent <> nil) and (AParent.NodeCount < 8), 'Semantic derivation requires parent and fewer than eight ancestry nodes');
+  Require(AParent <> nil, 'Semantic derivation requires its complete parent');
   LBaseline := AParent.CopyDefinition(AProgress);
   LCandidate := ReadDefinition(DefinitionBytes(ADefinition, AProgress), AProgress);
   Require(Length(LCandidate.Providers) = Length(LBaseline.Providers), 'Derived provider inventory differs');
@@ -2813,18 +2657,17 @@ begin
   FNodeCount := AParent.NodeCount + 1;
   FInheritedJoints := AParent.FInheritedJoints;
   FKind := 1;
-  Finish(LCandidate, AParent.Encode(AProgress), ARegistry, AAdmission, AProgress);
+  Finish(LCandidate, AParent, nil, ARegistry, AAdmission, AProgress, AWork);
 end;
 
 constructor TSemanticStyle.CreateInstrumentalVariant(const AParent: TSemanticStyle;
   const ARecipe: TSemanticInstrumentalRecipe;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork);
 var LDefinition: TSemanticStyleDefinition; I: Integer;
 begin
   inherited Create;
-  Require((AParent <> nil) and (AParent.NodeCount < 8),
-    'Instrumental variant requires parent and fewer than eight ancestry nodes');
+  Require(AParent <> nil, 'Instrumental variant requires its complete parent');
   LDefinition := AParent.CopyDefinition(AProgress);
   Require(LDefinition.Instrumental.Enabled and ARecipe.Enabled,
     'Instrumental variant requires an existing instrumental style and enabled recipe');
@@ -2835,7 +2678,7 @@ begin
   FNodeCount := AParent.NodeCount + 1;
   FInheritedJoints := AParent.FInheritedJoints;
   FKind := 4;
-  Finish(LDefinition, AParent.Encode(AProgress), ARegistry, AAdmission, AProgress);
+  Finish(LDefinition, AParent, nil, ARegistry, AAdmission, AProgress, AWork);
 end;
 
 function TSemanticStyle.DeriveMusicalControls(const AStartTick, AEndTick: Int64;
@@ -3024,8 +2867,33 @@ begin
   end;
 end;
 
+
+function SameProviderContributions(const ADefinition, AParent: TSemanticStyleDefinition;
+  const AProvider: Integer): Boolean;
+var I, J: Integer;
+begin
+  { Evidence IDs bind the exact ordered tokens and original clock, not a label
+    or a source pathname. Only validated parents reach this private memo key. }
+  I := 0; J := 0;
+  while True do
+  begin
+    while (I < Length(ADefinition.Runs)) and
+      (ADefinition.Runs[I].Weights[AProvider] = 0) do Inc(I);
+    while (J < Length(AParent.Runs)) and
+      (AParent.Runs[J].Weights[AProvider] = 0) do Inc(J);
+    if (I = Length(ADefinition.Runs)) or (J = Length(AParent.Runs)) then
+      Exit((I = Length(ADefinition.Runs)) and (J = Length(AParent.Runs)));
+    if (ADefinition.Runs[I].Weights[AProvider] <> AParent.Runs[J].Weights[AProvider]) or
+      (ADefinition.Runs[I].ProviderEvidence[AProvider] <>
+       AParent.Runs[J].ProviderEvidence[AProvider]) then Exit(False);
+    Inc(I); Inc(J);
+  end;
+end;
+
 procedure RelearnBlend(var ADefinition: TSemanticStyleDefinition;
-  const AProgress: TWorkProgressCallback; const AUnionVocabulary: Boolean = False);
+  const ALeft, ARight: TSemanticStyleDefinition;
+  const AProgress: TWorkProgressCallback; const AUnionVocabulary: Boolean;
+  const ASharedWork: TWorkBudget);
 var
   LProvider: Integer;
   LRun: Integer;
@@ -3033,6 +2901,9 @@ var
   LOriginal: TWfcSequenceModel;
   LModel: TWfcSequenceModel;
   LSamples: TWeightedSequenceSamples;
+  LReuse: Integer;
+  LMemo: TWfcSequenceModel;
+  LText: String;
 begin
   ReportWork(AProgress, 'semantic_relearn_providers', wuItems, 0, Length(ADefinition.Providers));
   for LProvider := 0 to High(ADefinition.Providers) do
@@ -3052,9 +2923,30 @@ begin
         LSamples[LRun].Tokens := ADefinition.Runs[LRun].Tokens[LProvider];
         LSamples[LRun].Weight := ADefinition.Runs[LRun].Weights[LProvider];
       end;
-      LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order,
-        MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork);
-      ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
+      LReuse := -1;
+      if SameProviderContributions(ADefinition, ALeft, LProvider) then LReuse := 0
+      else if SameProviderContributions(ADefinition, ARight, LProvider) then LReuse := 1;
+      if LReuse >= 0 then
+      begin
+        if LReuse = 0 then LText := ALeft.Providers[LProvider].ModelText
+        else LText := ARight.Providers[LProvider].ModelText;
+        LMemo := DecodeWfcSequenceText(LText);
+        try
+          if LMemo.Order <> LOriginal.Order then LReuse := -1;
+        finally LMemo.Free end;
+      end;
+      if LReuse >= 0 then
+      begin
+        ADefinition.Providers[LProvider].ModelText := LText;
+        ReportWork(AProgress, 'semantic_reuse_provider', wuItems, LProvider + 1,
+          Length(ADefinition.Providers));
+      end
+      else
+      begin
+        LModel := LearnWeightedSequenceModel(LSamples, LOriginal.Order,
+          MaximumSemanticStyleObservations, AProgress, MaximumSemanticStyleLearningWork, ASharedWork);
+        ADefinition.Providers[LProvider].ModelText := EncodeWfcSequenceText(LModel);
+      end;
       if AUnionVocabulary then
       begin
         ADefinition.Providers[LProvider].VocabularySha256 := SemanticVocabularyIdentity(
@@ -3328,7 +3220,7 @@ end;
 constructor TSemanticStyle.CreateBlend(const ALeft, ARight: TSemanticStyle;
   const ARecipe: TSemanticBlendRecipe;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback);
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork);
 var
   LParents: array[0..1] of TSemanticStyle;
   LDefinitions: array[0..1] of TSemanticStyleDefinition;
@@ -3348,8 +3240,12 @@ var
   LInstrumental: Boolean;
   LContracts: array[0..1] of TProviderContract;
   LBase: Integer;
+  LBuildWork: TSemanticArchiveWork;
 begin
   inherited Create;
+  LBuildWork := AWork;
+  if LBuildWork = nil then LBuildWork := TSemanticArchiveWork.Create;
+  try
   Require((ALeft <> nil) and (ARight <> nil), 'Semantic blend requires two complete parents');
   LInstrumental := ALeft.FDefinition.Instrumental.Enabled or ARight.FDefinition.Instrumental.Enabled;
   Require(not LInstrumental or (ALeft.FDefinition.Instrumental.Enabled and
@@ -3358,8 +3254,6 @@ begin
   Require(LInstrumental or (not ARecipe.Instrumental.Enabled and
     (Length(ARecipe.Instrumental.Parts) = 0) and (ARecipe.Instrumental.LabelText = '')),
     'Instrumental sound choices require instrumental parents');
-  FNodeCount := ALeft.NodeCount + ARight.NodeCount + 1;
-  Require(FNodeCount <= 8, 'Semantic blend exceeds eight retained ancestry nodes');
   FDepth := ALeft.Depth;
   if ARight.Depth > FDepth then
   begin
@@ -3519,7 +3413,7 @@ begin
     ReportWork(AProgress, 'semantic_blend_runs', wuItems, Length(LDefinitions[LSide].Runs), Length(LDefinitions[LSide].Runs), LSide);
   end;
   CanonicalContributions(LDefinition, FRecipe.RepeatPolicy);
-  RelearnBlend(LDefinition, AProgress, LInstrumental);
+  RelearnBlend(LDefinition, LDefinitions[0], LDefinitions[1], AProgress, LInstrumental, LBuildWork.Budget);
   for LSource := 0 to High(FRecipe.Sounds) do
   begin
     LSound := Default(TSemanticSound);
@@ -3538,8 +3432,8 @@ begin
     SetLength(LDefinition.Sounds, LCount + 1);
     LDefinition.Sounds[LCount] := LSound;
   end;
-  FOtherParent := ARight.Encode(AProgress);
-  Finish(LDefinition, ALeft.Encode(AProgress), ARegistry, AAdmission, AProgress);
+  Finish(LDefinition, ALeft, ARight, ARegistry, AAdmission, AProgress, LBuildWork);
+  finally if LBuildWork <> AWork then LBuildWork.Free end;
 end;
 
 function TSemanticStyle.CopyBlendRecipe: TSemanticBlendRecipe;
@@ -3551,17 +3445,19 @@ end;
 function TSemanticStyle.CopyParent(const ASide: Integer;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
   const AProgress: TWorkProgressCallback): TSemanticStyle;
+var LIdentity: String; I: Integer; LWork: TSemanticArchiveWork;
 begin
   Require(ASide in [0, 1], 'Semantic parent side must be zero or one');
   Result := nil;
-  if (ASide = 0) and (Length(FParent) > 0) then
-  begin
-    Result := DecodeSemanticStyle(FParent, ARegistry, AAdmission, AProgress);
-  end;
-  if (ASide = 1) and (Length(FOtherParent) > 0) then
-  begin
-    Result := DecodeSemanticStyle(FOtherParent, ARegistry, AAdmission, AProgress);
-  end;
+  LIdentity := FArchive.ParentIdentity(ASide);
+  if LIdentity = '' then Exit;
+  LWork := TSemanticArchiveWork.Create;
+  try
+    for I := 0 to FArchive.Count - 1 do if FArchive.Identity(I) = LIdentity then
+      Exit(DecodeSemanticStyle(FArchive.Encode(I, LWork, AProgress),
+        ARegistry, AAdmission, AProgress));
+    raise EAudio.Create('Saved semantic parent is missing from its closed ancestry');
+  finally LWork.Free end;
 end;
 
 function TSemanticStyle.CopyDefinition(const AProgress: TWorkProgressCallback): TSemanticStyleDefinition;
@@ -3597,9 +3493,9 @@ begin
   end;
 end;
 
-function DecodeAt(const ABytes: TAudioBytes; const ADepth: Integer;
+function DecodeLegacyAt(const ABytes: TAudioBytes; const ADepth: Integer;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
-  const AProgress: TWorkProgressCallback): TSemanticStyle;
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork): TSemanticStyle;
 var
   LIO: TStyleIO;
   LParentBytes: TAudioBytes;
@@ -3635,7 +3531,7 @@ begin
     LOtherBytes := LIO.Blob(nil);
     BlendRecipeIO(LIO, LRecipe, LKind = 3);
     LDefinitionBytes := LIO.Blob(nil);
-    LBodyLength := LIO.FStream.Position;
+    LBodyLength := LIO.Position;
     LHash := LIO.Text;
     LIO.EndOfInput;
     Require(LHash = Sha256Bytes(Copy(ABytes, 0, LBodyLength), AProgress), 'Semantic payload digest mismatch');
@@ -3645,20 +3541,20 @@ begin
     if LKind = 0 then
     begin
       Require((Length(LParentBytes) = 0) and (Length(LOtherBytes) = 0), 'Source cannot carry parent bytes');
-      LResult := TSemanticStyle.CreateSource(LDefinition, ARegistry, AAdmission, AProgress);
+      LResult := TSemanticStyle.CreateSource(LDefinition, ARegistry, AAdmission, AProgress, AWork);
     end
     else
     begin
-      LParent := DecodeAt(LParentBytes, ADepth + 1, ARegistry, AAdmission, AProgress);
+      LParent := DecodeLegacyAt(LParentBytes, ADepth + 1, ARegistry, AAdmission, AProgress, AWork);
       if LKind in [1, 4] then
       begin
         Require(Length(LOtherBytes) = 0, 'Control derivation has one parent');
         if LKind = 1 then
-          LResult := TSemanticStyle.CreateDerived(LParent, LDefinition, ARegistry, AAdmission, AProgress)
+          LResult := TSemanticStyle.CreateDerived(LParent, LDefinition, ARegistry, AAdmission, AProgress, AWork)
         else
         begin
           LResult := TSemanticStyle.CreateInstrumentalVariant(LParent, LDefinition.Instrumental,
-            ARegistry, AAdmission, AProgress);
+            ARegistry, AAdmission, AProgress, AWork);
           Require(Sha256Bytes(DefinitionBytes(LResult.FDefinition, AProgress), AProgress) =
             Sha256Bytes(LDefinitionBytes, AProgress),
             'Instrumental variant cannot rewrite frozen models, observations, schema or provider controls');
@@ -3666,12 +3562,13 @@ begin
       end
       else
       begin
-        LOtherParent := DecodeAt(LOtherBytes, ADepth + 1, ARegistry, AAdmission, AProgress);
-        LResult := TSemanticStyle.CreateBlend(LParent, LOtherParent, LRecipe, ARegistry, AAdmission, AProgress);
+        LOtherParent := DecodeLegacyAt(LOtherBytes, ADepth + 1, ARegistry, AAdmission, AProgress, AWork);
+        LResult := TSemanticStyle.CreateBlend(LParent, LOtherParent, LRecipe, ARegistry, AAdmission, AProgress, AWork);
         Require(Sha256Bytes(DefinitionBytes(LResult.FDefinition, AProgress), AProgress) =
           Sha256Bytes(LDefinitionBytes, AProgress), 'Blend does not reconstruct exact retained recipe and contributions');
       end;
     end;
+    LResult.UseLegacyEncoding(StrToInt(Copy(LFormat, Length(LFormat), 1)), AWork, AProgress);
     Require(Sha256Bytes(LResult.Encode(AProgress), AProgress) = Sha256Bytes(ABytes, AProgress), 'Noncanonical semantic archive or ancestry');
     ReportWork(AProgress, 'semantic_ancestry_node', wuItems, 1, 1, ADepth);
     Result := LResult;
@@ -3684,21 +3581,106 @@ begin
   end;
 end;
 
+function DecodeSharedStyle(const ABytes: TAudioBytes;
+  const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
+  const AProgress: TWorkProgressCallback; const AWork: TSemanticArchiveWork): TSemanticStyle;
+var LNodes: TSemanticArchiveNodes; LStyles: array of TSemanticStyle;
+  LArchive: TSemanticArchive;
+  LDefinition: TSemanticStyleDefinition; LDefinitionBytes: TAudioBytes;
+  LRecipe: TSemanticBlendRecipe; LIO: TStyleIO; I, J, K: Integer;
+  LUses: array of Integer;
+  procedure ReleaseParent(const AIdentity: String);
+  var N: Integer;
+  begin
+    if AIdentity = '' then Exit;
+    for N := 0 to I - 1 do if LNodes[N].Identity = AIdentity then
+    begin
+      Dec(LUses[N]);
+      if LUses[N] = 0 then FreeAndNil(LStyles[N]);
+      Exit;
+    end;
+  end;
+  function Parent(const AIdentity: String): TSemanticStyle;
+  var N: Integer;
+  begin
+    Result := nil;
+    if AIdentity = '' then Exit;
+    for N := 0 to I - 1 do if (LNodes[N].Identity = AIdentity) and
+      (LStyles[N] <> nil) then Exit(LStyles[N]);
+    raise EAudio.Create('Semantic parent identity was not validated before its child');
+  end;
+begin
+  Result := nil;
+  LArchive := TSemanticArchive.CreateEncoded(ABytes, AWork, AProgress);
+  SetLength(LNodes, LArchive.Count);
+  for I := 0 to High(LNodes) do LNodes[I] := LArchive.NodeHeader(I);
+  SetLength(LStyles, Length(LNodes)); SetLength(LUses, Length(LNodes));
+  for I := 0 to High(LNodes) do for K := 0 to I - 1 do
+  begin
+    if LNodes[I].Parent = LNodes[K].Identity then Inc(LUses[K]);
+    if LNodes[I].OtherParent = LNodes[K].Identity then Inc(LUses[K]);
+  end;
+  try
+    for I := 0 to High(LNodes) do
+    begin
+      ReportWork(AProgress, 'semantic_ancestry_validate_node', wuItems, I, Length(LNodes));
+      LDefinitionBytes := LArchive.DefinitionBytes(I, AProgress);
+      LDefinition := ReadDefinition(LDefinitionBytes, AProgress);
+      LRecipe := Default(TSemanticBlendRecipe);
+      LIO := TStyleIO.Create(LArchive.RecipeBytes(I), True, AProgress);
+      try
+        BlendRecipeIO(LIO, LRecipe, LNodes[I].Kind = 3); LIO.EndOfInput;
+      finally LIO.Free end;
+      case LNodes[I].Kind of
+        0: LStyles[I] := TSemanticStyle.CreateSource(LDefinition, ARegistry, AAdmission, AProgress, AWork);
+        1: LStyles[I] := TSemanticStyle.CreateDerived(Parent(LNodes[I].Parent), LDefinition,
+             ARegistry, AAdmission, AProgress, AWork);
+        4: LStyles[I] := TSemanticStyle.CreateInstrumentalVariant(Parent(LNodes[I].Parent),
+             LDefinition.Instrumental, ARegistry, AAdmission, AProgress, AWork);
+        2, 3: LStyles[I] := TSemanticStyle.CreateBlend(Parent(LNodes[I].Parent),
+             Parent(LNodes[I].OtherParent), LRecipe, ARegistry, AAdmission, AProgress, AWork);
+      else raise EAudio.Create('Unsupported semantic ancestry kind') end;
+      Require(Sha256Bytes(DefinitionBytes(LStyles[I].FDefinition, AProgress), AProgress) =
+        Sha256Bytes(LDefinitionBytes, AProgress), 'Semantic ancestry cannot rewrite its canonical model/evidence recipe');
+      if LNodes[I].Format <> 7 then LStyles[I].UseLegacyEncoding(LNodes[I].Format, AWork, AProgress);
+      Require(LStyles[I].Identity = LNodes[I].Identity,
+        'Semantic ancestor digest differs from its complete validated parents and recipe');
+      ReleaseParent(LNodes[I].Parent); ReleaseParent(LNodes[I].OtherParent);
+    end;
+    Result := LStyles[High(LStyles)]; LStyles[High(LStyles)] := nil;
+    Result.FArchive.Free; Result.FArchive := LArchive; LArchive := nil;
+  finally
+    LArchive.Free;
+    for J := 0 to High(LStyles) do LStyles[J].Free;
+  end;
+end;
+
 function DecodeSemanticStyle(const ABytes: TAudioBytes;
   const ARegistry: TProviderCodecRegistry; const AAdmission: TProviderCodecAdmission;
   const AProgress: TWorkProgressCallback): TSemanticStyle;
 var
   LAdmission: TProviderCodecAdmission;
   LOwned: Boolean;
+  LIO: TStyleIO;
+  LFormat: String;
+  LWork: TSemanticArchiveWork;
 begin
-  LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+  Result := nil;
+  LWork := TSemanticArchiveWork.Create;
+  LAdmission := nil; LOwned := False;
   try
-    Result := DecodeAt(ABytes, 1, ARegistry, LAdmission, AProgress);
+    LAdmission := BorrowProviderCodecAdmission(ARegistry, AAdmission, LOwned);
+    LIO := TStyleIO.Create(ABytes, True, AProgress);
+    try LFormat := LIO.Text finally LIO.Free end;
+    if LFormat = 'pythian.semantic.style.v7' then
+      Result := DecodeSharedStyle(ABytes, ARegistry, LAdmission, AProgress, LWork)
+    else Result := DecodeLegacyAt(ABytes, 1, ARegistry, LAdmission, AProgress, LWork);
   finally
     if LOwned then
     begin
       LAdmission.Free;
     end;
+    LWork.Free;
   end;
 end;
 

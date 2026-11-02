@@ -991,7 +991,7 @@ begin
     LFurther := TSemanticStyle.CreateBlend(LBlend, LA, LRecipe);
     FreeAndNil(LLoaded);
     LLoaded := DecodeSemanticStyle(LFurther.Encode);
-    Check((LFurther.NodeCount = 5) and (LFurther.Depth = 3), 'Further blend node/depth ownership');
+    Check((LFurther.NodeCount = 4) and (LFurther.Depth = 3), 'Further blend retains four unique nodes');
     SameGeneration(LFurther, LLoaded);
     SaveFixture('-further.pysg', LFurther.Encode);
     Check(Sha256Bytes(RenderSound(LFurther)) = Sha256Bytes(RenderSound(LLoaded)),
@@ -1001,7 +1001,7 @@ begin
     Check(LParent.Identity = LBlend.Identity, 'Further blend retains complete intermediate lineage');
     FreeAndNil(LParent);
     LDiamond := TSemanticStyle.CreateBlend(LBlend, LBlend, LRecipe);
-    Check(LDiamond.NodeCount = 7, 'Diamond counts repeated encoded parent occurrences');
+    Check(LDiamond.NodeCount = 4, 'Diamond retains each shared ancestor once');
     LDefinition := LDiamond.CopyDefinition;
     LOriginal := LBlend.CopyDefinition;
     for LProvider := 0 to 3 do
@@ -1009,7 +1009,12 @@ begin
       Check(LDefinition.Providers[LProvider].ModelText = LOriginal.Providers[LProvider].ModelText,
         'Maximum policy prevents accidental diamond double-counting');
     end;
-    RejectBlend(LDiamond, LA, LRecipe);
+    LParent := TSemanticStyle.CreateBlend(LDiamond, LA, LRecipe);
+    try
+      Check(LParent.NodeCount = 5, 'A shared diamond cannot be reused in a further blend');
+      FreeAndNil(LLoaded); LLoaded := DecodeSemanticStyle(LParent.Encode);
+      SameGeneration(LParent, LLoaded);
+    finally FreeAndNil(LParent) end;
     SaveFixture('-diamond.pysg', LDiamond.Encode);
     LRecipe.RepeatPolicy := srpAddExplicit;
     LAdd := TSemanticStyle.CreateBlend(LBlend, LA, LRecipe);

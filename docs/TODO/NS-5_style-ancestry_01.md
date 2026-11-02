@@ -4,7 +4,7 @@
 
 **Goal:** instrumental-exploration-2026-10-29
 **Effort:** 6/10
-**Status:** Ready
+**Status:** In progress
 **Owner:** Big Boss (single agent)
 
 **Description:**
@@ -47,6 +47,80 @@ blend selection UI and musical usefulness remain the parent task's outcomes.
 - [Complete corpus persistence — DONE](DONE/NS-5_style-corpus-capacity_01.md).
 
 **Dev Notes:**
+
+- 2026-11-01, Big Boss: full-corpus JS04 baseline passes2,690,221 checks
+  without reducing sources/rows; final native06 suite and actual JS06 corpus
+  qualify the newer primary reader. Native ordinary jobs06 pass7,392,406 checks
+  and clean heaps with locked originals/no learning. Core package06 verifies
+  123 units/137 hashes. Preserve WFC package06 failure: a caller-codec fixture
+  still expected6 parent occurrences instead of5 unique nodes. Only that
+  expectation changes; registry admission/budget, lineage and audio checks
+  remain. Fresh package07 and final corpus/source qualification are pending.
+  No task effort is accepted or production data changed.
+
+- 2026-11-01, Big Boss: AC1 closes on the actual preserved six-node Studio
+  artifact through native and actual JavaScript mix/six-stem playback after
+  freeing inputs:240,000 compared samples each, exact original/edited identities,
+  first blend7 nodes/46,853 bytes/be2833f8 and further blend8/47,241/9bf4a338,
+  exact intermediate parent and frozen models/scopes. Evidence:
+  E/tests/ancestry-actual06. Native06/JS06 authored checks, immutable payload
+  ownership,64/65-node boundary and no-relearning checks pass1,680,813 each.
+  This real criterion resets nonclosing count1→0; no task effort is accepted.
+  AC2 full-corpus and AC3 ordinary/source/extracted qualification remain.
+  Native05 preserves an invalid new size-ratio assertion; real scopes/recipes
+  cost bytes, so the repaired fixture checks exact shared storage directly.
+  Current codec/learning separation and private immutable owner are implemented,
+  not yet broadly qualified or deployed. The live corpus04 baselines remain
+  valid work; snapshot06 also removes repeated structural-reader hashing.
+  See [WORK](../WORK.md) for exact handles and stop condition.
+
+- 2026-11-01, Big Boss: corpus-focused actual JS now exposes a real prototype
+  limit: the shared512MiB comparison budget is below the accumulated valid
+  provider/ancestor validation work. Preserve ancestry-capacity-js03's terminal
+  failure. After23 CPU minutes/~540MB on the same invalidated prototype, Big Boss
+  stopped only the verified isolated native executable; its ownership/resource
+  receipt and logs remain. This is not a native pass or a timeout-triggered retry.
+  Do not reduce the corpus,
+  drop evidence or treat this as musical rejection. Separate byte/preparation
+  accounting from learning, preserve the existing per-provider producer capacities
+  in the aggregate bound, and reuse already validated frozen models/evidence.
+  The persistent immutable storage/cache repair above remains required. This is
+  within AC2, not another ticket or accepted effort. This is one nonclosing batch;
+  another requires reassessment before further implementation. No handoff or
+  renamed storage experiment resets that count.
+
+- 2026-11-01, Big Boss: first implementation slice repairs the preserved actual
+  six-node input natively: first blend has7 unique nodes/46,853 bytes; further
+  blend has8/47,241 bytes. Original V4–V6 identities, both scopes, frozen models
+  and exact intermediate parent survive import/reload; heap is clean. The authored
+  equivalent passes1,680,745 native/actual JS mix/six-stem checks after input
+  owners are freed, with matching archive023fcb5d4864ce6d80927da0d8c729f50e6af24f179c29f5f7062e478d3efca7.
+  Rehashed negative/forward/dangling references and cancellation reject. Generic
+  style/blend and portable shared-work consumers pass. The prior codec-only
+  extraction preserves all10 captured native fixture digests. Preserve native03's
+  full-suite failure: an old tree-count assertion expected5 instead of4 unique
+  nodes; current fixture is corrected, not broadly qualified. Corpus-focused
+  native/JS consumers remain live; poll their retained exact handles.
+  Evidence: E/tests/ancestry-codec-native01, ancestry-native02/03, ancestry-js03,
+  ancestry-capacity-{native,js}03. No task effort is accepted or service changed.
+  AC2 still needs persistent immutable payload sharing: current output pools
+  repeated sections, but factory-owned definitions and per-encode hashing can
+  repeat them in memory/work. Finish that primary ownership/cache binding and
+  preserve the producer's existing per-model capacities when setting aggregate
+  budgets. Ordinary native jobs and full source/extracted qualification remain.
+
+- 2026-11-01, Big Boss: selected after the scoped task's actual closure;
+  inherited nonclosing count0. Criterion: the preserved edited input and a complete
+  supported corpus can blend, reload and blend again, retaining actual controls,
+  sounds and source ancestry. Deliver the primary shared-node/payload archive
+  through existing factories and ordinary saved-style jobs. Keep file hashes and
+  parent identities truthful, bound unique nodes/depth/bytes/aggregate decoding
+  work, and preserve current private artifacts through an explicit bounded import.
+  Close with the actual failing input, native/actual JS mix/stem consumers,
+  complete-corpus sharing, malformed-reference/cancellation checks, native jobs,
+  relevant extracted packages and full source qualification. Stop at those gates
+  or a demonstrated new prerequisite, before parent blend-selection UI. No credit
+  follows from a serializer-only slice or a raised count ceiling.
 
 - 2026-11-01, Big Boss: scoped controls now pass all qualification/deployment
   gates and are accepted. Both prerequisites are complete; this task is Ready.
