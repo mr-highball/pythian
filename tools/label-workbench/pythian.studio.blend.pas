@@ -430,6 +430,13 @@ begin
     LSource['name'] := StudioText(LParents[0], 'name') + ' + ' + StudioText(LParents[1], 'name');
     LSource['left_style_id'] := StudioText(LParents[0], 'id');
     LSource['has_form'] := LParents[FPlan.FormParent]['has_form'];
+    if (StudioNumber(LParents[0], 'sample_rate') <> 24000) or
+      (StudioNumber(LParents[1], 'sample_rate') <> 24000) then
+      raise Exception.Create('Refresh saved styles to load their sound clocks.');
+    LSource['sample_rate'] := 24000;
+    LSource['tail_frames'] := MusicBlendSoundTailFrames(FPlan.BaseParent,
+      FPlan.MasterParent, FPlan.Parts, Trunc(StudioNumber(LParents[0], 'tail_frames')),
+      Trunc(StudioNumber(LParents[1], 'tail_frames')));
     LSource['blend'] := LBlend;
     TStudioDialog(El('blend-style-dialog')).close;
     FChoose(LSource);

@@ -995,6 +995,41 @@ begin
   end;
 end;
 
+procedure BlendSoundTails;
+var
+  LPlan: TMusicBlendPlan;
+  LRejected: Boolean;
+begin
+  LPlan := DefaultMusicBlendPlan(9, 6);
+  LPlan.Parts[0].ExpressionParent := 1;
+  LPlan.FormParent := 1;
+  Check(MusicBlendSoundTailFrames(0, 0, LPlan.Parts, 1, 48000) = 1,
+    'Music/expression/form contributions select an unused sound tail');
+  Check(MusicBlendSoundTailFrames(0, 0, LPlan.Parts, 0, 48000) = 0,
+    'Zero sound tail silently becomes a default second');
+  LPlan.Parts[0].InstrumentParent := 1;
+  Check(MusicBlendSoundTailFrames(0, 0, LPlan.Parts, 24000, 48000) = 48000,
+    'Part instrument tail is shortened by its master choice');
+  LPlan.Parts[0].InstrumentParent := 0;
+  LPlan.Parts[2].EffectsParent := 1;
+  Check(MusicBlendSoundTailFrames(0, 0, LPlan.Parts, 24000, 48000) = 48000,
+    'Part effect tail is not retained');
+  LPlan.Parts[2].EffectsParent := 0;
+  Check(MusicBlendSoundTailFrames(1, 0, LPlan.Parts, 24000, 48000) = 48000,
+    'Base performance tail is not retained');
+  Check(MusicBlendSoundTailFrames(0, 1, LPlan.Parts, 24000, 48000) = 48000,
+    'Master effect tail is not retained');
+  LRejected := False;
+  try MusicBlendSoundTailFrames(0, 0, LPlan.Parts, -1, 48000);
+  except on EAudio do LRejected := True end;
+  Check(LRejected, 'Negative declared sound tail admitted');
+  LPlan.Parts[0].EffectsParent := 2;
+  LRejected := False;
+  try MusicBlendSoundTailFrames(0, 0, LPlan.Parts, 24000, 48000);
+  except on EAudio do LRejected := True end;
+  Check(LRejected, 'Invalid tail parent admitted');
+end;
+
 procedure Blends;
 var
   LLeft: TSemanticStyle;
@@ -1014,6 +1049,7 @@ var
   LCancel: TCancel;
   I: Integer;
 begin
+  BlendSoundTails;
   LLeft := TSemanticStyle.CreateSource(Definition);
   LRight := nil;
   LBlend := nil;
@@ -1141,6 +1177,25 @@ begin
     LLoaded := DecodeSemanticStyle(LFurther.Encode);
     SameInstrumental(LFurther, LLoaded);
     FreeAndNil(LLoaded);
+    LRightDefinition.Instrumental.Options.TailFrames := CRate * 2;
+    LRightDefinition.Instrumental.Mix.TailSeconds := 2;
+    LParent := TSemanticStyle.CreateSource(LRightDefinition);
+    LPlanCopy := DefaultMusicBlendPlan(9, 6);
+    for I := 0 to High(LPlanCopy.Providers) do LPlanCopy.Providers[I].RightWeight := 0;
+    LLoaded := BlendInstrumentalStyles(LLeft, LParent, LPlanCopy, 'Only A sounds');
+    Check(LLoaded.CopyDefinition.Instrumental.Options.TailFrames = CRate,
+      'Primary factory imports the unused B tail');
+    FreeAndNil(LLoaded);
+    LPlanCopy.Parts[0].InstrumentParent := 1;
+    LLoaded := BlendInstrumentalStyles(LLeft, LParent, LPlanCopy, 'Bass B with master A');
+    Check((LLoaded.CopyDefinition.Instrumental.Options.TailFrames = CRate * 2) and
+      (LLoaded.CopyDefinition.Instrumental.Mix.TailSeconds = 1),
+      'Primary factory and shared tail selection disagree');
+    FreeAndNil(LParent);
+    LParent := DecodeSemanticStyle(LLoaded.Encode);
+    SameInstrumental(LLoaded, LParent);
+    FreeAndNil(LLoaded);
+    FreeAndNil(LParent);
     LRightDefinition.Providers[4].Contract.Name := 'another-lead';
     LRightDefinition.Providers[4].Contract.RoleId := 'another-lead';
     LRightDefinition.Providers[1].Contract.RoleOrder[2] := 'another-lead';

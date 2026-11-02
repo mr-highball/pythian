@@ -1230,7 +1230,7 @@ begin
         Result.Add('style_source', LRequest.Objects['style_source'].Clone);
         Result.Add('requested_duration_ms', LRequest.Int64s['duration_ms']);
         Result.Add('output_resources', StudioInstrumentalOutputEstimate(LRequest.Int64s['duration_ms'],
-          StudioSoundTailFrames(LRequest.Objects['style_source'].Objects['settings'], StudioInstrumentalRate)));
+          LRequest.Objects['style_source'].Int64s['tail_frames']));
       end
       else if IsStudioInstrumentalFollowup(LRequest.Strings['kind']) then
       begin

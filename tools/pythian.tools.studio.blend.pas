@@ -130,6 +130,8 @@ begin
   LPlan := DecodeStudioBlend(ABlend);
   LParents[0] := ALeft;
   LParents[1] := ARight;
+  Need(ALeft.Integers['sample_rate'] = ARight.Integers['sample_rate'],
+    'Blend parents need the same sound sample clock');
   Result := TJSONObject(LParents[LPlan.BaseParent].Clone);
   try
     Result.Strings['format'] := StudioBlendSourceFormat;
@@ -138,6 +140,8 @@ begin
     Result.Strings['name'] := ALeft.Strings['name'] + ' + ' + ARight.Strings['name'];
     Result.Strings['left_style_id'] := ALeft.Strings['id'];
     Result.Booleans['has_form'] := LParents[LPlan.FormParent].Booleans['has_form'];
+    Result.Int64s['tail_frames'] := MusicBlendSoundTailFrames(LPlan.BaseParent,
+      LPlan.MasterParent, LPlan.Parts, ALeft.Int64s['tail_frames'], ARight.Int64s['tail_frames']);
     Result.Add('blend', ABlend.Clone);
     Result.Add('parents', TJSONArray.Create([ALeft.Clone, ARight.Clone]));
   except

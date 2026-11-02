@@ -20,6 +20,13 @@ The optional `pythian.wfc.instrumental.blend.BlendInstrumentalStyles` binding ma
 that plan into the existing semantic recipe/factory with `srpMaximum`. It adds
 no second learner, codec or vocabulary-conversion implementation.
 
+`MusicBlendSoundTailFrames` owns the corresponding sound-tail selection on a
+common sample clock. The base, master and every selected part instrument/effect
+parent contribute; their maximum tail is retained. Musical weights, expression
+and form do not import an unused parent's sound tail. The semantic factory,
+native preflight and browser use this same rule. Same-rate frames stay integer
+frames rather than rounding through seconds.
+
 Studio's `instrumental_style` request optionally carries `style_blend` in format
 `pythian.studio.blend.v1`, with nine ordered providers and six parts matching its
 actual corpus/renderer. `style_id` identifies A; `right_style_id` identifies B.
@@ -34,6 +41,14 @@ PCM; `model_recombination_performed=true` identifies the requested saved-model
 composition. Subsequent frozen reuse reports both false. The actual candidate
 hash, original parent records and A's exact song/plan/WAV Before identity remain
 attached. Saving only names the already retained result and never starts work.
+Named references expose `sample_rate` and `tail_frames` from the actual completed
+source song's model/output binding. New references retain these fields; older
+private reference bytes stay unchanged, with missing clock metadata recovered
+from that song on read. Listing and preflight never open a model or recording.
+The browser's **Next track** estimate shows music, sound tail, total duration and
+seven-file WAV space through the primary RIFF/RF64 byte counter. Missing old
+browser draft metadata asks for style selection again instead of fabricating a
+one-second tail. Native/JS and desktop/phone qualification status remains in WORK.
 Identical retry returns the same job/event/hash, ignoring only native-added
 comparison/source snapshots in payload comparison; changed settings still reject.
 The primary selected tail is preserved even when it exceeds the selected master's

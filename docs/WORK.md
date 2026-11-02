@@ -3,7 +3,75 @@
 [Home](../README.md) · [Project](../PROJECT.md) · [Assessment](ASSESSMENT-2026-10-29.md) ·
 [Tasks](TODO/README.md) · [Historical evidence](WORK-HISTORY.md)
 
-## Current gate: finish style estimates, then operator usefulness - 2026-11-02
+## Current gate: complete source/delivery for truthful sound estimates - 2026-11-02
+
+Big Boss SOLO. Final E/tests/style-tail-source03 freezes671 inputs. All416 native
+inputs match the normal checked runtime01 built from source01; source02 repairs
+only a new fixture, and source03 adds only Next track wording in the UI. The
+ordinary native suite02 passes9,408,534 checks with zero unfreed blocks. Native
+Win32/Win64 and actual JavaScript focused consumers each pass4,369,893; original
+blend/reblend archive identities stay exact. Retain suite01's wrong sound_design
+fixture assumption and clean heap; the repaired fixture uses the existing
+named-style performance and actually renders/preflights/saves/reuses longer tails.
+Do not present the fixture failure as a scientific or runtime failure.
+
+Actual1280px/390px browser consumers show2seconds music +2seconds tail =4seconds,
+2.6MiB for seven WAVs. Actual generation, naming, frozen reuse and reload pass;
+the player reports4seconds, with no loops/errors. Native preflight equals the
+render's entire output-resource object, including96,000frames. The original
+actual QA03 musical archive hash remains unchanged.24hour estimate passes with
+2,073,648,000frames/58,062,144,560audio bytes; no24hour job is submitted. Listing
+old references recovers clocks from real completed model/output bindings without
+rewriting existing private metadata or opening models/PCM. E/runs/style-tail-qa01
+retains the API equality, read-only hashes, frozen reuse and wide-counter proofs.
+Final web02's Next track prefix passes desktop/phone screenshots in qa02; all11
+audio elements are paused, no loops/errors. Owned tabs21/22 close; viewport resets,
+exact QA services42716/33532 stop, sessions67208/26185 are collected (exit1 is the
+owned stop). All native/JS/build handles through41969/71708 are collected too.
+User tab2 and stable72148 remain untouched; no QA listener or worker remains.
+
+Next publish this source and require complete integration/extracted-package CI,
+then deliver matching runtime01/web02 through the fixed stable slot with rollback
+and preserved operator records. Do not repeat passed checks unless source or
+evidence changes. Scope45 tasks/38 DONE/seven open,164/206(79.61%),42 open effort;
+counter0, parent styles In progress without partial credit. After matching delivery
+the bounded estimate criterion can close; actual operator usefulness remains.
+No generic WFC gap, dependency edit, new task or extra effort is introduced.
+
+## Earlier batch: qualify truthful saved-style sound estimates - 2026-11-02
+
+Big Boss SOLO. Previous turn is progress: retry accepted/deployed, count0.
+Current parent style batch criterion/deliverable: Generate's music/tail/total
+duration and seven-file storage agree with actual selected sounds, including a
+blend's longer part tail with a shorter master and its frozen reuse. Close with
+shared native/actual-JS selection and archive replay, ordinary metadata-only
+preflight versus actual outputs, desktop/390px/reload consumers and matching
+complete-source delivery. Stop at that usable estimate boundary or a distinct
+required gap; do not expand into a general resource architecture. No new task
+or effort is invented for this existing parent UI detail.
+
+The primary WFC-free musical blend unit now owns sound-tail parent selection;
+the semantic factory, native metadata/preflight and browser use that rule.
+Named references expose actual performed clock metadata. Older private record
+bytes stay unchanged; their missing clock is recovered from the completed source
+song with exact model/output binding, without reading model or PCM. New records
+retain the clock. Browser estimates use primary WAV byte counting and identify
+music + tail + total. Unknown old browser draft metadata asks for style selection
+again rather than presenting a fabricated default. No Generate on selection/save.
+
+Frozen E/tests/style-tail-source01 contains671 inputs. Native and actual JS
+style-tail-binding-*01 each pass4,369,893 focused consumer checks, with matching
+original blend/reblend hashes and a clean native heap. A real primary blend
+retains B's two-second tail with A's one-second master, reloads and replays all
+six parts; music/expression/form-only selection does not import an unused tail.
+Browser build style-tail-web01 and normal checked runtime style-tail-runtime01
+compile. Full ordinary native jobs remain running under session79705; inspect
+that handle rather than restarting. Focused session16778, JS65135 and runtime9758
+are terminal/collected. Actual browser qualification and complete source delivery
+remain. Stable service/operator data are untouched by this batch so far.
+Scope stays45 tasks/38 DONE/seven open,164/206(79.61%),42 open effort; count0.
+
+## Previous closure: finish style estimates, then operator usefulness - 2026-11-02
 
 Big Boss SOLO. [Saved-style retry — DONE](TODO/DONE/NS-6_style-job-retry_01.md)
 closes its final criterion/task after complete

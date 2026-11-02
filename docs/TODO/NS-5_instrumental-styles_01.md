@@ -33,6 +33,30 @@ Primary attribution: NS-5. Effort estimates relative implementation/integration 
 
 **Dev Notes:**
 
+- 2026-11-02, Big Boss: estimate correction passes the actual ordinary native
+  suite9,408,534 with zero unfreed blocks. Win32/Win64/actual JS each pass4,369,893
+  focused primary blend checks with identical original archive hashes. Phone
+  generation/save/frozen reuse/reload predicts2seconds music +2seconds tail,
+  renders96,000frames at24kHz and browser playback reports4seconds. Native
+  preflight matches all output-resource fields exactly.24hour RIFF/RF64 estimate
+  passes without submitting that long render. Old private clock recovery changes
+  no existing metadata; new references retain the clock. Final Next track wording
+  passes desktop/390px screenshots. Preserve source01's new-fixture sound_design
+  assumption failure (clean heap); source02 uses the existing named-style
+  performance and passes. Final source03 differs only in presentation wording;
+  all416 native inputs match runtime01. QA tabs21/22, services and sessions are
+  cleaned up. Complete source/extracted CI and matching deployment remain;
+  no parent effort or musical usefulness is accepted by these local checks.
+
+- 2026-11-02, Big Boss: bounded tail-estimate follow-through is implemented,
+  with shared core sound-parent selection used by the primary factory, native
+  metadata/preflight and browser. Actual saved clock metadata does not require
+  model/PCM reads. Native/actual JS each pass4,369,893 focused checks with exact
+  original archive identities and a clean native heap. Full native jobs and
+  browser/source/deployment remain; no acceptance or extra effort follows from
+  the component pass. Evidence: E/tests/style-tail-source01 and
+  style-tail-binding-{native,js}01. WORK records criterion/deliverable/stop.
+
 - 2026-11-02, Big Boss: ordinary selective blend/reblend is deployed after
   complete CI562, actual native/JS/desktop/390px consumers, extracted packages
   and matching fixed-slot runtime05/web03. The tiny retry prerequisite accepts

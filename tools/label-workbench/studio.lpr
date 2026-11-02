@@ -761,13 +761,34 @@ var
   LUrl: String;
   LSeconds: Double;
   LBytes: Int64;
+  LTailFrames: Int64;
+  LMusicFrames: Int64;
   I: Integer;
 begin
   if OutputSeconds(LSeconds) then
   begin
-    LBytes := WavePcm16ByteCount(24000, 2, Round(LSeconds * 1000) * 24 + 24000);
-    El('output-estimate').textContent := 'About ' + StudioByteSize(LBytes * 7) +
-      ' on this computer for your mix and six parts. Stereo WAV · 24 kHz.';
+    LTailFrames := 24000;
+    if FSelectedStyle <> nil then
+    begin
+      LTailFrames := -1;
+      if isNumber(FSelectedStyle['tail_frames']) and
+        (Num(FSelectedStyle, 'sample_rate') = 24000) and
+        (Num(FSelectedStyle, 'tail_frames') >= 0) and
+        (Num(FSelectedStyle, 'tail_frames') <= 86400 * 24000) and
+        (Num(FSelectedStyle, 'tail_frames') = Trunc(Num(FSelectedStyle, 'tail_frames'))) then
+        LTailFrames := Trunc(Num(FSelectedStyle, 'tail_frames'));
+    end;
+    if LTailFrames >= 0 then
+    begin
+      LMusicFrames := Round(LSeconds * 1000) * 24;
+      LBytes := WavePcm16ByteCount(24000, 2, LMusicFrames + LTailFrames);
+      El('output-estimate').textContent := 'Next track: ' + StudioTime((LMusicFrames + LTailFrames) / 24000) +
+        ' total · ' + StudioTime(LMusicFrames / 24000) + ' music + ' +
+        StudioTime(LTailFrames / 24000) + ' sound tail. About ' + StudioByteSize(LBytes * 7) +
+        ' for your mix and six parts.';
+    end
+    else El('output-estimate').textContent :=
+      'Choose this saved style again to load its sound tail and size estimate.';
   end
   else El('output-estimate').textContent := 'Choose 2 seconds to 24 hours.';
   LState := Str(FJob, 'status');

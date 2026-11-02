@@ -3110,20 +3110,8 @@ var
   LSide: Integer;
   LControl: Integer;
   LProvider: Integer;
+  LTails: array[0..1] of Int64;
   I: Integer;
-  procedure IncludeTail(const AParent: Integer);
-  var
-    LFrames: Int64;
-  begin
-    LFrames := SampleFramesFromSeconds(
-      LParents[AParent].Instrumental.Options.TailFrames /
-      LParents[AParent].Instrumental.SampleRate,
-      ADefinition.Instrumental.SampleRate, frCeiling);
-    if LFrames > ADefinition.Instrumental.Options.TailFrames then
-    begin
-      ADefinition.Instrumental.Options.TailFrames := LFrames;
-    end;
-  end;
 begin
   LParents[0] := ALeft;
   LParents[1] := ARight;
@@ -3132,12 +3120,23 @@ begin
   Require((Length(ARecipe.Instrumental.Parts) = LPitched + LDrums) and
     (Length(ARecipe.Sounds) = 0),
     'Instrumental blend needs one explicit sound/effect/expression choice per part');
+  for I := 0 to 1 do
+  begin
+    LTails[I] := LParents[I].Instrumental.Options.TailFrames;
+    if LParents[I].Instrumental.SampleRate <> ADefinition.Instrumental.SampleRate then
+    begin
+      LTails[I] := SampleFramesFromSeconds(LTails[I] /
+        LParents[I].Instrumental.SampleRate, ADefinition.Instrumental.SampleRate, frCeiling);
+    end;
+  end;
+  ADefinition.Instrumental.Options.TailFrames := MusicBlendSoundTailFrames(
+    ARecipe.Instrumental.BaseParent, ARecipe.Instrumental.MasterParent,
+    ARecipe.Instrumental.Parts, LTails[0], LTails[1]);
   ADefinition.Instrumental.LabelText := ARecipe.Instrumental.LabelText;
   ADefinition.Instrumental.Origin :=
     'Experimental selective instrumental blend; actual source and operator origins remain in both parents';
   ADefinition.Instrumental.Mix := CopyStemMixRecipe(
     LParents[ARecipe.Instrumental.MasterParent].Instrumental.Mix);
-  IncludeTail(ARecipe.Instrumental.MasterParent);
   ADefinition.Instrumental.Form := CopyMusicForm(
     LParents[ARecipe.Instrumental.FormParent].Instrumental.Form);
   if ARecipe.Instrumental.OverrideContextBinding then
@@ -3148,7 +3147,6 @@ begin
   for I := 0 to LPitched + LDrums - 1 do
   begin
     LSide := ARecipe.Instrumental.Parts[I].InstrumentParent;
-    IncludeTail(LSide);
     if I < LPitched then
     begin
       ADefinition.Instrumental.Instruments[I] := CopyInstrumentRecipe(
@@ -3199,7 +3197,6 @@ begin
     end;
     LSide := ARecipe.Instrumental.Parts[I].EffectsParent;
     ADefinition.Instrumental.Mix.Parts[I] := LParents[LSide].Instrumental.Mix.Parts[I];
-    IncludeTail(LSide);
     LSide := ARecipe.Instrumental.Parts[I].ExpressionParent;
     ADefinition.Instrumental.Expression[I] := DefaultMusicalExpression;
     if Length(LParents[LSide].Instrumental.Expression) > 0 then

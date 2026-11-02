@@ -691,6 +691,8 @@ begin
   LRows.Objects[2].Integers['expression_parent'] := 1;
 end;
 
+procedure CheckStyleTailEstimates(const ACatalog, ALibrary: String); forward;
+
 procedure CheckBlendedStyles(const ACatalog, ALibrary: String);
 var
   LWrite: TJSONObject;
@@ -1030,6 +1032,7 @@ begin
   Check((LModels[0] <> LModels[1]) and (LHashes[0] <> LHashes[1]),
     'Changing only the teaching classification changes learned models and actual synthesized music');
   CheckBlendedStyles(ACatalog, ALibrary);
+  CheckStyleTailEstimates(ACatalog, ALibrary);
 
   LPlaylist := TJSONObject(APlaylist.Clone);
   LReceipt := nil;
@@ -1241,6 +1244,101 @@ begin
     'project_snapshot_sha256', AParent.Strings['project_snapshot_sha256']]);
   Result.Add('instruments', AParent.Objects['settings'].Arrays['instruments'].Clone);
   Result.Arrays['instruments'].Strings[0] := AName;
+end;
+
+procedure CheckStyleTailEstimates(const ACatalog, ALibrary: String);
+var
+  LParent: TJSONObject;
+  LWrite: TJSONObject;
+  LDesign: TJSONObject;
+  LState: TJSONObject;
+  LSaved: TJSONObject;
+  LName: TJSONObject;
+  LPrepared: TJSONObject;
+  LExpected: TJSONObject;
+  LNamed: TJSONObject;
+  LModelGuard: TFileStream;
+  LLeftId: String;
+  LRightId: String;
+  I: Integer;
+begin
+  LParent := ReadStudioJob(ACatalog, 'named-style-0');
+  LWrite := nil;
+  LState := nil;
+  LSaved := nil;
+  LPrepared := nil;
+  LExpected := nil;
+  LNamed := nil;
+  LName := TJSONObject.Create(['format', 'pythian.studio.style.write.v1',
+    'name', 'Longer tail', 'job_id', 'tail-parent-song']);
+  try
+    LLeftId := SavedStyleId(ACatalog, 'Night music');
+    LWrite := SoundWrite('named-style-0', 'tail-parent-song', 'sine',
+      LParent.Objects['results']);
+    LWrite.Delete('instruments');
+    LDesign := TJSONObject(LParent.Objects['results'].Objects['settings'].Objects['sound_design'].Clone);
+    LDesign.Objects['mix'].Floats['tail_seconds'] := 2;
+    LWrite.Add('sound_design', LDesign);
+    LState := EnqueueStudioJob(ACatalog, LWrite);
+    FreeAndNil(LState);
+    Check(RunStudioWorker(ACatalog, 'tail-parent-song', ALibrary), 'Actual longer-tail song completes');
+    LSaved := SaveStudioStyle(ACatalog, LName);
+    LRightId := LSaved.Strings['id'];
+    Check((LSaved.Integers['sample_rate'] = 24000) and
+      (LSaved.Int64s['tail_frames'] = 48000), 'Named style loses its actual performed tail');
+    FreeAndNil(LWrite);
+    for I := 0 to 1 do
+    begin
+      LWrite := TJSONObject.Create(['format', StudioJobWriteFormat,
+        'job_id', 'tail-blend-' + IntToStr(I), 'kind', 'instrumental_style',
+        'style_id', LLeftId, 'project_id', LParent.Strings['project_id'],
+        'project_revision', LParent.Objects['request'].Int64s['project_revision'],
+        'project_snapshot_sha256', LParent.Objects['request'].Strings['project_snapshot_sha256'],
+        'duration_ms', 2000]);
+      LWrite.Add('seeds', TJSONArray.Create([731]));
+      if I = 0 then LWrite.Add('style_blend', StudioBlendChoices(LRightId));
+      LNamed := ReadStudioNamedStyle(ACatalog, LLeftId);
+      LModelGuard := TFileStream.Create(NativeFilePath(ListeningAssetDirectory(ACatalog) +
+        '/styles/' + LNamed.Strings['sha256'] + '.pysg'), fmOpenReadWrite or fmShareExclusive);
+      try
+        LPrepared := PrepareStudioJob(ACatalog, LWrite);
+        LExpected := TJSONObject(LPrepared.Objects['output_resources'].Clone);
+        Check((LExpected.Int64s['tail_frames'] = 48000) and
+          (LExpected.Int64s['frame_count'] = 96000),
+          'Metadata-only blend/reuse estimate loses a selected part tail with a shorter master');
+      finally LModelGuard.Free end;
+      FreeAndNil(LPrepared);
+      FreeAndNil(LNamed);
+      LState := EnqueueStudioJob(ACatalog, LWrite);
+      FreeAndNil(LState);
+      Check(RunStudioWorker(ACatalog, LWrite.Strings['job_id'], ALibrary),
+        'Long-tail blend/frozen reuse completes');
+      LState := ReadStudioJob(ACatalog, LWrite.Strings['job_id']);
+      Check((LState.Strings['status'] = 'completed') and
+        (LState.Objects['results'].Objects['output_resources'].AsJSON = LExpected.AsJSON),
+        'Actual output clock and seven-file accounting differ from preflight');
+      Check(LState.Objects['results'].Objects['settings'].Objects['sound_design'].Objects['mix'].Floats['tail_seconds'] = 1,
+        'Tail test did not keep the independently selected one-second master');
+      LName.Strings['name'] := 'Long-tail blend';
+      LName.Strings['job_id'] := LWrite.Strings['job_id'];
+      FreeAndNil(LSaved);
+      LSaved := SaveStudioStyle(ACatalog, LName);
+      Check(LSaved.Int64s['tail_frames'] = 48000, 'Saved blend flattens its tail to master settings');
+      LLeftId := LSaved.Strings['id'];
+      FreeAndNil(LState);
+      FreeAndNil(LExpected);
+      FreeAndNil(LWrite);
+    end;
+  finally
+    LNamed.Free;
+    LExpected.Free;
+    LPrepared.Free;
+    LSaved.Free;
+    LName.Free;
+    LState.Free;
+    LWrite.Free;
+    LParent.Free;
+  end;
 end;
 
 procedure CheckSoundChanges(const ACatalog, ALibrary, AParentId: String;

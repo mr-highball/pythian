@@ -59,10 +59,16 @@ function DefaultMusicBlendPlan(const AProviders, AParts: Integer): TMusicBlendPl
 procedure ValidateMusicBlendPlan(const APlan: TMusicBlendPlan;
   const AProviders, AParts: Integer);
 function CopyMusicBlendPlan(const APlan: TMusicBlendPlan): TMusicBlendPlan;
+{ Both tails use the same sample clock. Timing/base, master, instruments and
+  part effects retain their selected parent's tail. Music weights, expression
+  and form do not select sound tails. No model or instrument needs opening. }
+function MusicBlendSoundTailFrames(const ABaseParent, AMasterParent: Integer;
+  const AParts: array of TMusicBlendPart;
+  const ALeftFrames, ARightFrames: Int64): Int64;
 
 implementation
 
-uses SysUtils, pythian.audio;
+uses SysUtils, pythian.audio, pythian.time;
 
 procedure Need(const ACondition: Boolean; const AMessage: String);
 begin
@@ -142,6 +148,37 @@ begin
   for I := 0 to High(APlan.Parts) do
   begin
     Result.Parts[I] := APlan.Parts[I];
+  end;
+end;
+
+function MusicBlendSoundTailFrames(const ABaseParent, AMasterParent: Integer;
+  const AParts: array of TMusicBlendPart;
+  const ALeftFrames, ARightFrames: Int64): Int64;
+var
+  LTails: array[0..1] of Int64;
+  I: Integer;
+  procedure Include(const AParent: Integer);
+  begin
+    Parent(AParent, 'sound tail');
+    if LTails[AParent] > Result then
+    begin
+      Result := LTails[AParent];
+    end;
+  end;
+begin
+  RequireExactTimingCounter(ALeftFrames, 'Style A sound tail');
+  RequireExactTimingCounter(ARightFrames, 'Style B sound tail');
+  Need((ALeftFrames >= 0) and (ARightFrames >= 0), 'Sound tails cannot be negative');
+  Need((Length(AParts) > 0) and (Length(AParts) <= 256), 'Choose bounded blend parts');
+  LTails[0] := ALeftFrames;
+  LTails[1] := ARightFrames;
+  Result := 0;
+  Include(ABaseParent);
+  Include(AMasterParent);
+  for I := 0 to High(AParts) do
+  begin
+    Include(AParts[I].InstrumentParent);
+    Include(AParts[I].EffectsParent);
   end;
 end;
 
